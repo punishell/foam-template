@@ -39,7 +39,7 @@ export const ProfileView = () => {
 
   return (
     <div className='flex flex-row relative gap-6 h-full grow overflow-auto pb-4'>
-      <div className='flex flex-col w-1/5 h-fit bg-white rounded-lg items-center drop-shadow-md shadow-md'>
+      <div className='flex flex-col w-1/5 h-fit bg-white rounded-lg items-center'>
         <div className='flex flex-col gap-4 border-b-2 p-4'>
           <div className='flex justify-end min-h-[27px]'>
             <span className='bg-success-lighter text-success py-2 px-4 rounded-xl text-xs font-thin capitalize'>{isPrivate}</span>
@@ -70,7 +70,7 @@ export const ProfileView = () => {
         </div>
       </div>
       <div className='flex flex-col w-4/5 overflow-y-auto h-full'>
-        <div className='bg-white rounded-lg p-4 shadow-md mb-4'>
+        <div className='bg-white rounded-lg p-4 mb-4'>
           <div className='flex flex-row justify-between h-[50px] items-center mb-4'>
             <p className='text-lg text-title font-bold'>Edit Profile Details</p>
             <Button title='Save Changes' variant={"secondary"} size="xs">Save Changes</Button>
@@ -105,7 +105,7 @@ export const ProfileView = () => {
             </form>
           </div>
         </div>
-        <div className='bg-white rounded-lg p-4 drop-shadow-md shadow-md mb-4'>
+        <div className='bg-white rounded-lg p-4 mb-4'>
           <div className='flex flex-row justify-between h-[50px] items-center'>
             <p className='text-lg text-title font-bold'>Professional Information</p>
             <Button title='Save Changes' variant={"secondary"} size="xs">Save Changes</Button>
@@ -130,7 +130,7 @@ export const ProfileView = () => {
             </div>
           </div>
         </div>
-        <div className='bg-white rounded-lg p-4 drop-shadow-md shadow-md mb-8'>
+        <div className='bg-white rounded-lg p-4 mb-8'>
           <div className='flex flex-row justify-between h-[50px] items-center'>
             <p className='text-lg text-title font-bold'>Delete Account</p>
             {showDelete ? <ChevronUp className='cursor-pointer' onClick={() => setShowDelete(!showDelete)} /> :
