@@ -53,7 +53,7 @@ export const Tabs: React.FC<Props> = ({ tabs, defaultTab }) => {
       value={activeTab}
       defaultValue={initialTab}
       onValueChange={handleTabChange}
-      className="flex flex-col gap-4"
+      className="flex flex-col gap-4 h-full relative overflow-auto"
     >
       <RadixTabs.List className="flex items-center border-b">
         {tabs.map((tab) => (
@@ -66,12 +66,13 @@ export const Tabs: React.FC<Props> = ({ tabs, defaultTab }) => {
           </RadixTabs.Trigger>
         ))}
       </RadixTabs.List>
-
-      {tabs.map((tab) => (
-        <RadixTabs.Content key={tab.value} value={tab.value}>
+      <div className='flex flex-col overflow-auto h-full'>
+        {tabs.map((tab) => (
+        <RadixTabs.Content key={tab.value} value={tab.value} className='radix-state-active:flex radix-state-active:flex-col radix-state-active:h-full'>
           {tab.content}
         </RadixTabs.Content>
       ))}
+      </div>
     </RadixTabs.Root>
   );
 };
