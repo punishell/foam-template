@@ -55,12 +55,12 @@ export const Tabs: React.FC<Props> = ({ tabs, defaultTab }) => {
       onValueChange={handleTabChange}
       className="flex flex-col gap-4"
     >
-      <RadixTabs.List className="flex items-center gap-4">
+      <RadixTabs.List className="flex items-center border-b">
         {tabs.map((tab) => (
           <RadixTabs.Trigger
             key={tab.value}
             value={tab.value}
-            className="border radix-state-active:hover:text-title border-transparent radix-state-active:border-primary radix-state-active:bg-[#0A1F441A] text-title rounded-xl min-w-[100px] text-center py-2 px-4 text-sm font-medium hover:bg-primary hover:text-white transition-all duration-200"
+            className="border-b-2 hover:text-primary border-transparent radix-state-active:border-primary text-title min-w-[100px] text-center py-2 px-8 text-sm font-medium transition-all duration-200"
           >
             {tab.label}
           </RadixTabs.Trigger>
