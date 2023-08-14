@@ -12,7 +12,7 @@ import warning from '@/lottiefiles/warning.json';
 
 export const Feeds = () => {
   return (
-    <div className="flex flex-col gap-5 mt-4 bg-white rounded-2xl p-4 w-full">
+    <div className="flex flex-col gap-5 mt-4 border border-line bg-white rounded-2xl p-4 w-full">
       <JobFeedCard
         jobTitle="Mobile UX Design for Afrofund"
         type="job-invite-filled"

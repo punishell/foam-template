@@ -2,6 +2,7 @@
 import React from 'react';
 import { Button } from 'pakt-ui';
 import { Tag, Calendar } from 'lucide-react';
+import { Modal } from '@/components/common/modal';
 import { UserAvatar } from '@/components/common/user-avatar';
 import { SideModal } from '@/components/common/side-modal';
 
@@ -42,17 +43,13 @@ export default function JobDetails({ params }: Props) {
               ]}
             />
 
-            <div className="mt-auto w-full flex items-center justify-between gap-4">
-              <div className="">
-                <Button variant="outline">Message Client</Button>
+            <div className="mt-auto w-full flex items-center justify-end gap-4">
+              <div className="max-w-[200px] w-full">
+                <Button fullWidth>Apply</Button>
               </div>
-              <div className="flex items-center gap-4">
-                <Button variant="secondary">Propose Price</Button>
-                <Button>Apply</Button>
-                <SideModal isOpen={false} onOpenChange={setIsSidebarOpen}>
-                  <div className=" h-full">Hello</div>
-                </SideModal>
-              </div>
+              <SideModal isOpen={false} onOpenChange={setIsSidebarOpen}>
+                <div className=" h-full">Hello</div>
+              </SideModal>
             </div>
           </div>
         </div>
