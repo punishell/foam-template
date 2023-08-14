@@ -19,7 +19,7 @@ export const Sidebar = () => {
           <span>Overview</span>
         </NavLink>
 
-        <NavLink href="/jobs/my-jobs">
+        <NavLink href="/jobs">
           <LayoutList size={20} />
           <span>Jobs</span>
         </NavLink>
