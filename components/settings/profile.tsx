@@ -78,12 +78,12 @@ export const ProfileView = () => {
           <div className='flex'>
             <form onSubmit={form.handleSubmit(onSubmit)} className="flex relative w-full mx-auto gap-6 flex-col">
               <div id="input-row" className='flex flex-row justify-between gap-4 w-full'>
-                <Input {...form.register('firstName')} className="w-1/2 !bg-[#FCFCFD] !border-[#E8E8E8]" placeholder="enter first name" label='First Name' />
-                <Input {...form.register('lastName')} className="w-1/2 !bg-[#FCFCFD] !border-[#E8E8E8]" placeholder="enter last name" label='Last Name' />
+                <Input {...form.register('firstName')} className="w-full !bg-[#FCFCFD] !border-[#E8E8E8]" placeholder="enter first name" label='First Name' />
+                <Input {...form.register('lastName')} className="w-full !bg-[#FCFCFD] !border-[#E8E8E8]" placeholder="enter last name" label='Last Name' />
               </div>
               <div id="input-row" className='flex flex-row justify-between gap-4 w-full'>
-                <Input {...form.register('jobTitle')} className="w-1/2 !bg-[#FCFCFD] !border-[#E8E8E8]" placeholder="e.g Developer" label='Job Title' />
-                <Input {...form.register('email')} className="w-1/2 !bg-[#FCFCFD] !border-[#E8E8E8]" placeholder="Email Address" label='Email Address' />
+                <Input {...form.register('jobTitle')} className="w-full !bg-[#FCFCFD] !border-[#E8E8E8]" placeholder="e.g Developer" label='Job Title' />
+                <Input {...form.register('email')} className="w-full !bg-[#FCFCFD] !border-[#E8E8E8]" placeholder="Email Address" label='Email Address' />
               </div>
               <div id="input-row" className='flex flex-row justify-between gap-4 w-full'>
                 <div className='w-1/2 h-full gap-4'>
