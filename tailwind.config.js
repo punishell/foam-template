@@ -23,6 +23,10 @@ module.exports = {
         success: '#28A745',
         danger: '#DC3545',
         primary: '#007C5B',
+        'success-lighter': 'rgba(39, 174, 96, 0.1)',
+        yellow: '#F9D489',
+        'yellow-dark': '#F2C94C',
+        preference: 'rgba(133, 133, 133, 0.1)',
       },
       backgroundImage: {
         'auth-gradient': 'linear-gradient(180deg, #007C5B 0%, #00231A 100%)',

@@ -47,3 +47,18 @@ export const UserAvatar: React.FC<Props> = ({ image, score: paktScore = 0, size 
     </div>
   );
 };
+
+
+export const UserAvatar2: React.FC<Props> = ({ image, size = 'md' }) => {
+  return (
+    <div
+      className="bg-slate-200 text-white flex items-center justify-center rounded-full"
+      style={{
+        height: size === 'sm' ? 80 : size === 'md' ? 100 : 120,
+        width: size === 'sm' ? 80 : size === 'md' ? 100 : 120,
+      }}
+    >
+      <span className="text-2xl uppercase">HE</span>
+    </div>
+  );
+};
