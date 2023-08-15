@@ -14,10 +14,11 @@ interface Tab {
 
 interface Props {
   tabs: Tab[];
+  urlKey?: string;
   defaultTab?: string;
 }
 
-export const Tabs: React.FC<Props> = ({ tabs, defaultTab }) => {
+export const Tabs: React.FC<Props> = ({ tabs, defaultTab, urlKey }) => {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -31,14 +32,14 @@ export const Tabs: React.FC<Props> = ({ tabs, defaultTab }) => {
     [searchParams],
   );
 
-  const urlTab = searchParams.get('tab');
+  const urlTab = searchParams.get(urlKey || 'tab');
   const initialTab = urlTab || defaultTab || tabs[0].value;
   const [activeTab, setActiveTab] = React.useState(initialTab);
 
   const handleTabChange = (value: string) => {
     setActiveTab(value);
     // update the URL whenever the tab changes
-    router.push(`${pathname}?${createQueryString('tab', value)}`);
+    router.push(`${pathname}?${createQueryString(urlKey || 'tab', value)}`);
   };
 
   // update the state whenever the URL changes
