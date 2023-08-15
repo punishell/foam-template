@@ -3,6 +3,7 @@
 import React from 'react';
 import { Button } from 'pakt-ui';
 import { Plus } from 'lucide-react';
+import { redirect } from 'next/navigation';
 import { useRouter } from 'next/navigation';
 import { usePathname } from 'next/navigation';
 import { useSearchParams } from 'next/navigation';
@@ -26,12 +27,12 @@ export default function Jobs() {
     [searchParams],
   );
 
-  const urlTab = searchParams.get('type');
+  const urlTab = searchParams.get('jobs-type');
   const [activeTab, setActiveTab] = React.useState(urlTab || 'open');
 
   const handleTabChange = (value: string) => {
     setActiveTab(value);
-    router.push(`${pathname}?${createQueryString('type', value)}`);
+    router.push(`${pathname}?${createQueryString('jobs-type', value)}`);
   };
 
   React.useEffect(() => {
@@ -56,7 +57,7 @@ export default function Jobs() {
               <TabTrigger value="accepted" label="Accepted" />
             </RadixTabs.List>
 
-            <Button size="sm">
+            <Button size="sm" onClick={() => redirect('/jobs/create')}>
               <div className="flex items-center gap-2">
                 <Plus size={20} />
                 <span>Create Job</span>
