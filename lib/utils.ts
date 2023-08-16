@@ -59,3 +59,12 @@ export function formatUsd(value: number) {
     currency: 'USD',
   }).format(value);
 }
+
+export const achievementMap: any = {
+  review: "review",
+  referral: "referral",
+  squad: "squad",
+  "five-star": "five_star",
+};
+
+export const emptyAchievement = [{ title: "review", total: 60 }, { title: "referral", total: 20 }, { title: "squad", total: 10 }, { title:"starjob", total: 10}]
