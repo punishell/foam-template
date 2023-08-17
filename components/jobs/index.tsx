@@ -82,7 +82,7 @@ interface PublicJobProps {
   skills: string[];
 }
 
-export const PublicJob: React.FC<PublicJobProps> = ({ creator, price, skills, title }) => {
+export const PublicJobCard: React.FC<PublicJobProps> = ({ creator, price, skills, title }) => {
   return (
     <Link
       href="/jobs/12345"
