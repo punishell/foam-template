@@ -54,7 +54,7 @@ export default function Login() {
 
       <Container className="mt-28 flex w-full max-w-2xl flex-col items-center gap-6">
         <div className="flex flex-col items-center gap-2 text-center text-white">
-          <h3 className="font-sans text-3xl font-bold">Login to your Account</h3>
+          <h3 className="font-sans text-3xl font-bold">Login to your account</h3>
           <p className="font-sans text-base">Connecting African Talent to Global Opportunity</p>
         </div>
         <form
@@ -62,16 +62,16 @@ export default function Login() {
           className="flex relative z-[100] w-full mx-auto max-w-[600px] flex-col bg-[rgba(0,124,91,0.20)] backdrop-blur-md items-center gap-6 rounded-2xl border border-white border-opacity-20 bg-[rgba(0, 124, 91, 0.20)] px-[40px] py-10 backdrop-blur-lg"
         >
           <div className="flex gap-4 flex-col w-full">
-            <div className="flex flex-col gap-1">
-              <label htmlFor="email" className="text-white">
+            <div className="flex flex-col gap-2">
+              <label htmlFor="email" className="text-white text-sm">
                 Email Address
               </label>
 
               <Input {...form.register('email')} className="" placeholder="Email Address" />
             </div>
 
-            <div className="flex flex-col gap-1">
-              <label htmlFor="email" className="text-white">
+            <div className="flex flex-col gap-2">
+              <label htmlFor="email" className="text-white text-sm">
                 Password
               </label>
               <Input {...form.register('password')} className="" placeholder="Password" type="password" />
