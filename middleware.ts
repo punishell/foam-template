@@ -20,12 +20,12 @@ const redirectToLogin = (request: NextRequest) => {
 
 export const config = {
   matcher: [
-    '/xoverview/:path*',
-    '/xjobs/:path*',
-    '/xwallet/:path*',
-    '/xtalents/:path*',
-    '/xsettings/:path*',
-    '/xmessages/:path*',
-    '/xprojects/:path*',
+    '/overview/:path*',
+    '/jobs/:path*',
+    '/wallet/:path*',
+    '/talents/:path*',
+    '/settings/:path*',
+    '/messages/:path*',
+    '/projects/:path*',
   ],
 };
