@@ -16,9 +16,9 @@ const demoContent = [
     title: "Product Designer",
     score: 80,
     skills: [
-      {name: "UI Design", color:"#B2E9AA"},
-      {name: "Figma", color:"#E9AAAA"},
-      {name: "Interaction", color:"#E9DBAA"},
+      { name: "UI Design", color: "#B2E9AA" },
+      { name: "Figma", color: "#E9AAAA" },
+      { name: "Interaction", color: "#E9DBAA" },
     ],
     achievements: []
   },
@@ -28,9 +28,9 @@ const demoContent = [
     title: "Product Designer",
     score: 63,
     skills: [
-      {name: "UI Design", color:"#B2E9AA"},
-      {name: "Figma", color:"#E9AAAA"},
-      {name: "Interaction", color:"#E9DBAA"},
+      { name: "UI Design", color: "#B2E9AA" },
+      { name: "Figma", color: "#E9AAAA" },
+      { name: "Interaction", color: "#E9DBAA" },
     ],
     achievements: []
   },
@@ -40,9 +40,9 @@ const demoContent = [
     title: "Product Designer",
     score: 49,
     skills: [
-      {name: "UI Design", color:"#B2E9AA"},
-      {name: "Figma", color:"#E9AAAA"},
-      {name: "Interaction", color:"#E9DBAA"},
+      { name: "UI Design", color: "#B2E9AA" },
+      { name: "Figma", color: "#E9AAAA" },
+      { name: "Interaction", color: "#E9DBAA" },
     ],
     achievements: []
   },
@@ -52,9 +52,9 @@ const demoContent = [
     title: "Product Designer",
     score: 35,
     skills: [
-      {name: "UI Design", color:"#B2E9AA"},
-      {name: "Figma", color:"#E9AAAA"},
-      {name: "Interaction", color:"#E9DBAA"},
+      { name: "UI Design", color: "#B2E9AA" },
+      { name: "Figma", color: "#E9AAAA" },
+      { name: "Interaction", color: "#E9DBAA" },
     ],
     achievements: []
   },
@@ -64,9 +64,9 @@ const demoContent = [
     title: "Product Designer",
     score: 20,
     skills: [
-      {name: "UI Design", color:"#B2E9AA"},
-      {name: "Figma", color:"#E9AAAA"},
-      {name: "Interaction", color:"#E9DBAA"},
+      { name: "UI Design", color: "#B2E9AA" },
+      { name: "Figma", color: "#E9AAAA" },
+      { name: "Interaction", color: "#E9DBAA" },
     ],
     achievements: []
   }
@@ -78,7 +78,6 @@ export default function Talents() {
   const Limit = "12";
   const userType = "talent";
   const talentList = { data: demoContent };
-
   // const rQuery = router.query;
 
   const FetchTalents = async ({ page = "1", limit = Limit, ...props }) => { };
@@ -92,21 +91,23 @@ export default function Talents() {
       <div className="flex items-center justify-between">
         <div className="text-3xl text-title font-bold">Talents</div>
       </div>
-      <JobSearchBar />
-      <TalentList
-        isLoading={isSearching}
-        talents={talentList.data}
-        userType={userType}
-      />
-      {!isSearching && talentList.data.length > 0 && (
-        <div className="mt-auto">
-          {/* <Pagination
+      <div className="overflow-y-auto">
+        <JobSearchBar />
+        <TalentList
+          isLoading={isSearching}
+          talents={talentList.data}
+          userType={userType}
+        />
+        {!isSearching && talentList.data.length > 0 && (
+          <div className="mt-auto">
+            {/* <Pagination
             totalPages={talentList.pages}
             setCurrentPage={handlePagination}
             currentPage={talentList.page}
           /> */}
-        </div>
-      )}
+          </div>
+        )}
+      </div>
     </div>
   );
 }
@@ -136,17 +137,17 @@ const TalentList: React.FC<TalentListProps> = ({ isLoading, talents, userType,
       <div className="mt-10 grid grid-cols-1 items-center justify-center gap-4 sm:grid-cols-2 md:grid-cols-3 md:gap-8">
         {talents.length > 0 &&
           talents.map((t: any, i: number) => (
-              <TalentBox
-                key={i}
-                id={t._id}
-                name={t.name}
-                title={t?.title}
-                score={t?.score}
-                // imageUrl={t?.profileImage?.url}
-                skills={t?.skills}
-                achievements={t?.achievements ?? []}
-              />
-            ))}
+            <TalentBox
+              key={i}
+              id={t._id}
+              name={t.name}
+              title={t?.title}
+              score={t?.score}
+              // imageUrl={t?.profileImage?.url}
+              skills={t?.skills}
+              achievements={t?.achievements ?? []}
+            />
+          ))}
         {isLoading && (
           <div className="flex h-full w-full items-center justify-center">
             <Spinner />
