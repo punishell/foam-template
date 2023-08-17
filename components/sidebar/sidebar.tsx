@@ -1,8 +1,8 @@
 import React from 'react';
-import { UserProfile } from '@/components/sidebar/user-profile';
 import Image from 'next/image';
-import { NavLink } from './nav-link';
 import { LogOut } from './logout';
+import { NavLink } from './nav-link';
+import { UserProfile } from '@/components/sidebar/user-profile';
 import { LayoutDashboard, Users, LayoutList, Briefcase, Wallet, MessageSquare, Settings } from 'lucide-react';
 
 export const Sidebar = () => {
