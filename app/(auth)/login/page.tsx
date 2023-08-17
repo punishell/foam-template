@@ -10,6 +10,8 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 import { Container } from '@/components/common/container';
 import { useSearchParams, useRouter } from 'next/navigation';
 
+import { Spinner } from '@/components/common';
+
 const loginFormSchema = z.object({
   password: z.string().min(1, 'Password is required').min(8, 'Password is too short'),
   email: z.string().min(1, 'Email is required').email('Invalid email'),
@@ -30,7 +32,7 @@ export default function Login() {
     login.mutate(values, {
       onSuccess: (data) => {
         setCookie('jwt', data.token);
-        router.push(searchParams.get('from') || '/home');
+        router.push(searchParams.get('from') || '/overview');
       },
     });
   };
@@ -72,7 +74,7 @@ export default function Login() {
               <label htmlFor="email" className="text-white">
                 Password
               </label>
-              <Input {...form.register('password')} className="" placeholder="Password" />
+              <Input {...form.register('password')} className="" placeholder="Password" type="password" />
             </div>
 
             <div className="items-center justify-end flex">
@@ -82,8 +84,8 @@ export default function Login() {
             </div>
           </div>
 
-          <Button type="submit" variant={'primary'} className="border border-opacity-10" fullWidth>
-            {login.isLoading ? 'Loading...' : 'Login'}
+          <Button type="submit" variant={'primary'} className="" fullWidth>
+            {login.isLoading ? <Spinner /> : 'Login'}
           </Button>
         </form>
       </Container>
