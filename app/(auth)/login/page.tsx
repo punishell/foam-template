@@ -84,7 +84,13 @@ export default function Login() {
             </div>
           </div>
 
-          <Button type="submit" variant={'primary'} className="" fullWidth>
+          <Button
+            type="submit"
+            variant={'primary'}
+            className=""
+            fullWidth
+            disabled={!form.formState.isValid || login.isLoading}
+          >
             {login.isLoading ? <Spinner /> : 'Login'}
           </Button>
         </form>
