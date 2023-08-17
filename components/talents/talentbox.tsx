@@ -29,8 +29,7 @@ export const TalentBox: React.FC<{
           </Link>
         </div>
 
-        <div className="absolute bottom-0 -mb-[190px] flex h-full w-full flex-col overflow-hidden duration-150 ease-out hover:mb-[0px]">
-          {/* <div className="relative bg-[url(/images/backbg.svg)] bg-no-repeat w-full bg-cover pt-8"> */}
+        <div className="absolute bottom-0 -mb-[190px] flex h-full w-full flex-col overflow-hidden duration-200 ease-out hover:mb-[0px]">
           <div className="relative z-20">
             <svg preserveAspectRatio="xMaxYMid meet" viewBox="0 0 366 333" fill="none" xmlns="http://www.w3.org/2000/svg">
               <g filter="url(#filter0_b_5263_139566)">
