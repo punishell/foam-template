@@ -14,7 +14,55 @@ const demoContent = [
     _id: "asfasfasf90asdfasf",
     name: "John Doe",
     title: "Product Designer",
+    score: 80,
+    skills: [
+      {name: "UI Design", color:"#B2E9AA"},
+      {name: "Figma", color:"#E9AAAA"},
+      {name: "Interaction", color:"#E9DBAA"},
+    ],
+    achievements: []
+  },
+  {
+    _id: "asfasfasf90asdfasf",
+    name: "John Doe",
+    title: "Product Designer",
     score: 63,
+    skills: [
+      {name: "UI Design", color:"#B2E9AA"},
+      {name: "Figma", color:"#E9AAAA"},
+      {name: "Interaction", color:"#E9DBAA"},
+    ],
+    achievements: []
+  },
+  {
+    _id: "asfasfasf90asdfasf",
+    name: "John Doe",
+    title: "Product Designer",
+    score: 49,
+    skills: [
+      {name: "UI Design", color:"#B2E9AA"},
+      {name: "Figma", color:"#E9AAAA"},
+      {name: "Interaction", color:"#E9DBAA"},
+    ],
+    achievements: []
+  },
+  {
+    _id: "asfasfasf90asdfasf",
+    name: "John Doe",
+    title: "Product Designer",
+    score: 35,
+    skills: [
+      {name: "UI Design", color:"#B2E9AA"},
+      {name: "Figma", color:"#E9AAAA"},
+      {name: "Interaction", color:"#E9DBAA"},
+    ],
+    achievements: []
+  },
+  {
+    _id: "asfasfasf90asdfasf",
+    name: "John Doe",
+    title: "Product Designer",
+    score: 20,
     skills: [
       {name: "UI Design", color:"#B2E9AA"},
       {name: "Figma", color:"#E9AAAA"},
