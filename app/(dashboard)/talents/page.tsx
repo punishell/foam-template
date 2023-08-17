@@ -15,7 +15,11 @@ const demoContent = [
     name: "John Doe",
     title: "Product Designer",
     score: 63,
-    skills: [],
+    skills: [
+      {name: "UI Design", color:"#B2E9AA"},
+      {name: "Figma", color:"#E9AAAA"},
+      {name: "Interaction", color:"#E9DBAA"},
+    ],
     achievements: []
   }
 ];
@@ -88,7 +92,7 @@ const TalentList: React.FC<TalentListProps> = ({ isLoading, talents, userType,
                 key={i}
                 id={t._id}
                 name={t.name}
-                title={t?.profile?.bio?.title || ""}
+                title={t?.title}
                 score={t?.score}
                 // imageUrl={t?.profileImage?.url}
                 skills={t?.skills}

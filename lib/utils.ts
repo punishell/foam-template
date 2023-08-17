@@ -67,4 +67,9 @@ export const achievementMap: any = {
   "five-star": "five_star",
 };
 
-export const emptyAchievement = [{ title: "review", total: 60 }, { title: "referral", total: 20 }, { title: "squad", total: 10 }, { title:"starjob", total: 10}]
+export const emptyAchievement = [
+  { id: "review", title: "Review", total: 60, textColor: "#A05E03", bgColor: "#FFEFD7" },
+  { id: "referral", title: "Referral", total: 20, textColor: "#0065D0", bgColor: "#C9F0FF" },
+  { id: "five_star", title: "5 Star Job", total: 10, textColor: "#198155", bgColor: "#ECFCE5" },
+  { id: "squad", title: "Squad", total: 10, textColor: "#D3180C", bgColor: "#FFE5E5" },
+]
