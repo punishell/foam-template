@@ -2,7 +2,7 @@ import React from "react";
 import { ChevronUp } from "lucide-react";
 import Link from "next/link";
 import { Badge } from "@/components/common";
-import { achievementMap, colorFromScore, emptyAchievement, limitString } from "@/lib/utils";
+import { colorFromScore, emptyAchievement, getAchievementData, limitString } from "@/lib/utils";
 import { UserAvatar } from "../common/user-avatar";
 
 export const TalentBox: React.FC<{
@@ -84,15 +84,19 @@ export const TalentBox: React.FC<{
                   <div className="grid grid-cols-4 gap-2">
                     {achievements &&
                       achievements.length > 0 &&
-                      achievements.map((a: any, i: number) => (
+                      achievements.map((a: any, i: number) =>{ 
+                        const achievM = getAchievementData(a.type);
+                        return(
                         <Badge
                           key={i}
-                          title={achievementMap[a.type]}
-                          value={parseInt(a.value) ?? 0}
-                          total={parseInt(a.total)}
+                          title={achievM?.title}
+                          value={a?.value}
+                          total={a?.total}
+                          textColor={achievM?.textColor}
+                          bgColor={achievM?.bgColor}
                           type={a.type}
                         />
-                      ))}
+                      )})}
                     {achievements.length == 0 &&
                       emptyAchievement.map((a: any, i: number) => (
                         <Badge
