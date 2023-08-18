@@ -2,12 +2,13 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react-hooks/exhaustive-deps */
 // import { useEffect } from "react";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 // import { useDebounce } from "usehooks-ts";
 // import { useRouter } from "next/router";
 import { JobSearchBar } from "@/components/jobs/job-search-bar";
 import { Spinner } from "@/components/common";
 import { TalentBox } from "@/components/talents/talentbox";
+import { useGetTalents } from "@/lib/api";
 
 const demoContent = [
   {
@@ -75,16 +76,31 @@ const demoContent = [
 export default function Talents() {
   const [isSearching, setIsearching] = useState(false);
   // const router = useRouter();
-  const Limit = "12";
+  const Limit = 12;
   const userType = "talent";
   const talentList = { data: demoContent };
   // const rQuery = router.query;
+  const { data: talentData, refetch } = useGetTalents({ page: 1, limit: Limit, filter: {} });
 
-  const FetchTalents = async ({ page = "1", limit = Limit, ...props }) => { };
-
-  useEffect(() => {
-    FetchTalents({});
-  }, []);
+  const talentLists = useMemo(() =>
+    (talentData?.data?.data || []).map((talent: any) => ({
+      _id: talent._id,
+      name: `${talent.firstName} ${talent.lastName}`,
+      title: talent?.profile?.bio?.title || "",
+      score: talent?.score || 0,
+      image: talent?.profileImage?.url || "",
+      skills: [
+        { name: "UI Design", color: "#B2E9AA" },
+        { name: "Figma", color: "#E9AAAA" },
+        { name: "Interaction", color: "#E9DBAA" },
+      ],
+      achievements: talent?.achievements.map((a:any) => ({
+        total: a.total,
+        value: a.value,
+        type: a.type,
+      })),
+    })), [talentData]);
+  console.log("Data==>", talentLists);
 
   return (
     <div className="flex h-full flex-col gap-6">
@@ -95,7 +111,7 @@ export default function Talents() {
         <JobSearchBar />
         <TalentList
           isLoading={isSearching}
-          talents={talentList.data}
+          talents={talentLists}
           userType={userType}
         />
         {!isSearching && talentList.data.length > 0 && (
@@ -119,8 +135,7 @@ interface TalentListProps {
   isLoading?: boolean;
 }
 
-const TalentList: React.FC<TalentListProps> = ({ isLoading, talents, userType,
-}) => {
+const TalentList: React.FC<TalentListProps> = ({ isLoading, talents }) => {
   if (isLoading) {
     return (
       <div className="flex h-full w-full items-center justify-center">
@@ -143,7 +158,7 @@ const TalentList: React.FC<TalentListProps> = ({ isLoading, talents, userType,
               name={t.name}
               title={t?.title}
               score={t?.score}
-              // imageUrl={t?.profileImage?.url}
+              imageUrl={t?.image}
               skills={t?.skills}
               achievements={t?.achievements ?? []}
             />
