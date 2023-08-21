@@ -1,21 +1,31 @@
 import {
   useQuery,
+  useMutation,
   type QueryKey,
   type UseQueryOptions,
+  MutationKey,
 } from "@tanstack/react-query";
 import { ApiError, ApiResponse, axios } from "@/lib/axios";
 import { toast } from "react-hot-toast";
 import { useUserState, IUser } from "@/lib/store/account";
 
+interface UpdateAccountParams {
+
+}
+
 // GET ACCOUNT DETAILS
 type GetAccountDetailsSuccess = ApiResponse<IUser>;
-
 type GetAccountDetailsError = ApiError<null>;
 
-export const getAccountQueryKey: QueryKey = ["account-details"];
+// quer/mutation keys
+const getAccountQueryKey: QueryKey = ["account-details"];
+const updateUserAccountKey: MutationKey = ['updateUserAccount'];
 
-export const fetchUserAccount = () => axios.get("/account");
+// api calls
+const fetchUserAccount = async () => await axios.get("/account");
+const updateUserAccount = async (values:UpdateAccountParams) => await axios.post("/account", {...values});
 
+// get user account query
 export const useGetAccount = () => {
   const { setUser } = useUserState();
 
@@ -38,8 +48,10 @@ export const useGetAccount = () => {
 
   return useQuery(getAccountQueryKey, options);
 };
-
-
+// update account mutation
 export const useUpdateAccount = () => {
-
+  return useMutation({
+    mutationFn: updateUserAccount,
+    mutationKey: updateUserAccountKey,
+  });
 }

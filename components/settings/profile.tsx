@@ -6,7 +6,7 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 import { UserAvatar2 } from '@/components/common/user-avatar';
 import { ChevronDown, ChevronUp, InfoIcon, Mail, MapPin, Verified } from 'lucide-react';
 import { Button, Checkbox, Input, Select, Switch, Textarea } from 'pakt-ui';
-import { useGetAccount } from '@/lib/api/account';
+import { useGetAccount, useUpdateAccount } from '@/lib/api/account';
 import { Spinner } from '../common';
 
 const ProfileStates = [
@@ -35,7 +35,8 @@ export const ProfileView = () => {
   // const [loading, setLoading] = useState(true);
   const [showDelete, setShowDelete] = useState(false);
   const [acceptedDelete, setAcceptedDelete] = useState(false);
-  const { data: userAccount, isFetching: userLoading, isFetched } = useGetAccount();
+  const { data: userAccount, refetch: userFetching, isFetched } = useGetAccount();
+  const updateAccount = useUpdateAccount();
 
   const userData = useMemo(() => ({
     ...userAccount?.data.data,
@@ -63,7 +64,12 @@ export const ProfileView = () => {
 
   const onSubmit: SubmitHandler<EditProfileFormValues> = (values) => {
     console.log("values===>", values);
-    // form.reset({ ...userData });
+    // updateAccount.mutate(values, {
+    //   onSuccess: (data) => {
+    //     userFetching();
+    //     form.reset({ ...userData });
+    //   },
+    // });
   };
 
   return (
@@ -71,7 +77,7 @@ export const ProfileView = () => {
       {!isFetched && <Spinner />}
       {isFetched && <>
         <div className='flex flex-col w-1/5 h-fit bg-white rounded-lg items-center'>
-          <div className='flex flex-col gap-4 border-b-2 p-4'>
+          <div className='flex flex-col gap-4 p-4'>
             <div className='flex justify-end min-h-[27px]'>
               <span className='bg-success-lighter text-success py-2 px-4 rounded-xl text-xs font-thin capitalize'>{isPrivate}</span>
             </div>
@@ -95,7 +101,7 @@ export const ProfileView = () => {
               <p className='text-sm my-4 text-body'>Your visibility settings determine if your profile is searchable.</p>
             </div>
           </div>
-          {/* <div className='flex flex-row w-full justify-between p-4'>
+          {/* <div className='flex flex-row w-full border-t-2 justify-between p-4'>
             <p className='text-title font-thin'>Deactivate Account</p>
             <Switch />
           </div> */}
@@ -126,10 +132,10 @@ export const ProfileView = () => {
           <div className='bg-white rounded-lg p-4 mb-4'>
             <div className='flex flex-row justify-between h-[50px] items-center'>
               <p className='text-lg text-title font-bold'>Professional Information</p>
-              <Button 
-                title='Save Changes' 
-                variant={"secondary"} 
-                size="xs" 
+              <Button
+                title='Save Changes'
+                variant={"secondary"}
+                size="xs"
                 type="submit"
                 disabled={!form.formState.isValid}>Save Changes</Button>
             </div>
@@ -138,6 +144,7 @@ export const ProfileView = () => {
               <div className='flex flex-row gap-4'>
                 <div className='w-1/2'>
                   <p className='text-body text-sm'>Add your top 3 skills first</p>
+                  {/* TODO:: Replace with TAGINput component after YInka make's it a component */}
                   <Textarea
                     className='!min-h-[186px]'
                     {...form.register('skills')}
