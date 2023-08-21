@@ -20,7 +20,7 @@ export default function Wallet() {
   const [limit, _setLimit] = React.useState(10);
   const [page, setPage] = React.useState(1);
 
-  const [statData, setStatData] = React.useState<chartDataProps>({weekly: [], monthly: [], yearly: []});
+  const [statData, setStatData] = React.useState<chartDataProps>({ weekly: [], monthly: [], yearly: [] });
 
   const { refetch: fetchWallet } = useGetWalletDetails();
   const { totalWalletBalance, value, wallets } = useWalletState();
@@ -64,7 +64,7 @@ export default function Wallet() {
         amt: c.amount,
       };
     });
-    
+
     const chartData = {
       'weekly': weeklyStats,
       'monthly': monthlyStats,
@@ -78,13 +78,13 @@ export default function Wallet() {
     getChartData();
   }, []);
 
-  useEffect(()=>{
+  useEffect(() => {
     fetchWalletTx();
-  },[page, limit]);
+  }, [page, limit]);
 
-  const changePage = (p:number) => setPage(p);
+  const changePage = (p: number) => setPage(p);
   return (
-    <div className="flex flex-col gap-6 overflow-auto">
+    <div className="flex flex-col h-full gap-6 overflow-auto">
       <div className="flex items-center justify-between">
         <div className="text-3xl text-title font-bold">Wallet</div>
 
@@ -130,14 +130,16 @@ export default function Wallet() {
           </div>
           <WalletBalanceChart data={statData} />
         </div>
-        <WalletTransactions
-          data={walletTransactions}
-          page={parseInt(walletTx?.data.data.page || "1")}
-          limit={parseInt(walletTx?.data?.data?.limit || "10")}
-          pageSize={parseInt(walletTx?.data?.data?.pages || "1")}
-          onPageChange={changePage}
-          loading={!walletFetched && walletIsFetching}
-        />
+        <div className='grow'>
+          <WalletTransactions
+            data={walletTransactions}
+            page={parseInt(walletTx?.data.data.page || "1")}
+            limit={parseInt(walletTx?.data?.data?.limit || "10")}
+            pageSize={parseInt(walletTx?.data?.data?.pages || "1")}
+            onPageChange={changePage}
+            loading={!walletFetched && walletIsFetching}
+          />
+        </div>
       </div>
     </div>
   );

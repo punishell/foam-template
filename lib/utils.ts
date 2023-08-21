@@ -67,7 +67,7 @@ export const emptyAchievement = [
   { id: "squad", title: "Squad", total: 10, textColor: "#D3180C", bgColor: "#FFE5E5" },
 ];
 
-export const getAchievementData = (type:string)=> {
+export const getAchievementData = (type: string) => {
   return emptyAchievement.find(emp => emp.id == type);
 }
 
@@ -80,3 +80,21 @@ export const colorFromScore = (score: number) => {
 }
 
 export const limitString = (str: string, limit: number = 10) => str.length > limit ? str.slice(0, limit) + "..." : str;
+
+const createQueryString = (name: string, value: string) => {
+  const params = new URLSearchParams();
+  params.set(name, value);
+  return params.toString();
+};
+
+export const parseFilterObjectToString = (filterData: Record<string, any>) => {
+  let qString = "", prev = "";
+  const newData = filterData;
+  Object.keys(newData).map((key, i) => {
+    if (!["", undefined, null].includes(newData[key])) {
+      if (qString != "") prev = "&";
+      qString += `${prev}${createQueryString(key, newData[key])}`
+    };
+  });
+  return qString;
+}

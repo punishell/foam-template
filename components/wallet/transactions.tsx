@@ -98,7 +98,7 @@ const TRANSACTION_DATA: WalletTransactions[] = [
 
 export const WalletTransactions = ({ data, page, limit, pageSize, loading, onPageChange }: { data: WalletTransactions[], page: number, limit: number, pageSize: number, loading: boolean, onPageChange: (page: number) => void }) => {
   return (
-    <div className="border-line flex flex-col gap-4 rounded-lg border bg-white px-6 py-6 w-full max-w-full">
+    <div className="border-line flex flex-col gap-4 rounded-lg border bg-white px-6 py-6 w-full max-w-full h-full">
       <h3 className="text-base font-semibold">Wallet Transactions</h3>
 
       {!loading ? <Table
