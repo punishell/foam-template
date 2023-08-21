@@ -1,0 +1,116 @@
+import {
+  useQuery,
+  type QueryKey,
+  type UseQueryOptions,
+} from "@tanstack/react-query";
+import { toast } from "react-hot-toast";
+import { axios, ApiError, ApiResponse  } from '@/lib/axios';
+import { useWalletState } from "@/lib/store/wallet";
+
+export interface IWallet {
+  totalWalletBalance: string;
+  value: string;
+  wallets: [{
+    _id: string;
+    amount: number;
+    usdValue: number;
+    coin: string;
+  }]
+}
+
+export interface IWalletTx {
+  page: string;
+  pages: string;
+  limit: string;
+  transactions: []
+}
+
+const getWalletQueryKey: QueryKey = ["wallet-details"];
+// fetch wallets
+const fetchWallet = async () => await axios.get(`/wallet`);
+
+// transactions
+const fetchWalletTransactions = async ({ limit, page }: { limit: number; page: number }) => {
+    return await axios.get(`/transaction?limit=${limit}&page=${page}`);
+};
+
+// single transactions
+const fetchSingleTransactions = async (id: string) => {
+  try {
+    const { data } = await axios.get(`/transaction/${id}`);
+    if (data?.status === "success") {
+      return data?.data;
+    }
+  } catch (error: any) {
+    return error?.response?.data;
+  }
+};
+
+// single transactions
+export const fetchWalletStats = async ({ format }: { format: string }) => {
+  try {
+    const { data } = await axios.get(
+      `/transaction/aggregate/stats?format=${format}`
+    );
+    if (data?.status === "success") {
+      return data?.data;
+    }
+  } catch (error: any) {
+    return error?.response?.data;
+  }
+};
+
+// wallet withdrawal
+const fetchWithdrawalStats = async (payload: any) => {
+  try {
+    const { data } = await axios.post(`/withdrawals`, payload);
+    if (data?.status === "success") {
+      return data;
+    }
+  } catch (error: any) {
+    return error?.response?.data;
+  }
+};
+
+const fetchExchangeRate = async () => {
+  try {
+    const { data } = await axios.get(`/wallet/exchange`);
+    if (data?.status === "success") {
+      return data;
+    }
+  } catch (error: any) {
+    return error?.response?.data;
+  }
+};
+
+export const useGetWalletDetails = () => {
+  const { setWallet } = useWalletState();
+  const options: UseQueryOptions<ApiResponse<IWallet>, ApiError<null>> = {
+    queryFn: async () => {
+      // return await axios.get("/wallet");
+      return await fetchWallet();
+    },
+    onError: (error) => {
+      toast.error(error.response?.data.message || "An error occurred");
+    },
+    onSuccess: ({ data }) => {
+      setWallet(data.data)
+    },
+    enabled: false
+  };
+
+  return useQuery(getWalletQueryKey, options);
+};
+
+export const useGetWalletTxs = ({ limit, page}: { limit:number, page: number}) => {
+  const options: UseQueryOptions<ApiResponse<IWalletTx>, ApiError<null>> = {
+    queryFn: async () => {
+      return await fetchWalletTransactions({ limit, page});
+    },
+    onError: (error) => {
+      toast.error(error.response?.data.message || "An error occurred");
+    },
+  };
+
+  return useQuery(getWalletQueryKey, options);
+};
