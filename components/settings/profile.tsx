@@ -132,12 +132,12 @@ export const ProfileView = () => {
           <div className='bg-white rounded-lg p-4 mb-4'>
             <div className='flex flex-row justify-between h-[50px] items-center'>
               <p className='text-lg text-title font-bold'>Professional Information</p>
-              <Button
+              {/* <Button
                 title='Save Changes'
                 variant={"secondary"}
                 size="xs"
                 type="submit"
-                disabled={!form.formState.isValid}>Save Changes</Button>
+                disabled={!form.formState.isValid}>Save Changes</Button> */}
             </div>
             <div className='flex flex-col gap-4'>
               <p>Skill Sets</p>
