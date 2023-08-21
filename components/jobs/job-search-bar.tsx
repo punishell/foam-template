@@ -6,10 +6,10 @@ import { Search } from 'lucide-react';
 import { useEffect } from 'react';
 
 interface JobSearchBarProps {
-  search: string;
-  skills: string;
-  range: string;
-  handleSearch: (filter: any) => void;
+  search?: string;
+  skills?: string;
+  range?: string;
+  handleSearch?: (filter: any) => void;
   isTalentView?:boolean;
 }
 
@@ -40,7 +40,7 @@ export const JobSearchBar = ({ search, skills, range, isTalentView = false, hand
   useEffect(() => { setDefaults() }, [search, skills, range]);
 
   const onSubmit: SubmitHandler<SearchFormValues> = (values) => {
-    return handleSearch({ search: values.search, skills: values.skills, range: (values.min && values.max) ? `${values.min},${values.max}` : '' });
+    return handleSearch && handleSearch({ search: values.search, skills: values.skills, range: (values.min && values.max) ? `${values.min},${values.max}` : '' });
   }
   return (
     <form onSubmit={form.handleSubmit(onSubmit)}>
