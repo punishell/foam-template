@@ -91,10 +91,10 @@ export const parseFilterObjectToString = (filterData: Record<string, any>) => {
   let qString = "", prev = "";
   const newData = filterData;
   Object.keys(newData).map((key, i) => {
-    if (qString != "") {
-      prev = "&"
-    }
-    if (!["", undefined, null].includes(newData[key])) qString += `${prev}${createQueryString(key, newData[key])}`;
+    if (!["", undefined, null].includes(newData[key])) {
+      if (qString != "") prev = "&";
+      qString += `${prev}${createQueryString(key, newData[key])}`
+    };
   });
   return qString;
 }
