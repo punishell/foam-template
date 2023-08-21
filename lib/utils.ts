@@ -99,4 +99,4 @@ export const parseFilterObjectToString = (filterData: Record<string, any>) => {
   return qString;
 };
 
-export const cookieName =  String(process.env.NEXT_PUBLIC_AUTH_KEY) ?? "jwt";
+export const COOKIE_NAME =  String(process.env.NEXT_PUBLIC_AUTH_KEY) ?? "jwt";

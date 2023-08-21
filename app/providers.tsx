@@ -1,18 +1,12 @@
 'use client';
 import React from 'react';
-import { axios } from '@/lib/axios';
-import { RaceBy } from '@uiball/loaders';
-import { getCookie } from 'cookies-next';
-import { useRouter } from 'next/navigation';
 import { QueryCache, QueryClient, MutationCache, QueryClientProvider } from '@tanstack/react-query';
-import { cookieName } from '@/lib/utils';
 
 interface Props {
   children: React.ReactNode;
 }
 
 export function Providers({ children }: Props) {
-  const router = useRouter();
   const [queryClient] = React.useState(
     () =>
       new QueryClient({
@@ -33,32 +27,5 @@ export function Providers({ children }: Props) {
       }),
   );
 
-  const [tokenSet, setTokenSet] = React.useState(false);
-
-  React.useEffect(() => {
-    const token = getCookie(cookieName);
-
-    if (token) {      
-      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-      setTokenSet(true);
-    }
-
-    return () => {
-      axios.defaults.headers.common['Authorization'] = '';
-    };
-  }, [router]);
-  
-  if (!tokenSet) {
-    return <Loader />;
-  }
-
   return <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>;
 }
-
-const Loader = () => {
-  return (
-    <div aria-live="polite" aria-busy="true" className="flex h-screen w-screen items-center justify-center">
-      <RaceBy />
-    </div>
-  );
-};

@@ -1,10 +1,10 @@
 import { NextResponse } from 'next/server';
-import { decodeJWTPayload } from '@/lib/utils';
+import { COOKIE_NAME, decodeJWTPayload } from '@/lib/utils';
 import type { NextRequest } from 'next/server';
 import { axios } from './lib/axios';
 
 export function middleware(request: NextRequest) {
-  const token = request.cookies.get('jwt');
+  const token = request.cookies.get(COOKIE_NAME);
 
   if (!token) return redirectToLogin(request);
 

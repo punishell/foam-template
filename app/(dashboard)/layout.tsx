@@ -1,13 +1,37 @@
+'use client';
 import React from 'react';
-import { UserProfile } from '@/components/sidebar/user-profile';
-import Image from 'next/image';
+// import { UserProfile } from '@/components/sidebar/user-profile';
+// import Image from 'next/image';
 import { Sidebar } from '@/components/sidebar';
+
+import { axios } from '@/lib/axios';
+import { RaceBy } from '@uiball/loaders';
+import { getCookie } from 'cookies-next';
+import { useRouter } from 'next/navigation';
+import { COOKIE_NAME } from '@/lib/utils';
+
 
 interface Props {
   children: React.ReactNode;
 }
 
 export default function DashboardLayout({ children }: Props) {
+  const router = useRouter();
+  const token = getCookie(COOKIE_NAME);
+
+  React.useEffect(() => {
+    if (token) {
+      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+    }
+    return () => {
+      axios.defaults.headers.common['Authorization'] = '';
+    };
+  }, [router, token]);
+
+  if (!token) {
+    return <Loader />;
+  }
+
   return (
     <div className="flex max-w-full h-screen w-screen ">
       <Sidebar />
@@ -47,3 +71,12 @@ export default function DashboardLayout({ children }: Props) {
     </div>
   );
 }
+
+
+const Loader = () => {
+  return (
+    <div aria-live="polite" aria-busy="true" className="flex h-screen w-screen items-center justify-center">
+      <RaceBy />
+    </div>
+  );
+};
