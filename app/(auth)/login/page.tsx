@@ -11,6 +11,7 @@ import { Container } from '@/components/common/container';
 import { useSearchParams, useRouter } from 'next/navigation';
 
 import { Spinner } from '@/components/common';
+import { cookieName } from '@/lib/utils';
 
 const loginFormSchema = z.object({
   password: z.string().min(1, 'Password is required').min(8, 'Password is too short'),
@@ -31,7 +32,7 @@ export default function Login() {
   const onSubmit: SubmitHandler<LoginFormValues> = (values) => {
     login.mutate(values, {
       onSuccess: (data) => {
-        setCookie('jwt', data.token);
+        setCookie(cookieName, data.token);
         router.push(searchParams.get('from') || '/overview');
       },
     });

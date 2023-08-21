@@ -5,6 +5,7 @@ import { RaceBy } from '@uiball/loaders';
 import { getCookie } from 'cookies-next';
 import { useRouter } from 'next/navigation';
 import { QueryCache, QueryClient, MutationCache, QueryClientProvider } from '@tanstack/react-query';
+import { cookieName } from '@/lib/utils';
 
 interface Props {
   children: React.ReactNode;
@@ -35,7 +36,7 @@ export function Providers({ children }: Props) {
   const [tokenSet, setTokenSet] = React.useState(false);
 
   React.useEffect(() => {
-    const token = getCookie('jwt');
+    const token = getCookie(cookieName);
 
     if (token) {      
       axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
