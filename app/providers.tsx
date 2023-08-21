@@ -37,15 +37,16 @@ export function Providers({ children }: Props) {
   React.useEffect(() => {
     const token = getCookie('jwt');
 
-    if (token) {
+    if (token) {      
       axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+      setTokenSet(true);
     }
 
     return () => {
       axios.defaults.headers.common['Authorization'] = '';
     };
   }, [router]);
-
+  
   if (!tokenSet) {
     return <Loader />;
   }
