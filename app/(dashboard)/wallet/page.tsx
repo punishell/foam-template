@@ -2,10 +2,9 @@
 
 import React, { useEffect, useMemo } from 'react';
 import Image from 'next/image';
-import { Bell, X } from 'lucide-react';
-import { Button, Select, Input, Checkbox } from 'pakt-ui';
+import { Bell } from 'lucide-react';
+import { Button } from 'pakt-ui';
 import { formatUsd } from '@/lib/utils';
-import { SideModal } from '@/components/common/side-modal';
 import dayjs from 'dayjs';
 import { UserBalance } from '@/components/common/user-balance';
 import { useGetWalletDetails, fetchWalletStats, useGetWalletTxs } from '@/lib/api/wallet';
@@ -18,7 +17,7 @@ const dateFormat = "DD/MM/YYYY";
 
 export default function Wallet() {
   const [isOpen, setIsOpen] = React.useState(false);
-  const [limit, setLimit] = React.useState(10);
+  const [limit, _setLimit] = React.useState(10);
   const [page, setPage] = React.useState(1);
 
   const [statData, setStatData] = React.useState<chartDataProps>({weekly: [], monthly: [], yearly: []});
@@ -37,7 +36,6 @@ export default function Wallet() {
     status: tx.status,
   })), [walletTx?.data?.data]);
 
-  console.log("Tx==>", walletTx, walletIsFetching, walletTransactions);
   const getChartData = async () => {
     // const { payload: weekStat } = await fetchWalletStats({ format: "seven-day" });
     const respon = await Promise.all([
@@ -74,13 +72,17 @@ export default function Wallet() {
     }
     setStatData(chartData);
   };
-  console.log('startys==>', statData);
 
   useEffect(() => {
     fetchWallet();
     getChartData();
   }, []);
 
+  useEffect(()=>{
+    fetchWalletTx();
+  },[page, limit]);
+
+  const changePage = (p:number) => setPage(p);
   return (
     <div className="flex flex-col gap-6 overflow-auto">
       <div className="flex items-center justify-between">
@@ -133,7 +135,7 @@ export default function Wallet() {
           page={parseInt(walletTx?.data.data.page || "1")}
           limit={parseInt(walletTx?.data?.data?.limit || "10")}
           pageSize={parseInt(walletTx?.data?.data?.pages || "1")}
-          onPageChange={(p) => console.log(p)}
+          onPageChange={changePage}
           loading={!walletFetched && walletIsFetching}
         />
       </div>
