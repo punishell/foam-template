@@ -1,5 +1,7 @@
 import Axios, { AxiosError, AxiosResponse } from 'axios';
+import { deleteCookie } from 'cookies-next';
 import { redirect } from 'next/navigation';
+import { COOKIE_NAME } from './utils';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -13,7 +15,9 @@ export const axios = Axios.create({
 axios.interceptors.response.use(
   (response) => response,
   (error) => {
+    console.log('error====', error.response, error);
     if (error.response.status === 401) {
+      deleteCookie(COOKIE_NAME)
       return redirect('/login');
     }
     return Promise.reject(error);

@@ -87,7 +87,6 @@ export const useGetWalletDetails = () => {
   const { setWallet } = useWalletState();
   const options: UseQueryOptions<ApiResponse<IWallet>, ApiError<null>> = {
     queryFn: async () => {
-      // return await axios.get("/wallet");
       return await fetchWallet();
     },
     onError: (error) => {
@@ -96,7 +95,6 @@ export const useGetWalletDetails = () => {
     onSuccess: ({ data }) => {
       setWallet(data.data)
     },
-    enabled: false
   };
 
   return useQuery(getWalletQueryKey, options);
@@ -110,6 +108,7 @@ export const useGetWalletTxs = ({ limit, page}: { limit:number, page: number}) =
     onError: (error) => {
       toast.error(error.response?.data.message || "An error occurred");
     },
+    // enabled:true
   };
 
   return useQuery(getWalletQueryKey, options);

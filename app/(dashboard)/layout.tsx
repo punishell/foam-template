@@ -1,7 +1,5 @@
 'use client';
-import React from 'react';
-// import { UserProfile } from '@/components/sidebar/user-profile';
-// import Image from 'next/image';
+import React, { useState } from 'react';
 import { Sidebar } from '@/components/sidebar';
 
 import { axios } from '@/lib/axios';
@@ -10,6 +8,13 @@ import { getCookie } from 'cookies-next';
 import { useRouter } from 'next/navigation';
 import { COOKIE_NAME } from '@/lib/utils';
 
+const Loader = () => {
+  return (
+    <div aria-live="polite" aria-busy="true" className="flex h-screen w-screen items-center justify-center">
+      <RaceBy />
+    </div>
+  );
+};
 
 interface Props {
   children: React.ReactNode;
@@ -18,9 +23,11 @@ interface Props {
 export default function DashboardLayout({ children }: Props) {
   const router = useRouter();
   const token = getCookie(COOKIE_NAME);
+  const [isTokenSet, setTokenset] = useState(false);
 
   React.useEffect(() => {
     if (token) {
+      setTokenset(true);
       axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
     }
     return () => {
@@ -28,7 +35,7 @@ export default function DashboardLayout({ children }: Props) {
     };
   }, [router, token]);
 
-  if (!token) {
+  if (!isTokenSet) {
     return <Loader />;
   }
 
@@ -68,15 +75,6 @@ export default function DashboardLayout({ children }: Props) {
         <div className="absolute bg-repeat opacity-20 inset-0 bg-[url(/images/rain.png)]" />
         <div className="relative h-screen p-5 px-8 z-10 flex flex-col w-full">{children}</div>
       </div>
-    </div>
-  );
-}
-
-
-const Loader = () => {
-  return (
-    <div aria-live="polite" aria-busy="true" className="flex h-screen w-screen items-center justify-center">
-      <RaceBy />
     </div>
   );
 };

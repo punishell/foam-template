@@ -7,7 +7,7 @@ import { Button } from 'pakt-ui';
 import { formatUsd } from '@/lib/utils';
 import dayjs from 'dayjs';
 import { UserBalance } from '@/components/common/user-balance';
-import { useGetWalletDetails, fetchWalletStats, useGetWalletTxs } from '@/lib/api/wallet';
+import { fetchWalletStats, useGetWalletTxs } from '@/lib/api/wallet';
 import { useWalletState } from '@/lib/store/wallet';
 import { WalletTransactions } from '@/components/wallet/transactions';
 import { WalletBalanceChart, chartDataProps } from '@/components/wallet/chart';
@@ -19,10 +19,7 @@ export default function Wallet() {
   const [isOpen, setIsOpen] = React.useState(false);
   const [limit, _setLimit] = React.useState(10);
   const [page, setPage] = React.useState(1);
-
   const [statData, setStatData] = React.useState<chartDataProps>({ weekly: [], monthly: [], yearly: [] });
-
-  const { refetch: fetchWallet } = useGetWalletDetails();
   const { totalWalletBalance, value, wallets } = useWalletState();
   const { data: walletTx, refetch: fetchWalletTx, isFetched: walletFetched, isFetching: walletIsFetching } = useGetWalletTxs({ limit, page });
 
@@ -74,7 +71,6 @@ export default function Wallet() {
   };
 
   useEffect(() => {
-    fetchWallet();
     getChartData();
   }, []);
 
