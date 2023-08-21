@@ -34,8 +34,6 @@ export function Providers({ children }: Props) {
   React.useEffect(() => {
     const token = getCookie('jwt');
 
-    console.log('token', token);
-
     if (token) {
       axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
     }
@@ -43,6 +41,7 @@ export function Providers({ children }: Props) {
     axios.interceptors.response.use(
       (response) => response,
       (error) => {
+        console.log("Errors===", error);
         if (error.response.status === 401) {
           router.push('/login');
         }
@@ -53,7 +52,7 @@ export function Providers({ children }: Props) {
     return () => {
       axios.defaults.headers.common['Authorization'] = '';
     };
-  }, [router]);
+  }, []);
 
   return <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>;
 }

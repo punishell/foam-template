@@ -1,12 +1,14 @@
 'use client';
 
 import React from 'react';
-import { cn } from '@/lib/utils';
+import { cn, formatUsd } from '@/lib/utils';
+import { useWalletState } from '@/lib/store/wallet';
 
 interface Props {
   className?: string;
 }
 
 export const UserBalance: React.FC<Props> = ({ className }) => {
-  return <span className={cn('text-body text-3xl', className)}>$0.00</span>;
+  const {totalWalletBalance} = useWalletState();
+  return <span className={cn('text-body text-3xl', className)}>{formatUsd(parseFloat(totalWalletBalance))}</span>;
 };
