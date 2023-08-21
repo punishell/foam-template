@@ -20,7 +20,7 @@ export default function Wallet() {
   const [limit, _setLimit] = React.useState(10);
   const [page, setPage] = React.useState(1);
   const [statData, setStatData] = React.useState<chartDataProps>({ weekly: [], monthly: [], yearly: [] });
-  const { totalWalletBalance, value, wallets } = useWalletState();
+  const { totalWalletBalance, wallets } = useWalletState();
   const { data: walletTx, refetch: fetchWalletTx, isFetched: walletFetched, isFetching: walletIsFetching } = useGetWalletTxs({ limit, page });
 
   const walletTransactions = useMemo(() => (walletTx?.data?.data.transactions ?? []).map((tx: any) => ({
@@ -70,9 +70,17 @@ export default function Wallet() {
     setStatData(chartData);
   };
 
+  const loadpage = async () => {
+    return await Promise.all([
+      fetchWalletTx(),
+      getChartData(),
+    ]);
+  }
+
   useEffect(() => {
-    getChartData();
+    loadpage();
   }, []);
+
 
   useEffect(() => {
     fetchWalletTx();

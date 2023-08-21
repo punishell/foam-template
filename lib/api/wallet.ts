@@ -26,6 +26,7 @@ export interface IWalletTx {
 }
 
 const getWalletQueryKey: QueryKey = ["wallet-details"];
+const getWalletTxQueryKey: QueryKey = ["wallet-txs"];
 // fetch wallets
 const fetchWallet = async () => await axios.get(`/wallet`);
 
@@ -108,8 +109,8 @@ export const useGetWalletTxs = ({ limit, page}: { limit:number, page: number}) =
     onError: (error) => {
       toast.error(error.response?.data.message || "An error occurred");
     },
-    // enabled:true
+    enabled:true
   };
 
-  return useQuery(getWalletQueryKey, options);
+  return useQuery(getWalletTxQueryKey, options);
 };

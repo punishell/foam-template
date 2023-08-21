@@ -22,7 +22,7 @@ export const useWalletState = create<WalletState>()(
       totalWalletBalance: "0.00",
       value: "0.00",
       // @ts-ignore
-      wallets:[],
+      wallets: [],
       setWallet: (wallet) => set(wallet),
     }),
     {
