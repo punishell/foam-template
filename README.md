@@ -23,7 +23,7 @@ This project contains 3 environments:
 - staging
 - production
 # Setup Environment files
-1. Create a `.env` file in the root of the project and copy the content from the sample.env file
+1. Create a `.env.local` file in the root of the project and copy the content from the sample.env file
 
 
 ## Git Workflow :octopus:
