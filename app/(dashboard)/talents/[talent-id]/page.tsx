@@ -1,61 +1,11 @@
 'use client';
 
-import 'blaze-slider/dist/blaze.css';
 import React from 'react';
 import { Button } from 'pakt-ui';
 import Rating from 'react-rating';
-import BlazeSlider, { BlazeConfig } from 'blaze-slider';
 import { Briefcase, Star } from 'lucide-react';
+import { Carousel } from '@/components/common/carousel';
 import { UserAvatar } from '@/components/common/user-avatar';
-
-const useBlazeSlider = (config: BlazeConfig) => {
-  const sliderRef = React.useRef<BlazeSlider>();
-  const elRef = React.useRef<HTMLDivElement>(null);
-
-  React.useEffect(() => {
-    if (!sliderRef.current && elRef.current) {
-      sliderRef.current = new BlazeSlider(elRef.current, config);
-    }
-
-    return () => {
-      if (sliderRef.current) {
-        sliderRef.current.destroy();
-      }
-    };
-  }, [config]);
-
-  return elRef;
-};
-
-interface SliderProps {
-  config?: BlazeConfig;
-  children: React.ReactNode;
-}
-
-const Slider: React.FC<SliderProps> = ({ config, children }) => {
-  const defaultConfig: BlazeConfig = {
-    all: {
-      slidesToShow: 1,
-      slidesToScroll: 1,
-    },
-  };
-
-  const elRef = useBlazeSlider(config || defaultConfig);
-
-  return (
-    <div ref={elRef} className="blaze-slider">
-      <div className="blaze-container">
-        <div className="blaze-track-container">
-          <div className="blaze-track">
-            {React.Children.map(children, (child, index) => (
-              <div key={index}>{child}</div>
-            ))}
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-};
 
 export default function TalentDetails() {
   return (
@@ -87,7 +37,7 @@ const Header = () => {
             </div>
           </div>
 
-          <div className="flex gap-3 items-center max-w-sm w-full">
+          <div className="flex gap-3 items-center max-w-[300px] w-full">
             <Button fullWidth variant="secondary" size={'sm'}>
               Message
             </Button>
@@ -159,14 +109,10 @@ const SKILLS = [
   },
 ];
 
-const REVIEWS = [];
-
-interface ReviewsProps {}
-
 const Bio = () => {
   return (
     <div className="flex flex-col bg-[#FFEFD7] p-4 rounded-4 gap-3 border border-yellow-dark rounded-2xl">
-      <h3>Bio</h3>
+      <h3 className="text-left text-title text-lg font-medium">Bio</h3>
       <div>
         <div>
           I have over 13 years of experience crafting award-winning mobile and web apps at well-known tech companies
@@ -179,11 +125,57 @@ const Bio = () => {
   );
 };
 
+const Achievements = () => {
+  return (
+    <div className="bg-[#F8FFF4] py-4 px-6 rounded-2xl gap-4 flex flex-col border-2 border-primary w-fit shrink-0">
+      <h3 className="text-center text-title text-lg font-medium">Achievements</h3>
+      <div className="grid grid-cols-4 gap-2 w-full">
+        <AchievementBar
+          title="Reviews"
+          achievement={{
+            type: 'reviews',
+            maxValue: 60,
+            minValue: 0,
+            value: 10,
+          }}
+        />
+        <AchievementBar
+          title="Referrals"
+          achievement={{
+            type: 'referrals',
+            maxValue: 20,
+            minValue: 0,
+            value: 10,
+          }}
+        />
+        <AchievementBar
+          title="5 Star Jobs"
+          achievement={{
+            type: 'jobs',
+            maxValue: 10,
+            minValue: 0,
+            value: 8,
+          }}
+        />
+        <AchievementBar
+          title="Squad"
+          achievement={{
+            type: 'squads',
+            maxValue: 10,
+            minValue: 0,
+            value: 5,
+          }}
+        />
+      </div>
+    </div>
+  );
+};
+
 const Reviews = () => {
   return (
     <div className="flex flex-col bg-primary-gradient p-4 rounded-4 gap-3 rounded-2xl">
       <h3 className="text-white font-medium text-2xl">Reviews</h3>
-      <Slider config={{ all: { slidesToShow: 2, slidesToScroll: 2 } }}>
+      <Carousel>
         <Review
           title="Great work"
           body="I have over 13 years of experience crafting award-winning mobile and web apps at well-known tech companies like Google, Nest, and GE, and have worked and consulted at a variety of startups and companies in Silicon Valley. I&nbsp;believe in designing with intention in both work and life. &nbsp; I thrive in bringing clarity to ambiguity"
@@ -214,7 +206,7 @@ const Reviews = () => {
             afroScore: 100,
           }}
         />
-      </Slider>
+      </Carousel>
     </div>
   );
 };
@@ -232,7 +224,7 @@ interface ReviewProps {
 
 const Review: React.FC<ReviewProps> = ({ body, title, rating, user }) => {
   return (
-    <div className="bg-white rounded-2xl p-4 flex flex-col gap-4 max-w-[540px]">
+    <div className="bg-white min-h-full rounded-2xl p-4 flex flex-col gap-4 w-full select-none cursor-grab">
       <div>
         <span className="text-xl font-medium text-title">{title}</span>
       </div>
@@ -258,11 +250,110 @@ const Review: React.FC<ReviewProps> = ({ body, title, rating, user }) => {
   );
 };
 
-const Achievements = () => {
+type AchievementType = 'reviews' | 'referrals' | 'jobs' | 'squads';
+
+interface Achievement {
+  value: number;
+  maxValue: number;
+  minValue: number;
+  type: AchievementType;
+}
+
+type AchievementTypeMap = {
+  [key in AchievementType]: {
+    textColor: string;
+    borderColor: string;
+    barColor: string;
+    barIndicatorColor: string;
+    outerBackgroundColor: string;
+    innerBackgroundColor: string;
+  };
+};
+
+const ACHIEVEMENT_STYLES: AchievementTypeMap = {
+  reviews: {
+    textColor: '#198155',
+    borderColor: '#198155',
+
+    innerBackgroundColor: '#F0FFF2',
+    outerBackgroundColor: '#ECFCE5',
+
+    barColor: '#D2FFBE',
+    barIndicatorColor: '#7DDE86',
+  },
+  referrals: {
+    textColor: '#0065D0',
+    borderColor: '#0065D0',
+
+    innerBackgroundColor: '#E1F5FF',
+    outerBackgroundColor: '#C9F0FF',
+
+    barColor: '#C0EEFF',
+    barIndicatorColor: '#9BDCFD',
+  },
+  jobs: {
+    textColor: '#287B7B',
+    borderColor: '#287B7B',
+
+    innerBackgroundColor: '#E0F5F5',
+    outerBackgroundColor: '#F0FAFA',
+
+    barColor: '#B5E3E3',
+    barIndicatorColor: '#487E7E',
+  },
+  squads: {
+    textColor: '#5538EE',
+    borderColor: '#5538EE',
+
+    innerBackgroundColor: '#F0EFFF',
+    outerBackgroundColor: '#E7E7FF)',
+
+    barColor: '#E0E0FF',
+    barIndicatorColor: '#C6C4FF',
+  },
+};
+
+interface AchievementBarProps {
+  title: string;
+  achievement: Achievement;
+}
+
+const AchievementBar: React.FC<AchievementBarProps> = ({ achievement, title }) => {
+  const styles = ACHIEVEMENT_STYLES[achievement.type];
+  const percentage = (achievement.value / achievement.maxValue) * 100;
+
   return (
-    <div className="bg-[#F8FFF4] py-4 px-6 rounded-2xl gap-4 flex flex-col border border-primary">
-      <h3 className="text-center text-title text-lg font-medium">Achievements</h3>
-      <div className="flex items-center gap-2"></div>
+    <div className="flex flex-col gap-2 items-center">
+      <div
+        className="p-2 rounded-3xl w-[120px]"
+        style={{
+          border: `2px solid ${styles.borderColor}`,
+          backgroundColor: styles.outerBackgroundColor,
+        }}
+      >
+        <div
+          className="flex flex-col gap-2 justify-between items-center p-3 rounded-3xl"
+          style={{
+            color: styles.textColor,
+            backgroundColor: styles.innerBackgroundColor,
+          }}
+        >
+          <span className="text-2xl">
+            {achievement.value}/{achievement.maxValue}
+          </span>
+
+          <div className="w-full h-5 rounded-full overflow-hidden" style={{ backgroundColor: styles.barColor }}>
+            <div
+              className="h-full rounded-full"
+              style={{
+                width: `${percentage}%`,
+                backgroundColor: styles.barIndicatorColor,
+              }}
+            />
+          </div>
+        </div>
+      </div>
+      <span className="text-body text-lg">{title}</span>
     </div>
   );
 };
