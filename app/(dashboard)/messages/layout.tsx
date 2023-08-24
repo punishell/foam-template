@@ -5,12 +5,15 @@ import Link from 'next/link';
 import { Bell, Search } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 import { UserBalance } from '@/components/common/user-balance';
+import { useMessaging } from '@/providers/socketProvider';
 
 interface Props {
   children: React.ReactNode;
 }
 
 export default function MessagesLayout({ children }: Props) {
+  const { conversations } = useMessaging();
+  console.log('conver', conversations);
   return (
     <div className="flex flex-col gap-6 h-full">
       <div className="flex items-center justify-between">
@@ -30,7 +33,7 @@ export default function MessagesLayout({ children }: Props) {
       <div className="h-full flex grow w-full">
         <div className="bg-white basis-[370px] grow-0 border h-full shrink-0 flex flex-col rounded-lg rounded-r-none border-line">
           <ChatListSearch />
-          <ChatList />
+          <ChatList conversations={conversations} />
         </div>
 
         <div className="w-full border grow h-full bg-white flex flex-col rounded-lg rounded-l-none border-l-0 border-line p-6 pt-3">
@@ -41,37 +44,19 @@ export default function MessagesLayout({ children }: Props) {
   );
 }
 
-const ChatList = () => {
+const ChatList = ({ conversations }: { conversations: any[] }) => {
   return (
     <div className="grow w-full overflow-y-auto flex flex-col divide-line">
-      <ChatListItem
-        chatId="1"
-        name="Leslie Ola"
-        unreadCount={3}
-        lastMessage="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
-        time="12:00 PM"
-      />
-      <ChatListItem
-        chatId="2"
-        name="Leslie Ola"
-        unreadCount={3}
-        lastMessage="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
-        time="12:00 PM"
-      />
-      <ChatListItem
-        chatId="3"
-        name="Leslie Ola"
-        unreadCount={3}
-        lastMessage="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
-        time="12:00 PM"
-      />
-      <ChatListItem
-        chatId="4"
-        name="Leslie Ola"
-        unreadCount={3}
-        lastMessage="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
-        time="12:00 PM"
-      />
+      {conversations.map((c:any, i) =>
+        <ChatListItem
+          key={i}
+          chatId={c?.id}
+          name={`${c?.sender?.firstName} ${c?.sender?.lastName}`}
+          unreadCount={c?.unreadcount}
+          lastMessage={c?.lastMessage}
+          time={c?.lastMessageTime}
+        />
+      )}
     </div>
   );
 };
@@ -107,9 +92,8 @@ const ChatListItem: React.FC<ChatListItemProps> = ({ name, unreadCount, lastMess
   return (
     <Link href={`/messages/${chatId}`} className="border-b">
       <div
-        className={`flex w-full border-l-4 hover:bg-[#ECFCE5] duration-200 px-3 py-3 gap-2 items-center ${
-          isActiveChat ? 'bg-[#ECFCE5] border-primary' : 'bg-white border-transparent'
-        }`}
+        className={`flex w-full border-l-4 hover:bg-[#ECFCE5] duration-200 px-3 py-3 gap-2 items-center ${isActiveChat ? 'bg-[#ECFCE5] border-primary' : 'bg-white border-transparent'
+          }`}
       >
         <div className="h-10 w-10 shrink-0 rounded-full bg-slate-800"></div>
         <div className="grow flex flex-col">

@@ -12,6 +12,7 @@ import { useSearchParams, useRouter } from 'next/navigation';
 
 import { Spinner } from '@/components/common';
 import { COOKIE_NAME } from '@/lib/utils';
+import { useUserState } from '@/lib/store/account';
 
 const loginFormSchema = z.object({
   password: z.string().min(1, 'Password is required').min(8, 'Password is too short'),
@@ -24,6 +25,7 @@ export default function Login() {
   const login = useLogin();
   const router = useRouter();
   const searchParams = useSearchParams();
+  const { setUser } = useUserState();
 
   const form = useForm<LoginFormValues>({
     resolver: zodResolver(loginFormSchema),
@@ -33,6 +35,8 @@ export default function Login() {
     login.mutate(values, {
       onSuccess: (data) => {
         setCookie(COOKIE_NAME, data.token);
+        // @ts-ignore
+        setUser(data);
         return router.push(searchParams.get('from') || '/overview');
       },
     });

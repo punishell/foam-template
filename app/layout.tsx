@@ -4,6 +4,7 @@ import 'pakt-ui/styles.css';
 import type { Metadata } from 'next';
 import { Providers } from '@/app/providers';
 import localFont from 'next/font/local';
+import { MessagingProvider } from '@/providers/socketProvider';
 export const metadata: Metadata = {
   title: 'Afrofund',
   description: '',
@@ -38,7 +39,9 @@ export default function RootLayout({ children }: Props) {
   return (
     <html lang="en">
       <body className={`${circularStd.variable} overflow-x-hidden font-sans h-screen overflow-y-hidden`}>
-        <Providers>{children}</Providers>
+        <MessagingProvider>
+          <Providers>{children}</Providers>
+        </MessagingProvider>
       </body>
     </html>
   );
