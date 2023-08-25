@@ -3,7 +3,6 @@
 import React from 'react';
 import { Button } from 'pakt-ui';
 import { Plus } from 'lucide-react';
-import { redirect } from 'next/navigation';
 import { useRouter } from 'next/navigation';
 import { usePathname } from 'next/navigation';
 import { useSearchParams } from 'next/navigation';
@@ -57,7 +56,7 @@ export default function Jobs() {
               <TabTrigger value="accepted" label="Accepted" />
             </RadixTabs.List>
 
-            <Button size="sm" onClick={() => redirect('/jobs/create')}>
+            <Button size="sm" onClick={() => router.push('/jobs/create')}>
               <div className="flex items-center gap-2">
                 <Plus size={20} />
                 <span>Create Job</span>
