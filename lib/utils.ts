@@ -105,5 +105,12 @@ export const parseFilterObjectToString = (filterData: Record<string, any>) => {
   return qString;
 };
 
+export const formatCountdown = (counter: number) => {
+  const minutes = Math.floor(counter / 60);
+  const seconds = counter % 60;
+
+  return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+};
+
 export const AUTH_TOKEN_KEY = process.env.NEXT_PUBLIC_AUTH_TOKEN_KEY ?? 'auth-token';
 export const TEMP_AUTH_TOKEN_KEY = process.env.NEXT_PUBLIC_TEMP_AUTH_TOKEN_KEY ?? 'temp-auth-token';
