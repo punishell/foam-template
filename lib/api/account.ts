@@ -33,7 +33,7 @@ interface UpdateAccountParams {
 }
 
 async function postUpdateAccount(values: UpdateAccountParams): Promise<User> {
-  const res = await axios.patch('/account', values);
+  const res = await axios.patch('/account/update', values);
   return res.data.data;
 }
 
