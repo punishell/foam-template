@@ -2,6 +2,7 @@ import './styles.css';
 import 'pakt-ui/styles.css';
 
 import type { Metadata } from 'next';
+import { Toaster } from 'react-hot-toast';
 import { Providers } from '@/app/providers';
 import localFont from 'next/font/local';
 export const metadata: Metadata = {
@@ -38,6 +39,7 @@ export default function RootLayout({ children }: Props) {
   return (
     <html lang="en">
       <body className={`${circularStd.variable} overflow-x-hidden font-sans h-screen overflow-y-hidden`}>
+        <Toaster position="top-right" gutter={8} />
         <Providers>{children}</Providers>
       </body>
     </html>
