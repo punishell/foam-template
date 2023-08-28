@@ -61,42 +61,49 @@ export function formatUsd(value: number) {
 }
 
 export const emptyAchievement = [
-  { id: "review", title: "Review", total: 60, textColor: "#A05E03", bgColor: "#FFEFD7" },
-  { id: "referral", title: "Referral", total: 20, textColor: "#0065D0", bgColor: "#C9F0FF" },
-  { id: "five-star", title: "5 Star Job", total: 10, textColor: "#198155", bgColor: "#ECFCE5" },
-  { id: "squad", title: "Squad", total: 10, textColor: "#D3180C", bgColor: "#FFE5E5" },
+  { id: 'review', title: 'Review', total: 60, textColor: '#A05E03', bgColor: '#FFEFD7' },
+  { id: 'referral', title: 'Referral', total: 20, textColor: '#0065D0', bgColor: '#C9F0FF' },
+  { id: 'five-star', title: '5 Star Job', total: 10, textColor: '#198155', bgColor: '#ECFCE5' },
+  { id: 'squad', title: 'Squad', total: 10, textColor: '#D3180C', bgColor: '#FFE5E5' },
 ];
 
 export const getAchievementData = (type: string) => {
-  return emptyAchievement.find(emp => emp.id == type);
-}
+  return emptyAchievement.find((emp) => emp.id == type);
+};
 
 export const colorFromScore = (score: number) => {
-  if (score >= 0 && score <= 20) return { circleColor: "linear-gradient(149deg, #FA042F 0%, #FF6A84 100%)", bgColor: "#FFF8F8" };
-  if (score >= 21 && score <= 35) return { circleColor: "linear-gradient(171deg, #FFF70A 0%, #EEE600 100%)", bgColor: "#FFFFF0" };
-  if (score >= 36 && score <= 50) return { circleColor: "linear-gradient(166deg, #FFB402 0%, #E19E00 100%)", bgColor: "#FFFFF0" };
-  if (score >= 51 && score <= 79) return { circleColor: "linear-gradient(162deg, #08A7FC 0%, #71CDFF 100%)", bgColor: "#F2FBFF" };
-  return { circleColor: "linear-gradient(145deg, #05BD2F 0%, #0FF143 100%)", bgColor: "#ECFCE5" };
-}
+  if (score >= 0 && score <= 20)
+    return { circleColor: 'linear-gradient(149deg, #FA042F 0%, #FF6A84 100%)', bgColor: '#FFF8F8' };
+  if (score >= 21 && score <= 35)
+    return { circleColor: 'linear-gradient(171deg, #FFF70A 0%, #EEE600 100%)', bgColor: '#FFFFF0' };
+  if (score >= 36 && score <= 50)
+    return { circleColor: 'linear-gradient(166deg, #FFB402 0%, #E19E00 100%)', bgColor: '#FFFFF0' };
+  if (score >= 51 && score <= 79)
+    return { circleColor: 'linear-gradient(162deg, #08A7FC 0%, #71CDFF 100%)', bgColor: '#F2FBFF' };
+  return { circleColor: 'linear-gradient(145deg, #05BD2F 0%, #0FF143 100%)', bgColor: '#ECFCE5' };
+};
 
-export const limitString = (str: string, limit: number = 10) => str.length > limit ? str.slice(0, limit) + "..." : str;
+export const limitString = (str: string, limit: number = 10) =>
+  str.length > limit ? str.slice(0, limit) + '...' : str;
 
-const createQueryString = (name: string, value: string) => {
+export const createQueryString = (name: string, value: string) => {
   const params = new URLSearchParams();
   params.set(name, value);
   return params.toString();
 };
 
 export const parseFilterObjectToString = (filterData: Record<string, any>) => {
-  let qString = "", prev = "";
+  let qString = '',
+    prev = '';
   const newData = filterData;
   Object.keys(newData).map((key, i) => {
-    if (!["", undefined, null].includes(newData[key])) {
-      if (qString != "") prev = "&";
-      qString += `${prev}${createQueryString(key, newData[key])}`
-    };
+    if (!['', undefined, null].includes(newData[key])) {
+      if (qString != '') prev = '&';
+      qString += `${prev}${createQueryString(key, newData[key])}`;
+    }
   });
   return qString;
 };
 
-export const COOKIE_NAME =  String(process.env.NEXT_PUBLIC_AUTH_KEY) ?? "jwt";
+export const AUTH_TOKEN_KEY = process.env.NEXT_PUBLIC_AUTH_TOKEN_KEY ?? 'auth-token';
+export const TEMP_AUTH_TOKEN_KEY = process.env.NEXT_PUBLIC_TEMP_AUTH_TOKEN_KEY ?? 'temp-auth-token';
