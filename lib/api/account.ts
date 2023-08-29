@@ -1,57 +1,69 @@
-import {
-  useQuery,
-  useMutation,
-  type QueryKey,
-  type UseQueryOptions,
-  MutationKey,
-} from "@tanstack/react-query";
-import { ApiError, ApiResponse, axios } from "@/lib/axios";
-import { toast } from "react-hot-toast";
-import { useUserState, IUser } from "@/lib/store/account";
+import { User } from '@/lib/types';
+import { ApiError, axios } from '@/lib/axios';
+import { useUserState } from '@/lib/store/account';
+import { toast } from '@/components/common/toaster';
+import { useQuery, useMutation } from '@tanstack/react-query';
 
 interface UpdateAccountParams {
-
+  username?: string;
+  profile?: {
+    contact?: {
+      state?: string;
+      city?: string;
+      phone?: string;
+      address?: string;
+      country?: string;
+    };
+    bio?: {
+      title?: string;
+      description?: string;
+    };
+    talent?: {
+      availability?: string;
+      skills?: string[];
+    };
+    privateEarnings?: boolean;
+    privateInvestments?: boolean;
+  };
+  socials?: {
+    github?: string;
+    twitter?: string;
+    website?: string;
+  };
 }
 
-// GET ACCOUNT DETAILS
-type GetAccountDetailsSuccess = ApiResponse<IUser>;
-type GetAccountDetailsError = ApiError<null>;
+async function postUpdateAccount(values: UpdateAccountParams): Promise<User> {
+  const res = await axios.patch('/account/update', values);
+  return res.data.data;
+}
 
-// quer/mutation keys
-const getAccountQueryKey: QueryKey = ["account-details"];
-const updateUserAccountKey: MutationKey = ['updateUserAccount'];
+export function useUpdateAccount() {
+  return useMutation({
+    mutationFn: postUpdateAccount,
+    mutationKey: ['update-account'],
+    onSuccess: () => {
+      toast.success('Account updated successfully');
+    },
+    onError: (error: ApiError) => {
+      toast.error(error?.response?.data.message || 'An error occurred');
+    },
+  });
+}
 
-// api calls
-const fetchUserAccount = async () => await axios.get("/account");
-const updateUserAccount = async (values:UpdateAccountParams) => await axios.post("/account", {...values});
+async function fetchUserAccount(): Promise<User> {
+  const res = await axios.get('/account');
+  return res.data.data;
+}
 
-// get user account query
 export const useGetAccount = () => {
   const { setUser } = useUserState();
 
-  const options: UseQueryOptions<
-    GetAccountDetailsSuccess,
-    GetAccountDetailsError
-  > = {
-    queryFn: async () => {
-      return await fetchUserAccount();
+  return useQuery({
+    queryFn: fetchUserAccount,
+    queryKey: ['account-details'],
+    onError: (error: ApiError) => {
+      toast.error(error?.response?.data.message || 'An error occurred');
     },
-    onError: (error) => {
-      toast.error(error.response?.data.message || "An error occurred");
-      return null;
-    },
-    onSuccess: ({ data }) => {
-      const { data: userData } = data;
-      setUser(userData);
-    },
-  };
-
-  return useQuery(getAccountQueryKey, options);
-};
-// update account mutation
-export const useUpdateAccount = () => {
-  return useMutation({
-    mutationFn: updateUserAccount,
-    mutationKey: updateUserAccountKey,
+    onSuccess: (user) => setUser(user),
   });
-}
+};

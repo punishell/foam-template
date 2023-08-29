@@ -1,9 +1,14 @@
-import { Loader } from "lucide-react";
+import React from 'react';
+import { Loader } from 'lucide-react';
 
-export const Spinner = () => {
+interface SpinnerProps {
+  size?: number;
+}
+
+export const Spinner: React.FC<SpinnerProps> = ({ size = 24 }) => {
   return (
     <div className="flex w-full items-center justify-center">
-      <Loader className="animate-spin" />
+      <Loader className="animate-spin" size={size} />
     </div>
   );
 };

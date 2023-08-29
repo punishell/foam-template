@@ -1,12 +1,16 @@
 'use client';
-import React, { useState } from 'react';
-import { Sidebar } from '@/components/sidebar';
+import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 
+import React from 'react';
 import { axios } from '@/lib/axios';
 import { RaceBy } from '@uiball/loaders';
 import { getCookie } from 'cookies-next';
-import { useRouter } from 'next/navigation';
 import { AUTH_TOKEN_KEY } from '@/lib/utils';
+
+interface Props {
+  children: React.ReactNode;
+}
 
 const Loader = () => {
   return (
@@ -16,14 +20,10 @@ const Loader = () => {
   );
 };
 
-interface Props {
-  children: React.ReactNode;
-}
-
-export default function DashboardLayout({ children }: Props) {
+export default function OnboardingLayout({ children }: Props) {
   const router = useRouter();
   const token = getCookie(AUTH_TOKEN_KEY);
-  const [isTokenSet, setIsTokenSet] = useState(false);
+  const [isTokenSet, setIsTokenSet] = React.useState(false);
 
   React.useEffect(() => {
     if (token) {
@@ -40,10 +40,8 @@ export default function DashboardLayout({ children }: Props) {
   }
 
   return (
-    <div className="flex max-w-full h-screen w-screen">
-      <Sidebar />
-
-      <div className="relative grow">
+    <div className="h-screen w-screen">
+      <div className="relative grow ">
         <div className="absolute z-[1] inset-0">
           <div className="isolate">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1512 989" fill="none">
@@ -73,7 +71,25 @@ export default function DashboardLayout({ children }: Props) {
           </div>
         </div>
         <div className="absolute bg-repeat opacity-50 inset-0 bg-[url(/images/rain.png)]" />
-        <div className="relative h-screen p-5 px-8 z-10 flex flex-col w-full isolate">{children}</div>
+        <div className="relative h-screen p-5 px-8 z-10 flex-col w-full isolate flex items-center justify-center">
+          <div className="flex flex-col gap-4 max-w-4xl w-full">
+            {/* <div className="grid grid-cols-3 content-center items-center justify-between gap-2">
+              <Button variant="secondary" onClick={router.back}>
+                <div className="flex items-center gap-2">
+                  <ArrowLeft size={16} />
+                  <span>Go Back</span>
+                </div>
+              </Button>
+              <div className="">
+                <Image src="/images/logo-dark.svg" alt="Logo" width={250} height={60} />
+              </div>
+            </div> */}
+            <div className="mx-auto">
+              <Image src="/images/logo-dark.svg" alt="Logo" width={250} height={60} />
+            </div>
+            <div className="bg-white rounded-2xl border p-8 w-full">{children}</div>
+          </div>
+        </div>
       </div>
     </div>
   );

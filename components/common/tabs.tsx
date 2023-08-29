@@ -3,6 +3,7 @@
 import React from 'react';
 import { useRouter } from 'next/navigation';
 import { usePathname } from 'next/navigation';
+import { createQueryString } from '@/lib/utils';
 import { useSearchParams } from 'next/navigation';
 import * as RadixTabs from '@radix-ui/react-tabs';
 
@@ -22,15 +23,6 @@ export const Tabs: React.FC<Props> = ({ tabs, defaultTab, urlKey }) => {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
-
-  const createQueryString = React.useCallback(
-    (name: string, value: string) => {
-      const params = new URLSearchParams(searchParams as any);
-      params.set(name, value);
-      return params.toString();
-    },
-    [searchParams],
-  );
 
   const urlTab = searchParams.get(urlKey || 'tab');
   const initialTab = urlTab || defaultTab || tabs[0].value;
@@ -67,12 +59,16 @@ export const Tabs: React.FC<Props> = ({ tabs, defaultTab, urlKey }) => {
           </RadixTabs.Trigger>
         ))}
       </RadixTabs.List>
-      <div className='flex flex-col overflow-auto h-full'>
+      <div className="flex flex-col overflow-auto h-full">
         {tabs.map((tab) => (
-        <RadixTabs.Content key={tab.value} value={tab.value} className='radix-state-active:flex radix-state-active:flex-col radix-state-active:h-full'>
-          {tab.content}
-        </RadixTabs.Content>
-      ))}
+          <RadixTabs.Content
+            key={tab.value}
+            value={tab.value}
+            className="radix-state-active:flex radix-state-active:flex-col radix-state-active:h-full"
+          >
+            {tab.content}
+          </RadixTabs.Content>
+        ))}
       </div>
     </RadixTabs.Root>
   );
