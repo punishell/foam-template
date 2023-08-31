@@ -3,13 +3,13 @@ import { create } from 'zustand';
 export type JobCreationSteps = 'details' | 'deliverables' | 'project' | 'visibility' | 'review';
 
 type State = {
-  jobDetails: {
+  job: {
+    due?: string;
     title?: string;
-    dueDate?: string;
+    budget?: number;
     category?: string;
+    skills?: string[];
     description?: string;
-    skillSets?: string[];
-    proposedPrice?: number;
     deliverables?: string[];
     type?: 'freelance' | 'project';
     visibility?: 'public' | 'private';
@@ -19,14 +19,14 @@ type State = {
 };
 
 type Actions = {
-  resetJobDetails: () => void;
+  resetJob: () => void;
+  setJob: (job: State['job']) => void;
   setActiveStep: (step: State['activeStep']) => void;
-  setJobDetails: ({ job }: { job: State['jobDetails'] }) => void;
   setStepsStatus: (payload: Partial<State['stepsStatus']>) => void;
 };
 
 export const useJobCreationStore = create<State & Actions>((set, get) => ({
-  jobDetails: {
+  job: {
     title: '',
     dueDate: '',
     category: '',
@@ -34,7 +34,7 @@ export const useJobCreationStore = create<State & Actions>((set, get) => ({
     proposedPrice: 0,
     deliverables: [],
     description: '',
-    type: 'freelance',
+    jobType: 'freelance',
     visibility: 'public',
   },
   activeStep: 'details',
@@ -53,7 +53,7 @@ export const useJobCreationStore = create<State & Actions>((set, get) => ({
       },
     }));
   },
-  resetJobDetails: () => set({}),
+  resetJob: () => set({}),
   setActiveStep: (step) => set({ activeStep: step }),
-  setJobDetails: ({ job }) => set({ jobDetails: { ...get().jobDetails, ...job } }),
+  setJob: (job) => set({ job: { ...get().job, ...job } }),
 }));
