@@ -1,6 +1,7 @@
 'use client';
 import React from 'react';
 import { Button } from 'pakt-ui';
+import { useGetJobById } from '@/lib/api/job';
 import { Modal } from '@/components/common/modal';
 import { JobHeader, JobDescription, JobSkills, JobDeliverables } from '@/components/jobs/job-details';
 
@@ -12,6 +13,8 @@ interface Props {
 
 export default function JobDetails({ params }: Props) {
   const jobId = params['job-id'];
+  const job = useGetJobById({ jobId });
+
   const VIEW_TYPE: 'client' | 'talent' = 'talent';
 
   const VIEWS = {
