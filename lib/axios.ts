@@ -1,7 +1,7 @@
 import Axios, { AxiosError, AxiosResponse } from 'axios';
 import { deleteCookie } from 'cookies-next';
 import { redirect } from 'next/navigation';
-import { COOKIE_NAME } from './utils';
+import { AUTH_TOKEN_KEY } from './utils';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -17,7 +17,7 @@ axios.interceptors.response.use(
   (error) => {
     console.log('error====', error.response, error);
     if (error.response.status === 401) {
-      deleteCookie(COOKIE_NAME)
+      deleteCookie(AUTH_TOKEN_KEY);
       return redirect('/login');
     }
     return Promise.reject(error);
@@ -29,7 +29,7 @@ export type ApiResponse<T> = AxiosResponse<{
   data: T;
 }>;
 
-export type ApiError<T> = AxiosError<{
+export type ApiError<T = any> = AxiosError<{
   message: string;
-  data: T;
+  data?: T;
 }>;

@@ -3,14 +3,15 @@ import React from 'react';
 import * as z from 'zod';
 import { useSignUp } from '@/lib/api';
 import { setCookie } from 'cookies-next';
+import { createQueryString } from '@/lib/utils';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { SubmitHandler, useForm } from 'react-hook-form';
-import { useSearchParams, useRouter } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { Spinner } from '@/components/common';
 import Link from 'next/link';
 import Image from 'next/image';
-import { useLogin } from '@/lib/api';
 import { Input, Button } from 'pakt-ui';
+import { TEMP_AUTH_TOKEN_KEY } from '@/lib/utils';
 import { Container } from '@/components/common/container';
 
 const passwordSchema = z
@@ -39,7 +40,6 @@ type FormValues = z.infer<typeof formSchema>;
 export default function Signup() {
   const signup = useSignUp();
   const router = useRouter();
-  const searchParams = useSearchParams();
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -47,9 +47,9 @@ export default function Signup() {
 
   const onSubmit: SubmitHandler<FormValues> = (values) => {
     signup.mutate(values, {
-      onSuccess: (data) => {
-        // setCookie("jwt", data.token);
-        router.push(searchParams.get('from') || '/overview');
+      onSuccess: ({ tempToken, email }) => {
+        setCookie(TEMP_AUTH_TOKEN_KEY, tempToken);
+        router.push(`/signup/verify?${createQueryString('email', email)}`);
       },
     });
   };

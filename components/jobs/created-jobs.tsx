@@ -1,8 +1,9 @@
 'use client';
 
 import React from 'react';
-import { Job } from '@/components/jobs/';
 import { Tabs } from '@/components/common/tabs';
+import { AssignedJob } from '@/components/jobs/job-cards/assigned-job';
+import { UnAssignedJob } from '@/components/jobs/job-cards/unassigned-job';
 
 interface Props {}
 
@@ -30,8 +31,8 @@ export const CreatedJobs: React.FC<Props> = () => {
 const UnassignedJobs = () => {
   return (
     <div className="grid grid-cols-2 gap-4">
-      <Job type="unassigned" createdAt="2 days ago" price={100} title='I need a logo for my new business "Pakt"' />
-      <Job type="unassigned" createdAt="2 days ago" price={100} title='I need a logo for my new business "Pakt"' />
+      <UnAssignedJob createdAt="2 days ago" price={100} title='I need a logo for my new business "Pakt"' />
+      <UnAssignedJob createdAt="2 days ago" price={100} title='I need a logo for my new business "Pakt"' />
     </div>
   );
 };
@@ -39,8 +40,7 @@ const UnassignedJobs = () => {
 const OngoingJobs = () => {
   return (
     <div className="grid grid-cols-2 gap-4">
-      <Job
-        type="assigned"
+      <AssignedJob
         inviter={{
           avatar: 'https://i.pravatar.cc/300',
           name: 'John Doe',
@@ -56,8 +56,7 @@ const OngoingJobs = () => {
 const CompletedJobs = () => {
   return (
     <div className="grid grid-cols-2 gap-4">
-      <Job
-        type="assigned"
+      <AssignedJob
         inviter={{
           avatar: 'https://i.pravatar.cc/300',
           name: 'John Doe',

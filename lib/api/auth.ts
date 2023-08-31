@@ -1,5 +1,6 @@
-import { axios } from '@/lib/axios';
+import { axios, ApiError } from '@/lib/axios';
 import { useMutation } from '@tanstack/react-query';
+import { toast } from '@/components/common/toaster';
 
 // Signup
 
@@ -29,7 +30,13 @@ async function postSignUp({ email, password, firstName, lastName }: SignupParams
 }
 
 export function useSignUp() {
-  return useMutation({ mutationFn: postSignUp, mutationKey: ['signup'] });
+  return useMutation({
+    mutationFn: postSignUp,
+    mutationKey: ['signup'],
+    onError: (error: ApiError) => {
+      toast.error(error?.response?.data.message || 'An error occurred');
+    },
+  });
 }
 
 // Verify Email
@@ -41,11 +48,19 @@ interface VerifyEmailResponse {
 
 interface VerifyEmailParams {
   otp: string;
-  signUpToken: string;
+  token: string;
 }
 
-async function postVerifyEmail({ otp, signUpToken }: VerifyEmailParams): Promise<VerifyEmailResponse> {
-  const res = await axios.post('/auth/account/verify', { otp, signUpToken });
+async function postVerifyEmail({ otp, token }: VerifyEmailParams): Promise<VerifyEmailResponse> {
+  const res = await axios.post(
+    '/auth/account/verify',
+    { otp },
+    {
+      params: {
+        token,
+      },
+    },
+  );
   return res.data.data;
 }
 
@@ -53,6 +68,9 @@ export function useVerifyEmail() {
   return useMutation({
     mutationFn: postVerifyEmail,
     mutationKey: ['verify-email'],
+    onError: (error: ApiError) => {
+      toast.error(error?.response?.data.message || 'An error occurred');
+    },
   });
 }
 
@@ -76,6 +94,12 @@ export function useResendOTP() {
   return useMutation({
     mutationFn: postResendOTP,
     mutationKey: ['resend-otp'],
+    onError: (error: ApiError) => {
+      toast.error(error?.response?.data.message || 'An error occurred');
+    },
+    onSuccess: () => {
+      toast.success('OTP sent successfully');
+    },
   });
 }
 
@@ -84,6 +108,10 @@ export function useResendOTP() {
 interface LoginResponse {
   email: string;
   token: string;
+  isVerified: boolean;
+  tempToken?: {
+    token: string;
+  };
 }
 
 interface LoginParams {
@@ -100,5 +128,33 @@ export function useLogin() {
   return useMutation({
     mutationFn: postLogin,
     mutationKey: ['login'],
+    onError: (error: ApiError) => {
+      toast.error(error?.response?.data.message || 'An error occurred');
+    },
+  });
+}
+
+// reset Password
+
+interface ResetPasswordParams {
+  email: string;
+}
+
+interface ResetPasswordResponse {
+  message: string;
+}
+
+async function postRequestPasswordReset({ email }: ResetPasswordParams): Promise<ResetPasswordResponse> {
+  const res = await axios.post('/auth/password/reset', { email });
+  return res.data.data;
+}
+
+export function useRequestPasswordReset() {
+  return useMutation({
+    mutationFn: postRequestPasswordReset,
+    mutationKey: ['request-reset-password'],
+    onError: (error: ApiError) => {
+      toast.error(error?.response?.data.message || 'An error occurred');
+    },
   });
 }

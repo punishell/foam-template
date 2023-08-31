@@ -5,14 +5,15 @@ import Image from 'next/image';
 import { useLogin } from '@/lib/api';
 import { Input, Button } from 'pakt-ui';
 import { setCookie } from 'cookies-next';
+import { createQueryString } from '@/lib/utils';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { Container } from '@/components/common/container';
 import { useSearchParams, useRouter } from 'next/navigation';
 
 import { Spinner } from '@/components/common';
-import { COOKIE_NAME } from '@/lib/utils';
 import { useUserState } from '@/lib/store/account';
+import { AUTH_TOKEN_KEY, TEMP_AUTH_TOKEN_KEY} from '@/lib/utils';
 
 const loginFormSchema = z.object({
   password: z.string().min(1, 'Password is required').min(8, 'Password is too short'),
@@ -34,10 +35,14 @@ export default function Login() {
   const onSubmit: SubmitHandler<LoginFormValues> = (values) => {
     login.mutate(values, {
       onSuccess: (data) => {
-        setCookie(COOKIE_NAME, data.token);
-        // @ts-ignore
-        setUser(data);
-        return router.push(searchParams.get('from') || '/overview');
+        if (data.isVerified) {
+          // @ts-ignore
+          setUser(data);
+          setCookie(AUTH_TOKEN_KEY, data.token);
+          return router.push(searchParams.get('from') || '/overview');
+        }
+        setCookie(TEMP_AUTH_TOKEN_KEY, data.token);
+        router.push(`/signup/verify?${createQueryString('email', data.email)}`);
       },
     });
   };

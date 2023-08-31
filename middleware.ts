@@ -1,17 +1,17 @@
 import { NextResponse } from 'next/server';
-import { COOKIE_NAME, decodeJWTPayload } from '@/lib/utils';
+import { AUTH_TOKEN_KEY, decodeJWTPayload } from '@/lib/utils';
 import type { NextRequest } from 'next/server';
-import { axios } from './lib/axios';
+// import { axios } from './lib/axios';
 
 export function middleware(request: NextRequest) {
-  const token = request.cookies.get(COOKIE_NAME);
+  const token = request.cookies.get(AUTH_TOKEN_KEY);
 
   if (!token) return redirectToLogin(request);
 
   const payload = decodeJWTPayload(token.value);
   if (payload.exp < Date.now() / 1000) return redirectToLogin(request);
   // set token to header
-  axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+  // axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
   return NextResponse.next();
 }
 
@@ -29,5 +29,6 @@ export const config = {
     '/settings/:path*',
     '/messages/:path*',
     '/projects/:path*',
+    '/onboarding/:path*',
   ],
 };

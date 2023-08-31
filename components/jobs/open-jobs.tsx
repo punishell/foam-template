@@ -1,7 +1,7 @@
 import React from 'react';
 import { Tabs } from '@/components/common/tabs';
-import { PublicJobCard } from '@/components/jobs';
 import { JobSearchBar } from '@/components/jobs/job-search-bar';
+import { OpenJobCard } from '@/components/jobs/job-cards/open-job';
 
 interface Props {}
 
@@ -35,7 +35,7 @@ interface AllJobsProps {}
 const AllJobs: React.FC<AllJobsProps> = () => {
   return (
     <div className="grid grid-cols-2 gap-4">
-      <PublicJobCard
+      <OpenJobCard
         price={100}
         title='I need a logo for my new business "Pakt"'
         skills={['Logo Design', 'Graphic Design', 'Illustration']}
@@ -45,7 +45,7 @@ const AllJobs: React.FC<AllJobsProps> = () => {
           paktScore: 100,
         }}
       />
-      <PublicJobCard
+      <OpenJobCard
         price={100}
         title='I need a logo for my new business "Pakt"'
         skills={['Logo Design', 'Graphic Design', 'Illustration']}
@@ -55,7 +55,7 @@ const AllJobs: React.FC<AllJobsProps> = () => {
           paktScore: 100,
         }}
       />
-      <PublicJobCard
+      <OpenJobCard
         price={100}
         title='I need a logo for my new business "Pakt"'
         skills={['Logo Design', 'Graphic Design', 'Illustration']}
@@ -74,7 +74,7 @@ interface SavedJobsProps {}
 const SavedJobs: React.FC<SavedJobsProps> = () => {
   return (
     <div className="grid grid-cols-2 gap-4">
-      <PublicJobCard
+      <OpenJobCard
         price={100}
         title='I need a logo for my new business "Pakt"'
         skills={['Logo Design', 'Graphic Design', 'Illustration']}
