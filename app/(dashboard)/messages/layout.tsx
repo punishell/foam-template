@@ -2,7 +2,13 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { Bell, Search } from 'lucide-react';
+import { Button, Slider } from 'pakt-ui';
+import { Modal } from '@/components/common';
+import { Spinner } from '@/components/common';
+import { TagInput } from '@/components/common/tag-input';
+import { UserAvatar } from '@/components/common/user-avatar';
+import { useGetConnectionPreference, useUpdateConnectionPreference } from '@/lib/api/connection';
+import { Bell, Search, Settings2, XCircle, X } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 import { UserBalance } from '@/components/common/user-balance';
 
@@ -11,10 +17,22 @@ interface Props {
 }
 
 export default function MessagesLayout({ children }: Props) {
+  const [settingsModalOpen, setSettingsModalOpen] = React.useState(false);
+
   return (
     <div className="flex flex-col gap-6 h-full">
       <div className="flex items-center justify-between">
-        <div className="text-3xl text-title font-bold">Messages</div>
+        <div className="flex items-center gap-3">
+          <span className="text-3xl text-title font-bold">Messages</span>
+
+          <button onClick={() => setSettingsModalOpen(true)}>
+            <Settings2 size={24} className="text-title" />
+          </button>
+
+          <Modal isOpen={settingsModalOpen} onOpenChange={setSettingsModalOpen} className="max-w-xl">
+            <SettingsModal />
+          </Modal>
+        </div>
 
         <div className="flex items-center gap-7">
           <div className="flex items-center gap-2 text-3xl text-title">
@@ -40,6 +58,91 @@ export default function MessagesLayout({ children }: Props) {
     </div>
   );
 }
+
+const SettingsModal = () => {
+  const connectionPreference = useGetConnectionPreference();
+  const updateConnectionPreference = useUpdateConnectionPreference();
+
+  const [skills, setSkills] = React.useState<string[]>(connectionPreference.data?.skills ?? []);
+  const [minimumScore, setMinimumScore] = React.useState(connectionPreference.data?.minimumScore ?? 0);
+  const [minimumSkills, setMinimumSkills] = React.useState(connectionPreference.data?.minimumSkills ?? 0);
+
+  const handleMinimumScoreChange = (value: number[]) => {
+    setMinimumScore(value[0]);
+  };
+
+  const handleMinimumSkillsChange = (value: number[]) => {
+    setMinimumSkills(value[0]);
+  };
+
+  return (
+    <div className="bg-white p-4 rounded-md flex flex-col gap-8">
+      <div className="flex flex-col gap-1">
+        <div className="flex items-center justify-between">
+          <div className="text-lg font-bold">Connection Preference Filter</div>
+          <XCircle size={24} className="text-body" />
+        </div>
+        <span className="text-body">Set the criteria for the AfroFund users who can message you.</span>
+      </div>
+
+      <div className="bg-[#F9FFF6] p-4 pb-8 rounded-lg border-[#23C16B] border flex gap-4">
+        <div className="flex flex-col gap-5">
+          <div>
+            <h3 className="text-lg font-bold">Afroscore</h3>
+            <span className="text-body text-sm">
+              Set minimum talent AfroScore required to message you by dragging the slider
+            </span>
+          </div>
+
+          <Slider
+            value={[minimumScore]}
+            onValueChange={handleMinimumScoreChange}
+            min={0}
+            max={100}
+            thumbLabel={minimumScore.toString()}
+          />
+        </div>
+        <div>
+          <UserAvatar size="sm" score={minimumScore} />
+        </div>
+      </div>
+
+      <div className="flex flex-col gap-3">
+        <div>
+          <h3 className="text-lg font-bold">Set Skills</h3>
+          <span className="text-body">Select up to 10 skills. Users will need at least one to reach out.</span>
+        </div>
+        <TagInput tags={skills} setTags={setSkills} className="min-h-[125px] items-start" />
+      </div>
+
+      <div className="flex flex-col gap-3 mb-4">
+        <div>
+          <h3 className="text-body">Set minimum number of these skills a talent must have to message you</h3>
+        </div>
+        <Slider
+          min={0}
+          max={10}
+          value={[minimumSkills]}
+          thumbLabel={minimumSkills.toString()}
+          onValueChange={handleMinimumSkillsChange}
+        />
+      </div>
+
+      <Button
+        fullWidth
+        onClick={() => {
+          updateConnectionPreference.mutate({
+            skills,
+            minimumScore,
+            minimumSkills,
+          });
+        }}
+      >
+        {updateConnectionPreference.isLoading ? <Spinner /> : 'Set Preferences'}
+      </Button>
+    </div>
+  );
+};
 
 const ChatList = () => {
   return (
