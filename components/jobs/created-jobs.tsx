@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { Tabs } from '@/components/common/tabs';
-import { AssignedJob } from '@/components/jobs/job-cards/assigned-job';
+import { AssignedJobClientView } from '@/components/jobs/job-cards/assigned-job';
 import { UnAssignedJob } from '@/components/jobs/job-cards/unassigned-job';
 
 interface Props {}
@@ -40,7 +40,7 @@ const UnassignedJobs = () => {
 const OngoingJobs = () => {
   return (
     <div className="grid grid-cols-2 gap-4">
-      <AssignedJob
+      <AssignedJobClientView
         inviter={{
           avatar: 'https://i.pravatar.cc/300',
           name: 'John Doe',
@@ -56,7 +56,7 @@ const OngoingJobs = () => {
 const CompletedJobs = () => {
   return (
     <div className="grid grid-cols-2 gap-4">
-      <AssignedJob
+      <AssignedJobClientView
         inviter={{
           avatar: 'https://i.pravatar.cc/300',
           name: 'John Doe',

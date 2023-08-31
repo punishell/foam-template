@@ -1,6 +1,6 @@
 import React from 'react';
 import { Tabs } from '@/components/common/tabs';
-import { AssignedJob } from '@/components/jobs/job-cards/assigned-job';
+import { AssignedJobTalentView } from '@/components/jobs/job-cards/assigned-job';
 
 interface Props {}
 
@@ -27,7 +27,7 @@ export const AcceptedJobs: React.FC<Props> = () => {
 const OngoingJobs = () => {
   return (
     <div className="grid grid-cols-2 gap-4">
-      <AssignedJob
+      <AssignedJobTalentView
         inviter={{
           avatar: 'https://i.pravatar.cc/300',
           name: 'John Doe',
@@ -43,7 +43,7 @@ const OngoingJobs = () => {
 const CompletedJobs = () => {
   return (
     <div className="grid grid-cols-2 gap-4">
-      <AssignedJob
+      <AssignedJobTalentView
         inviter={{
           avatar: 'https://i.pravatar.cc/300',
           name: 'John Doe',
