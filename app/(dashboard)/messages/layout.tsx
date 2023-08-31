@@ -12,7 +12,7 @@ interface Props {
 }
 
 export default function MessagesLayout({ children }: Props) {
-  const { conversations } = useMessaging();
+  const { conversations, setActiveConversation } = useMessaging();
   console.log('conver', conversations);
   return (
     <div className="flex flex-col gap-6 h-full">
@@ -30,7 +30,7 @@ export default function MessagesLayout({ children }: Props) {
         </div>
       </div>
 
-      <div className="h-full flex grow w-full">
+      <div className="flex grow w-full h-[90%]">
         <div className="bg-white basis-[370px] grow-0 border h-full shrink-0 flex flex-col rounded-lg rounded-r-none border-line">
           <ChatListSearch />
           <ChatList conversations={conversations} />

@@ -35,7 +35,7 @@ export const conversationEnums = {
 };
 
 export type SocketContextType = {
-  currentConversation: Object;
+  currentConversation: Object | any;
   loadingChats: boolean;
   status: string;
   conversations: any;
@@ -57,6 +57,8 @@ export type SocketContextType = {
     sender: string,
     recipient: string
   ) => Promise<any>;
+  getConversationById: (id: string) => Promise<any>;
+  setActiveConversation: (id: string) => void;
 };
 const MIN_LEN = 25;
 const SOCKET_URL = process.env.NEXT_PUBLIC_SOCKET_URL;
@@ -74,7 +76,7 @@ export const MessagingProvider = ({ children }: { children: React.ReactNode }) =
   const [conversations, setConversations] = useState<any>([]);
   const [status, setStatus] = useState<string>("pending");
   const [loadingChats, setLoadingChats] = useState<boolean>(true);
-  // const router = useRouter();
+
   const pathname = usePathname();
   const messagingScreen = pathname.includes(prefix);
 
@@ -116,6 +118,7 @@ export const MessagingProvider = ({ children }: { children: React.ReactNode }) =
   useEffect(() => {
     // Here we listen to popup events
     socket?.on(conversationEnums.POPUP_MESSAGE, (c: any) => {
+      console.log("new message===", c)
       // notify user
       const messageContent =
         c.currentMessage.content.length > MIN_LEN
@@ -163,21 +166,41 @@ export const MessagingProvider = ({ children }: { children: React.ReactNode }) =
     }
   };
 
-  const getRecipient = (recipients = []) => recipients.find((r: any) => r._id !== loggedInUser);
+  const getSender = (recipients = []) => recipients.find((r: any) => r._id != loggedInUser);
+  const getRecipient = (recipients = []) => recipients.find((r: any) => r._id == loggedInUser);
+
+  const getConversationHeader = (conversation: any) => {
+    const sender = conversation.recipients.find((r: any) => r._id !== loggedInUser);
+    return conversation.type == "DIRECT" ? { title: `${sender.firstName} ${sender.lastName}`, description: sender?.profile?.bio?.title } : { title: conversation.title, description: conversation.description };
+  };
   const getUnreadcount = (messages: any[]) => messages.filter((r: any) => r.seen == null).length;
   const getLastMessage = (messages: any[]) => messages.length > 0 ? messages[0].content : null;
   const getLastMessageTime = (messages: any[]) => messages.length > 0 ? dayjs(messages[0].createdAt).format("HH:ss A") : null;
+  const getConversationById = (id: string) => conversations.find((c: any) => c.id == id);
+  const parseMessages = (messages: []) => messages.map((m:any) => ({
+    content: m.content,
+    isSent: m.user == loggedInUser,
+  }))
+
+  const setActiveConversation = (_id: string) => {
+    const conversation = getConversationById(_id);
+    return setCurrentConversation(conversation);
+  }
 
   const parseUserchats = (payload: any[]) => payload.map((c: any) => ({
     id: c._id,
-    messages: c.messages,
-    sender: getRecipient(c.recipients),
-    recipents: c.recipients,
+    messages: parseMessages(c.messages),
+    sender: getSender(c.recipients),
+    recipient: getRecipient(c.recipients),
+    recipients: c.recipients,
+    header: getConversationHeader(c),
+    createdAt: dayjs(c.createdAt).format("MMMM D, YYYY"),
     type: c.type,
     unreadcount: getUnreadcount(c.messages),
     lastMessage: getLastMessage(c.messages),
     lastMessageTime: getLastMessageTime(c.messages),
-  }))
+  })
+  );
 
   const fetchUserChats = async () => {
     try {
@@ -223,7 +246,7 @@ export const MessagingProvider = ({ children }: { children: React.ReactNode }) =
     conversation: string
   ) => {
     try {
-      return await socket.emit(
+      const sentMessage = await socket.emit(
         conversationEnums.SEND_MESSAGE,
         {
           senderId: sender,
@@ -236,6 +259,8 @@ export const MessagingProvider = ({ children }: { children: React.ReactNode }) =
           return conversation;
         }
       );
+      fetchUserChats();
+      return sentMessage;
     } catch (error: any) {
       // return error?.response?.data;
       console.log("sending0---error", error);
@@ -273,6 +298,8 @@ export const MessagingProvider = ({ children }: { children: React.ReactNode }) =
     startUserInitializeConversation,
     sendUserMessage,
     markUserMessageAsSeen,
+    getConversationById,
+    setActiveConversation,
   };
 
   return (
