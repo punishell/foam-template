@@ -2,9 +2,10 @@ import React from 'react';
 import { X } from 'lucide-react';
 import { useJobCreationStore } from '@/lib/store';
 import { Select, SelectOption, Button } from 'pakt-ui';
-
+import { TagInput } from '@/components/common/tag-input';
 export const JobDetails: React.FC = () => {
   const CATEGORY_OPTIONS: SelectOption[] = [];
+  const [skills, setSkills] = React.useState<string[]>([]);
   const [categoryList, setCategoryList] = React.useState<string[]>([]);
 
   const setActiveStep = useJobCreationStore((state) => state.setActiveStep);
@@ -72,7 +73,7 @@ export const JobDetails: React.FC = () => {
           <span className="text-body text-sm">Select three</span>
         </div>
 
-        <TagInput />
+        <TagInput tags={skills} setTags={setSkills} />
       </div>
 
       <div className="flex justify-end">
@@ -91,45 +92,6 @@ export const JobDetails: React.FC = () => {
           </Button>
         </div>
       </div>
-    </div>
-  );
-};
-
-const TagInput = () => {
-  const [tags, setTags] = React.useState<string[]>([]);
-  const [inputValue, setInputValue] = React.useState('');
-
-  const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
-    if (event.key === 'Enter' && inputValue.trim() !== '') {
-      setTags([...tags, inputValue.trim()]);
-      setInputValue('');
-    }
-    if (event.key === 'Backspace' && inputValue === '') {
-      setTags(tags.slice(0, -1));
-    }
-  };
-
-  return (
-    <div className="flex flex-wrap items-center gap-2 border rounded-lg px-2 py-2 min-h-[50px] border-line hover:border-secondary peer-focus-within:border-secondary group-focus-within:border-secondary duration-200">
-      {tags.map((tag) => (
-        <div
-          key={tag}
-          className="inline-flex items-center gap-2 rounded-full border border-primary border-opacity-30 !bg-[#ECFCE5] px-3 py-1 text-sm text-[#198155]"
-        >
-          <span>{tag}</span>
-          <button type="button" className="text-[#198155]" onClick={() => setTags(tags.filter((t) => t !== tag))}>
-            <X size={16} strokeWidth={1} />
-          </button>
-        </div>
-      ))}
-      <input
-        type="text"
-        className="flex-grow outline-none peer"
-        placeholder="Add a tag"
-        value={inputValue}
-        onChange={(event) => setInputValue(event.target.value)}
-        onKeyDown={handleKeyDown}
-      />
     </div>
   );
 };
