@@ -1,8 +1,7 @@
 import clsx from 'clsx';
 import React from 'react';
-import { Button, Select } from 'pakt-ui';
+import { Button } from 'pakt-ui';
 import { useJobCreationStore } from '@/lib/store';
-import { Plus, X, ChevronRight } from 'lucide-react';
 
 export const Visibility: React.FC = () => {
   const setActiveStep = useJobCreationStore((state) => state.setActiveStep);

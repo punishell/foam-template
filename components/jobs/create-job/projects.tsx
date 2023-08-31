@@ -8,7 +8,7 @@ export const Projects: React.FC = () => {
   const setActiveStep = useJobCreationStore((state) => state.setActiveStep);
   const setStepsStatus = useJobCreationStore((state) => state.setStepsStatus);
 
-  const [jobType, setJobType] = React.useState<'freelance' | 'team-project'>();
+  const [jobType, setJobType] = React.useState<'freelance' | 'project'>();
 
   return (
     <div className="flex flex-col w-full gap-6">
@@ -32,10 +32,10 @@ export const Projects: React.FC = () => {
               </span>
             </button>
             <button
-              onClick={() => setJobType('team-project')}
+              onClick={() => setJobType('project')}
               className={clsx({
                 'flex flex-col gap-2 border border-line rounded-2xl p-4 text-left duration-200': true,
-                'bg-[#ECFCE5] border-primary': jobType === 'team-project',
+                'bg-[#ECFCE5] border-primary': jobType === 'project',
               })}
             >
               <span className="text-title font-medium">Project</span>
@@ -46,7 +46,7 @@ export const Projects: React.FC = () => {
           </div>
         </div>
 
-        {jobType === 'team-project' && <ChooseProject />}
+        {jobType === 'project' && <ChooseProject />}
       </div>
 
       <div className="flex justify-end">
