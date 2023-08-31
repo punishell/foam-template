@@ -1,6 +1,7 @@
 'use client';
 
 import { Button } from 'pakt-ui';
+import { useRouter } from 'next/navigation';
 import { Tabs } from '@/components/common/tabs';
 import { Feeds } from '@/components/overview/feeds';
 import { Header } from '@/components/overview/header';
@@ -40,12 +41,14 @@ export default function Overview() {
 }
 
 const JobHeader = () => {
+  const router = useRouter();
+
   return (
     <div className="grid gap-4 grid-cols-2">
       <div className="border-2 bg-[#ECFCE5] p-4 rounded-2xl border-primary relative overflow-hidden">
         <div className="flex flex-col gap-4">
           <p className="text-xl font-bold max-w-[260px]">Short text on creating a job comes here</p>
-          <Button size="sm">
+          <Button size="sm" onClick={() => router.push('/jobs/create')}>
             <span className="flex items-center gap-2">
               <Plus size={20} />
               <span>Create Job</span>
@@ -61,7 +64,7 @@ const JobHeader = () => {
       <div className="border-2 p-4 relative overflow-hidden rounded-2xl bg-[#C9F0FF] border-blue-darkest">
         <div className="flex flex-col gap-4">
           <p className="text-xl font-bold max-w-[260px]">Short text on finding a job comes here</p>
-          <Button variant="secondary" size="sm">
+          <Button variant="secondary" size="sm" onClick={() => router.push('/talents')}>
             <span className="flex items-center gap-2">
               <Search size={20} />
               <span>Find Jobs</span>
