@@ -1,9 +1,37 @@
 import { User } from '@/lib/types';
 import { ApiError, axios } from '@/lib/axios';
-import { useUserState } from '@/lib/store/account';
 import { toast } from '@/components/common/toaster';
 import { useQuery, useMutation } from '@tanstack/react-query';
+import { useUserState } from '../store/account';
 
+interface GetAccountresponse {
+  _id: string,
+  type: string,
+  email: string,
+  lastName: string,
+  firstName: string,
+  score: 0,
+  profileImage: {
+    url: string,
+  },
+  profileCompleteness: 0,
+  profile: {
+    talent: {
+      skillIds: [],
+      availability: string,
+      skills: [],
+      about: string,
+    },
+    bio: {
+      title: string,
+      description: string,
+    },
+    contact: {
+      city: string,
+      country: string,
+    }
+  }
+}
 interface UpdateAccountParams {
   username?: string;
   profile?: {
@@ -57,13 +85,15 @@ async function fetchUserAccount(): Promise<User> {
 
 export const useGetAccount = () => {
   const { setUser } = useUserState();
-
   return useQuery({
     queryFn: fetchUserAccount,
     queryKey: ['account-details'],
     onError: (error: ApiError) => {
       toast.error(error?.response?.data.message || 'An error occurred');
     },
-    onSuccess: (user) => setUser(user),
+    onSuccess: (user: GetAccountresponse) => {
+      setUser(user);
+      return user;
+    },
   });
 };

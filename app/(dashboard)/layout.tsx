@@ -34,7 +34,6 @@ export default function DashboardLayout({ children }: Props) {
       axios.defaults.headers.common['Authorization'] = '';
     };
   }, [router, token]);
-
   if (!isTokenSet) {
     return <Loader />;
   }

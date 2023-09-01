@@ -13,13 +13,14 @@ interface Props {
 
 export default function Chat({ params }: Props) {
   const { 'message-id': messageId } = params;
+  const { currentConversation, loadingChats, setActiveConversation, sendUserMessage, markUserMessageAsSeen } = useMessaging();
   const [loadingMessage, setLoadingMessages] = useState(true);
   const [text, setText] = useState("");
-  const { currentConversation, loadingChats, setActiveConversation, sendUserMessage } = useMessaging();
 
   const loadMessages = async () => {
     await setActiveConversation(messageId);
     setLoadingMessages(false);
+    await markUserMessageAsSeen(messageId);
   }
 
   const messages = useMemo(() => currentConversation?.messages || [], [currentConversation?.messages]);
@@ -34,7 +35,7 @@ export default function Chat({ params }: Props) {
       if (objDiv) {
         objDiv.scrollTop = objDiv.scrollHeight;
       }
-    }, 100);
+    }, 50);
   };
 
   useEffect(() => { scrollMessages() }, [currentConversation?.messages]);
@@ -42,9 +43,11 @@ export default function Chat({ params }: Props) {
   if (loadingMessage) return <LoadingMessages />;
 
   const sendMessage = async () => {
-    console.log("Send message...", text, currentConversation);
-    await sendUserMessage(currentConversation?.recipient?._id, currentConversation?.sender?._id, MessageTypeEnums.TEXT, text, currentConversation.id);
-    setText("");
+    if (text != "") {
+      await sendUserMessage(currentConversation?.recipient?._id, currentConversation?.sender?._id, MessageTypeEnums.TEXT, text, currentConversation.id);
+      loadMessages();
+      setText("");
+    }
   }
 
   return (

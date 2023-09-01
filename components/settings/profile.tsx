@@ -1,13 +1,14 @@
 'usse client';
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import * as z from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { SubmitHandler, useForm } from 'react-hook-form';
+import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { UserAvatar2 } from '@/components/common/user-avatar';
 import { ChevronDown, ChevronUp, InfoIcon, Mail, MapPin, Verified } from 'lucide-react';
 import { Button, Checkbox, Input, Select, Switch, Textarea } from 'pakt-ui';
 import { useGetAccount, useUpdateAccount } from '@/lib/api/account';
 import { Spinner } from '../common';
+import { TagInput } from '../common/tag-input';
 
 const ProfileStates = [
   { label: 'Private', value: 'private' },
@@ -23,8 +24,7 @@ const editProfileFormSchema = z.object({
   location: z.string().min(1, 'Location is required'),
   country: z.string().min(1, 'Country is required'),
   about: z.string().min(1, 'professional bio is required'),
-  skills: z.string().min(1, 'atleast 3 skills are required'),
-  // skills: z.array(z.string()).min(3, "atleast 3 skills are required"),
+  skills: z.array(z.string()).nonempty({ message: "skills are reuqired" }),
 });
 
 type EditProfileFormValues = z.infer<typeof editProfileFormSchema>;
@@ -194,10 +194,12 @@ export const ProfileView = () => {
                   <div className="w-1/2">
                     <p className="text-body text-sm">Add your top 3 skills first</p>
                     {/* TODO:: Replace with TAGINput component after YInka make's it a component */}
-                    <Textarea
-                      className="!min-h-[186px]"
-                      {...form.register('skills')}
-                      placeholder="Enter a 350 character about thing"
+                    <Controller
+                      name="skills"
+                      control={form.control}
+                      render={({ field: { onChange, value = [] } }) => (
+                        <TagInput tags={value} setTags={onChange} className="min-h-[50px]" />
+                      )}
                     />
                   </div>
                   <div className="w-1/2">

@@ -1,16 +1,15 @@
 'use client';
 /* eslint-disable no-unused-vars */
 /* eslint-disable react-hooks/exhaustive-deps */
-import { sendToast } from "@/components/messaging/notify";
-// import { useRouter } from "next/router";
 import { getCookie } from "cookies-next";
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { io, Socket } from "socket.io-client";
 import { useUserState } from "@/lib/store/account";
-import { COOKIE_NAME } from "@/lib/utils";
+import { AUTH_TOKEN_KEY } from "@/lib/utils";
 import { axios } from "@/lib/axios";
 import { usePathname } from "next/navigation";
 import dayjs from "dayjs";
+import { toast } from "@/components/common/toaster";
 
 export const MessageTypeEnums = {
   TEXT: "TEXT",
@@ -52,11 +51,7 @@ export type SocketContextType = {
     message: string,
     conversation: string
   ) => Promise<any>;
-  markUserMessageAsSeen: (
-    conversation: string,
-    sender: string,
-    recipient: string
-  ) => Promise<any>;
+  markUserMessageAsSeen: (conversation: string) => Promise<any>;
   getConversationById: (id: string) => Promise<any>;
   setActiveConversation: (id: string) => void;
 };
@@ -68,7 +63,7 @@ export const SocketContext = createContext<SocketContextType>(
 
 const prefix = "messaging";
 export const MessagingProvider = ({ children }: { children: React.ReactNode }) => {
-  const authToken = getCookie(COOKIE_NAME);
+  const authToken = getCookie(AUTH_TOKEN_KEY);
   const { _id } = useUserState();
   const loggedInUser = _id;
   const [socket, setSocket] = useState<Socket | null | any>(null);
@@ -83,7 +78,6 @@ export const MessagingProvider = ({ children }: { children: React.ReactNode }) =
   const SocketConnection = async () => {
     if (socket && loggedInUser) {
       socket.on("connect", function () {
-        console.log(socket);
         setSocket(socket);
         socket.emit(conversationEnums.USER_CONNECT, { userId: loggedInUser }, (response: any) => {
           const parsedConversation = parseUserchats(response);
@@ -94,7 +88,8 @@ export const MessagingProvider = ({ children }: { children: React.ReactNode }) =
         // Join Old Conversation If any
         socket?.emit(conversationEnums.JOIN_OLD_CONVERSATIIONS, { userId: loggedInUser }, () => { });
         socket?.on("disconnect", () => {
-          console.log("has disconnected==", socket);
+          // console.log("has disconnected==", socket);
+          // TODO:: Perform Disconnect Function
         });
 
         // notifies if user status is either offline/ online in an active chat
@@ -117,8 +112,8 @@ export const MessagingProvider = ({ children }: { children: React.ReactNode }) =
 
   useEffect(() => {
     // Here we listen to popup events
-    socket?.on(conversationEnums.POPUP_MESSAGE, (c: any) => {
-      console.log("new message===", c)
+    socket?.on(conversationEnums.POPUP_MESSAGE, async (c: any) => {
+      await fetchUserChats(c._id);
       // notify user
       const messageContent =
         c.currentMessage.content.length > MIN_LEN
@@ -132,7 +127,7 @@ export const MessagingProvider = ({ children }: { children: React.ReactNode }) =
       const senderImage = messageSender?.profileImage?.url;
       // show toast if not on messsaging screen
       if (!messagingScreen) {
-        return sendToast(messageTitle, messageContent, senderImage);
+        toast.message(messageTitle, messageContent, senderImage)
       }
     });
 
@@ -149,7 +144,7 @@ export const MessagingProvider = ({ children }: { children: React.ReactNode }) =
   // connect to chat socket
   useEffect(() => {
     connectChatInit();
-  }, []);
+  }, [loggedInUser]);
 
   const connectChatInit = async () => {
     if (loggedInUser) {
@@ -171,15 +166,16 @@ export const MessagingProvider = ({ children }: { children: React.ReactNode }) =
 
   const getConversationHeader = (conversation: any) => {
     const sender = conversation.recipients.find((r: any) => r._id !== loggedInUser);
-    return conversation.type == "DIRECT" ? { title: `${sender.firstName} ${sender.lastName}`, description: sender?.profile?.bio?.title } : { title: conversation.title, description: conversation.description };
+    return conversation.type == "DIRECT" ? { title: `${sender?.firstName} ${sender?.lastName}`, description: sender?.profile?.bio?.title } : { title: conversation.title, description: conversation.description };
   };
-  const getUnreadcount = (messages: any[]) => messages.filter((r: any) => r.seen == null).length;
-  const getLastMessage = (messages: any[]) => messages.length > 0 ? messages[0].content : null;
-  const getLastMessageTime = (messages: any[]) => messages.length > 0 ? dayjs(messages[0].createdAt).format("HH:ss A") : null;
+  const getUnreadcount = (messages: any[]) => messages.filter((r: any) => !!!(r.readBy && !!r.readBy.includes(loggedInUser)) && r.user != loggedInUser).length;
+  const getLastMessage = (messages: any[]) => messages.length > 0 ? messages[messages.length - 1].content : null;
+  const getLastMessageTime = (messages: any[]) => messages.length > 0 ? dayjs(messages[messages.length - 1].createdAt).format("HH:ss A") : null;
   const getConversationById = (id: string) => conversations.find((c: any) => c.id == id);
-  const parseMessages = (messages: []) => messages.map((m:any) => ({
+  const parseMessages = (messages: []) => messages.map((m: any) => ({
     content: m.content,
     isSent: m.user == loggedInUser,
+    isRead: !!(m.readBy && m.readBy.includes(loggedInUser)),
   }))
 
   const setActiveConversation = (_id: string) => {
@@ -202,7 +198,7 @@ export const MessagingProvider = ({ children }: { children: React.ReactNode }) =
   })
   );
 
-  const fetchUserChats = async () => {
+  const fetchUserChats = async (currentConvoId?: string) => {
     try {
       const { data } = await axios.get(`/chat`);
       if (data?.status === "success") {
@@ -210,6 +206,10 @@ export const MessagingProvider = ({ children }: { children: React.ReactNode }) =
         const parsedConversation = parseUserchats(payload);
         setConversations(parsedConversation);
         setLoadingChats(false);
+        if (currentConvoId) {
+          const cOV = parsedConversation.find((c: any) => c.id == currentConvoId);
+          setCurrentConversation(cOV);
+        }
         return payload.messages;
       }
     } catch (error: any) {
@@ -221,7 +221,6 @@ export const MessagingProvider = ({ children }: { children: React.ReactNode }) =
     sender: string,
     recipient: object
   ) => {
-    // return dispatch(startInitializeConversation({ socket, sender, recipient }));
     try {
       await socket.emit(
         conversationEnums.INITIALIZE_CONVERSATION,
@@ -246,6 +245,8 @@ export const MessagingProvider = ({ children }: { children: React.ReactNode }) =
     conversation: string
   ) => {
     try {
+      const conv = getConversationById(conversation);
+      setCurrentConversation({ ...conv, messages: [conv.messages, { content: message, isSent: true }] });
       const sentMessage = await socket.emit(
         conversationEnums.SEND_MESSAGE,
         {
@@ -259,29 +260,23 @@ export const MessagingProvider = ({ children }: { children: React.ReactNode }) =
           return conversation;
         }
       );
-      fetchUserChats();
+      const currenctConvId = currentConversation.id;
+      fetchUserChats(currenctConvId);
       return sentMessage;
     } catch (error: any) {
       // return error?.response?.data;
-      console.log("sending0---error", error);
+      return toast.error(error?.response?.data.message || 'Failed to Send Message Try again');
     }
   };
 
-  const markUserMessageAsSeen = async (
-    conversation: string,
-    sender: string,
-    recipient: string
-  ) => {
-    // return markMessageAsSeen({ socket, conversation, sender, recipient });
+  const markUserMessageAsSeen = async (conversation: string) => {
     try {
       await socket.emit(conversationEnums.MARK_MESSAGE_AS_SEEN, {
         conversationId: conversation,
-        senderId: sender,
-        recipientId: (recipient as any)._id,
+        recipientId: loggedInUser,
         seen: new Date(),
-      }, async function (conversations: any) {
-        return { recipient, conversations };
       });
+      await fetchUserChats();
     } catch (e) {
       return null;
     }

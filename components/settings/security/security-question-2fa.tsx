@@ -31,7 +31,7 @@ export const SecurityQuestion2FA = ({ isEnabled }: SecurityQuestion2FA) => {
         <Text.p size="lg">Security Question</Text.p>
       </button>
 
-      <Modal isOpen={isModalOpen} onOpenChange={closeModal} className="rounded-xl p-8">
+      <Modal isOpen={isModalOpen} onOpenChange={closeModal} className="bg-white rounded-xl p-8">
         {isEnabled ? (
           <Slider items={[{ SlideItem: DeactivateSecurityQuestion }, { SlideItem: DeactivateSecuritySuccess }]} />
         ) : (
