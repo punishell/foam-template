@@ -1,17 +1,25 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Bell, Search } from 'lucide-react';
 import { UserBalance } from '@/components/common/user-balance';
 import { useMessaging } from '@/providers/socketProvider';
 import { ChatList, ChatListSearch } from '@/components/messaging/chatlist';
+import { useSearchParams } from 'next/navigation';
+import { Spinner } from '@/components/common';
 
 interface Props {
   children: React.ReactNode;
 }
 
 export default function MessagesLayout({ children }: Props) {
-  const { conversations } = useMessaging();
+  const { conversations, startUserInitializeConversation, loadingChats } = useMessaging();
+  const searchParams = useSearchParams();
+  const queryParams = new URLSearchParams(searchParams as any);
+  const userId = queryParams.get("userId");
+  useEffect(() => {
+    if (userId) startUserInitializeConversation(userId)
+  }, []);
   return (
     <div className="flex flex-col gap-6 h-full">
       <div className="flex items-center justify-between">
@@ -31,7 +39,7 @@ export default function MessagesLayout({ children }: Props) {
       <div className="flex grow w-full h-[90%]">
         <div className="bg-white basis-[370px] grow-0 border h-full shrink-0 flex flex-col rounded-lg rounded-r-none border-line">
           <ChatListSearch />
-          <ChatList conversations={conversations} />
+          <ChatList conversations={conversations} loading={loadingChats} />
         </div>
 
         <div className="w-full border grow h-full bg-white flex flex-col rounded-lg rounded-l-none border-l-0 border-line p-6 pt-3">

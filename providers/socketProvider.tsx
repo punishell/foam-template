@@ -10,6 +10,7 @@ import { axios } from "@/lib/axios";
 import { usePathname } from "next/navigation";
 import dayjs from "dayjs";
 import { toast } from "@/components/common/toaster";
+import { useRouter } from "next/navigation";
 
 export const MessageTypeEnums = {
   TEXT: "TEXT",
@@ -40,10 +41,7 @@ export type SocketContextType = {
   conversations: any;
   socket: Socket | any;
   fetchUserChats: () => any;
-  startUserInitializeConversation: (
-    sender: string,
-    recipient: object
-  ) => Promise<any>;
+  startUserInitializeConversation: (recipientId: string) => Promise<any>;
   sendUserMessage: (
     sender: string,
     recipient: string,
@@ -54,6 +52,7 @@ export type SocketContextType = {
   markUserMessageAsSeen: (conversation: string) => Promise<any>;
   getConversationById: (id: string) => Promise<any>;
   setActiveConversation: (id: string) => void;
+  unreadChatCount: number
 };
 const MIN_LEN = 25;
 const SOCKET_URL = process.env.NEXT_PUBLIC_SOCKET_URL;
@@ -71,6 +70,8 @@ export const MessagingProvider = ({ children }: { children: React.ReactNode }) =
   const [conversations, setConversations] = useState<any>([]);
   const [status, setStatus] = useState<string>("pending");
   const [loadingChats, setLoadingChats] = useState<boolean>(true);
+  const [unreadChatCount, setUnreadChatCount] = useState<number>(0);
+  const router = useRouter();
 
   const pathname = usePathname();
   const messagingScreen = pathname.includes(prefix);
@@ -83,6 +84,7 @@ export const MessagingProvider = ({ children }: { children: React.ReactNode }) =
           const parsedConversation = parseUserchats(response);
           setConversations(parsedConversation);
           setLoadingChats(false);
+          setUnreadChats(parsedConversation);
         });
 
         // Join Old Conversation If any
@@ -178,6 +180,12 @@ export const MessagingProvider = ({ children }: { children: React.ReactNode }) =
     isRead: !!(m.readBy && m.readBy.includes(loggedInUser)),
   }))
 
+  const setUnreadChats = (conversations: any[]) => {
+    const unread = conversations.reduce((a: any, b) => a + b.unreadcount, 0);
+    console.log("unread=-=-=-=->", unread);
+    setUnreadChatCount(unread);
+  }
+
   const setActiveConversation = (_id: string) => {
     const conversation = getConversationById(_id);
     return setCurrentConversation(conversation);
@@ -206,6 +214,7 @@ export const MessagingProvider = ({ children }: { children: React.ReactNode }) =
         const parsedConversation = parseUserchats(payload);
         setConversations(parsedConversation);
         setLoadingChats(false);
+        setUnreadChats(parsedConversation);
         if (currentConvoId) {
           const cOV = parsedConversation.find((c: any) => c.id == currentConvoId);
           setCurrentConversation(cOV);
@@ -217,19 +226,18 @@ export const MessagingProvider = ({ children }: { children: React.ReactNode }) =
     }
   };
 
-  const startUserInitializeConversation = async (
-    sender: string,
-    recipient: object
-  ) => {
+  const startUserInitializeConversation = async (recipientId: string) => {
     try {
-      await socket.emit(
+      console.log("starting-chat", recipientId);
+      const resp = await socket.emit(
         conversationEnums.INITIALIZE_CONVERSATION,
         {
-          senderId: sender,
-          recipientId: (recipient as any)._id,
+          senderId: loggedInUser,
+          recipientId,
         },
         async (conversation: any) => {
-          return conversation;
+          console.log("conver===>", conversation);
+          return router.push(`/messages/${conversation._id}`);
         }
       );
     } catch (error) {
@@ -289,6 +297,7 @@ export const MessagingProvider = ({ children }: { children: React.ReactNode }) =
     status,
     conversations,
     socket,
+    unreadChatCount,
     fetchUserChats,
     startUserInitializeConversation,
     sendUserMessage,

@@ -4,8 +4,10 @@ import { LogOut } from './logout';
 import { NavLink } from './nav-link';
 import { UserProfile } from '@/components/sidebar/user-profile';
 import { LayoutDashboard, Users, LayoutList, Briefcase, Wallet, MessageSquare, Settings } from 'lucide-react';
+import { useMessaging } from '@/providers/socketProvider';
 
 export const Sidebar = () => {
+  const { unreadChatCount } = useMessaging();
   return (
     <div className="bg-sidebar-gradient gap-6 overflow-y-auto shrink-0 px flex text-white px-6 pb-4 pt-6 basis-[280px] flex-col h-screen">
       <div className="flex items-center flex-col w-full">
@@ -42,6 +44,9 @@ export const Sidebar = () => {
         <NavLink href="/messages">
           <MessageSquare size={20} />
           <span>Messages</span>
+          {unreadChatCount > 0 && <div className="h-5 w-5 shrink-0 text-opacity-80 rounded-full text-xs bg-[#ECFCE5] text-primary flex items-center justify-center">
+            {unreadChatCount}
+          </div>}
         </NavLink>
 
         <NavLink href="/settings">

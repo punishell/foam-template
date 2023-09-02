@@ -6,10 +6,12 @@ import { Bell, Search } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 import { UserBalance } from '@/components/common/user-balance';
 import { useMessaging } from '@/providers/socketProvider';
+import { Spinner } from '../common';
 
-const ChatList = ({ conversations }: { conversations: any[] }) => {
+const ChatList = ({ conversations, loading }: { conversations: any[], loading: boolean }) => {
   return (
     <div className="grow w-full overflow-y-auto flex flex-col divide-line">
+      {loading && <Spinner />}
       {conversations.map((c: any, i) =>
         <ChatListItem
           key={i}

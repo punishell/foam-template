@@ -1,6 +1,7 @@
 import { axios, ApiError } from '@/lib/axios';
 import { useMutation } from '@tanstack/react-query';
 import { toast } from '@/components/common/toaster';
+import { useUserState } from '../store/account';
 
 // Signup
 
@@ -125,12 +126,17 @@ async function postLogin({ email, password }: LoginParams): Promise<LoginRespons
 }
 
 export function useLogin() {
+  const { setUser } = useUserState();
   return useMutation({
     mutationFn: postLogin,
     mutationKey: ['login'],
     onError: (error: ApiError) => {
       toast.error(error?.response?.data.message || 'An error occurred');
     },
+    onSuccess: (data) => {
+      // @ts-ignore
+      setUser(data);
+    }
   });
 }
 

@@ -18,10 +18,10 @@ export const TalentBox: React.FC<{
 }> = ({ id, name, title, imageUrl, score, skills, achievements }) => {
   const colorCodes = colorFromScore(parseInt(score ?? "0"));
   return (
-    <div key={id} className="m-0 h-[365px] overflow-hidden rounded-3xl p-0" style={{ background: colorCodes.bgColor}} >
+    <div key={id} className="m-0 h-[365px] overflow-hidden rounded-3xl p-0" style={{ background: colorCodes.bgColor }} >
       <div className="relative z-0 h-full rounded-2xl">
-        <div className="top absolute rounded-full left-[-20%] top-[-20%] w-[200px] h-[200px]" style={{ background: colorCodes.circleColor}} />
-        <div className="bottom absolute right-[-20%] top-[40%] rounded-full w-[200px] h-[200px]" style={{ background: colorCodes.circleColor}} />
+        <div className="top absolute rounded-full left-[-20%] top-[-20%] w-[200px] h-[200px]" style={{ background: colorCodes.circleColor }} />
+        <div className="bottom absolute right-[-20%] top-[40%] rounded-full w-[200px] h-[200px]" style={{ background: colorCodes.circleColor }} />
 
         <div className="flex relative top-0 mx-auto w-full justify-center p-10 pb-0">
           <Link href={`/talents/${id}`}>
@@ -58,7 +58,7 @@ export const TalentBox: React.FC<{
               />
             </div>
             {/* <div className="absolute top-[5%] h-full w-full rounded-3xl mt-[3px]"> */}
-            <div className="absolute top-[5%] h-full w-full rounded-3xl mt-[3px]" style={{ fill: "rgba(255, 237, 237, 0.37)", backdropFilter: "blur(29px)"}}>
+            <div className="absolute top-[5%] h-full w-full rounded-3xl mt-[3px]" style={{ fill: "rgba(255, 237, 237, 0.37)", backdropFilter: "blur(29px)" }}>
               <div className="relative rounded-2xl border-t-0 px-5">
                 <div className="grid grid-rows-3 gap-1">
                   <span className="pb-0 pt-3 text-2xl font-semibold capitalize">{name}</span>
@@ -85,19 +85,20 @@ export const TalentBox: React.FC<{
                   <div className="grid grid-cols-4 gap-2">
                     {achievements &&
                       achievements.length > 0 &&
-                      achievements.map((a: any, i: number) =>{ 
+                      achievements.map((a: any, i: number) => {
                         const achievM = getAchievementData(a.type);
-                        return(
-                        <Badge
-                          key={i}
-                          title={achievM?.title}
-                          value={a?.value}
-                          total={a?.total}
-                          textColor={achievM?.textColor}
-                          bgColor={achievM?.bgColor}
-                          type={a.type}
-                        />
-                      )})}
+                        return (
+                          <Badge
+                            key={i}
+                            title={achievM?.title}
+                            value={a?.value}
+                            total={a?.total}
+                            textColor={achievM?.textColor}
+                            bgColor={achievM?.bgColor}
+                            type={a.type}
+                          />
+                        )
+                      })}
                     {achievements.length == 0 &&
                       emptyAchievement.map((a: any, i: number) => (
                         <Badge
@@ -115,7 +116,7 @@ export const TalentBox: React.FC<{
 
                 <div className="mt-4 flex items-center gap-4">
                   <Link
-                    href={`/messaging?userId=${id}`}
+                    href={`/messages?userId=${id}`}
                     className="flex h-[42px] grow items-center justify-center rounded-lg border border-[#007c5b] bg-white py-2 text-sm text-primary duration-200 hover:text-primary"
                   >
                     Message
