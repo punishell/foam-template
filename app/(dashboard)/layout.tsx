@@ -7,6 +7,7 @@ import { RaceBy } from '@uiball/loaders';
 import { getCookie } from 'cookies-next';
 import { useRouter } from 'next/navigation';
 import { AUTH_TOKEN_KEY } from '@/lib/utils';
+import { useUserState } from '@/lib/store/account';
 
 const Loader = () => {
   return (
@@ -24,6 +25,7 @@ export default function DashboardLayout({ children }: Props) {
   const router = useRouter();
   const token = getCookie(AUTH_TOKEN_KEY);
   const [isTokenSet, setIsTokenSet] = useState(false);
+  const { _id } = useUserState();
 
   React.useEffect(() => {
     if (token) {
@@ -34,7 +36,6 @@ export default function DashboardLayout({ children }: Props) {
       axios.defaults.headers.common['Authorization'] = '';
     };
   }, [router, token]);
-
   if (!isTokenSet) {
     return <Loader />;
   }

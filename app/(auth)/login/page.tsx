@@ -12,7 +12,8 @@ import { Container } from '@/components/common/container';
 import { useSearchParams, useRouter } from 'next/navigation';
 
 import { Spinner } from '@/components/common';
-import { AUTH_TOKEN_KEY, TEMP_AUTH_TOKEN_KEY } from '@/lib/utils';
+import { useUserState } from '@/lib/store/account';
+import { AUTH_TOKEN_KEY, TEMP_AUTH_TOKEN_KEY} from '@/lib/utils';
 
 const loginFormSchema = z.object({
   password: z.string().min(1, 'Password is required').min(8, 'Password is too short'),
@@ -25,6 +26,7 @@ export default function Login() {
   const login = useLogin();
   const router = useRouter();
   const searchParams = useSearchParams();
+  const { setUser } = useUserState();
 
   const form = useForm<LoginFormValues>({
     resolver: zodResolver(loginFormSchema),
@@ -34,6 +36,8 @@ export default function Login() {
     login.mutate(values, {
       onSuccess: (data) => {
         if (data.isVerified) {
+          // @ts-ignore
+          setUser(data);
           setCookie(AUTH_TOKEN_KEY, data.token);
           return router.push(searchParams.get('from') || '/overview');
         }

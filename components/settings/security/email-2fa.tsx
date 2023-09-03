@@ -31,7 +31,7 @@ export const Email2FA = ({ isEnabled }: Email2FAProps) => {
         <Text.p size="lg">Email Auth</Text.p>
       </button>
 
-      <Modal isOpen={isModalOpen} onOpenChange={closeModal} className="rounded-2xl p-6">
+      <Modal isOpen={isModalOpen} onOpenChange={closeModal} className="bg-white rounded-2xl p-6">
         {isEnabled ? (
           <Slider
             items={[
