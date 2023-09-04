@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Button } from 'pakt-ui';
 import { X, Bookmark, Briefcase, Clock4, Gavel } from 'lucide-react';
 import { UserAvatar } from '../common/user-avatar';
@@ -9,10 +9,59 @@ import alert from '@/lottiefiles/alert.json';
 import gavel from '@/lottiefiles/gavel.json';
 import failed from '@/lottiefiles/failed.json';
 import warning from '@/lottiefiles/warning.json';
+import { useDismissAllFeed, useDismissFeed, useGetTimeline } from '@/lib/api/dashboard';
+import { FEED_TYPES } from '@/lib/utils';
 
 export const Feeds = () => {
+  const { data: timelineData, refetch: feedRefetch } = useGetTimeline({ page: 1, limit: 10, filter: {} });
+  console.log(timelineData);
+
+  // @ts-ignore
+  const DismissAll = () => useDismissAllFeed().mutate({}, {
+    onSuccess: () => {
+      // refetch feeds
+      feedRefetch();
+    }
+  });
+
+  const DismissByID = (id: string) => useDismissFeed().mutate(id, {
+    onSuccess: () => {
+      // refetch feeds
+      feedRefetch();
+    }
+  });
+
+  const timelineFeeds = useMemo(() => (timelineData?.data || []).map((feeds) => ({
+    title: feeds?.title,
+    type: feeds?.type,
+    inviter: {
+      avatar: feeds?.data?.creator?.profileImage?.url || "",
+      name: `${feeds?.data?.creator?.firstName || ""} ${feeds?.data?.creator?.lastName || ""}`,
+      score: feeds?.data?.creator?.score || 0,
+    },
+    id: feeds?.data?._id,
+    amount: feeds?.data?.paymentFee,
+    dismissed: feeds?.closed,
+  })), [timelineData?.data])
+
+  console.log(timelineFeeds);
   return (
     <div className="flex flex-col gap-5 mt-4 border border-line bg-white rounded-2xl p-4 w-full">
+      {timelineFeeds.map((feed, i) => {
+        if (feed.type == FEED_TYPES.COLLECTION_CREATED)
+          return <PublicJobCreatedFeed
+            creator={feed.inviter.name}
+            amount={feed?.amount}
+            jobId={feed?.id}
+            title={feed?.title}
+          />
+        return <JobFeedCard
+          key={i}
+          jobTitle="Mobile UX Design for Afrofund"
+          type="job-invite-filled"
+          jobInviter={{ avatar: '', name: 'Claire', paktScore: 50 }}
+        />
+      })}
       <JobFeedCard
         jobTitle="Mobile UX Design for Afrofund"
         type="job-invite-filled"
@@ -33,7 +82,12 @@ export const Feeds = () => {
         invitationExpiry="2021-09-01T00:00:00.000Z"
         jobInviter={{ avatar: '', name: 'Claire', paktScore: 50 }}
       />
-      <PublicJobCreatedFeed />
+      <PublicJobCreatedFeed
+        creator='Joan'
+        amount="600"
+        jobId='sdfdgf'
+        title='SOftware System Update and Designs'
+      />
 
       <TalentJobUpdateFeed />
       <JobDeliverableCompletionFeed />
@@ -214,36 +268,25 @@ export const JobFeedWrapper: React.FC<{ children: React.ReactNode }> = ({ childr
   );
 };
 
-const PublicJobCreatedFeed = () => {
+const PublicJobCreatedFeed = ({ creator, title, amount, jobId }: { creator: string, title: string, amount: string, jobId: string }) => {
   return (
     <JobFeedWrapper>
       <UserAvatar score={54} />
-
       <div className="flex flex-col gap-4 w-full">
         <div className="flex justify-between items-center">
           <h3 className="text-body text-xl font-bold">
-            Joan Invited you to a{' '}
-            <span className="px-2 text-lg text-title inline-flex rounded-full bg-green-300">${500}</span> job
+            {creator} created a{" "}
+            <span className="px-2 text-lg text-title inline-flex rounded-full bg-green-300">${amount}</span> public job
           </h3>
-
-          <div className="flex items-center gap-2">
-            <div className="flex gap-1 text-body items-center text-sm">
-              <Clock4 size={20} />
-              <span>Time left: 1:48:00</span>
-            </div>
-            <X size={20} />
-          </div>
         </div>
-
-        <h3 className="text-title text-3xl font-normal">Sales and Business Development Manager for a SaaS Provider</h3>
-
+        <h3 className="text-title text-3xl font-normal">{title}</h3>
         <div className="justify-between items-center flex mt-auto">
           <div className="flex items-center gap-2">
             <Button size="xs" variant="secondary">
-              See Details
+              Apply
             </Button>
             <Button size="xs" variant="outline">
-              Accept
+              See Details
             </Button>
           </div>
           <Bookmark size={20} />

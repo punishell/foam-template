@@ -1,13 +1,15 @@
 'use client';
 
 import { Button } from 'pakt-ui';
+import { Briefcase, Search, Plus } from 'lucide-react';
+import Link from 'next/link';
+
 import { Tabs } from '@/components/common/tabs';
 import { Feeds } from '@/components/overview/feeds';
 import { Header } from '@/components/overview/header';
 import { PaktScore } from '@/components/overview/paktscore';
 import { LeaderBoard } from '@/components/overview/leaderboard';
 
-import { Briefcase, Search, Plus } from 'lucide-react';
 
 export default function Overview() {
   return (
@@ -45,12 +47,14 @@ const JobHeader = () => {
       <div className="border-2 bg-[#ECFCE5] p-4 rounded-2xl border-primary relative overflow-hidden">
         <div className="flex flex-col gap-4">
           <p className="text-xl font-bold max-w-[260px]">Short text on creating a job comes here</p>
-          <Button size="sm">
-            <span className="flex items-center gap-2">
-              <Plus size={20} />
-              <span>Create Job</span>
-            </span>
-          </Button>
+          <Link href={"/jobs/create"}>
+            <Button size="sm">
+              <span className="flex items-center gap-2">
+                <Plus size={20} />
+                <span>Create Job</span>
+              </span>
+            </Button>
+          </Link>
         </div>
 
         <div className="absolute right-0 translate-x-1/3 top-2">
@@ -61,12 +65,14 @@ const JobHeader = () => {
       <div className="border-2 p-4 relative overflow-hidden rounded-2xl bg-[#C9F0FF] border-blue-darkest">
         <div className="flex flex-col gap-4">
           <p className="text-xl font-bold max-w-[260px]">Short text on finding a job comes here</p>
-          <Button variant="secondary" size="sm">
-            <span className="flex items-center gap-2">
-              <Search size={20} />
-              <span>Find Jobs</span>
-            </span>
-          </Button>
+          <Link href="/jobs">
+            <Button variant="secondary" size="sm">
+              <span className="flex items-center gap-2">
+                <Search size={20} />
+                <span>Find Jobs</span>
+              </span>
+            </Button>
+          </Link>
         </div>
 
         <div className="absolute right-0 translate-x-[30px] top-4">
