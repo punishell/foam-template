@@ -14,6 +14,7 @@ export const Invites = () => {
       type={"job-invite-pending"}
       amount={feed?.data?.paymentFee || 0}
       id={feed?.data?._id}
+      _id={feed?._id}
       invitationExpiry={feed?.data?.expiresAt}
       inviter={{
         avatar: feed?.data?.creator?.profileImage?.url || "",

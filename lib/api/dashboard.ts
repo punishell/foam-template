@@ -27,7 +27,7 @@ interface GetFeedsresponse {
 }
 
 interface GetTimelineResponse {
-  data: DataFeedResponse[]
+  data: CreatorData[]
 }
 
 interface timelineFetchParams {
