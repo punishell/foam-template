@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import { Button } from 'pakt-ui';
 import { X, Bookmark, Briefcase, Clock4, Gavel } from 'lucide-react';
 import { UserAvatar } from '../common/user-avatar';
@@ -9,28 +9,50 @@ import alert from '@/lottiefiles/alert.json';
 import gavel from '@/lottiefiles/gavel.json';
 import failed from '@/lottiefiles/failed.json';
 import warning from '@/lottiefiles/warning.json';
+import { useSaveToBookmark } from '@/lib/api/bookmark';
 
-
+const RenderBookMark = ({ size = 20, isBookmarked, id }: { id: string, isBookmarked?: boolean, size: number }) => {
+  const [bookmarked, setBookmarked] = useState(isBookmarked);
+  const addBookmark = useSaveToBookmark()
+  const removeBookmark = useSaveToBookmark()
+  // const CallFuc = () => isBookmarked ? removeBookmark : addBookmark;
+  const CallFuc = () => {
+    return bookmarked ? removeBookmark.mutate({ reference: id, type: "feed" }, {
+      onSuccess: (_data) => {
+        setBookmarked(!bookmarked)
+      }
+    }) : addBookmark.mutate({ reference: id, type: "feed" }, {
+      onSuccess: (_data) => {
+        setBookmarked(!bookmarked)
+      }
+    });
+  };
+  return <Bookmark fill={isBookmarked ? "#404446" : "#FFFFFF"} className='cursor-pointer' size={size} onClick={() => CallFuc()} />
+}
 interface JobInvitePendingProps {
+  _id: string;
   id: string;
   title: string;
-  amount: number;
+  amount: string;
   inviter: {
     name: string;
     avatar?: string;
     score: number;
   };
   invitationExpiry?: string;
+  bookmarked?: boolean;
   type: 'job-invite-pending';
 }
 
 interface JobFilledProps {
+  _id: string;
   title: string;
   inviter: {
     name: string;
     avatar: string;
     score: number;
   };
+  bookmarked: boolean;
   type: 'job-invite-filled';
 }
 
@@ -40,7 +62,7 @@ export const JobFeedCard: React.FC<JobFeedCardProps> = (props) => {
   const { type } = props;
 
   if (type === 'job-invite-filled') {
-    const { title, inviter } = props;
+    const { _id, title, inviter, bookmarked } = props;
 
     return (
       <JobFeedWrapper>
@@ -62,7 +84,7 @@ export const JobFeedCard: React.FC<JobFeedCardProps> = (props) => {
             <Button size="xs" variant="secondary">
               See More Jobs
             </Button>
-            <Bookmark size={20} />
+            <RenderBookMark size={20} isBookmarked={bookmarked} id={_id} />
           </div>
         </div>
       </JobFeedWrapper>
@@ -70,7 +92,7 @@ export const JobFeedCard: React.FC<JobFeedCardProps> = (props) => {
   }
 
   if (type === 'job-invite-pending') {
-    const { title, amount, inviter, type, invitationExpiry, id } = props;
+    const { _id, title, amount, inviter, bookmarked, invitationExpiry, id } = props;
 
     return (
       <JobFeedWrapper>
@@ -103,7 +125,8 @@ export const JobFeedCard: React.FC<JobFeedCardProps> = (props) => {
                 Accept
               </Button>
             </div>
-            <Bookmark size={20} />
+            {/* <Bookmark size={20} /> */}
+            <RenderBookMark size={20} isBookmarked={bookmarked} id={_id} />
           </div>
         </div>
       </JobFeedWrapper>
@@ -123,7 +146,7 @@ export const JobFeedWrapper: React.FC<{ children: React.ReactNode }> = ({ childr
   );
 };
 
-export const PublicJobCreatedFeed = ({ creator, title, amount, jobId }: { creator: string, title: string, amount: string, jobId: string }) => {
+export const PublicJobCreatedFeed = ({ creator, title, amount, jobId, _id, bookmarked }: { creator: string, title: string, amount: string, jobId: string, _id: string, bookmarked: boolean }) => {
   return (
     <JobFeedWrapper>
       <UserAvatar score={54} />
@@ -144,7 +167,7 @@ export const PublicJobCreatedFeed = ({ creator, title, amount, jobId }: { creato
               See Details
             </Button>
           </div>
-          <Bookmark size={20} />
+          <RenderBookMark size={20} isBookmarked={bookmarked} id={_id} />
         </div>
       </div>
     </JobFeedWrapper>

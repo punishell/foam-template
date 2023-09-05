@@ -13,7 +13,7 @@ import { useSearchParams, useRouter } from 'next/navigation';
 
 import { Spinner } from '@/components/common';
 import { useUserState } from '@/lib/store/account';
-import { AUTH_TOKEN_KEY, TEMP_AUTH_TOKEN_KEY} from '@/lib/utils';
+import { AUTH_TOKEN_KEY, TEMP_AUTH_TOKEN_KEY } from '@/lib/utils';
 
 const loginFormSchema = z.object({
   password: z.string().min(1, 'Password is required').min(8, 'Password is too short'),
@@ -57,9 +57,7 @@ export default function Login() {
         <Link
           className="rounded-lg border-2 bg-white !bg-opacity-10 px-5 py-2 text-white duration-200 hover:bg-opacity-30"
           href="/signup"
-        >
-          Signup
-        </Link>
+        > Signup</Link>
       </Container>
 
       <Container className="mt-28 flex w-full max-w-2xl flex-col items-center gap-6">

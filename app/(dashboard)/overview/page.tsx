@@ -10,6 +10,8 @@ import { Header } from '@/components/overview/header';
 import { PaktScore } from '@/components/overview/paktscore';
 import { LeaderBoard } from '@/components/overview/leaderboard';
 import { Invites } from '@/components/overview/invites';
+import { ActiveJobs } from '@/components/overview/activeJobs';
+import { FeedsBookmark } from '@/components/overview/bookmark';
 
 
 export default function Overview() {
@@ -25,9 +27,9 @@ export default function Overview() {
             <Tabs
               tabs={[
                 { label: 'Your Feed', value: 'feed', content: <Feeds /> },
-                { label: 'Active Jobs', value: 'active', content: <div className="w-full">Active Jobs</div> },
+                { label: 'Active Jobs', value: 'active', content: <ActiveJobs /> },
                 { label: 'Invites', value: 'invites', content: <Invites /> },
-                { label: 'Bookmarks', value: 'bookmarks', content: <div>Bookmarks</div> },
+                { label: 'Bookmarks', value: 'bookmarks', content: <FeedsBookmark /> },
               ]}
             />
           </div>

@@ -17,9 +17,9 @@ interface GetAccountresponse {
   profileCompleteness: 0,
   profile: {
     talent: {
-      skillIds: [],
+      tagIds?: []
       availability: string,
-      skills: [],
+      tags?: [],
       about: string,
     },
     bio: {
@@ -31,6 +31,7 @@ interface GetAccountresponse {
       country: string,
     }
   }
+  isPrivate?: boolean,
 }
 interface UpdateAccountParams {
   username?: string;
@@ -48,16 +49,10 @@ interface UpdateAccountParams {
     };
     talent?: {
       availability?: string;
-      skills?: string[];
+      tags?: string[];
     };
-    privateEarnings?: boolean;
-    privateInvestments?: boolean;
   };
-  socials?: {
-    github?: string;
-    twitter?: string;
-    website?: string;
-  };
+  isPrivate?: boolean;
 }
 
 async function postUpdateAccount(values: UpdateAccountParams): Promise<User> {
@@ -68,7 +63,7 @@ async function postUpdateAccount(values: UpdateAccountParams): Promise<User> {
 export function useUpdateAccount() {
   return useMutation({
     mutationFn: postUpdateAccount,
-    mutationKey: ['update-account'],
+    mutationKey: ['update_account_system'],
     onSuccess: () => {
       toast.success('Account updated successfully');
     },
