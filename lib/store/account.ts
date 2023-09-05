@@ -18,9 +18,9 @@ export const useUserState = create<UserState>()((set) => ({
   profileCompleteness: 0,
   profile: {
     talent: {
-      skillIds: [],
+      tagIds: [],
       availability: '',
-      skills: [],
+      tags: [],
     },
   },
   setUser: (user: User) => set(user),

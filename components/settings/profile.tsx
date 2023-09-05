@@ -11,27 +11,25 @@ import { Spinner } from '../common';
 import { TagInput } from '../common/tag-input';
 
 const ProfileStates = [
-  { label: 'Private', value: 'private' },
-  { label: 'Public', value: 'public' },
+  { label: 'Private', value: "true" },
+  { label: 'Public', value: "false" },
 ];
 
 const editProfileFormSchema = z.object({
   firstName: z.string().min(1, 'First Name is required'),
   lastName: z.string().min(1, 'Last Name is required'),
-  jobTitle: z.string().min(1, 'Job Title is required'),
+  title: z.string().min(1, 'Job Title is required'),
   email: z.string().min(1, 'Email is required').email('Invalid email'),
   bio: z.string().min(1, 'Bio is required'),
   location: z.string().min(1, 'Location is required'),
   country: z.string().min(1, 'Country is required'),
-  about: z.string().min(1, 'professional bio is required'),
-  skills: z.array(z.string()).nonempty({ message: "skills are reuqired" }),
+  tags: z.array(z.string()).nonempty({ message: "skills are reuqired" }),
+  isPrivate: z.boolean().default(false).optional(),
 });
 
 type EditProfileFormValues = z.infer<typeof editProfileFormSchema>;
 
 export const ProfileView = () => {
-  const [isPrivate, setIsPrivate] = useState('public');
-  // const [loading, setLoading] = useState(true);
   const [showDelete, setShowDelete] = useState(false);
   const [acceptedDelete, setAcceptedDelete] = useState(false);
   const { data: userAccount, refetch: userFetching, isFetched } = useGetAccount();
@@ -42,40 +40,63 @@ export const ProfileView = () => {
       ...userAccount,
       firstName: userAccount?.firstName,
       lastName: userAccount?.lastName,
-      jobTitle: userAccount?.profile?.bio?.title,
+      title: userAccount?.profile?.bio?.title,
       bio: userAccount?.profile?.bio?.description,
       location: userAccount?.profile?.contact?.city,
       country: userAccount?.profile?.contact?.country,
-      about: userAccount?.profile?.talent?.about,
       avatar: userAccount?.profileImage?.url,
       kycVerified: false,
+      tags: userAccount?.profile?.talent?.tags,
+      isPrivate: userAccount?.isPrivate || false,
       // kycVerified: userAccount?.data?.data?.kycVerified,
     }),
     [userAccount],
   );
 
-  // console.log("acct===>", userData);
   const form = useForm<EditProfileFormValues>({
     resolver: zodResolver(editProfileFormSchema),
     defaultValues: userData,
   });
 
+  const updateAccountFunc = (values: EditProfileFormValues) => {
+    const payload = {
+      profile: {
+        contact: {
+          state: values.location,
+          city: values.location,
+          country: values.country,
+        },
+        bio: {
+          title: values.title,
+          description: values.bio
+        },
+        talent: {
+          tags: [...values.tags],
+        },
+      },
+    }
+    updateAccount.mutate({ ...payload }, {
+      onSuccess: (data) => {
+        userFetching();
+      },
+    });
+  };
+
+  const loading = updateAccount.isLoading || form.formState.isLoading;
+
   const toggleUserProfile = (state: string) => {
-    console.log('userState==>', state);
+    const validState = state == "true";
+    form.setValue("isPrivate", validState);
+    return updateAccountFunc({ ...form.getValues(), isPrivate: validState });
   };
 
   const onSubmit: SubmitHandler<EditProfileFormValues> = (values) => {
-    console.log('values===>', values);
-    // updateAccount.mutate(values, {
-    //   onSuccess: (data) => {
-    //     userFetching();
-    //     form.reset({ ...userData });
-    //   },
-    // });
+    return updateAccountFunc(values);
   };
+  // TODO:: parse Error for input validations
 
   return (
-    <div className="flex flex-row relative gap-6 h-full grow overflow-auto pb-4">
+    <div className="flex flex-row relative gap-6 h-full grow overflow-auto">
       {!isFetched && <Spinner />}
       {isFetched && (
         <>
@@ -83,7 +104,7 @@ export const ProfileView = () => {
             <div className="flex flex-col gap-4 p-4">
               <div className="flex justify-end min-h-[27px]">
                 <span className="bg-success-lighter text-success py-2 px-4 rounded-xl text-xs font-thin capitalize">
-                  {isPrivate}
+                  {form.getValues().isPrivate ? "Private" : "Public"}
                 </span>
               </div>
               <div className="flex justify-center item-center mx-auto text-center">
@@ -110,7 +131,7 @@ export const ProfileView = () => {
                   label="Profile Visibility"
                   options={ProfileStates}
                   onChange={(e: any) => toggleUserProfile(e)}
-                  placeholder={isPrivate}
+                  placeholder={form.getValues().isPrivate ? "Private" : "Public"}
                   className="!bg-[#FCFCFD] !border-[#E8E8E8] capitalize"
                 />
                 <p className="text-sm my-4 text-body">
@@ -123,12 +144,12 @@ export const ProfileView = () => {
             <Switch />
           </div> */}
           </div>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col w-4/5 overflow-y-auto h-full">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col w-4/5 overflow-y-auto min-h-full">
             <div className="bg-white rounded-lg p-4 mb-4">
               <div className="flex flex-row justify-between h-[50px] items-center mb-4">
                 <p className="text-lg text-title font-bold">Edit Profile Details</p>
-                <Button title="Save Changes" variant={'secondary'} size="xs" type="submit">
-                  Save Changes
+                <Button title="Save Changes" variant={'secondary'} size="xs" type="submit" className='min-w-[132px] min-h-[37px]'>
+                  {loading ? <Spinner /> : "Save Changes"}
                 </Button>
               </div>
               <div className="flex">
@@ -149,7 +170,7 @@ export const ProfileView = () => {
                   </div>
                   <div id="input-row" className="flex flex-row justify-between gap-4 w-full">
                     <Input
-                      {...form.register('jobTitle')}
+                      {...form.register('title')}
                       className="w-full !bg-[#FCFCFD] !border-[#E8E8E8]"
                       placeholder="e.g Developer"
                       label="Job Title"
@@ -181,24 +202,17 @@ export const ProfileView = () => {
             <div className="bg-white rounded-lg p-4 mb-4">
               <div className="flex flex-row justify-between h-[50px] items-center">
                 <p className="text-lg text-title font-bold">Professional Information</p>
-                {/* <Button
-                title='Save Changes'
-                variant={"secondary"}
-                size="xs"
-                type="submit"
-                disabled={!form.formState.isValid}>Save Changes</Button> */}
               </div>
               <div className="flex flex-col gap-4">
                 <p>Skill Sets</p>
                 <div className="flex flex-row gap-4">
                   <div className="w-1/2">
                     <p className="text-body text-sm">Add your top 3 skills first</p>
-                    {/* TODO:: Replace with TAGINput component after YInka make's it a component */}
                     <Controller
-                      name="skills"
+                      name="tags"
                       control={form.control}
                       render={({ field: { onChange, value = [] } }) => (
-                        <TagInput tags={value} setTags={onChange} className="min-h-[50px]" />
+                        <TagInput tags={value} setTags={onChange} className="min-h-[186px]" />
                       )}
                     />
                   </div>
@@ -209,7 +223,6 @@ export const ProfileView = () => {
                       {...form.register('bio')}
                       placeholder="Enter a 350 character about thing"
                     />
-                    {/* <span className='text-danger'>{}</span> */}
                   </div>
                 </div>
               </div>

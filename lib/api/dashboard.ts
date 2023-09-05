@@ -3,12 +3,31 @@ import { toast } from '@/components/common/toaster';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { parseFilterObjectToString } from '../utils';
 
+interface CreatorData {
+  _id: string, firstName: string, lastName: string, score: number, profileImage?: { url: string }
+}
+export interface DataFeedResponse {
+  closed: boolean;
+  createdAt?: string;
+  updatedAt?: string;
+  creator: CreatorData;
+  data: { _id: string, paymentFee: string, creator: CreatorData, owner?: CreatorData };
+  description: string;
+  isBookmarked: boolean;
+  isPublic?: boolean;
+  owner: CreatorData;
+  owners?: CreatorData[];
+  title: string;
+  type: string;
+  _id: string;
+}
+
 interface GetFeedsresponse {
-  data: Record<string, any>[];
+  data: DataFeedResponse[]
 }
 
 interface GetTimelineResponse {
-  data: Record<string, any>[];
+  data: DataFeedResponse[]
 }
 
 interface timelineFetchParams {
@@ -42,7 +61,7 @@ async function dismissAllFeed(): Promise<any> {
 export const useGetTimeline = ({ page, limit, filter }: timelineFetchParams) => {
   return useQuery({
     queryFn: async () => await getTimelineFeeds({ page, limit, filter }),
-    queryKey: ['get-timeline'],
+    queryKey: ["get-timeline", page, filter],
     onError: (error: ApiError) => {
       toast.error(error?.response?.data.message || 'An error occurred');
     },
