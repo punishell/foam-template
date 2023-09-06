@@ -12,7 +12,6 @@ import { UserBalance } from '@/components/common/user-balance';
 import { useMessaging } from '@/providers/socketProvider';
 import { ChatList, ChatListSearch } from '@/components/messaging/chatlist';
 import { useSearchParams } from 'next/navigation';
-import { Spinner } from '@/components/common';
 
 interface Props {
   children: React.ReactNode;
