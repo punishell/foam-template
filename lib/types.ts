@@ -29,3 +29,52 @@ export interface User {
     };
   };
 }
+
+export interface Job {
+  _id: string;
+  name: string;
+  createdAt: string;
+  creator: {
+    _id: string;
+    score: number;
+    lastName: string;
+    firstName: string;
+    profileImage?: {
+      url: string;
+    };
+    profile: {
+      bio: {
+        title: string;
+        availability: string;
+        tags: any[]; // TODO: add type
+      };
+      talent: {};
+    };
+  };
+  category: string;
+  progress: number;
+  isPrivate: boolean;
+  deliveryDate: string;
+  description: string;
+  paymentFee: number;
+  tags: {
+    type: 'tags';
+    name: string;
+    color: string;
+  }[];
+  tagsData: string[];
+  invites: any[]; // TODO: add type
+  inviteAccepted: boolean;
+  recipientCompletedJob: boolean;
+  collections: Array<JobDeliverable>;
+  status: 'pending' | 'ongoing' | 'completed' | 'waiting' | 'cancelled';
+  payoutStatus: 'pending' | 'ongoing' | 'completed' | 'waiting' | 'cancelled';
+}
+
+interface JobDeliverable {
+  _id: string;
+  name: string;
+  type: 'deliverable';
+  description: string;
+  status: 'pending' | 'ongoing' | 'completed';
+}
