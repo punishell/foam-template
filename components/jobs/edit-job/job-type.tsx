@@ -1,14 +1,14 @@
 import clsx from 'clsx';
 import React from 'react';
 import { Button, Select } from 'pakt-ui';
-import { Plus, X, ChevronRight } from 'lucide-react';
-import { useJobCreationStore } from '@/lib/store';
+import { ChevronRight } from 'lucide-react';
+import { useJobEditStore } from '@/lib/store/job-edit';
 
-export const Projects: React.FC = () => {
-  const setActiveStep = useJobCreationStore((state) => state.setActiveStep);
-  const setStepsStatus = useJobCreationStore((state) => state.setStepsStatus);
-
-  const [jobType, setJobType] = React.useState<'freelance' | 'team-project'>();
+export const JobType: React.FC = () => {
+  const job = useJobEditStore((state) => state.job);
+  const setJob = useJobEditStore((state) => state.setJob);
+  const gotoNextStep = useJobEditStore((state) => state.gotoNextStep);
+  const [jobType, setJobType] = React.useState<'freelance' | 'project'>(job.type);
 
   return (
     <div className="flex flex-col w-full gap-6">
@@ -32,10 +32,10 @@ export const Projects: React.FC = () => {
               </span>
             </button>
             <button
-              onClick={() => setJobType('team-project')}
+              onClick={() => setJobType('project')}
               className={clsx({
                 'flex flex-col gap-2 border border-line rounded-2xl p-4 text-left duration-200': true,
-                'bg-[#ECFCE5] border-primary': jobType === 'team-project',
+                'bg-[#ECFCE5] border-primary': jobType === 'project',
               })}
             >
               <span className="text-title font-medium">Project</span>
@@ -46,7 +46,7 @@ export const Projects: React.FC = () => {
           </div>
         </div>
 
-        {jobType === 'team-project' && <ChooseProject />}
+        {jobType === 'project' && <ChooseProject />}
       </div>
 
       <div className="flex justify-end">
@@ -57,9 +57,9 @@ export const Projects: React.FC = () => {
             size="sm"
             fullWidth
             onClick={() => {
-              setActiveStep('visibility');
-              setStepsStatus({ visibility: 'active' });
-              setStepsStatus({ project: 'complete' });
+              if (!jobType) return;
+              gotoNextStep();
+              setJob({ ...job, type: jobType });
             }}
           >
             Next Step

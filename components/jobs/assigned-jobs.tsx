@@ -1,57 +1,94 @@
 import React from 'react';
+import type { Job } from '@/lib/types';
 import { Tabs } from '@/components/common/tabs';
-import { AssignedJob } from '@/components/jobs/job-cards/assigned-job';
+import { AssignedJobTalentCard } from '@/components/jobs/job-cards/assigned-job';
+
+import { useGetJobs } from '@/lib/api/job';
+import { PageEmpty } from '@/components/common/page-empty';
+import { PageError } from '@/components/common/page-error';
+import { PageLoading } from '@/components/common/page-loading';
 
 interface Props {}
 
 export const AcceptedJobs: React.FC<Props> = () => {
-  return (
-    <div className="flex flex-col gap-6">
-      <div>
-        <Tabs
-          urlKey="client-jobs"
-          tabs={[
-            {
-              label: 'Ongoing',
-              value: 'ongoing',
-              content: <OngoingJobs />,
-            },
-            { label: 'Completed', value: 'completed', content: <CompletedJobs /> },
-          ]}
-        />
-      </div>
-    </div>
-  );
-};
+  const jobsData = useGetJobs({ category: 'assigned' });
 
-const OngoingJobs = () => {
+  if (jobsData.isError) return <PageError />;
+  if (jobsData.isLoading) return <PageLoading />;
+
+  const jobs = jobsData.data.data;
+
   return (
-    <div className="grid grid-cols-2 gap-4">
-      <AssignedJob
-        inviter={{
-          avatar: 'https://i.pravatar.cc/300',
-          name: 'John Doe',
-          paktScore: 100,
-        }}
-        price={100}
-        title='I need a logo for my new business "Pakt"'
+    <div className="flex flex-col gap-6 h-full">
+      <Tabs
+        urlKey="client-jobs"
+        tabs={[
+          {
+            label: 'Ongoing',
+            value: 'ongoing',
+            content: <OngoingJobs jobs={jobs} />,
+          },
+          { label: 'Completed', value: 'completed', content: <CompletedJobs jobs={jobs} /> },
+        ]}
       />
     </div>
   );
 };
 
-const CompletedJobs = () => {
+interface OngoingJobsProps {
+  jobs: Job[];
+}
+
+const OngoingJobs: React.FC<OngoingJobsProps> = ({ jobs }) => {
+  if (!jobs.length)
+    return <PageEmpty label="Your ongoing jobs will appear here." className="rounded-lg border border-line h-full" />;
+
   return (
-    <div className="grid grid-cols-2 gap-4">
-      <AssignedJob
-        inviter={{
-          avatar: 'https://i.pravatar.cc/300',
-          name: 'John Doe',
-          paktScore: 100,
-        }}
-        price={100}
-        title='I need a logo for my new business "Pakt"'
-      />
+    <div className="grid grid-cols-2 gap-4 overflow-y-auto pb-20">
+      {jobs.map(({ _id, paymentFee, name, creator }) => {
+        return (
+          <AssignedJobTalentCard
+            id={_id}
+            key={_id}
+            price={paymentFee}
+            title={name}
+            inviter={{
+              paktScore: creator.score,
+              avatar: creator.profileImage?.url,
+              name: `${creator.firstName} ${creator.lastName}`,
+            }}
+          />
+        );
+      })}
+    </div>
+  );
+};
+
+interface CompletedJobsProps {
+  jobs: Job[];
+}
+
+const CompletedJobs: React.FC<CompletedJobsProps> = ({ jobs }) => {
+  if (!jobs.length)
+    return <PageEmpty label="Your completed jobs will appear here." className="rounded-lg border border-line h-full" />;
+
+  return (
+    <div className="grid grid-cols-2 gap-4 overflow-y-auto pb-20">
+      {jobs.map(({ _id, paymentFee, name, creator }) => {
+        return (
+          <AssignedJobTalentCard
+            id={_id}
+            key={_id}
+            price={paymentFee}
+            title={name}
+            inviter={{
+              paktScore: creator.score,
+              avatar: creator.profileImage?.url,
+              name: `${creator.firstName} ${creator.lastName}`,
+            }}
+          />
+        );
+      })}
     </div>
   );
 };

@@ -3,13 +3,13 @@ import { clsx } from 'clsx';
 import { Checkbox } from 'pakt-ui';
 import { LinearProgress } from 'pakt-ui';
 import { uniqueItems } from '@/lib/utils';
-import { useJobCreationStore } from '@/lib/store';
+import { useJobEditStore } from '@/lib/store/job-edit';
 
 export const Steps: React.FC = () => {
-  const gotoStep = useJobCreationStore((state) => state.gotoStep);
-  const isActiveStep = useJobCreationStore((state) => state.isActiveStep);
-  const completedSteps = useJobCreationStore((state) => state.completedSteps);
-  const isCompletedStep = useJobCreationStore((state) => state.isCompletedStep);
+  const gotoStep = useJobEditStore((state) => state.gotoStep);
+  const isActiveStep = useJobEditStore((state) => state.isActiveStep);
+  const completedSteps = useJobEditStore((state) => state.completedSteps);
+  const isCompletedStep = useJobEditStore((state) => state.isCompletedStep);
 
   return (
     <div className="w-full flex flex-col gap-4">
@@ -67,12 +67,12 @@ export const Steps: React.FC = () => {
 
 interface StepSelectorProps {
   isActive: boolean;
-  onClick: () => void;
   isCompleted: boolean;
+  onClick: () => void;
   children: React.ReactNode;
 }
 
-export const StepSelector: React.FC<StepSelectorProps> = ({ children, onClick, isActive, isCompleted: isComplete }) => {
+export const StepSelector: React.FC<StepSelectorProps> = ({ children, onClick, isActive, isCompleted }) => {
   return (
     <label
       onClick={onClick}
@@ -83,7 +83,7 @@ export const StepSelector: React.FC<StepSelectorProps> = ({ children, onClick, i
         },
       )}
     >
-      <Checkbox checked={isComplete} />
+      <Checkbox checked={isCompleted} />
       <span>{children}</span>
     </label>
   );

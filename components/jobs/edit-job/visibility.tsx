@@ -1,13 +1,13 @@
 import clsx from 'clsx';
 import React from 'react';
 import { Button } from 'pakt-ui';
-import { useJobCreationStore } from '@/lib/store';
+import { useJobEditStore } from '@/lib/store/job-edit';
 
 export const Visibility: React.FC = () => {
-  const job = useJobCreationStore((state) => state.job);
-  const setJob = useJobCreationStore((state) => state.setJob);
-  const gotoNextStep = useJobCreationStore((state) => state.gotoNextStep);
+  const job = useJobEditStore((state) => state.job);
+  const setJob = useJobEditStore((state) => state.setJob);
 
+  const gotoNextStep = useJobEditStore((state) => state.gotoNextStep);
   const [jobVisibility, setJobVisibility] = React.useState<'private' | 'public'>(job.visibility);
 
   return (
@@ -54,14 +54,14 @@ export const Visibility: React.FC = () => {
       <div className="flex justify-end">
         <div className="max-w-[200px] w-full">
           <Button
-            disabled={!jobVisibility}
             variant="primary"
             size="sm"
             fullWidth
+            disabled={!jobVisibility}
             onClick={() => {
               if (!jobVisibility) return;
-              setJob({ ...job, visibility: jobVisibility });
               gotoNextStep();
+              setJob({ ...job, visibility: jobVisibility });
             }}
           >
             Review

@@ -24,7 +24,7 @@ axios.interceptors.response.use(
   },
 );
 
-export type ApiResponse<T> = AxiosResponse<{
+export type ApiResponse<T = any> = AxiosResponse<{
   message: string;
   data: T;
 }>;

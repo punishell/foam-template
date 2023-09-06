@@ -1,6 +1,6 @@
+import { format } from 'date-fns';
 import { Calendar, Tag } from 'lucide-react';
 import { UserAvatar } from '@/components/common/user-avatar';
-
 interface JobHeaderProps {
   title: string;
   price: number;
@@ -18,14 +18,14 @@ export const JobHeader: React.FC<JobHeaderProps> = ({ title, price, dueDate, cre
       <div className="grow max-w-3xl flex flex-col gap-3">
         <h2 className="text-3xl font-bold text-white max-w-[560px]">{title}</h2>
         <div className="flex gap-4 items-center mt-auto">
-          <span className="bg-[#C9F0FF] text-[#0065D0] gap-2 flex items-center px-3 rounded-md py-1">
+          <span className="bg-[#C9F0FF] text-[#0065D0] gap-2 flex items-center px-3 rounded-full py-1">
             <Tag size={20} />
             <span>$ {price}</span>
           </span>
 
-          <span className="bg-[#ECFCE5] text-[#198155] gap-2 flex items-center px-3 rounded-md py-1">
+          <span className="bg-[#ECFCE5] text-[#198155] gap-2 flex items-center px-3 rounded-full py-1">
             <Calendar size={20} />
-            <span>Due {dueDate}</span>
+            <span>Due {format(new Date(dueDate), 'MMM dd, yyyy')}</span>
           </span>
         </div>
       </div>
@@ -39,15 +39,15 @@ export const JobHeader: React.FC<JobHeaderProps> = ({ title, price, dueDate, cre
   );
 };
 
-export const JobDescription = () => {
+interface JobDescriptionProps {
+  description: string;
+}
+
+export const JobDescription: React.FC<JobDescriptionProps> = ({ description }) => {
   return (
     <div className="bg-[#C9F0FF] flex gap-2 flex-col p-4 rounded-2xl w-full">
       <h3 className="text-title text-lg font-bold">Job Description</h3>
-      <p className="text-lg font-normal text-[#202325]">
-        Are you a naturally goofy person who loves making people laugh? Do you have a wild imagination and a passion for
-        creating hilarious product designs? If so, we have the perfect short-term contract position for you as our Chief
-        Goofiness Officer!
-      </p>
+      <p className="text-lg font-normal text-[#202325]">{description}</p>
     </div>
   );
 };

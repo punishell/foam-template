@@ -5,14 +5,14 @@ import {
   Steps,
   JobDetails,
   DescriptionAndDeliverables,
-  Projects,
+  JobType,
   Review,
   Visibility,
 } from '@/components/jobs/create-job';
 
 const STEPS: Record<JobCreationSteps, React.FC> = {
   review: Review,
-  project: Projects,
+  project: JobType,
   details: JobDetails,
   visibility: Visibility,
   deliverables: DescriptionAndDeliverables,
@@ -20,7 +20,6 @@ const STEPS: Record<JobCreationSteps, React.FC> = {
 
 export default function CreateJob() {
   const activeStep = useJobCreationStore((state) => state.activeStep);
-
   const CurrentStep = STEPS[activeStep];
 
   return (

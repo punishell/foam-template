@@ -1,7 +1,13 @@
 'use client';
 import React from 'react';
 import { Button } from 'pakt-ui';
+import type { Job } from '@/lib/types';
+import { useRouter } from 'next/navigation';
+import { useGetJobById } from '@/lib/api/job';
+import { useGetAccount } from '@/lib/api/account';
 import { Modal } from '@/components/common/modal';
+import { PageError } from '@/components/common/page-error';
+import { PageLoading } from '@/components/common/page-loading';
 import { JobHeader, JobDescription, JobSkills, JobDeliverables } from '@/components/jobs/job-details';
 
 interface Props {
@@ -12,30 +18,153 @@ interface Props {
 
 export default function JobDetails({ params }: Props) {
   const jobId = params['job-id'];
-  const VIEW_TYPE: 'client' | 'talent' = 'talent';
+  const accountData = useGetAccount();
+  const jobData = useGetJobById({ jobId });
+
+  if (jobData.isError) return <PageError className="absolute inset-0" />;
+  if (jobData.isLoading) return <PageLoading className="absolute inset-0" />;
+
+  const { data: job } = jobData;
+  const { data: account } = accountData;
+  const USER_ROLE: 'client' | 'talent' = account?._id === job.creator._id ? 'client' : 'talent';
 
   const VIEWS = {
     client: ClientJobDetails,
     talent: TalentJobDetails,
   };
 
-  const CurrentView = VIEWS[VIEW_TYPE];
+  const CurrentView = VIEWS[USER_ROLE];
 
   return (
     <div className="h-full">
-      <CurrentView jobId={jobId} />
+      <CurrentView job={job} />
     </div>
   );
 }
 
-interface TalentJobDetailsProps {
+// CLIENT JOB DETAILS
+
+interface ClientJobDetailsProps {
+  job: Job;
+}
+
+const ClientJobDetails: React.FC<ClientJobDetailsProps> = ({ job }) => {
+  const JOB_TYPE: 'private' | 'open' = job.isPrivate ? 'private' : 'open';
+
+  const CTAS = {
+    open: ClientOpenJobCtas,
+    private: ClientPrivateJobCtas,
+  };
+
+  const JobCtas = CTAS[JOB_TYPE];
+
+  return (
+    <div className="flex gap-6 h-full">
+      <div className="grow overflow-y-auto h-full flex flex-col pb-20">
+        <JobHeader title={job.name} price={job.paymentFee} dueDate={job.deliveryDate} />
+        <div className="bg-white flex flex-col w-full p-6 rounded-b-xl grow border-line border-t-0 border">
+          <JobDeliverables
+            deliverables={job.collections
+              .filter((collection) => collection.type === 'deliverable')
+              .map((collection) => collection.name)}
+          />
+
+          <JobCtas jobId={job._id} />
+        </div>
+      </div>
+
+      <div className="basis-[300px] h-full gap-7 w-fit flex flex-col items-center">
+        <JobDescription description={job.description} />
+        <JobSkills skills={[...job.tagsData]} />
+      </div>
+    </div>
+  );
+};
+
+interface ClientPrivateJobCtasProps {
   jobId: string;
 }
 
-const TalentJobDetails: React.FC<TalentJobDetailsProps> = ({ jobId }) => {
-  const [isApplyModalOpen, setIsApplyModalOpen] = React.useState(false);
+const ClientPrivateJobCtas: React.FC<ClientPrivateJobCtasProps> = ({ jobId }) => {
+  const router = useRouter();
 
-  const JOB_TYPE: 'private' | 'open' = 'private';
+  return (
+    <div className="mt-auto w-full flex items-center justify-between gap-4">
+      <div className="w-full max-w-[150px]">
+        <Button fullWidth variant="danger">
+          Delete Job
+        </Button>
+      </div>
+
+      <div className="w-full flex gap-2 items-center max-w-sm">
+        <Button
+          fullWidth
+          variant="outline"
+          onClick={() => {
+            router.push(`/jobs/${jobId}/edit`);
+          }}
+        >
+          Edit Job
+        </Button>
+        <Button
+          fullWidth
+          onClick={() => {
+            router.push(`/talents`);
+          }}
+        >
+          Find Talent
+        </Button>
+      </div>
+    </div>
+  );
+};
+
+interface ClientOpenJobCtasProps {
+  jobId: string;
+}
+
+const ClientOpenJobCtas: React.FC<ClientOpenJobCtasProps> = ({ jobId }) => {
+  const router = useRouter();
+
+  return (
+    <div className="mt-auto w-full flex items-center justify-between gap-4">
+      <div className="w-full max-w-[150px]">
+        <Button fullWidth variant="danger">
+          Delete Job
+        </Button>
+      </div>
+
+      <div className="w-full flex gap-2 items-center max-w-sm">
+        <Button
+          fullWidth
+          variant="outline"
+          onClick={() => {
+            router.push(`/jobs/${jobId}/edit`);
+          }}
+        >
+          Edit Job
+        </Button>
+        <Button
+          fullWidth
+          onClick={() => {
+            router.push(`/jobs/${jobId}/applicants`);
+          }}
+        >
+          View Applicants
+        </Button>
+      </div>
+    </div>
+  );
+};
+
+interface TalentJobDetailsProps {
+  job: Job;
+}
+
+// TALENT JOB DETAILS
+
+const TalentJobDetails: React.FC<TalentJobDetailsProps> = ({ job }) => {
+  const JOB_TYPE: 'private' | 'open' = job.isPrivate ? 'private' : 'open';
 
   const CTAS = {
     open: TalentOpenJobCtas,
@@ -67,16 +196,16 @@ const TalentJobDetails: React.FC<TalentJobDetailsProps> = ({ jobId }) => {
             ]}
           />
 
-          <JobCtas />
-
-          <Modal isOpen={isApplyModalOpen} onOpenChange={setIsApplyModalOpen}>
-            <TalentApplicationFormModal />
-          </Modal>
+          <JobCtas jobId={job._id} />
         </div>
       </div>
 
       <div className="basis-[300px] h-full gap-7 w-fit flex flex-col items-center">
-        <JobDescription />
+        <JobDescription
+          description=" Are you a naturally goofy person who loves making people laugh? Do you have a wild imagination and a passion for
+        creating hilarious product designs? If so, we have the perfect short-term contract position for you as our Chief
+        Goofiness Officer!"
+        />
         <JobSkills skills={['Adobe Photoshop', 'Adobe Illustrator', 'Figma']} />
       </div>
     </div>
@@ -133,7 +262,11 @@ const TalentApplicationSuccessModal = () => {
   );
 };
 
-const TalentPrivateJobCtas = () => {
+interface TalentPrivateJobCtasProps {
+  jobId: string;
+}
+
+const TalentPrivateJobCtas: React.FC<TalentPrivateJobCtasProps> = ({ jobId }) => {
   return (
     <div className="mt-auto w-full flex items-center justify-end">
       <div className="w-full flex items-center max-w-sm gap-4">
@@ -146,93 +279,22 @@ const TalentPrivateJobCtas = () => {
   );
 };
 
-const TalentOpenJobCtas = () => {
-  return (
-    <div className="max-w-[200px] w-full">
-      <Button
-        fullWidth
-        // onClick={() => setIsApplyModalOpen(true)}
-      >
-        Apply
-      </Button>
-    </div>
-  );
-};
-
-interface ClientJobDetailsProps {
+interface TalentOpenJobCtasProps {
   jobId: string;
 }
 
-const ClientJobDetails: React.FC<ClientJobDetailsProps> = ({ jobId }) => {
-  const JOB_TYPE: 'private' | 'open' = 'private';
-
-  const CTAS = {
-    open: ClientOpenJobCtas,
-    private: ClientPrivateJobCtas,
-  };
-
-  const JobCtas = CTAS[JOB_TYPE];
+const TalentOpenJobCtas: React.FC<TalentOpenJobCtasProps> = ({ jobId }) => {
+  const [isApplyModalOpen, setIsApplyModalOpen] = React.useState(false);
 
   return (
-    <div className="flex gap-6 h-full">
-      <div className="grow overflow-y-auto h-full flex flex-col pb-20">
-        <JobHeader title="Email Newsletter Design for a Monthly Newsletter" price={6000} dueDate="2023" />
-        <div className="bg-white flex flex-col w-full p-6 rounded-b-xl grow border-line border-t-0 border">
-          <JobDeliverables
-            deliverables={[
-              'All the source files used to create the final design in a compatible format to provide the flexibility to modify the design elements in the future.',
-              'All the source files used to create the final design in a compatible format to provide the flexibility to modify the design elements in the future.',
-              'All the source files used to create the final design in a compatible format to provide the flexibility to modify the design elements in the future.',
-              'All the source files used to create the final design in a compatible format to provide the flexibility to modify the design elements in the future.',
-            ]}
-          />
+    <div className="max-w-[200px] w-full">
+      <Button fullWidth onClick={() => setIsApplyModalOpen(true)}>
+        Apply
+      </Button>
 
-          <JobCtas />
-        </div>
-      </div>
-
-      <div className="basis-[300px] h-full gap-7 w-fit flex flex-col items-center">
-        <JobDescription />
-        <JobSkills skills={['Adobe Photoshop', 'Adobe Illustrator', 'Figma']} />
-      </div>
-    </div>
-  );
-};
-
-const ClientPrivateJobCtas = () => {
-  return (
-    <div className="mt-auto w-full flex items-center justify-between gap-4">
-      <div className="w-full max-w-[150px]">
-        <Button fullWidth variant="danger">
-          Cancel Job
-        </Button>
-      </div>
-
-      <div className="w-full flex gap-2 items-center max-w-sm">
-        <Button fullWidth variant="outline">
-          Edit Job
-        </Button>
-        <Button fullWidth>Find Talent</Button>
-      </div>
-    </div>
-  );
-};
-
-const ClientOpenJobCtas = () => {
-  return (
-    <div className="mt-auto w-full flex items-center justify-between gap-4">
-      <div className="w-full max-w-[150px]">
-        <Button fullWidth variant="danger">
-          Cancel Job
-        </Button>
-      </div>
-
-      <div className="w-full flex gap-2 items-center max-w-sm">
-        <Button fullWidth variant="outline">
-          Edit Job
-        </Button>
-        <Button fullWidth>View Applicants</Button>
-      </div>
+      <Modal isOpen={isApplyModalOpen} onOpenChange={setIsApplyModalOpen}>
+        <TalentApplicationFormModal />
+      </Modal>
     </div>
   );
 };

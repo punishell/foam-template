@@ -1,9 +1,7 @@
 'use client';
 
 import { Button } from 'pakt-ui';
-import { Briefcase, Search, Plus } from 'lucide-react';
-import Link from 'next/link';
-
+import { useRouter } from 'next/navigation';
 import { Tabs } from '@/components/common/tabs';
 import { Feeds } from '@/components/overview/feeds';
 import { Header } from '@/components/overview/header';
@@ -12,7 +10,7 @@ import { LeaderBoard } from '@/components/overview/leaderboard';
 import { Invites } from '@/components/overview/invites';
 import { ActiveJobs } from '@/components/overview/activeJobs';
 import { FeedsBookmark } from '@/components/overview/bookmark';
-
+import { Search, Plus, Briefcase } from 'lucide-react';
 
 export default function Overview() {
   return (
@@ -45,19 +43,19 @@ export default function Overview() {
 }
 
 const JobHeader = () => {
+  const router = useRouter();
+
   return (
     <div className="grid gap-4 grid-cols-2">
       <div className="border-2 bg-[#ECFCE5] p-4 rounded-2xl border-primary relative overflow-hidden">
         <div className="flex flex-col gap-4">
           <p className="text-xl font-bold max-w-[260px]">Short text on creating a job comes here</p>
-          <Link href={"/jobs/create"}>
-            <Button size="sm">
-              <span className="flex items-center gap-2">
-                <Plus size={20} />
-                <span>Create Job</span>
-              </span>
-            </Button>
-          </Link>
+          <Button size="sm" onClick={() => router.push('/jobs/create')}>
+            <span className="flex items-center gap-2">
+              <Plus size={20} />
+              <span>Create Job</span>
+            </span>
+          </Button>
         </div>
 
         <div className="absolute right-0 translate-x-1/3 top-2">
@@ -68,14 +66,12 @@ const JobHeader = () => {
       <div className="border-2 p-4 relative overflow-hidden rounded-2xl bg-[#C9F0FF] border-blue-darkest">
         <div className="flex flex-col gap-4">
           <p className="text-xl font-bold max-w-[260px]">Short text on finding a job comes here</p>
-          <Link href="/jobs">
-            <Button variant="secondary" size="sm">
-              <span className="flex items-center gap-2">
-                <Search size={20} />
-                <span>Find Jobs</span>
-              </span>
-            </Button>
-          </Link>
+          <Button variant="secondary" size="sm" onClick={() => router.push('/talents')}>
+            <span className="flex items-center gap-2">
+              <Search size={20} />
+              <span>Find Jobs</span>
+            </span>
+          </Button>
         </div>
 
         <div className="absolute right-0 translate-x-[30px] top-4">

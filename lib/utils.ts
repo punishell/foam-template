@@ -115,23 +115,27 @@ export const formatCountdown = (counter: number) => {
 export const AUTH_TOKEN_KEY = process.env.NEXT_PUBLIC_AUTH_TOKEN_KEY ?? 'auth-token';
 export const TEMP_AUTH_TOKEN_KEY = process.env.NEXT_PUBLIC_TEMP_AUTH_TOKEN_KEY ?? 'temp-auth-token';
 
+export const uniqueItems: <T>(arr: T[]) => T[] = (arr) => {
+  return [...new Set(arr)];
+};
+
 export const FEED_TYPES = {
-  COLLECTION_CREATED: "collection_created",
-  COLLECTION_INVITE: "collection_invite",
-  REFERRAL_SIGNUP: "referral_signup",
-  REFERRAL_COLLECTION_COMPLETION: "referral_job_completion",
-  PAYMENT_RELEASED: "payment_released",
-  COLLECTION_UPDATE: "collection_update",
-  COLLECTION_DELIVERED: "collection_delivered",
-  COLLECTION_COMPLETED: "collection_completed",
-  COLLECTION_REVIEWED: "collection_reviewed",
-  COLLECTION_CANCELLED: "collection_cancelled",
-  ISSUE_RAISED: "issue_resolution_raise",
-  JURY_INVITATION: "jury_invitation",
-  ISSUE_RESOLUTION_GUILTY: "issue_resolution_guilty",
-  ISSUE_RESOLUTION_GUILTY_SECOND: "second_issue_resolution_guilty",
-  ISSUE_RESOLUTION_RESOLVED: "issue_resolution_resolve",
-}
+  COLLECTION_CREATED: 'collection_created',
+  COLLECTION_INVITE: 'collection_invite',
+  REFERRAL_SIGNUP: 'referral_signup',
+  REFERRAL_COLLECTION_COMPLETION: 'referral_job_completion',
+  PAYMENT_RELEASED: 'payment_released',
+  COLLECTION_UPDATE: 'collection_update',
+  COLLECTION_DELIVERED: 'collection_delivered',
+  COLLECTION_COMPLETED: 'collection_completed',
+  COLLECTION_REVIEWED: 'collection_reviewed',
+  COLLECTION_CANCELLED: 'collection_cancelled',
+  ISSUE_RAISED: 'issue_resolution_raise',
+  JURY_INVITATION: 'jury_invitation',
+  ISSUE_RESOLUTION_GUILTY: 'issue_resolution_guilty',
+  ISSUE_RESOLUTION_GUILTY_SECOND: 'second_issue_resolution_guilty',
+  ISSUE_RESOLUTION_RESOLVED: 'issue_resolution_resolve',
+};
 
 export function getAvatarColor(paktScore: number) {
   if (paktScore <= 20) {

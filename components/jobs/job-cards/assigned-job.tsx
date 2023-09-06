@@ -7,16 +7,146 @@ import { UserAvatar } from '@/components/common/user-avatar';
 import { DeliverableProgressBar } from '@/components/common/deliverable-progress-bar';
 
 interface AssignedJobCardProps {
+  id: string;
   title: string;
   price: number;
   inviter: {
     name: string;
-    avatar: string;
+    avatar?: string;
     paktScore: number;
   };
 }
 
-export const AssignedJob: React.FC<AssignedJobCardProps> = ({ inviter, price, title }) => {
+export const AssignedJobClientCard: React.FC<AssignedJobCardProps> = ({ inviter, price, title, id }) => {
+  const router = useRouter();
+  const [showModal, setShowModal] = React.useState(false);
+
+  return (
+    <div className="gap-4 max-w-2xl bg-white rounded-3xl border-line w-full flex flex-col grow border p-4">
+      <div className="w-full flex gap-4">
+        {<UserAvatar score={inviter.paktScore} size="sm" />}
+        <div className="flex flex-col gap-2 grow">
+          <div className="flex items-center justify-between gap-2">
+            {<span className="text-body text-lg font-bold">{inviter.name}</span>}
+
+            <span className="px-3 text-base text-title inline-flex rounded-full bg-[#B2E9AA66]">${price}</span>
+          </div>
+          <div className="grow text-title text-2xl">{title}</div>
+        </div>
+      </div>
+      <div className="flex items-center gap-2 justify-between mt-auto">
+        <div className="gap-2 flex items-center">
+          <Button size="xs" variant="secondary" onClick={() => setShowModal(true)}>
+            See Updates
+          </Button>
+          <Button
+            size="xs"
+            variant="outline"
+            onClick={() => {
+              router.push('/messages/123');
+            }}
+          >
+            Message
+          </Button>
+        </div>
+
+        <SideModal isOpen={showModal} onOpenChange={() => setShowModal(false)} className="flex flex-col">
+          <div className="py-6 px-4 bg-primary-gradient text-white font-bold text-3xl">
+            Email Newsletter Design for a Monthly Newsletter
+          </div>
+          <div className="flex py-6 px-4 flex-col gap-6">
+            <div className="flex flex-col gap-4">
+              <table className="table-auto">
+                <colgroup>
+                  <col style={{ width: '25%' }} />
+                  <col style={{ width: '75%' }} />
+                </colgroup>
+                <tbody>
+                  <tr>
+                    <th className="py-2 text-left font-normal text-body">Date Created</th>
+                    <td className=" px-4 py-2">23 June, 2023</td>
+                  </tr>
+                  <tr>
+                    <th className="py-2 text-left font-normal text-body">Due Date</th>
+                    <td className=" px-4 py-2">23 June, 2023</td>
+                  </tr>
+                  <tr>
+                    <th className="py-2 text-left font-normal text-body">Price</th>
+                    <td className=" px-4 py-2">5000 USD</td>
+                  </tr>
+                  <tr>
+                    <th className="py-2 text-left font-normal text-body">Status</th>
+                    <td className=" px-4 py-2">
+                      <span className="px-3 text-sm text-title inline-flex rounded-full bg-[#B2E9AA66]">
+                        In Progress
+                      </span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <th className="py-2 text-left font-normal text-body">Client</th>
+                    <td className=" px-4 py-2">
+                      <div className="flex gap-2 items-center">
+                        <UserAvatar score={40} size="xs" />
+                        <div className="flex flex-col">
+                          <span className="text-title text-base font-bold">{inviter.name}</span>
+                          <span className="text-sm ">Inviter</span>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <th className="py-2 text-left font-normal text-body">Skills</th>
+                    <td className=" px-4 py-2">
+                      <div className="flex items-center gap-2 text-sm">
+                        <span className="px-4 capitalize rounded-full py-0.5 bg-slate-100">Logo Design</span>
+                        <span className="px-4 capitalize rounded-full py-0.5 bg-slate-100">Graphic Design</span>
+                        <span className="px-4 capitalize rounded-full py-0.5 bg-slate-100">Illustration</span>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div className="flex flex-col gap-2">
+              <h3 className="font-bold text-lg">Job Description</h3>
+              <div className="rounded-2x bg-[#FFEFD7] p-4 rounded-2xl">
+                Are you a naturally goofy person who loves making people laugh? Do you have a wild imagination and a
+                passion for creating hilarious product designs? If so, we have the perfect short-term contract position
+                for you as our Chief Goofiness Officer!
+              </div>
+            </div>
+            <div className="flex flex-col gap-2">
+              <div>
+                <h3 className="font-bold text-lg">Job Deliverables</h3>
+                <p className="">Mark the deliverables as you&rsquo;re done with them</p>
+              </div>
+
+              <div>
+                <JobMilestone
+                  milestone="Initial design concepts for the email newsletter to provide a clear understanding of how the final design will look like."
+                  isCompleted={true}
+                />
+                <JobMilestone
+                  milestone="Initial design concepts for the email newsletter to provide a clear understanding of how the final design will look like."
+                  isCompleted={false}
+                />
+                <JobMilestone
+                  milestone="Initial design concepts for the email newsletter to provide a clear understanding of how the final design will look like."
+                  isCompleted={false}
+                  isLastMilestone={true}
+                />
+              </div>
+            </div>
+          </div>
+        </SideModal>
+
+        {<DeliverableProgressBar completedDeliverables={2} totalDeliverables={5} />}
+      </div>
+    </div>
+  );
+};
+
+export const AssignedJobTalentCard: React.FC<AssignedJobCardProps> = ({ inviter, price, title }) => {
   const router = useRouter();
   const [showModal, setShowModal] = React.useState(false);
 

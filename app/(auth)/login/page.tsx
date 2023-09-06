@@ -67,7 +67,7 @@ export default function Login() {
         </div>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
-          className="flex relative z-[100] w-full mx-auto max-w-[600px] flex-col bg-[rgba(0,124,91,0.20)] backdrop-blur-md items-center gap-6 rounded-2xl border border-white border-opacity-20 bg-[rgba(0, 124, 91, 0.20)] px-[40px] py-10 backdrop-blur-lg"
+          className="flex w-full mx-auto max-w-[600px] flex-col bg-primary bg-opacity-20 backdrop-blur-md items-center gap-6 rounded-2xl border border-white border-opacity-20 px-[40px] py-10"
         >
           <div className="flex gap-4 flex-col w-full">
             <div className="flex flex-col gap-2">
@@ -92,13 +92,7 @@ export default function Login() {
             </div>
           </div>
 
-          <Button
-            type="submit"
-            variant={'primary'}
-            className=""
-            fullWidth
-            disabled={!form.formState.isValid || login.isLoading}
-          >
+          <Button fullWidth disabled={!form.formState.isValid || login.isLoading}>
             {login.isLoading ? <Spinner /> : 'Login'}
           </Button>
         </form>

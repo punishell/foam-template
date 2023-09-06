@@ -1,11 +1,14 @@
 import React from 'react';
-import { X } from 'lucide-react';
-import { useJobCreationStore } from '@/lib/store';
+import { endOfYesterday } from 'date-fns';
+import { useJobEditStore } from '@/lib/store/job-edit';
 import { Select, SelectOption, Button } from 'pakt-ui';
 import { TagInput } from '@/components/common/tag-input';
 import { DatePicker } from '@/components/common/date-picker';
 import { NumericInput } from '@/components/common/numeric-input';
-import { endOfYesterday } from 'date-fns';
+
+import * as z from 'zod';
+import { useForm, Controller, SubmitHandler } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
 
 const CATEGORY_OPTIONS: SelectOption[] = [
   { label: 'Design', value: 'design' },
@@ -15,11 +18,6 @@ const CATEGORY_OPTIONS: SelectOption[] = [
   { label: 'Copywriting', value: 'copywriting' },
   { label: 'Others', value: 'others' },
 ];
-
-import * as z from 'zod';
-import { useForm, SubmitHandler } from 'react-hook-form';
-import { Controller } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
 
 const schema = z.object({
   title: z.string().nonempty({ message: 'Job title is required' }),
@@ -34,9 +32,10 @@ const schema = z.object({
 type FormValues = z.infer<typeof schema>;
 
 export const JobDetails: React.FC = () => {
-  const job = useJobCreationStore((state) => state.job);
-  const setJob = useJobCreationStore((state) => state.setJob);
-  const gotoNextStep = useJobCreationStore((state) => state.gotoNextStep);
+  const job = useJobEditStore((state) => state.job);
+  const setJob = useJobEditStore((state) => state.setJob);
+
+  const gotoNextStep = useJobEditStore((state) => state.gotoNextStep);
 
   const form = useForm<FormValues>({
     resolver: zodResolver(schema),
@@ -58,6 +57,7 @@ export const JobDetails: React.FC = () => {
       skills,
       category,
     });
+
     gotoNextStep();
   };
 
@@ -80,9 +80,9 @@ export const JobDetails: React.FC = () => {
               Job TItle
             </label>
             <input
+              {...form.register('title')}
               type="text"
               id="title"
-              {...form.register('title')}
               placeholder="Frontend Developer"
               className="w-full border border-line rounded-lg outline-none px-4 py-3 focus-within:border-secondary hover:border-secondary hover:duration-200"
             />
@@ -161,10 +161,10 @@ export const JobDetails: React.FC = () => {
               name="budget"
               render={({ field: { onChange, value } }) => (
                 <NumericInput
-                  id="budget"
                   value={value}
                   setValue={onChange}
-                  placeholder="100"
+                  id="budget"
+                  placeholder="500"
                   className="w-full border border-line rounded-lg outline-none px-4 py-3 focus-within:border-secondary hover:border-secondary hover:duration-200"
                 />
               )}
@@ -187,10 +187,11 @@ export const JobDetails: React.FC = () => {
         <Controller
           name="skills"
           control={form.control}
-          render={({ field: { onChange, value = [] } }) => (
+          render={({ field: { onChange, value } }) => (
             <TagInput tags={value} setTags={onChange} className="min-h-[50px]" />
           )}
         />
+
         <span>
           {form.formState.errors.skills?.message && (
             <span className="text-sm text-red-500">{form.formState.errors.skills?.message}</span>

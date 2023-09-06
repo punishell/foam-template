@@ -1,11 +1,12 @@
 import { create } from 'zustand';
 
-export type JobCreationSteps = 'details' | 'deliverables' | 'project' | 'visibility' | 'review';
+export type JobEditSteps = 'details' | 'deliverables' | 'project' | 'visibility' | 'review';
 
-const STEPS: JobCreationSteps[] = ['details', 'deliverables', 'project', 'visibility', 'review'];
+const STEPS: JobEditSteps[] = ['details', 'deliverables', 'project', 'visibility', 'review'];
 
 type State = {
   job: {
+    id: string;
     title: string;
     budget: string;
     category: string;
@@ -17,21 +18,22 @@ type State = {
     visibility: 'public' | 'private';
   };
   activeStepIndex: number;
-  activeStep: JobCreationSteps;
-  completedSteps: JobCreationSteps[];
-  isActiveStep: (step: JobCreationSteps) => boolean;
-  isCompletedStep: (step: JobCreationSteps) => boolean;
+  activeStep: JobEditSteps;
+  completedSteps: JobEditSteps[];
+  isActiveStep: (step: JobEditSteps) => boolean;
+  isCompletedStep: (step: JobEditSteps) => boolean;
 };
 
 type Actions = {
-  resetJobCreation: () => void;
+  resetJobEdit: () => void;
   setJob: (job: State['job']) => void;
   gotoNextStep: () => void;
-  gotoStep: (step: JobCreationSteps) => void;
+  gotoStep: (step: JobEditSteps) => void;
 };
 
-export const useJobCreationStore = create<State & Actions>((set, get) => ({
+export const useJobEditStore = create<State & Actions>((set, get) => ({
   job: {
+    id: '',
     title: '',
     budget: '',
     skills: [],
@@ -42,10 +44,10 @@ export const useJobCreationStore = create<State & Actions>((set, get) => ({
     type: 'freelance',
     visibility: 'public',
   },
-  completedSteps: [],
   activeStepIndex: 0,
   activeStep: 'details',
-  resetJobCreation: () => set({}),
+  completedSteps: [],
+  resetJobEdit: () => set({}),
   setJob: (job) => set({ job: { ...get().job, ...job } }),
   gotoNextStep: () => {
     // goes to the next step, sets the current step as completed and next step as active

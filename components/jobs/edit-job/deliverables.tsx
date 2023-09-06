@@ -1,17 +1,18 @@
 import React from 'react';
 import { Button } from 'pakt-ui';
-import { useJobCreationStore } from '@/lib/store';
+import { useJobEditStore } from '@/lib/store/job-edit';
 import { DeliverablesInput } from '@/components/jobs/deliverables-input';
 
 const MAX_DESCRIPTION_LENGTH = 400;
 
 export const DescriptionAndDeliverables: React.FC = () => {
-  const job = useJobCreationStore((state) => state.job);
-  const setJob = useJobCreationStore((state) => state.setJob);
-  const gotoNextStep = useJobCreationStore((state) => state.gotoNextStep);
+  const job = useJobEditStore((state) => state.job);
+  const setJob = useJobEditStore((state) => state.setJob);
 
   const [description, setDescription] = React.useState<string>(job.description);
   const [deliverables, setDeliverables] = React.useState<string[]>(job.deliverables);
+
+  const gotoNextStep = useJobEditStore((state) => state.gotoNextStep);
 
   return (
     <div className="flex flex-col w-full gap-6">
@@ -24,12 +25,12 @@ export const DescriptionAndDeliverables: React.FC = () => {
           </label>
           <textarea
             rows={3}
-            maxLength={MAX_DESCRIPTION_LENGTH}
+            value={description}
             onChange={(e) => {
               if (e.target.value.length > MAX_DESCRIPTION_LENGTH) return;
               setDescription(e.target.value);
             }}
-            value={description}
+            maxLength={400}
             className="w-full resize-none border border-line rounded-lg outline-none px-4 py-3 focus-within:border-secondary hover:border-secondary hover:duration-200"
           />
           <span className="self-end text-sm">
@@ -55,9 +56,8 @@ export const DescriptionAndDeliverables: React.FC = () => {
             fullWidth
             disabled={deliverables.length === 0 || description.length === 0}
             onClick={() => {
-              if (deliverables.length === 0 || description.length === 0) return;
-              gotoNextStep();
               setJob({ ...job, description, deliverables });
+              gotoNextStep();
             }}
           >
             Next Step

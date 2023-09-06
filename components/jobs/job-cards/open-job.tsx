@@ -5,20 +5,21 @@ import { Bookmark, X } from 'lucide-react';
 import { UserAvatar } from '@/components/common/user-avatar';
 
 interface OpenJobProps {
+  id: string;
   title: string;
   price: number;
   creator: {
     name: string;
-    avatar: string;
+    avatar?: string;
     paktScore: number;
   };
   skills: string[];
 }
 
-export const OpenJobCard: React.FC<OpenJobProps> = ({ creator, price, skills, title }) => {
+export const OpenJobCard: React.FC<OpenJobProps> = ({ creator, price, skills, title, id }) => {
   return (
     <Link
-      href="/jobs/12345"
+      href={`/jobs/${id}`}
       className="gap-4 max-w-2xl bg-white rounded-3xl border-line w-full flex flex-col grow border p-4"
     >
       <div className="w-full flex gap-4">
