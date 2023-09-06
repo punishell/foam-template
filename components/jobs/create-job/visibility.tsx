@@ -4,9 +4,11 @@ import { Button } from 'pakt-ui';
 import { useJobCreationStore } from '@/lib/store';
 
 export const Visibility: React.FC = () => {
-  const setActiveStep = useJobCreationStore((state) => state.setActiveStep);
-  const setStepsStatus = useJobCreationStore((state) => state.setStepsStatus);
-  const [jobVisibility, setJobVisibility] = React.useState<'private' | 'public'>();
+  const job = useJobCreationStore((state) => state.job);
+  const setJob = useJobCreationStore((state) => state.setJob);
+  const gotoNextStep = useJobCreationStore((state) => state.gotoNextStep);
+
+  const [jobVisibility, setJobVisibility] = React.useState<'private' | 'public'>(job.visibility);
 
   return (
     <div className="flex flex-col w-full gap-6">
@@ -57,9 +59,9 @@ export const Visibility: React.FC = () => {
             size="sm"
             fullWidth
             onClick={() => {
-              setActiveStep('review');
-              setStepsStatus({ review: 'active' });
-              setStepsStatus({ visibility: 'complete' });
+              if (!jobVisibility) return;
+              setJob({ ...job, visibility: jobVisibility });
+              gotoNextStep();
             }}
           >
             Review

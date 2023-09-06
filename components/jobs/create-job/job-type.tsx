@@ -4,11 +4,12 @@ import { Button, Select } from 'pakt-ui';
 import { Plus, X, ChevronRight } from 'lucide-react';
 import { useJobCreationStore } from '@/lib/store';
 
-export const Projects: React.FC = () => {
-  const setActiveStep = useJobCreationStore((state) => state.setActiveStep);
-  const setStepsStatus = useJobCreationStore((state) => state.setStepsStatus);
+export const JobType: React.FC = () => {
+  const job = useJobCreationStore((state) => state.job);
+  const setJob = useJobCreationStore((state) => state.setJob);
+  const gotoNextStep = useJobCreationStore((state) => state.gotoNextStep);
 
-  const [jobType, setJobType] = React.useState<'freelance' | 'project'>();
+  const [jobType, setJobType] = React.useState<'freelance' | 'project'>(job.type);
 
   return (
     <div className="flex flex-col w-full gap-6">
@@ -57,9 +58,9 @@ export const Projects: React.FC = () => {
             size="sm"
             fullWidth
             onClick={() => {
-              setActiveStep('visibility');
-              setStepsStatus({ visibility: 'active' });
-              setStepsStatus({ project: 'complete' });
+              if (!jobType) return;
+              setJob({ ...job, type: jobType });
+              gotoNextStep();
             }}
           >
             Next Step
