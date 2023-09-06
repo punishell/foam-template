@@ -7,8 +7,7 @@ import { useJobEditStore } from '@/lib/store/job-edit';
 export const JobType: React.FC = () => {
   const job = useJobEditStore((state) => state.job);
   const setJob = useJobEditStore((state) => state.setJob);
-
-  const setActiveStep = useJobEditStore((state) => state.setActiveStep);
+  const gotoNextStep = useJobEditStore((state) => state.gotoNextStep);
   const [jobType, setJobType] = React.useState<'freelance' | 'project'>(job.type);
 
   return (
@@ -53,11 +52,13 @@ export const JobType: React.FC = () => {
       <div className="flex justify-end">
         <div className="max-w-[200px] w-full">
           <Button
+            disabled={!jobType}
             variant="primary"
             size="sm"
             fullWidth
             onClick={() => {
-              setActiveStep('visibility');
+              if (!jobType) return;
+              gotoNextStep();
               setJob({ ...job, type: jobType });
             }}
           >

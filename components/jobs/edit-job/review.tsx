@@ -1,32 +1,37 @@
 'use client';
 import React from 'react';
 import { Button } from 'pakt-ui';
+import { format } from 'date-fns';
+import { useRouter } from 'next/navigation';
 import { useUpdateJob } from '@/lib/api/job';
 import { Spinner } from '@/components/common';
 import { useJobEditStore } from '@/lib/store/job-edit';
 import { Tag, Calendar, PenLine } from 'lucide-react';
 
 export const Review: React.FC = () => {
+  const router = useRouter();
   const updateJob = useUpdateJob();
   const job = useJobEditStore((state) => state.job);
   const resetJob = useJobEditStore((state) => state.resetJobEdit);
-  const setActiveStep = useJobEditStore((state) => state.setActiveStep);
+  const gotoStep = useJobEditStore((state) => state.gotoStep);
 
   const handleJobUpdate = () => {
     updateJob.mutate(
       {
-        name: '',
-        category: '',
-        skills: [''],
-        paymentFee: 0,
-        jobId: job.id,
-        type: 'job',
-        description: '',
-        isPrivate: true,
+        id: job.id,
+        name: job.title,
+        tags: job.skills,
+        category: job.category,
+        description: job.description,
+        paymentFee: Number(job.budget),
+        deliverables: job.deliverables,
+        isPrivate: job.visibility === 'private',
+        deliveryDate: format(job.due || 0, 'yyyy-MM-dd'),
       },
       {
-        onSuccess() {
+        onSuccess(_data, { id }) {
           resetJob();
+          router.push(`/jobs/${id}`);
         },
       },
     );
@@ -46,13 +51,13 @@ export const Review: React.FC = () => {
 
               <span className="bg-[#ECFCE5] text-[#198155] gap-2 flex items-center px-4 rounded-full py-1">
                 <Calendar size={20} />
-                <span>{job.due || 'Due Date'}</span>
+                <span>{format(job.due || 0, 'MMM dd, yyyy')}</span>
               </span>
             </div>
           </div>
         </div>
         <div className="self-end">
-          <button className="flex gap-2 items-center text-white" onClick={() => setActiveStep('details')}>
+          <button className="flex gap-2 items-center text-white" onClick={() => gotoStep('details')}>
             <PenLine size={20} />
             <span>Edit</span>
           </button>
@@ -63,7 +68,7 @@ export const Review: React.FC = () => {
           <div className="flex items-center gap-4">
             <h4 className="font-medium">Preferred Skills</h4>
 
-            <EditButton onClick={() => setActiveStep('details')} />
+            <EditButton onClick={() => gotoStep('details')} />
           </div>
 
           <div className="flex gap-1 items-center">
@@ -81,7 +86,7 @@ export const Review: React.FC = () => {
         <div className="flex gap-2 flex-col w-full">
           <div className="flex items-center gap-4">
             <h4 className="font-medium">Job Description</h4>
-            <EditButton onClick={() => setActiveStep('deliverables')} />
+            <EditButton onClick={() => gotoStep('deliverables')} />
           </div>
           <p className="text-base font-normal text-[#202325] rounded-lg py-2 px-3 bg-[#FEF4E3]">
             {job.description || 'Job description goes here'}
@@ -91,7 +96,7 @@ export const Review: React.FC = () => {
         <div className="flex gap-2 flex-col w-full">
           <div className="flex items-center gap-4">
             <h4 className="font-medium">Deliverables</h4>
-            <EditButton onClick={() => setActiveStep('deliverables')} />
+            <EditButton onClick={() => gotoStep('deliverables')} />
           </div>
 
           <div className="flex flex-col gap-2 overflow-y-auto h-full">

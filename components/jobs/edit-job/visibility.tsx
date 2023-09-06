@@ -7,7 +7,7 @@ export const Visibility: React.FC = () => {
   const job = useJobEditStore((state) => state.job);
   const setJob = useJobEditStore((state) => state.setJob);
 
-  const setActiveStep = useJobEditStore((state) => state.setActiveStep);
+  const gotoNextStep = useJobEditStore((state) => state.gotoNextStep);
   const [jobVisibility, setJobVisibility] = React.useState<'private' | 'public'>(job.visibility);
 
   return (
@@ -57,8 +57,10 @@ export const Visibility: React.FC = () => {
             variant="primary"
             size="sm"
             fullWidth
+            disabled={!jobVisibility}
             onClick={() => {
-              setActiveStep('review');
+              if (!jobVisibility) return;
+              gotoNextStep();
               setJob({ ...job, visibility: jobVisibility });
             }}
           >
