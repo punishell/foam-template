@@ -3,12 +3,13 @@ import { Button } from 'pakt-ui';
 import { useRouter } from 'next/navigation';
 
 interface UnAssignedJobCardProps {
+  id: string;
   title: string;
   price: number;
   createdAt: string;
 }
 
-export const UnAssignedJob: React.FC<UnAssignedJobCardProps> = ({ createdAt, price, title }) => {
+export const UnAssignedJobCard: React.FC<UnAssignedJobCardProps> = ({ createdAt, price, title, id }) => {
   const router = useRouter();
 
   return (
@@ -38,7 +39,7 @@ export const UnAssignedJob: React.FC<UnAssignedJobCardProps> = ({ createdAt, pri
             size="xs"
             variant="outline"
             onClick={() => {
-              router.push('/jobs/123');
+              router.push(`/jobs/${id}`);
             }}
           >
             Job Details

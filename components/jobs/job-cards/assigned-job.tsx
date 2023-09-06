@@ -7,16 +7,17 @@ import { UserAvatar } from '@/components/common/user-avatar';
 import { DeliverableProgressBar } from '@/components/common/deliverable-progress-bar';
 
 interface AssignedJobCardProps {
+  id: string;
   title: string;
   price: number;
   inviter: {
     name: string;
-    avatar: string;
+    avatar?: string;
     paktScore: number;
   };
 }
 
-export const AssignedJobClientView: React.FC<AssignedJobCardProps> = ({ inviter, price, title }) => {
+export const AssignedJobClientCard: React.FC<AssignedJobCardProps> = ({ inviter, price, title, id }) => {
   const router = useRouter();
   const [showModal, setShowModal] = React.useState(false);
 
@@ -145,7 +146,7 @@ export const AssignedJobClientView: React.FC<AssignedJobCardProps> = ({ inviter,
   );
 };
 
-export const AssignedJobTalentView: React.FC<AssignedJobCardProps> = ({ inviter, price, title }) => {
+export const AssignedJobTalentCard: React.FC<AssignedJobCardProps> = ({ inviter, price, title }) => {
   const router = useRouter();
   const [showModal, setShowModal] = React.useState(false);
 
