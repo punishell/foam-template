@@ -114,7 +114,7 @@ export const JobFeedCard: React.FC<JobFeedCardProps> = (props) => {
             </div>
           </div>
 
-          <span className="text-title text-3xl font-normal">{title}</span>
+          <span className="text-title text-2xl font-normal">{title}</span>
 
           <div className="justify-between items-center flex mt-auto">
             <div className="flex items-center gap-2">
@@ -149,7 +149,7 @@ export const JobFeedWrapper: React.FC<{ children: React.ReactNode }> = ({ childr
 export const PublicJobCreatedFeed = ({ creator, title, amount, jobId, _id, bookmarked }: { creator: string, title: string, amount: string, jobId: string, _id: string, bookmarked: boolean }) => {
   return (
     <JobFeedWrapper>
-      <UserAvatar score={54} />
+      <UserAvatar score={54} size='md' />
       <div className="flex flex-col gap-4 w-full">
         <div className="flex justify-between items-center">
           <h3 className="text-body text-xl font-bold">
@@ -157,7 +157,7 @@ export const PublicJobCreatedFeed = ({ creator, title, amount, jobId, _id, bookm
             <span className="px-2 text-lg text-title inline-flex rounded-full bg-green-300">${amount}</span> public job
           </h3>
         </div>
-        <h3 className="text-title text-3xl font-normal">{title}</h3>
+        <h3 className="text-title text-2xl font-normal">{title}</h3>
         <div className="justify-between items-center flex mt-auto">
           <div className="flex items-center gap-2">
             <Button size="xs" variant="secondary">

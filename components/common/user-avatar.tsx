@@ -3,7 +3,7 @@ type Size = 'xs' | 'sm' | 'md' | 'lg';
 const sizesToPx: { [K in Size]: number } = {
   xs: 54,
   sm: 108,
-  md: 162,
+  md: 142,
   lg: 195,
 };
 
@@ -35,6 +35,11 @@ function getAvatarColor(paktScore: number) {
   }
   return 'bg-green-gradient';
 }
+const sizes: Record<string, any> = {
+  xs: 20,
+  md: 30,
+};
+const getSizes = (size: string) => sizes[size] || 30;
 
 export const UserAvatar: React.FC<Props> = ({ image, score = 0, size = 'md' }) => {
   return (
@@ -45,8 +50,8 @@ export const UserAvatar: React.FC<Props> = ({ image, score = 0, size = 'md' }) =
         )}`}
         style={{
           right: sizesToPositions[size],
-          width: size === 'xs' ? 20 : 30,
-          height: size === 'xs' ? 20 : 30,
+          width: getSizes(size),
+          height: getSizes(size),
         }}
       >
         {score}

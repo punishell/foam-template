@@ -42,7 +42,7 @@ export const TalentList: React.FC<TalentListProps> = ({ isLoading, talents, curr
             ))}
           </div>
           {talents.length === 0 && <RenderEmpty />}
-          <div className="mt-auto">
+          <div className="my-4">
             <Pagination
               totalPages={totalPages}
               setCurrentPage={handlePagination}

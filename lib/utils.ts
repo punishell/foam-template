@@ -132,3 +132,19 @@ export const FEED_TYPES = {
   ISSUE_RESOLUTION_GUILTY_SECOND: "second_issue_resolution_guilty",
   ISSUE_RESOLUTION_RESOLVED: "issue_resolution_resolve",
 }
+
+export function getAvatarColor(paktScore: number) {
+  if (paktScore <= 20) {
+    return '#DC3545';
+  }
+  if (paktScore <= 40) {
+    return '#F9D489';
+  }
+  if (paktScore <= 60) {
+    return '#F2C94C';
+  }
+  if (paktScore <= 80) {
+    return '#9BDCFD';
+  }
+  return '#28A745';
+}
