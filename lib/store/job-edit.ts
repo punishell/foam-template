@@ -2,50 +2,72 @@ import { create } from 'zustand';
 
 export type JobEditSteps = 'details' | 'deliverables' | 'project' | 'visibility' | 'review';
 
+const STEPS: JobEditSteps[] = ['details', 'deliverables', 'project', 'visibility', 'review'];
+
 type State = {
   job: {
     id: string;
     title: string;
-    due: string;
+    budget: string;
     category: string;
-    description: string;
     skills: string[];
-    budget: number;
+    description: string;
+    due: Date | undefined;
     deliverables: string[];
     type: 'freelance' | 'project';
     visibility: 'public' | 'private';
   };
+  activeStepIndex: number;
   activeStep: JobEditSteps;
+  completedSteps: JobEditSteps[];
+  isActiveStep: (step: JobEditSteps) => boolean;
+  isCompletedStep: (step: JobEditSteps) => boolean;
 };
 
 type Actions = {
   resetJobEdit: () => void;
   setJob: (job: State['job']) => void;
-  setActiveStep: (step: State['activeStep']) => void;
+  gotoNextStep: () => void;
+  gotoStep: (step: JobEditSteps) => void;
 };
 
 export const useJobEditStore = create<State & Actions>((set, get) => ({
   job: {
     id: '',
-    due: '',
     title: '',
-    budget: 0,
+    budget: '',
     skills: [],
     category: '',
+    due: undefined,
     description: '',
     deliverables: [],
     type: 'freelance',
     visibility: 'public',
   },
+  activeStepIndex: 0,
   activeStep: 'details',
-  stepsStatus: {
-    details: 'active',
-    review: 'inactive',
-    project: 'inactive',
-    visibility: 'inactive',
-    deliverables: 'inactive',
-  },
+  completedSteps: [],
   resetJobEdit: () => set({}),
-  setActiveStep: (step) => set({ activeStep: step }),
   setJob: (job) => set({ job: { ...get().job, ...job } }),
+  gotoNextStep: () => {
+    // goes to the next step, sets the current step as completed and next step as active
+    const { activeStepIndex, completedSteps } = get();
+
+    if (activeStepIndex < STEPS.length - 1) {
+      set({
+        activeStepIndex: activeStepIndex + 1,
+        activeStep: STEPS[activeStepIndex + 1],
+        completedSteps: [...completedSteps, STEPS[activeStepIndex]],
+      });
+    }
+  },
+  gotoStep: (step) => {
+    // goes to the step if it's completed or active
+    const { completedSteps, activeStep } = get();
+    if (completedSteps.includes(step) || activeStep === step) {
+      set({ activeStep: step, activeStepIndex: STEPS.indexOf(step) });
+    }
+  },
+  isActiveStep: (step) => get().activeStep === step,
+  isCompletedStep: (step) => get().completedSteps.includes(step),
 }));
