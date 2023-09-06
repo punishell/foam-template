@@ -55,8 +55,18 @@ interface UpdateAccountParams {
   isPrivate?: boolean;
 }
 
+interface ChangePasswordParams {
+  oldPassword: string;
+  newPassword: string;
+}
+
 async function postUpdateAccount(values: UpdateAccountParams): Promise<User> {
   const res = await axios.patch('/account/update', values);
+  return res.data.data;
+}
+
+async function postChangePassword(values: ChangePasswordParams): Promise<any> {
+  const res = await axios.put('/account/password/change', values);
   return res.data.data;
 }
 
@@ -92,3 +102,17 @@ export const useGetAccount = () => {
     },
   });
 };
+
+
+export function useChangePassword() {
+  return useMutation({
+    mutationFn: postChangePassword,
+    mutationKey: ['change_password'],
+    onSuccess: () => {
+      toast.success('Account Password changed successfully');
+    },
+    onError: (error: ApiError) => {
+      toast.error(error?.response?.data.message || 'An error occurred');
+    },
+  });
+}
