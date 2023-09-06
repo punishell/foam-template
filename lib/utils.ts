@@ -114,3 +114,7 @@ export const formatCountdown = (counter: number) => {
 
 export const AUTH_TOKEN_KEY = process.env.NEXT_PUBLIC_AUTH_TOKEN_KEY ?? 'auth-token';
 export const TEMP_AUTH_TOKEN_KEY = process.env.NEXT_PUBLIC_TEMP_AUTH_TOKEN_KEY ?? 'temp-auth-token';
+
+export const uniqueItems: <T>(arr: T[]) => T[] = (arr) => {
+  return [...new Set(arr)];
+};
