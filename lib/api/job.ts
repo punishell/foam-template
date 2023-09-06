@@ -140,10 +140,11 @@ export function useUpdateJob() {
     onError: (error: ApiError) => {
       toast.error(error?.response?.data.message || 'An error occurred');
     },
-    onSuccess: ({ _id, name }, { deliverables = [] }) => {
+    onSuccess: (_, { deliverables = [], id, name }) => {
       updateJobDeliverables.mutate({
-        jobId: _id,
+        jobId: id,
         deliverables,
+        replace: true,
       });
       toast.success(`Job ${name} updated successfully`);
     },
@@ -154,6 +155,7 @@ export function useUpdateJob() {
 
 interface AssignJobDeliverablesParams {
   jobId: string;
+  replace?: boolean;
   deliverables: string[];
 }
 
@@ -166,6 +168,7 @@ async function postAssignJobDeliverables(params: AssignJobDeliverablesParams): P
   const res = await axios.post(`/collection/many`, {
     parent: params.jobId,
     type: 'deliverable',
+    replace: params.replace,
     collections: deliverables,
   });
   return res.data.data;
