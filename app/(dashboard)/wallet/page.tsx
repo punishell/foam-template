@@ -14,6 +14,7 @@ import { WalletBalanceChart, chartDataProps } from '@/components/wallet/chart';
 import { WithdrawalModal } from '@/components/wallet/withdrawalModal';
 
 const dateFormat = "DD/MM/YYYY";
+const MAX = 10;
 
 export default function Wallet() {
   const [isOpen, setIsOpen] = React.useState(false);
@@ -27,7 +28,7 @@ export default function Wallet() {
     date: dayjs(tx.createdAt).format(dateFormat),
     type: tx.type,
     amount: tx.amount,
-    description: tx.description,
+    description: tx.description.length > MAX ? tx.description.slice(0, MAX) + "..." : tx.description,
     coin: tx.currency.toUpperCase(),
     usdValue: formatUsd(tx.usdValue),
     status: tx.status,
@@ -97,9 +98,6 @@ export default function Wallet() {
             <UserBalance />
             <span>|</span> <span className="text-body">Balance</span>
           </div>
-          <button className="flex gap-2 items-center text-primary text-sm font-bold bg-[#008D6C1A] p-3 rounded-full">
-            <Bell size={18} />
-          </button>
         </div>
       </div>
 

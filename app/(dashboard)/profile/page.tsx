@@ -5,16 +5,19 @@ import { Button } from 'pakt-ui';
 import { Briefcase } from 'lucide-react';
 import { UserAvatar } from '@/components/common/user-avatar';
 import { useGetTalentById } from '@/lib/api';
-import { useRouter, useParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { Achievements } from '@/components/talents/achievement';
 import { Reviews } from '@/components/talents/review';
 import { Spinner } from '@/components/common';
+import { getAvatarColor } from '@/lib/utils';
+import { useUserState } from '@/lib/store/account';
+import Link from 'next/link';
 import { ProfileHeader } from '@/components/talents/header';
 
-export default function TalentDetails() {
-  const params = useParams();
+export default function Profile() {
   const router = useRouter();
-  const talentId = String(params["talent-id"]);
+  const { _id: loggedInUser } = useUserState();
+  const talentId = String(loggedInUser);
   const { data: talentData, refetch: FetchTalent, isFetched, isFetching } = useGetTalentById(talentId);
 
   useEffect(() => {
@@ -40,7 +43,7 @@ export default function TalentDetails() {
 
   return (
     <div className="flex flex-col gap-6 pt-6 overflow-y-auto">
-      <ProfileHeader _id={talent.id} name={talent.name} position={talent.positon} score={talent.score} skills={talent?.skills} />
+      <ProfileHeader _id={talent.id} name={talent.name} position={talent.positon} score={talent.score} skills={talent.skills} />
 
       <div className="flex gap-6">
         <Bio body={talent.bio} />
@@ -50,6 +53,7 @@ export default function TalentDetails() {
     </div>
   );
 }
+
 
 const Bio = ({ body }: { body: string }) => {
   return (

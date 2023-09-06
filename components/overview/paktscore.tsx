@@ -67,7 +67,7 @@ export const PaktScore = ({ score = 0, size = 150 }: Props) => {
           <span className="text-4xl">{Math.trunc(score)}</span>
         </div>
       </div>
-      <span className="text-2xl font-bold text-title">Paktscore</span>
+      <span className="text-2xl font-bold text-title">Afroscore</span>
     </div>
   );
 };

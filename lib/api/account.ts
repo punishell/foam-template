@@ -1,9 +1,38 @@
 import { User } from '@/lib/types';
 import { ApiError, axios } from '@/lib/axios';
-import { useUserState } from '@/lib/store/account';
 import { toast } from '@/components/common/toaster';
 import { useQuery, useMutation } from '@tanstack/react-query';
+import { useUserState } from '../store/account';
 
+interface GetAccountresponse {
+  _id: string,
+  type: string,
+  email: string,
+  lastName: string,
+  firstName: string,
+  score: 0,
+  profileImage: {
+    url: string,
+  },
+  profileCompleteness: 0,
+  profile: {
+    talent: {
+      tagIds?: []
+      availability: string,
+      tags?: [],
+      about: string,
+    },
+    bio: {
+      title: string,
+      description: string,
+    },
+    contact: {
+      city: string,
+      country: string,
+    }
+  }
+  isPrivate?: boolean,
+}
 interface UpdateAccountParams {
   username?: string;
   profile?: {
@@ -20,16 +49,15 @@ interface UpdateAccountParams {
     };
     talent?: {
       availability?: string;
-      skills?: string[];
+      tags?: string[];
     };
-    privateEarnings?: boolean;
-    privateInvestments?: boolean;
   };
-  socials?: {
-    github?: string;
-    twitter?: string;
-    website?: string;
-  };
+  isPrivate?: boolean;
+}
+
+interface ChangePasswordParams {
+  oldPassword: string;
+  newPassword: string;
 }
 
 async function postUpdateAccount(values: UpdateAccountParams): Promise<User> {
@@ -37,10 +65,15 @@ async function postUpdateAccount(values: UpdateAccountParams): Promise<User> {
   return res.data.data;
 }
 
+async function postChangePassword(values: ChangePasswordParams): Promise<any> {
+  const res = await axios.put('/account/password/change', values);
+  return res.data.data;
+}
+
 export function useUpdateAccount() {
   return useMutation({
     mutationFn: postUpdateAccount,
-    mutationKey: ['update-account'],
+    mutationKey: ['update_account_system'],
     onSuccess: () => {
       toast.success('Account updated successfully');
     },
@@ -57,13 +90,29 @@ async function fetchUserAccount(): Promise<User> {
 
 export const useGetAccount = () => {
   const { setUser } = useUserState();
-
   return useQuery({
     queryFn: fetchUserAccount,
     queryKey: ['account-details'],
     onError: (error: ApiError) => {
       toast.error(error?.response?.data.message || 'An error occurred');
     },
-    onSuccess: (user) => setUser(user),
+    onSuccess: (user: GetAccountresponse) => {
+      setUser(user);
+      return user;
+    },
   });
 };
+
+
+export function useChangePassword() {
+  return useMutation({
+    mutationFn: postChangePassword,
+    mutationKey: ['change_password'],
+    onSuccess: () => {
+      toast.success('Account Password changed successfully');
+    },
+    onError: (error: ApiError) => {
+      toast.error(error?.response?.data.message || 'An error occurred');
+    },
+  });
+}

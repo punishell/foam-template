@@ -63,7 +63,7 @@ export const Table = <T extends object>({
           <div className="inline-block min-w-full align-middle sm:px-6 lg:px-8">
             <div className="border-line h-full max-h-[450px] min-w-full overflow-y-auto overflow-x-hidden border sm:rounded-lg">
               <table className="min-w-full table-fixed">
-                <thead className="sticky top-0 z-0 bg-[#F7F7F7]">
+                <thead className="sticky top-0 bg-[#F7F7F7] z-10">
                   {table.getHeaderGroups().map((headerGroup) => (
                     <tr className="bg-app" key={headerGroup.id}>
                       {headerGroup.headers.map((header) => (

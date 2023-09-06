@@ -17,18 +17,18 @@ export const NotificationView = () => {
         <h2 className='text-lg font-bold'>Set Notification Preferences</h2>
         <p className='text-body text-sm'>We need permissions to show notifications</p>
         <div className='flex flex-col'>
-          <div className='flex flex-row text-sm text-body p-4'>
-            <p className='flex-initial w-4/6'>Type</p>
-            <p className='flex-initial w-1/6'>Email</p>
-            <p className='flex-initial w-1/6'>Browser</p>
+          <div className='flex flex-row text-sm text-body py-4 px-8'>
+            <p className='flex-1 w-64'>Type</p>
+            <p className='flex-initial w-32 text-right'>EMAIL</p>
+            <p className='flex-initial w-32 text-right'>BROWSER</p>
           </div>
           {NotificationTypes.map((n, i) =>
-            <div key={i} className={ i%2 == 0 ? 'flex flex-row text-base text-title p-8 bg-preference': 'flex flex-row text-sm text-title p-8'}>
-              <p className='flex-initial w-4/6'>{n.label}</p>
-              <div className='flex-initial w-1/6'>
+            <div key={i} className={`flex flex-row text-base text-title py-4 px-8 ${i % 2 == 0 ? "bg-preference" : ""}`}>
+              <p className='flex-1 w-64'>{n.label}</p>
+              <div className='flex-initial w-32 text-right'>
                 <Checkbox checked={n.email} />
               </div>
-              <div className='flex-initial w-1/6'>
+              <div className='flex-initial w-32 text-right'>
                 <Checkbox checked={n.browser} />
               </div>
             </div>

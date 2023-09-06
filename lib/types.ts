@@ -22,9 +22,9 @@ export interface User {
       description?: string;
     };
     talent: {
-      availability: string;
-      skills: string[];
-      skillIds: any[];
+      availability?: string;
+      tags?: string[];
+      tagIds?: any[];
       about?: string;
     };
   };

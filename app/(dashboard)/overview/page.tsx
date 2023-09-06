@@ -7,8 +7,10 @@ import { Feeds } from '@/components/overview/feeds';
 import { Header } from '@/components/overview/header';
 import { PaktScore } from '@/components/overview/paktscore';
 import { LeaderBoard } from '@/components/overview/leaderboard';
-
-import { Briefcase, Search, Plus } from 'lucide-react';
+import { Invites } from '@/components/overview/invites';
+import { ActiveJobs } from '@/components/overview/activeJobs';
+import { FeedsBookmark } from '@/components/overview/bookmark';
+import { Search, Plus, Briefcase } from 'lucide-react';
 
 export default function Overview() {
   return (
@@ -23,9 +25,9 @@ export default function Overview() {
             <Tabs
               tabs={[
                 { label: 'Your Feed', value: 'feed', content: <Feeds /> },
-                { label: 'Active Jobs', value: 'active', content: <div className="w-full">Active Jobs</div> },
-                { label: 'Invites', value: 'invites', content: <div>Invites</div> },
-                { label: 'Bookmarks', value: 'bookmarks', content: <div>Bookmarks</div> },
+                { label: 'Active Jobs', value: 'active', content: <ActiveJobs /> },
+                { label: 'Invites', value: 'invites', content: <Invites /> },
+                { label: 'Bookmarks', value: 'bookmarks', content: <FeedsBookmark /> },
               ]}
             />
           </div>

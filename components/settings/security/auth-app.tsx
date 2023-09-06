@@ -31,7 +31,7 @@ export const AuthApp2FA = ({ isEnabled }: AuthApp2FA) => {
         <Text.p size="lg">Authenticator app</Text.p>
       </button>
 
-      <Modal isOpen={isModalOpen} onOpenChange={closeModal} className="h-fit rounded-2xl p-6">
+      <Modal isOpen={isModalOpen} onOpenChange={closeModal} className="bg-white h-fit rounded-2xl p-6">
         {isEnabled ? (
           <Slider items={[{ SlideItem: VerifyDeactivateAuthApp }, { SlideItem: DeactivateAuthAppSuccess }]} />
         ) : (

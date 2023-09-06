@@ -12,6 +12,7 @@ import { Container } from '@/components/common/container';
 import { useSearchParams, useRouter } from 'next/navigation';
 
 import { Spinner } from '@/components/common';
+import { useUserState } from '@/lib/store/account';
 import { AUTH_TOKEN_KEY, TEMP_AUTH_TOKEN_KEY } from '@/lib/utils';
 
 const loginFormSchema = z.object({
@@ -25,6 +26,7 @@ export default function Login() {
   const login = useLogin();
   const router = useRouter();
   const searchParams = useSearchParams();
+  const { setUser } = useUserState();
 
   const form = useForm<LoginFormValues>({
     resolver: zodResolver(loginFormSchema),
@@ -34,6 +36,8 @@ export default function Login() {
     login.mutate(values, {
       onSuccess: (data) => {
         if (data.isVerified) {
+          // @ts-ignore
+          setUser(data);
           setCookie(AUTH_TOKEN_KEY, data.token);
           return router.push(searchParams.get('from') || '/overview');
         }
@@ -53,9 +57,7 @@ export default function Login() {
         <Link
           className="rounded-lg border-2 bg-white !bg-opacity-10 px-5 py-2 text-white duration-200 hover:bg-opacity-30"
           href="/signup"
-        >
-          Signup
-        </Link>
+        > Signup</Link>
       </Container>
 
       <Container className="mt-28 flex w-full max-w-2xl flex-col items-center gap-6">

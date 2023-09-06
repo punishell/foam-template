@@ -1,7 +1,6 @@
 'use client';
 
-import React from 'react';
-import Link from 'next/link';
+import React, { useEffect } from 'react';
 import { Button, Slider } from 'pakt-ui';
 import { Modal } from '@/components/common';
 import { Spinner } from '@/components/common';
@@ -9,8 +8,11 @@ import { TagInput } from '@/components/common/tag-input';
 import { UserAvatar } from '@/components/common/user-avatar';
 import { useGetConnectionPreference, useUpdateConnectionPreference } from '@/lib/api/connection';
 import { Bell, Search, Settings2, XCircle, X } from 'lucide-react';
-import { usePathname } from 'next/navigation';
 import { UserBalance } from '@/components/common/user-balance';
+import { useMessaging } from '@/providers/socketProvider';
+import { ChatList, ChatListSearch } from '@/components/messaging/chatlist';
+import { useSearchParams } from 'next/navigation';
+import { Spinner } from '@/components/common';
 
 interface Props {
   children: React.ReactNode;
@@ -19,6 +21,13 @@ interface Props {
 export default function MessagesLayout({ children }: Props) {
   const [settingsModalOpen, setSettingsModalOpen] = React.useState(false);
 
+  const { conversations, startUserInitializeConversation, loadingChats } = useMessaging();
+  const searchParams = useSearchParams();
+  const queryParams = new URLSearchParams(searchParams as any);
+  const userId = queryParams.get('userId');
+  useEffect(() => {
+    if (userId) startUserInitializeConversation(userId);
+  }, []);
   return (
     <div className="flex flex-col gap-6 h-full">
       <div className="flex items-center justify-between">
@@ -45,10 +54,10 @@ export default function MessagesLayout({ children }: Props) {
         </div>
       </div>
 
-      <div className="h-full flex grow w-full">
+      <div className="flex grow w-full h-[90%]">
         <div className="bg-white basis-[370px] grow-0 border h-full shrink-0 flex flex-col rounded-lg rounded-r-none border-line">
           <ChatListSearch />
-          <ChatList />
+          <ChatList conversations={conversations} loading={loadingChats} />
         </div>
 
         <div className="w-full border grow h-full bg-white flex flex-col rounded-lg rounded-l-none border-l-0 border-line p-6 pt-3">
@@ -141,95 +150,5 @@ const SettingsModal = () => {
         {updateConnectionPreference.isLoading ? <Spinner /> : 'Set Preferences'}
       </Button>
     </div>
-  );
-};
-
-const ChatList = () => {
-  return (
-    <div className="grow w-full overflow-y-auto flex flex-col divide-line">
-      <ChatListItem
-        chatId="1"
-        name="Leslie Ola"
-        unreadCount={3}
-        lastMessage="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
-        time="12:00 PM"
-      />
-      <ChatListItem
-        chatId="2"
-        name="Leslie Ola"
-        unreadCount={3}
-        lastMessage="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
-        time="12:00 PM"
-      />
-      <ChatListItem
-        chatId="3"
-        name="Leslie Ola"
-        unreadCount={3}
-        lastMessage="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
-        time="12:00 PM"
-      />
-      <ChatListItem
-        chatId="4"
-        name="Leslie Ola"
-        unreadCount={3}
-        lastMessage="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
-        time="12:00 PM"
-      />
-    </div>
-  );
-};
-
-const ChatListSearch = () => {
-  return (
-    <div className="flex relative items-center gap-2 p-4 py-6">
-      <div className="absolute left-6">
-        <Search size={18} className="text-body" />
-      </div>
-      <input
-        type="text"
-        className="border pl-8 focus:outline-none px-2 py-2 resize-none bg-gray-50 rounded-lg w-full"
-        placeholder="Search"
-      />
-    </div>
-  );
-};
-
-interface ChatListItemProps {
-  name: string;
-  time: string;
-  chatId: string;
-  lastMessage: string;
-  unreadCount: number;
-}
-
-const ChatListItem: React.FC<ChatListItemProps> = ({ name, unreadCount, lastMessage, time, chatId }) => {
-  const pathname = usePathname();
-  const urlChatId = pathname.split('/')[2];
-  const isActiveChat = urlChatId === chatId;
-
-  return (
-    <Link href={`/messages/${chatId}`} className="border-b">
-      <div
-        className={`flex w-full border-l-4 hover:bg-[#ECFCE5] duration-200 px-3 py-3 gap-2 items-center ${
-          isActiveChat ? 'bg-[#ECFCE5] border-primary' : 'bg-white border-transparent'
-        }`}
-      >
-        <div className="h-10 w-10 shrink-0 rounded-full bg-slate-800"></div>
-        <div className="grow flex flex-col">
-          <div className="flex justify-between gap-2 items-center">
-            <div className="flex gap-2 items-center">
-              <div className="text-title text-base font-medium">{name}</div>
-              <div className="h-4 w-4 shrink-0 text-white text-opacity-80 rounded-full text-xs bg-primary-gradient flex items-center justify-center">
-                {unreadCount}
-              </div>
-            </div>
-            <div className="text-body text-xs">{time}</div>
-          </div>
-          <div className="text-body whitespace-nowrap text-sm text-ellipsis overflow-hidden">
-            {lastMessage.length > 30 ? lastMessage.slice(0, 30) + '...' : lastMessage}
-          </div>
-        </div>
-      </div>
-    </Link>
   );
 };
