@@ -9,6 +9,7 @@ import { useRouter, useParams } from 'next/navigation';
 import { Achievements } from '@/components/talents/achievement';
 import { Reviews } from '@/components/talents/review';
 import { Spinner } from '@/components/common';
+import { getAvatarColor } from '@/lib/utils';
 
 export default function TalentDetails() {
   const params = useParams();
@@ -50,13 +51,14 @@ export default function TalentDetails() {
 }
 
 const Header = ({ name, position, score, skills }: { name: string, position: string, score: number, skills: any[] }) => {
+  const borderColor = getAvatarColor(score);
   return (
     <div className="w-full flex relative bg-white py-6 rounded-2xl gap-6 border border-line">
-      <div className="absolute left-[5%] top-[10%]  shrink-0">
+      <div className="absolute left-[5%] top-[10%] shrink-0">
         <UserAvatar score={score} size="md" />
       </div>
       <div className="flex flex-col gap-4 grow">
-        <div className="flex flex-row gap-2 px-6 w-full justify-between border-b pb-4">
+        <div className={`flex flex-row gap-2 px-6 w-full justify-between border-b pb-4`} style={{ borderColor: borderColor }}>
           <div className='w-1/5'></div>
           <div className='flex flex-row justify-between w-4/5'>
             <div className="flex flex-col gap-1">

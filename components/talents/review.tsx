@@ -64,7 +64,7 @@ export const Reviews = ({ reviews }: { reviews: any[] }) => {
           />
         )}
         {!reviews || reviews.length === 0 &&
-          <div className='flex w-full text-white h-[367px] my-auto items-center'>
+          <div className='flex w-full text-white min-h-[307px] my-auto items-center'>
             <p>No Reviews</p>
           </div>
         }
