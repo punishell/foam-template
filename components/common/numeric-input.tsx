@@ -2,7 +2,7 @@ import React from 'react';
 
 type Props = React.ComponentProps<'input'> & {
   value: string | number;
-  setValue: (value: number) => void;
+  setValue: (value: string) => void;
 };
 
 export const NumericInput: React.FC<Props> = ({ className, value = '', setValue, onChange, ...props }) => {
@@ -12,7 +12,7 @@ export const NumericInput: React.FC<Props> = ({ className, value = '', setValue,
     const newValue = event.target.value;
     if (/^\d*$/.test(newValue)) {
       setInputValue(newValue);
-      setValue(parseInt(newValue));
+      setValue(newValue);
     }
   };
 
@@ -21,7 +21,7 @@ export const NumericInput: React.FC<Props> = ({ className, value = '', setValue,
       const newValue = inputValue.slice(0, -1);
       if (/^\d*$/.test(newValue)) {
         setInputValue(newValue);
-        setValue(parseInt(newValue));
+        setValue(newValue);
       }
     }
   };
