@@ -48,7 +48,6 @@ export const ProfileView = () => {
       kycVerified: false,
       tags: userAccount?.profile?.talent?.tags,
       isPrivate: userAccount?.isPrivate || false,
-      // kycVerified: userAccount?.data?.data?.kycVerified,
     }),
     [userAccount],
   );
@@ -144,7 +143,14 @@ export const ProfileView = () => {
             <Switch />
           </div> */}
           </div>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col w-4/5 overflow-y-auto min-h-full">
+          <form className="flex flex-col w-4/5 overflow-y-auto min-h-full"
+            onSubmit={form.handleSubmit(onSubmit)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') {
+                e.preventDefault();
+              }
+            }}
+          >
             <div className="bg-white rounded-lg p-4 mb-4">
               <div className="flex flex-row justify-between h-[50px] items-center mb-4">
                 <p className="text-lg text-title font-bold">Edit Profile Details</p>
@@ -208,13 +214,16 @@ export const ProfileView = () => {
                 <div className="flex flex-row gap-4">
                   <div className="w-1/2">
                     <p className="text-body text-sm">Add your top 3 skills first</p>
-                    <Controller
-                      name="tags"
-                      control={form.control}
-                      render={({ field: { onChange, value = [] } }) => (
-                        <TagInput tags={value} setTags={onChange} className="min-h-[186px]" />
-                      )}
-                    />
+                    <div className='min-h-[186px] border !bg-[#FCFCFD] !border-[#E8E8E8] rounded-lg'>
+                      <Controller
+                        name="tags"
+                        control={form.control}
+                        render={({ field: { onChange, value = [] } }) => (
+                          <TagInput tags={value} setTags={onChange} className="items-start border border-none" />
+                        )}
+                      />
+
+                    </div>
                   </div>
                   <div className="w-1/2">
                     <p className="text-body text-sm">Bio</p>
