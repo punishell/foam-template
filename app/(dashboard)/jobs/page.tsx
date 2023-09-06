@@ -15,6 +15,7 @@ import { AcceptedJobs } from '@/components/jobs/assigned-jobs';
 export default function Jobs() {
   const router = useRouter();
   const pathname = usePathname();
+
   const searchParams = useSearchParams();
 
   const createQueryString = React.useCallback(
@@ -41,41 +42,37 @@ export default function Jobs() {
   }, [urlTab]);
 
   return (
-    <div>
-      <div className="flex items-center justify-between gap-4">
-        <RadixTabs.Root
-          value={activeTab}
-          defaultValue="open"
-          onValueChange={handleTabChange}
-          className="flex flex-col gap-4 w-full"
-        >
-          <div className="flex items-center justify-between gap-4 w-full">
-            <RadixTabs.List className="grid grid-cols-3 gap-1 rounded-lg bg-[#F0F2F5] p-0.5 text-base text-[#828A9B] w-fit">
-              <TabTrigger value="open" label="Open" />
-              <TabTrigger value="created" label="Created" />
-              <TabTrigger value="accepted" label="Accepted" />
-            </RadixTabs.List>
+    <RadixTabs.Root
+      value={activeTab}
+      defaultValue="open"
+      onValueChange={handleTabChange}
+      className="flex flex-col gap-4 w-full h-full"
+    >
+      <div className="flex items-center justify-between gap-4 w-full">
+        <RadixTabs.List className="grid grid-cols-3 gap-1 rounded-lg bg-[#F0F2F5] p-0.5 text-base text-[#828A9B] w-fit">
+          <TabTrigger value="open" label="Open" />
+          <TabTrigger value="created" label="Created" />
+          <TabTrigger value="accepted" label="Accepted" />
+        </RadixTabs.List>
 
-            <Button size="sm" onClick={() => router.push('/jobs/create')}>
-              <div className="flex items-center gap-2">
-                <Plus size={20} />
-                <span>Create Job</span>
-              </div>
-            </Button>
+        <Button size="sm" onClick={() => router.push('/jobs/create')}>
+          <div className="flex items-center gap-2">
+            <Plus size={20} />
+            <span>Create Job</span>
           </div>
-
-          <RadixTabs.Content value="open">
-            <OpenJobs />
-          </RadixTabs.Content>
-          <RadixTabs.Content value="created">
-            <CreatedJobs />
-          </RadixTabs.Content>
-          <RadixTabs.Content value="accepted">
-            <AcceptedJobs />
-          </RadixTabs.Content>
-        </RadixTabs.Root>
+        </Button>
       </div>
-    </div>
+
+      <RadixTabs.Content value="open" className="h-full overflow-y-auto">
+        <OpenJobs />
+      </RadixTabs.Content>
+      <RadixTabs.Content value="created" className="h-full">
+        <CreatedJobs />
+      </RadixTabs.Content>
+      <RadixTabs.Content value="accepted" className="h-full">
+        <AcceptedJobs />
+      </RadixTabs.Content>
+    </RadixTabs.Root>
   );
 }
 
