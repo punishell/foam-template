@@ -1,9 +1,10 @@
 import React, { useMemo } from 'react';
 import Image from 'next/image';
 import { useGetLeaderBoard } from '@/lib/api/dashboard';
+import { Spinner } from '../common';
 
 export const LeaderBoard = () => {
-  const { data: leaderboardData } = useGetLeaderBoard();
+  const { data: leaderboardData, isFetched, isFetching } = useGetLeaderBoard();
   const leaderboard = useMemo(() => (leaderboardData?.data || []).map((leader, i) => ({
     name: `${leader?.firstName} ${leader?.lastName}`,
     image: leader?.profileImage?.url,
@@ -13,9 +14,9 @@ export const LeaderBoard = () => {
   return (
     <div className="w-full">
       <div className="text-xl font-bold text-center mb-6">Leaderboard</div>
-
-      <div className="relative w-full bg-gradient-leaderboard rounded-2xl">
+      <div className="relative w-full bg-gradient-leaderboard rounded-2xl min-h-[510px]">
         <div className=" text-white px-3 py-6 flex flex-col gap-4">
+          {!isFetched && isFetching && <Spinner />}
           {leaderboard.map((l, i) => {
             if (l.position == 1) return <FirstPlace key={i} name={l.name} score={l.score} />
             if (l.position == 2) return <SecondPlace key={i} name={l.name} score={l.score} />

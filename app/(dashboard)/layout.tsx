@@ -7,7 +7,6 @@ import { RaceBy } from '@uiball/loaders';
 import { getCookie } from 'cookies-next';
 import { useRouter } from 'next/navigation';
 import { AUTH_TOKEN_KEY } from '@/lib/utils';
-import { useUserState } from '@/lib/store/account';
 import { useGetAccount } from '@/lib/api/account';
 
 const Loader = () => {
@@ -54,6 +53,7 @@ export default function DashboardLayout({ children }: Props) {
   }
 
   return (
+    // <MessagingProvider>
     <AccountWrapper tokenSet={isTokenSet}>
       <div className="flex max-w-full h-screen w-screen">
         <Sidebar />
@@ -92,5 +92,6 @@ export default function DashboardLayout({ children }: Props) {
         </div>
       </div>
     </AccountWrapper>
+    // </MessagingProvider>
   );
 }

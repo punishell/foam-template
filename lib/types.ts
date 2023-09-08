@@ -78,3 +78,12 @@ interface JobDeliverable {
   description: string;
   status: 'pending' | 'ongoing' | 'completed';
 }
+
+
+export interface ImageUp {
+  file: File;
+  preview: string;
+  id: string,
+  name: string,
+  size: string,
+}

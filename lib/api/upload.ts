@@ -1,9 +1,8 @@
-import { axios, ApiError } from '@/lib/axios';
+import { axios, ApiError, axiosDefault } from '@/lib/axios';
 import { useMutation } from '@tanstack/react-query';
 import { toast } from '@/components/common/toaster';
 
 // upload image
-
 interface UploadImageResponse {
   fileName: string;
   storageUrl: string;
@@ -27,10 +26,66 @@ async function postUploadImage({ file, onProgress }: UploadImageParams): Promise
   return res.data.data;
 }
 
+export async function postUploadImages(uploadParams: UploadImageParams[]): Promise<UploadImageResponse[]> {
+  const allReqs = [];
+  for (let i = 0; i < uploadParams.length; i++) {
+    const { file, onProgress } = uploadParams[i];
+    allReqs.push(postUploadImage({ file, onProgress }));
+  }
+  const response = await Promise.all(allReqs);
+  return response;
+}
+
+async function postDownloadAttachment(url: string): Promise<any> {
+  const mainUrl = String(url);
+  return fetch(mainUrl, { mode: "no-cors" })
+    .then(response => {
+      console.log(response);
+      return response.blob();
+    })
+    .then(blob => {
+      let blobUrl = window.URL.createObjectURL(blob);
+      let a = document.createElement('a');
+      a.download = url.replace(/^.*[\\\/]/, '');
+      a.href = url;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      window.URL.revokeObjectURL(blobUrl);
+    })
+  // return axiosDefault({
+  //   url: url,
+  //   method: 'GET',
+  //   responseType: 'blob',
+  //   headers: { "Access-Control-Allow-Origin": "*" },
+  // }).then((response) => {
+  //   console.log("Response==>", response);
+  //   const blobUrl = window.URL.createObjectURL(response.data);
+  //   const a = document.createElement('a');
+  //   a.download = url.replace(/^.*[\\\/]/, '');
+  //   a.href = url;
+  //   document.body.appendChild(a);
+  //   a.target = "__blank"
+  //   a.click();
+  //   a.remove();
+  //   window.URL.revokeObjectURL(blobUrl);
+  // })
+}
+
 export function useUploadImage() {
   return useMutation({
     mutationFn: postUploadImage,
     mutationKey: ['upload-image'],
+    onError: (error: ApiError) => {
+      toast.error(error?.response?.data.message || 'An error occurred');
+    },
+  });
+}
+
+export function useDownloadAttachment() {
+  return useMutation({
+    mutationFn: postDownloadAttachment,
+    mutationKey: ['download-attachment'],
     onError: (error: ApiError) => {
       toast.error(error?.response?.data.message || 'An error occurred');
     },
