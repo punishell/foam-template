@@ -42,6 +42,7 @@
     "react-hook-form": "^7.45.2",
     "react-hot-toast": "^2.4.1",
     "react-otp-input": "^3.0.4",
+    "react-qr-code": "^2.0.12",
     "react-rating": "^2.0.5",
     "recharts": "^2.7.2",
     "socket.io-client": "^4.7.2",
@@ -51,6 +52,8 @@
     "tailwindcss-radix": "^2.8.0",
     "typescript": "5.1.6",
     "utf-8-validate": "^6.0.3",
+    "viem": "^1.10.9",
+    "wagmi": "^1.4.1",
     "zod": "^3.21.4",
     "zustand": "^4.3.9"
   },
