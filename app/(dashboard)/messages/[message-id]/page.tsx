@@ -87,6 +87,13 @@ export default function Chat({ params }: Props) {
     setImageFiles(newImages);
   }
 
+  const onKeyDownPress = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.which === 13 && !e.shiftKey) {
+      e.preventDefault();
+      return sendMessage();
+    }
+  }
+
   return (
     <div className='flex flex-col h-full'>
       <ChatBoxHeader title={currentConversation?.header?.title} description={currentConversation?.header?.description} time={currentConversation?.createdAt} />
@@ -107,6 +114,7 @@ export default function Chat({ params }: Props) {
             placeholder="Write your message..."
             value={text}
             onChange={(e) => setText(e.target.value)}
+            onKeyDown={onKeyDownPress}
           />
           <RenderAttachmentPreviewer images={imageFiles} removeImage={removeImg} />
         </div>
