@@ -26,8 +26,8 @@ import {
   type QueryKey,
   type UseQueryOptions,
 } from "@tanstack/react-query";
-import { toast } from "react-hot-toast";
 import { parseFilterObjectToString } from '../utils';
+import { toast } from '@/components/common/toaster';
 
 // GET ACCOUNT DETAILS
 type GetTalentFetchSuccess = ApiResponse<any>;

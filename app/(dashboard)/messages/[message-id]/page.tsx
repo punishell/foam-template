@@ -145,7 +145,6 @@ const ChatBoxHeader = ({ title, description, time }: { title: string, descriptio
   );
 };
 
-
 const Messages = ({ messages }: { messages: [] }) => {
   return (
     <>
@@ -156,13 +155,13 @@ const Messages = ({ messages }: { messages: [] }) => {
               {!message.isSent ?
                 <div className='flex flex-col mr-auto w-fit gap-2 max-w-[600px] px-5 py-2'>
                   <RenderAttachementViewer images={message.attachments} align={'right'} />
-                  {message.content && <div className="mr-auto w-fit max-w-[600px] bg-[#ECFCE5] px-5 py-2 text-title rounded-r-[30px] rounded-tl-[30px]">
+                  {message.content && <div className="mr-auto w-fit max-w-[600px] bg-[#ECFCE5] px-5 py-2 text-title rounded-r-[30px] rounded-tl-[30px] whitespace-pre">
                     {message.content}
                   </div>}
                 </div> :
                 <div className='flex flex-col ml-auto w-fit gap-2 max-w-[600px] px-5 py-2'>
                   <RenderAttachementViewer images={message.attachments} align={'left'} />
-                  {message.content && <div className="ml-auto w-fit max-w-[600px] text-white px-5 py-2 bg-[#007C5B] rounded-l-[30px] rounded-tr-[30px]">
+                  {message.content && <div className="ml-auto w-fit max-w-[600px] text-white px-5 py-2 bg-[#007C5B] rounded-l-[30px] rounded-tr-[30px] whitespace-pre">
                     {message.content}
                   </div>}
                 </div>

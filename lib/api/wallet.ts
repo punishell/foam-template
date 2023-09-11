@@ -3,9 +3,9 @@ import {
   type QueryKey,
   type UseQueryOptions,
 } from "@tanstack/react-query";
-import { toast } from "react-hot-toast";
-import { axios, ApiError, ApiResponse  } from '@/lib/axios';
+import { axios, ApiError, ApiResponse } from '@/lib/axios';
 import { useWalletState } from "@/lib/store/wallet";
+import { toast } from "@/components/common/toaster";
 
 export interface IWallet {
   totalWalletBalance: string;
@@ -32,7 +32,7 @@ const fetchWallet = async () => await axios.get(`/wallet`);
 
 // transactions
 const fetchWalletTransactions = async ({ limit, page }: { limit: number; page: number }) => {
-    return await axios.get(`/transaction?limit=${limit}&page=${page}`);
+  return await axios.get(`/transaction?limit=${limit}&page=${page}`);
 };
 
 // single transactions
@@ -101,15 +101,15 @@ export const useGetWalletDetails = () => {
   return useQuery(getWalletQueryKey, options);
 };
 
-export const useGetWalletTxs = ({ limit, page}: { limit:number, page: number}) => {
+export const useGetWalletTxs = ({ limit, page }: { limit: number, page: number }) => {
   const options: UseQueryOptions<ApiResponse<IWalletTx>, ApiError<null>> = {
     queryFn: async () => {
-      return await fetchWalletTransactions({ limit, page});
+      return await fetchWalletTransactions({ limit, page });
     },
     onError: (error) => {
       toast.error(error.response?.data.message || "An error occurred");
     },
-    enabled:true
+    enabled: true
   };
 
   return useQuery(getWalletTxQueryKey, options);
