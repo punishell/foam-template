@@ -31,6 +31,10 @@ interface GetAccountResponse {
       country: string,
     }
   }
+  twoFa: {
+    status?: boolean;
+    type?: string;
+  }
   isPrivate?: boolean,
 }
 interface UpdateAccountParams {
@@ -62,15 +66,15 @@ interface ChangePasswordParams {
 
 interface Initiate2FAParams {
   type: string;
-  securityQuestion?: string;
-  securityAnswer?: string;
 }
 
 interface ActivateDeactivate2FAParams {
   code: string;
+  securityQuestion?: string;
 }
 
 interface Initiate2FAResponse {
+  securityQuestions?: string[];
   qrCodeUrl?: string;
   secret?: string;
   type?: string;
@@ -124,11 +128,6 @@ async function postDeActivate2FAEmailInitiate(): Promise<any> {
   return res.data.data;
 }
 
-async function getSecurityQuestions(): Promise<any> {
-  const res = await axios.get('/account/security/questions');
-  return res.data.data;
-}
-
 export const useGetAccount = () => {
   const { setUser } = useUserState();
   return useQuery({
@@ -169,10 +168,12 @@ export function useInitialize2FA() {
 }
 
 export function useActivate2FA() {
+  const { isFetching, refetch: fetchAccount } = useGetAccount();
   return useMutation({
     mutationFn: postActivate2FA,
     mutationKey: ['activate_2fa_setup'],
-    onSuccess: () => {
+    onSuccess: async () => {
+      if (!isFetching) await fetchAccount();
       toast.success('2FA successfully activated');
     },
     onError: (error: ApiError) => {
@@ -182,10 +183,12 @@ export function useActivate2FA() {
 }
 
 export function useDeActivate2FA() {
+  const { isFetching, refetch: fetchAccount } = useGetAccount();
   return useMutation({
     mutationFn: postDeActivate2FA,
     mutationKey: ['deactivate_2fa_setup'],
-    onSuccess: () => {
+    onSuccess: async () => {
+      if (!isFetching) await fetchAccount();
       toast.success('2FA successfully deactivated');
     },
     onError: (error: ApiError) => {
@@ -204,16 +207,5 @@ export function useDeActivate2FAEmailInitiate() {
     onError: (error: ApiError) => {
       toast.error(error?.response?.data.message || 'An error occurred');
     },
-  });
-}
-
-export function useGetSecurityQuestion() {
-  return useQuery({
-    queryFn: getSecurityQuestions,
-    queryKey: ['get_security_questions'],
-    onError: (error: ApiError) => {
-      toast.error(error?.response?.data.message || 'An error occurred');
-    },
-    enabled: true,
   });
 }

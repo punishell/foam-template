@@ -31,7 +31,10 @@ type EditProfileFormValues = z.infer<typeof changePasswordFormSchema>;
 
 export const SecurityView = () => {
   const changePassword = useChangePassword();
-  const { twoFAStatus, twoFAType } = useUserState();
+  const { twoFa } = useUserState();
+  const is2FASetUp = (twoFa.status && twoFa.type === TWO_FA_CONSTANTS.AUTHENTICATOR) || false;
+  const isEmailSetUp = (twoFa.status && twoFa.type === TWO_FA_CONSTANTS.EMAIL) || false;
+  const isSecuritySetUp = (twoFa.status && twoFa.type === TWO_FA_CONSTANTS.SECURITY_QUESTION) || false;
 
   const form = useForm<EditProfileFormValues>({
     resolver: zodResolver(changePasswordFormSchema),
@@ -91,9 +94,9 @@ export const SecurityView = () => {
         <Text.h3 size="xs">2FA</Text.h3>
 
         <div className="flex justify-between gap-5">
-          <AuthApp2FA isEnabled={(twoFAStatus && twoFAType === TWO_FA_CONSTANTS.AUTHENTICATOR) || false} />
-          <Email2FA isEnabled={(twoFAStatus && twoFAType === TWO_FA_CONSTANTS.EMAIL) || false} />
-          <SecurityQuestion2FA isEnabled={(twoFAStatus && twoFAType === TWO_FA_CONSTANTS.SECURITY_QUESTION) || true} />
+          <AuthApp2FA isEnabled={is2FASetUp} disabled={isSecuritySetUp || isEmailSetUp} />
+          <Email2FA isEnabled={isEmailSetUp} disabled={is2FASetUp || isSecuritySetUp} />
+          <SecurityQuestion2FA isEnabled={isSecuritySetUp} disabled={is2FASetUp || isEmailSetUp} />
         </div>
       </div>
     </div>
