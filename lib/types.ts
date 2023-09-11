@@ -28,6 +28,8 @@ export interface User {
       about?: string;
     };
   };
+  twoFAStatus?: boolean;
+  twoFAType?: string;
 }
 
 export interface Job {

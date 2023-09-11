@@ -4,10 +4,13 @@ import { InputErrorMessage, Modal, SlideItemProps, Slider, Spinner } from "@/com
 import { useSecurityQuestion2FAState } from "@/lib/store";
 import Image from "next/image";
 import { Button, Checkbox, Input, Select, Text } from "pakt-ui";
-import React from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import * as z from "zod";
 import { XCircleIcon } from "lucide-react";
+import { useDeActivate2FA, useGetSecurityQuestion, useInitialize2FA } from "@/lib/api/account";
+import { TWO_FA_CONSTANTS } from "@/lib/constants";
+import { toast } from "@/components/common/toaster";
 
 interface SecurityQuestion2FA {
   isEnabled: boolean;
@@ -62,14 +65,13 @@ type SecurityQuestionFormValues = z.infer<typeof securityQuestionsSchema>;
 
 const ActivateSecurityQuestion = ({ goToNextSlide }: SlideItemProps) => {
   const { closeModal } = useSecurityQuestion2FAState();
-  const [selectedQuestion, setSelectedQuestion] = React.useState<Option>({
-    label: "Select Question",
-    value: "Select Question",
-  });
+  const { data: securityQuestionsResponse, refetch, isFetched, isFetching } = useGetSecurityQuestion();
+  const { mutateAsync: setSecurityQuestion, isLoading } = useInitialize2FA();
 
-  // const { mutateAsync: setSecurityQuestion, isLoading } = useSetUserSecurityQuestion();
-
-  // const { data: securityQuestionsData, isLoading: fetchingQuestions } = useGetSecurityQuestions();
+  const questionOptions = useMemo(() => (securityQuestionsResponse || []).map((s: string) => ({
+    label: s,
+    value: s,
+  })), [securityQuestionsResponse])
 
   const {
     register,
@@ -81,25 +83,14 @@ const ActivateSecurityQuestion = ({ goToNextSlide }: SlideItemProps) => {
     resolver: zodResolver(securityQuestionsSchema),
   });
 
-  // if (fetchingQuestions || !securityQuestionsData)
-  //   return (
-  //     <div className="flex min-h-[500px] w-full items-center justify-center">
-  //       <Spinner />
-  //     </div>
-  //   );
-
-  // const securityQuestions = securityQuestionsData.data.data.map((question) => ({
-  //   label: question,
-  //   value: question,
-  // }));
+  useEffect(() => {
+    if (!isFetched) refetch();
+  }, [isFetched])
 
   const onSubmit: SubmitHandler<SecurityQuestionFormValues> = async ({ answer, question }) => {
-    try {
-      // await setSecurityQuestion({ answer, question });
-      goToNextSlide();
-    } catch (error) {
-      console.log(error);
-    }
+    await setSecurityQuestion({ type: TWO_FA_CONSTANTS.SECURITY_QUESTION, securityQuestion: question, securityAnswer: answer });
+    toast.success("Two FA Security Successfully Activate")
+    goToNextSlide();
   };
 
   return (
@@ -114,18 +105,18 @@ const ActivateSecurityQuestion = ({ goToNextSlide }: SlideItemProps) => {
         </Text.p>
       </div>
 
-      <form className="flex w-full flex-col gap-6" onSubmit={handleSubmit(onSubmit)}>
+      {isFetched ? <form className="flex w-full flex-col gap-6" onSubmit={handleSubmit(onSubmit)}>
         <div className="relative">
           <Controller
-            name="question"
+            // name="question"
             control={control}
+            {...register("question")}
             render={({ field: { onChange } }) => {
               return (
                 <Select
                   label="Select Question"
                   placeholder="Select Question"
-                  // options={securityQuestions}
-                  options={[{ label: "First Sex partner", value: "question1" }]}
+                  options={questionOptions}
                   onChange={(value) => {
                     onChange(value);
                   }}
@@ -147,10 +138,11 @@ const ActivateSecurityQuestion = ({ goToNextSlide }: SlideItemProps) => {
         </div>
 
         <Button className="w-full" type="submit" fullWidth>
-          {/* {isLoading ? <Spinner /> : "Set Security Question"} */}
-          Set Up
+          {isLoading ? <Spinner /> : "Set Security Question"}
         </Button>
-      </form>
+      </form> :
+        <div className="flex min-h-[500px] w-full items-center justify-center">
+        </div>}
     </div>
   );
 };
@@ -166,7 +158,7 @@ const ActivateSecuritySuccess = ({ }: SlideItemProps) => {
 
       <Image src="/icons/success.gif" className="my-auto" width={230} height={230} alt="" />
       <Text.p size="base" className="text-center">
-        You have successfully secured your account with 2FA. You will be asked to input the answer to your security quetion
+        You have successfully secured your account with 2FA. You will be asked to input the answer to your security question
       </Text.p>
       <Button className="mt-auto w-full" onClick={closeModal} fullWidth>
         Done
@@ -177,29 +169,51 @@ const ActivateSecuritySuccess = ({ }: SlideItemProps) => {
 
 const DeactivateSecurityQuestion = ({ goToNextSlide }: SlideItemProps) => {
   const { closeModal } = useSecurityQuestion2FAState();
-  // const { mutateAsync, isLoading } = useAnswerSecurityQuestion();
+  const { mutateAsync, isLoading } = useDeActivate2FA();
+  const [answer, setAnswer] = useState("");
 
-  const handleDeactivate = async () => { };
+  const handleDeactivate = async () => {
+    if (!answer || answer == "") return toast.error("Answer is required");
+    await mutateAsync({ code: answer });
+    goToNextSlide();
+  };
 
   return (
-    <div className="flex flex-col items-center gap-8">
-      <div className="flex flex-col gap-2 text-center">
+    <div className="flex flex-col shrink-0 w-full items-center gap-6">
+      <div className="flex flex-row justify-between w-full" >
         <Text.h3 size="xs">Deactivate Security Question</Text.h3>
-        <Text.p size="sm">
-          Your security question is asked and you&lsquo;ll provide the matching answer whenever you want to sign in
-        </Text.p>
+        <XCircleIcon className="text-body my-auto cursor-pointer" onClick={closeModal} />
       </div>
+      <Text.p size="sm">
+        Your security question is asked and you&lsquo;ll provide the matching answer whenever you want to sign in
+      </Text.p>
 
-      <div className="flex w-full max-w-[80%] flex-col gap-6">
-        <Input label="Enter Answer" placeholder="Enter your answer" />
+      <div className="flex w-full max-w-full flex-col gap-6">
+        <Input label="Enter Answer" placeholder="Enter your answer" onChange={(e) => setAnswer(e.target.value)} />
       </div>
-      <Button className="w-full" onClick={handleDeactivate}>
-        Deactivate
+      <Button className="w-full" onClick={handleDeactivate} fullWidth>
+        {isLoading ? <Spinner /> : "Deactivate"}
       </Button>
-    </div>
+    </div >
   );
 };
 
 const DeactivateSecuritySuccess = ({ goToNextSlide }: SlideItemProps) => {
-  return <div></div>;
+  const { closeModal } = useSecurityQuestion2FAState();
+  return (
+    <div className="flex w-full shrink-0 flex-col items-center">
+      <div className="flex flex-row justify-between w-full">
+        <Text.h3 size="xs">Security Question</Text.h3>
+        <XCircleIcon className="text-body my-auto cursor-pointer" onClick={closeModal} />
+      </div>
+
+      <Image src="/icons/success.gif" className="my-auto" width={230} height={230} alt="" />
+      <Text.p size="base" className="text-center">
+        You have successfully deactivate your account with 2FA.
+      </Text.p>
+      <Button className="mt-auto w-full" onClick={closeModal} fullWidth>
+        Done
+      </Button>
+    </div>
+  );
 };

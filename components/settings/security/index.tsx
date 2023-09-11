@@ -9,6 +9,8 @@ import { SecurityQuestion2FA } from "./security-question-2fa";
 import { useChangePassword } from "@/lib/api/account";
 import { Spinner } from "@/components/common";
 import { useMemo } from "react";
+import { useUserState } from "@/lib/store/account";
+import { TWO_FA_CONSTANTS } from "@/lib/constants";
 
 
 const spChars = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/;
@@ -20,16 +22,16 @@ const changePasswordFormSchema = z.object({
     "Must Contain 8 Characters, One Uppercase, One Lowercase, One Number and One Special Case Character"
   ),
   confirmNewPassword: z.string().min(1, 'Confirm New Password is required'),
-})
-  .refine((data) => data.newPassword === data.confirmNewPassword, {
-    message: "Passwords don't match",
-    path: ["confirmNewPassword"],
-  });
+}).refine((data) => data.newPassword === data.confirmNewPassword, {
+  message: "Passwords don't match",
+  path: ["confirmNewPassword"],
+});
 
 type EditProfileFormValues = z.infer<typeof changePasswordFormSchema>;
 
 export const SecurityView = () => {
   const changePassword = useChangePassword();
+  const { twoFAStatus, twoFAType } = useUserState();
 
   const form = useForm<EditProfileFormValues>({
     resolver: zodResolver(changePasswordFormSchema),
@@ -89,9 +91,9 @@ export const SecurityView = () => {
         <Text.h3 size="xs">2FA</Text.h3>
 
         <div className="flex justify-between gap-5">
-          <AuthApp2FA isEnabled={false} />
-          <Email2FA isEnabled={false} />
-          <SecurityQuestion2FA isEnabled={false} />
+          <AuthApp2FA isEnabled={(twoFAStatus && twoFAType === TWO_FA_CONSTANTS.AUTHENTICATOR) || false} />
+          <Email2FA isEnabled={(twoFAStatus && twoFAType === TWO_FA_CONSTANTS.EMAIL) || false} />
+          <SecurityQuestion2FA isEnabled={(twoFAStatus && twoFAType === TWO_FA_CONSTANTS.SECURITY_QUESTION) || true} />
         </div>
       </div>
     </div>

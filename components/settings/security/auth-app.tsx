@@ -1,6 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { InputErrorMessage, Modal, OtpInput, SlideItemProps, Slider, Spinner } from "@/components/common";
-// import { useActivateAuthApp2FA, useDeactivateAuthApp2FA, useInitializeAuthApp2FA } from "lib/api";
+// import { useActivateAuthApp2FA, useDeactivateAuthApp2FA, useInitializeAuthApp2FA } from "@/lib/api";
 import { useAuthApp2FAState } from "@/lib/store";
 import Image from "next/image";
 import { Button, Checkbox, CopyToClipboard, Text } from "pakt-ui";
@@ -8,6 +8,9 @@ import React from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import * as z from "zod";
 import { ChevronLeft, XCircleIcon } from "lucide-react";
+import { useActivate2FA, useDeActivate2FA, useGetAccount, useInitialize2FA } from "@/lib/api/account";
+import { TWO_FA_CONSTANTS } from "@/lib/constants";
+import { toast } from "@/components/common/toaster";
 
 interface AuthApp2FA {
   isEnabled: boolean;
@@ -31,7 +34,7 @@ export const AuthApp2FA = ({ isEnabled }: AuthApp2FA) => {
         <Text.p size="lg">Authenticator app</Text.p>
       </button>
 
-      <Modal isOpen={isModalOpen} onOpenChange={closeModal} className="bg-white h-fit rounded-2xl p-6">
+      <Modal isOpen={isModalOpen} onOpenChange={closeModal} className="bg-white h-fit rounded-2xl p-6" disableClickOutside>
         {isEnabled ? (
           <Slider items={[{ SlideItem: VerifyDeactivateAuthApp }, { SlideItem: DeactivateAuthAppSuccess }]} />
         ) : (
@@ -51,17 +54,19 @@ export const AuthApp2FA = ({ isEnabled }: AuthApp2FA) => {
 
 // Activate
 const InitiateAuthApp = ({ goToNextSlide }: SlideItemProps) => {
-  // const { mutateAsync, isLoading } = useInitializeAuthApp2FA();
-  const { setSecret, setQrCode } = useAuthApp2FAState();
+  const { mutateAsync, isLoading } = useInitialize2FA();
+  const { setSecret, setQrCode, closeModal } = useAuthApp2FAState();
 
   const handleInitiateAuthApp = async () => {
     try {
-      // const { data } = await mutateAsync();
-      setSecret("A5treyQJHS-JHFNKE-OPJ0unekVyt");
-      setQrCode("/icons/barcode.svg");
-      // setSecret(data.data.secret);
-      // setQrCode(data.data.qrCode);
-      goToNextSlide();
+      const data = await mutateAsync({ type: TWO_FA_CONSTANTS.AUTHENTICATOR });
+      console.log(data);
+      if (data.qrCodeUrl) {
+        setSecret(data?.secret || "A5treyQJHS-JHFNKE-OPJ0unekVyt");
+        setQrCode(data.qrCodeUrl);
+        goToNextSlide();
+      } else
+        toast.error("An Error Occurred, Try Again!!!")
     } catch (error) {
       console.log(error);
     }
@@ -69,30 +74,30 @@ const InitiateAuthApp = ({ goToNextSlide }: SlideItemProps) => {
 
   return (
     <div className="flex w-full shrink-0 flex-col items-center gap-14 text-center">
-      <div className="flex flex-col gap-4">
-        <Text.h3 size="xs" className="">Authenticator App</Text.h3>
-        <Text.p size="base">To begin, you will need to install any of Authenticator application on your phone.</Text.p>
+      <div className="flex flex-row justify-between w-full">
+        <Text.h3 size="xs">Authenticator App</Text.h3>
+        <XCircleIcon className="text-body my-auto cursor-pointer" onClick={closeModal} />
       </div>
+      <Text.p size="base">To begin, you will need to install any of Authenticator application on your phone.</Text.p>
       <div className="my-auto flex -translate-x-7 items-center">
         <Image src="/icons/authenticator-app.svg" width={150} height={210} alt="" />
       </div>
       <Button onClick={handleInitiateAuthApp} className="mt-auto w-full" fullWidth>
-        {/* {isLoading ? <Spinner /> : "Next"} */}
-        Next
+        {isLoading ? <Spinner /> : "Next"}
       </Button>
     </div>
   );
 };
 
 const ScanAuthApp = ({ goToNextSlide }: SlideItemProps) => {
-  const { secret, qrCode } = useAuthApp2FAState();
-
+  const { secret, qrCode, closeModal } = useAuthApp2FAState();
   return (
     <div className="flex w-full shrink-0 flex-col items-center gap-8 text-center">
-      <div className="flex flex-col gap-2">
+      <div className="flex flex-row justify-between w-full">
         <Text.h3 size="xs">Authenticator App</Text.h3>
-        <Text.p size="base">Scan this QR in your authenticator application</Text.p>
+        <XCircleIcon className="text-body my-auto cursor-pointer" onClick={closeModal} />
       </div>
+      <Text.p size="base">Scan this QR in your authenticator application</Text.p>
       <Image src={qrCode} width={200} height={200} alt="" />
       <div className="flex flex-col gap-2">
         <Text.p size="sm">Or Copy this key</Text.p>
@@ -113,7 +118,8 @@ type AuthAppOtpFormValues = z.infer<typeof otpSchema>;
 
 const VerifyActivateAuthApp = ({ goToNextSlide, goToPreviousSlide }: SlideItemProps) => {
   const { closeModal } = useAuthApp2FAState();
-  // const { mutateAsync, isLoading } = useActivateAuthApp2FA();
+  const { mutateAsync, isLoading } = useActivate2FA();
+  const { refetch: refetchAccount } = useGetAccount();
 
   const {
     handleSubmit,
@@ -124,14 +130,9 @@ const VerifyActivateAuthApp = ({ goToNextSlide, goToPreviousSlide }: SlideItemPr
   });
 
   const onSubmit: SubmitHandler<AuthAppOtpFormValues> = async ({ otp }) => {
-    try {
-      // const { status } = await mutateAsync({ code: otp });
-      // if (status === 200) {
-      goToNextSlide();
-      // }
-    } catch (error) {
-      console.log(error);
-    }
+    const data = await mutateAsync({ code: otp });
+    refetchAccount();
+    goToNextSlide();
   };
 
   return (
@@ -156,8 +157,7 @@ const VerifyActivateAuthApp = ({ goToNextSlide, goToPreviousSlide }: SlideItemPr
         </div>
 
         <Button type="submit" className="mt-auto w-full justify-end self-end justify-self-end" fullWidth>
-          {/* {isLoading ? <Spinner /> : "Activate"} */}
-          Next
+          {isLoading ? <Spinner /> : "Activate"}
         </Button>
       </form>
     </div>
@@ -187,7 +187,8 @@ const ActivateAuthAppSuccess = () => {
 
 // Deactivate
 const VerifyDeactivateAuthApp = ({ goToNextSlide }: SlideItemProps) => {
-  // const { mutateAsync, isLoading } = useDeactivateAuthApp2FA();
+  const { closeModal } = useAuthApp2FAState();
+  const { mutateAsync, isLoading } = useDeActivate2FA();
 
   const {
     handleSubmit,
@@ -199,10 +200,10 @@ const VerifyDeactivateAuthApp = ({ goToNextSlide }: SlideItemProps) => {
 
   const onSubmit: SubmitHandler<AuthAppOtpFormValues> = async ({ otp }) => {
     try {
-      // const { status } = await mutateAsync({ code: otp });
-      // if (status === 200) {
-      goToNextSlide();
-      // }
+      const data = await mutateAsync({ code: otp });
+      if (data) {
+        goToNextSlide();
+      }
     } catch (error) {
       console.log(error);
     }
@@ -210,12 +211,13 @@ const VerifyDeactivateAuthApp = ({ goToNextSlide }: SlideItemProps) => {
 
   return (
     <div className="flex w-full shrink-0 flex-col items-center gap-8 text-center">
-      <div className="flex flex-col gap-2">
-        <Text.h3 size="xs">Deactivate Authenticator App</Text.h3>
-        <Text.p size="sm">Enter the 6 digit code </Text.p>
+      <div className="flex flex-row justify-between w-full">
+        <Text.h3 size="xs">Authenticator App</Text.h3>
+        <XCircleIcon className="text-body my-auto cursor-pointer" onClick={closeModal} />
       </div>
+      <Text.p size="base">Enter the 6 digit code </Text.p>
       <form className="flex grow flex-col gap-4" onSubmit={handleSubmit(onSubmit)}>
-        <div className="relative my-auto translate-y-10">
+        <div className="relative translate-y-10">
           <Controller
             name="otp"
             control={control}
@@ -224,9 +226,8 @@ const VerifyDeactivateAuthApp = ({ goToNextSlide }: SlideItemProps) => {
           <InputErrorMessage message={errors.otp?.message} />
         </div>
 
-        <Button type="submit" className="mt-auto w-full justify-end self-end justify-self-end">
-          {/* {isLoading ? <Spinner /> : "Activate"} */}
-          Next
+        <Button type="submit" className="mt-auto w-full justify-end self-end justify-self-end" fullWidth>
+          {isLoading ? <Spinner /> : "Deactivate"}
         </Button>
       </form>
     </div>
@@ -242,9 +243,9 @@ const DeactivateAuthAppSuccess = () => {
         <Text.p size="sm">You have successfully deactivated Auth OTP.</Text.p>
       </div>
 
-      <Image src="/success.gif" className="my-auto" width={200} height={200} alt="" />
+      <Image src="/icons/success.gif" className="my-auto" width={200} height={200} alt="" />
 
-      <Button className="mt-auto w-full" onClick={closeModal}>
+      <Button className="mt-auto w-full" onClick={closeModal} fullWidth>
         Done
       </Button>
     </div>

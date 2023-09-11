@@ -8,6 +8,11 @@ import React from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import * as z from "zod";
 import { ChevronLeft, Timer, XCircleIcon } from "lucide-react";
+import { useActivate2FA, useDeActivate2FA, useDeActivate2FAEmailInitiate, useGetAccount, useInitialize2FA } from "@/lib/api/account";
+import { useUserState } from "@/lib/store/account";
+import { TWO_FA_CONSTANTS } from "@/lib/constants";
+import dayjs from "dayjs";
+import { formatCountdown } from "@/lib/utils";
 
 interface Email2FAProps {
   isEnabled: boolean;
@@ -55,35 +60,30 @@ export const Email2FA = ({ isEnabled }: Email2FAProps) => {
 };
 
 const InitiateActivateOTP = ({ goToNextSlide }: SlideItemProps) => {
-  // const { userEmail } = useAuthState();
-  // const { mutateAsync, isLoading } = useIssueEmailOTP();
+  const { email } = useUserState();
+  const { mutateAsync, isLoading } = useInitialize2FA();
 
   const handleInitiateOtp = async () => {
-    try {
-      // const { status } = await mutateAsync();
-      // if (status === 200) {
-        goToNextSlide();
-      // }
-    } catch (error) {
-      console.log(error);
-    }
+    await mutateAsync({ type: TWO_FA_CONSTANTS.EMAIL });
+    goToNextSlide();
   };
 
   return (
     <div className="flex w-full shrink-0 flex-col items-center justify-center gap-8 p-6">
       <div className="flex flex-col gap-2 text-center">
         <Text.h3 size="xs">Email Authentication</Text.h3>
-        <Text.p size="base">
-          An OTP will be sent to <span className="text-success">{"userEmail"}</span>
-        </Text.p>
+        <Text.p size="sm">You have successfully deactivated Auth OTP.</Text.p>
       </div>
+
+      <Text.p size="base">
+        An OTP will be sent to <span className="text-success">{email}</span>
+      </Text.p>
       <div className="m-auto flex items-center">
         <Image src="/icons/email-auth.svg" width={150} height={210} alt="" />
       </div>
 
       <Button onClick={handleInitiateOtp} className="w-full" fullWidth>
-        {/* {isLoading ? <Spinner /> : "Send OTP"} */}
-        Next
+        {isLoading ? <Spinner /> : "Send OTP"}
       </Button>
     </div>
   );
@@ -96,9 +96,33 @@ const otpSchema = z.object({
 type EmailOtpFormValues = z.infer<typeof otpSchema>;
 
 const VerifyActivateOTP = ({ goToNextSlide, goToPreviousSlide }: SlideItemProps) => {
-  // const { userEmail } = useAuthState();
-  // const { mutateAsync, isLoading } = useActivateEmailOTP();
+  const [countdown, setCountdown] = React.useState(0);
+  const [isResendDisabled, setIsResendDisabled] = React.useState(true);
+  const { email } = useUserState();
+  const { mutateAsync, isLoading } = useActivate2FA();
   const { closeModal } = useEmail2FAState();
+  const initiate = useInitialize2FA();
+  const { refetch: fetchAccount } = useGetAccount()
+
+  const handleInitiateOtp = async () => {
+    await initiate.mutateAsync({ type: TWO_FA_CONSTANTS.EMAIL });
+    setIsResendDisabled(true);
+  };
+
+  // TODO:: move to a useCountdown timer react-hook
+  React.useEffect(() => {
+    if (isResendDisabled) {
+      setCountdown(60);
+      const timer = setInterval(() => {
+        setCountdown((prev) => (prev > 1 ? prev - 1 : 0));
+      }, 1000);
+      setTimeout(() => setIsResendDisabled(false), 60000);
+
+      return () => {
+        clearInterval(timer);
+      };
+    }
+  }, [isResendDisabled]);
 
   const {
     handleSubmit,
@@ -109,14 +133,9 @@ const VerifyActivateOTP = ({ goToNextSlide, goToPreviousSlide }: SlideItemProps)
   });
 
   const onSubmit: SubmitHandler<EmailOtpFormValues> = async ({ otp }) => {
-    try {
-      // const { status } = await mutateAsync({ token: otp });
-      // if (status === 200) {
-        goToNextSlide();
-      // }
-    } catch (error) {
-      console.log(error);
-    }
+    await mutateAsync({ code: otp });
+    fetchAccount();
+    goToNextSlide();
   };
 
   return (
@@ -128,7 +147,7 @@ const VerifyActivateOTP = ({ goToNextSlide, goToPreviousSlide }: SlideItemProps)
           <XCircleIcon className="text-body my-auto cursor-pointer" onClick={closeModal} />
         </div>
         <Text.p size="base">
-          Enter the 6 digit code sent to <span className="text-success">{"userEmail"}</span>
+          Enter the 6 digit code sent to <span className="text-success">{email}</span>
         </Text.p>
       </div>
 
@@ -142,12 +161,11 @@ const VerifyActivateOTP = ({ goToNextSlide, goToPreviousSlide }: SlideItemProps)
           <div className="flex justify-center text-center my-2"><InputErrorMessage message={errors.otp?.message} /></div>
         </div>
 
-        <Button type="submit" className="w-full" fullWidth>
-          {/* {isLoading ? <Spinner /> : "Activate"} */}
-          Confirm
+        <Button className="w-full" fullWidth>
+          {isLoading ? <Spinner /> : "Confirm"}
         </Button>
-        <Text.p>0:45</Text.p>
-        <Button type="button" variant="outline" className="!border-body !rounded-xl" size="xs" disabled={true} >
+        <Text.p>{formatCountdown(countdown)}</Text.p>
+        <Button variant="outline" className="!border-body !rounded-xl" size="xs" disabled={isResendDisabled} onClick={handleInitiateOtp}>
           <div className="flex flex-row gap-2"><Timer size={15} /> Resend OTP</div>
         </Button>
       </form>
@@ -174,17 +192,14 @@ const OTPActivateSuccess = () => {
 };
 
 // DEACTIVATION
-
 const InitiateDeactivateOTP = ({ goToNextSlide }: SlideItemProps) => {
-  // const { userEmail } = useAuthState();
-  // const { mutateAsync, isLoading } = useSendEmailOTP();
+  const { email } = useUserState();
+  const { mutateAsync, isLoading } = useDeActivate2FAEmailInitiate();
 
   const handleInitiateOtp = async () => {
     try {
-    //   const { status } = await mutateAsync({ reason: "deactivate" });
-    //   if (status === 200) {
-    //     goToNextSlide();
-    //   }
+      await mutateAsync();
+      goToNextSlide();
     } catch (error) {
       console.log(error);
     }
@@ -195,20 +210,20 @@ const InitiateDeactivateOTP = ({ goToNextSlide }: SlideItemProps) => {
       <div className="flex flex-col gap-2 text-center">
         <Text.h3 size="xs">Deactivate Email OTP</Text.h3>
         <Text.p size="sm">
-          An OTP will be sent to <span className="text-success">{"userEmail"}</span>
+          An OTP will be sent to <span className="text-success">{email}</span>
         </Text.p>
       </div>
 
       <Button onClick={handleInitiateOtp} className="w-full">
-        {/* {isLoading ? <Spinner /> : "Send OTP"} */}
+        {isLoading ? <Spinner /> : "Send OTP"}
       </Button>
     </div>
   );
 };
 
 const VerifyDeactivateOTP = ({ goToNextSlide }: SlideItemProps) => {
-  // const { userEmail } = useAuthState();
-  // const { mutateAsync, isLoading } = useDeactivateEmailOTP();
+  const { mutateAsync, isLoading } = useDeActivate2FA();
+  const { email } = useUserState();
 
   const {
     handleSubmit,
@@ -219,14 +234,8 @@ const VerifyDeactivateOTP = ({ goToNextSlide }: SlideItemProps) => {
   });
 
   const onSubmit: SubmitHandler<EmailOtpFormValues> = async ({ otp }) => {
-    try {
-      // const { status } = await mutateAsync({ token: otp });
-      // if (status === 200) {
-      //   goToNextSlide();
-      // }
-    } catch (error) {
-      console.log(error);
-    }
+    await mutateAsync({ code: otp })
+    goToNextSlide();
   };
 
   return (
@@ -234,7 +243,7 @@ const VerifyDeactivateOTP = ({ goToNextSlide }: SlideItemProps) => {
       <div className="flex flex-col gap-2 text-center">
         <Text.h3 size="xs">Email</Text.h3>
         <Text.p size="sm">
-          Enter the 6 digit code sent to <span className="text-success">{"userEmail"}</span>
+          Enter the 6 digit code sent to <span className="text-success">{email}</span>
         </Text.p>
       </div>
 
@@ -248,8 +257,8 @@ const VerifyDeactivateOTP = ({ goToNextSlide }: SlideItemProps) => {
           <InputErrorMessage message={errors.otp?.message} />
         </div>
 
-        <Button type="submit" className="w-full">
-          {/* {isLoading ? <Spinner /> : "Deactivate"} */}
+        <Button className="w-full" fullWidth>
+          {isLoading ? <Spinner /> : "Deactivate"}
         </Button>
       </form>
     </div>
@@ -266,7 +275,7 @@ const OTPDeactivateSuccess = () => {
         <Text.p size="sm">You have successfully deactivated Email OTP.</Text.p>
       </div>
 
-      <Button className="w-full" onClick={closeModal}>
+      <Button className="w-full" onClick={closeModal} fullWidth>
         Done
       </Button>
     </div>
