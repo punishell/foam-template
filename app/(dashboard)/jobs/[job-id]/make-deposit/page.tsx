@@ -188,7 +188,7 @@ interface MakePaymentModalProps {
   closeModal: () => void;
 }
 
-export const MakePaymentModal = ({ appId, closeModal }: MakePaymentModalProps) => {
+const MakePaymentModal = ({ appId, closeModal }: MakePaymentModalProps) => {
   // const { data: depositDetails, isLoading } = useGetDepositDetails({ appUUID: appId });
 
   return (
