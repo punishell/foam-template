@@ -4,11 +4,11 @@ import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Button } from 'pakt-ui';
-import { getCookie, setCookie } from 'cookies-next';
+import { setCookie } from 'cookies-next';
 import ReactOTPInput from 'react-otp-input';
 import { formatCountdown } from '@/lib/utils';
 import { Spinner } from '@/components/common';
-import { TEMP_AUTH_TOKEN_KEY, AUTH_TOKEN_KEY } from '@/lib/utils';
+import { AUTH_TOKEN_KEY } from '@/lib/utils';
 import { toast } from '@/components/common/toaster';
 import { Container } from '@/components/common/container';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -51,16 +51,16 @@ export default function SignupVerifyEmail() {
 
   const onSubmit: SubmitHandler<FormValues> = ({ otp }) => {
     const email = searchParams.get('email');
-    const tempToken = getCookie(TEMP_AUTH_TOKEN_KEY);
+    const token = searchParams.get('token');
 
-    if (typeof email !== 'string' || typeof tempToken !== 'string') {
+    if (typeof email !== 'string' || typeof token !== 'string') {
       return router.push('/signup');
     }
 
     verifyEmail.mutate(
       {
         otp,
-        token: tempToken,
+        token,
       },
       {
         onSuccess: ({ token }) => {
@@ -138,7 +138,7 @@ export default function SignupVerifyEmail() {
             }}
           />
 
-          <Button fullWidth type="submit" disabled={verifyEmail.isLoading || !form.formState.isValid}>
+          <Button fullWidth disabled={verifyEmail.isLoading || !form.formState.isValid}>
             {verifyEmail.isLoading ? <Spinner /> : 'Verify Email'}
           </Button>
 

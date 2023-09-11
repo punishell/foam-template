@@ -53,15 +53,7 @@ interface VerifyEmailParams {
 }
 
 async function postVerifyEmail({ otp, token }: VerifyEmailParams): Promise<VerifyEmailResponse> {
-  const res = await axios.post(
-    '/auth/account/verify',
-    { otp },
-    {
-      params: {
-        token,
-      },
-    },
-  );
+  const res = await axios.post('/auth/account/verify', { token: otp, tempToken: token });
   return res.data.data;
 }
 
@@ -136,7 +128,7 @@ export function useLogin() {
     onSuccess: (data) => {
       // @ts-ignore
       setUser(data);
-    }
+    },
   });
 }
 

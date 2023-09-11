@@ -5,11 +5,11 @@ import Image from 'next/image';
 import { useLogin } from '@/lib/api';
 import { Input, Button } from 'pakt-ui';
 import { setCookie } from 'cookies-next';
-import { createQueryString } from '@/lib/utils';
+import { createQueryStrings } from '@/lib/utils';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { Container } from '@/components/common/container';
-import { useSearchParams, useRouter } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 
 import { Spinner } from '@/components/common';
 import { useUserState } from '@/lib/store/account';
@@ -25,7 +25,6 @@ type LoginFormValues = z.infer<typeof loginFormSchema>;
 export default function Login() {
   const login = useLogin();
   const router = useRouter();
-  const searchParams = useSearchParams();
   const { setUser } = useUserState();
 
   const form = useForm<LoginFormValues>({
@@ -39,10 +38,15 @@ export default function Login() {
           // @ts-ignore
           setUser(data);
           setCookie(AUTH_TOKEN_KEY, data.token);
-          return router.push(searchParams.get('from') || '/overview');
+          return router.push('/overview');
         }
-        setCookie(TEMP_AUTH_TOKEN_KEY, data.token);
-        router.push(`/signup/verify?${createQueryString('email', data.email)}`);
+
+        router.push(
+          `/signup/verify?${createQueryStrings([
+            { name: 'email', value: data.email },
+            { name: 'token', value: data.tempToken?.token || '' },
+          ])}`,
+        );
       },
     });
   };
@@ -57,7 +61,10 @@ export default function Login() {
         <Link
           className="rounded-lg border-2 bg-white !bg-opacity-10 px-5 py-2 text-white duration-200 hover:bg-opacity-30"
           href="/signup"
-        > Signup</Link>
+        >
+          {' '}
+          Signup
+        </Link>
       </Container>
 
       <Container className="mt-28 flex w-full max-w-2xl flex-col items-center gap-6">
