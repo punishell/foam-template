@@ -92,6 +92,14 @@ export const createQueryString = (name: string, value: string) => {
   return params.toString();
 };
 
+type CreateQueryStringsParams = Array<{ name: string; value: string }>;
+
+export const createQueryStrings = (opts: CreateQueryStringsParams) => {
+  const params = new URLSearchParams();
+  opts.forEach((opt) => params.set(opt.name, opt.value));
+  return params.toString();
+};
+
 export const parseFilterObjectToString = (filterData: Record<string, any>) => {
   let qString = '',
     prev = '';
@@ -155,41 +163,41 @@ export function getAvatarColor(paktScore: number) {
 
 // from https://stackoverflow.com/questions/15900485/correct-way-to-convert-size-in-bytes-to-kb-mb-gb-in-javascript
 export function formatBytes(bytes: number, decimals = 2) {
-  if (!+bytes) return '0 Bytes'
+  if (!+bytes) return '0 Bytes';
 
-  const k = 1024
-  const dm = decimals < 0 ? 0 : decimals
-  const sizes = ['Bytes', 'KiB', 'MiB', 'GiB', 'TiB', 'PiB', 'EiB', 'ZiB', 'YiB']
+  const k = 1024;
+  const dm = decimals < 0 ? 0 : decimals;
+  const sizes = ['Bytes', 'KiB', 'MiB', 'GiB', 'TiB', 'PiB', 'EiB', 'ZiB', 'YiB'];
 
-  const i = Math.floor(Math.log(bytes) / Math.log(k))
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
 
-  return `${parseFloat((bytes / Math.pow(k, i)).toFixed(dm))} ${sizes[i]}`
+  return `${parseFloat((bytes / Math.pow(k, i)).toFixed(dm))} ${sizes[i]}`;
 }
 
-const allowedFileTypes = ["pdf", "doc", "ai", "avi", "docx", "csv", "ppt", "zip", "rar"];
+const allowedFileTypes = ['pdf', 'doc', 'ai', 'avi', 'docx', 'csv', 'ppt', 'zip', 'rar'];
 
 export function getPreviewByType(file: File) {
   const type = file.type;
   let preview;
-  if (type.includes("image/")) {
-    preview = URL.createObjectURL(file)
+  if (type.includes('image/')) {
+    preview = URL.createObjectURL(file);
   } else {
-    const typP = type.split("/")[1];
-    console.log(typP)
+    const typP = type.split('/')[1];
+    console.log(typP);
     if (typP && allowedFileTypes.includes(typP)) preview = `/images/thumbnail/${typP}.png`;
-    else preview = "/images/thumbnail/TXT.png"
+    else preview = '/images/thumbnail/TXT.png';
   }
   return { preview, type };
 }
 
 export function getPreviewByTypeUrl(url: string, type: string) {
   let preview;
-  if (type.includes("image/") || type == "image") {
-    preview = url
+  if (type.includes('image/') || type == 'image') {
+    preview = url;
   } else {
-    const typP = type.split("/")[1];
+    const typP = type.split('/')[1];
     if (typP && allowedFileTypes.includes(typP)) preview = `/images/thumbnail/${typP}.png`;
-    else preview = "/images/thumbnail/TXT.png"
+    else preview = '/images/thumbnail/TXT.png';
   }
   return { preview, type };
 }
