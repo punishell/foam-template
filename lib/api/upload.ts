@@ -52,24 +52,7 @@ async function postDownloadAttachment(url: string): Promise<any> {
       a.click();
       a.remove();
       window.URL.revokeObjectURL(blobUrl);
-    })
-  // return axiosDefault({
-  //   url: url,
-  //   method: 'GET',
-  //   responseType: 'blob',
-  //   headers: { "Access-Control-Allow-Origin": "*" },
-  // }).then((response) => {
-  //   console.log("Response==>", response);
-  //   const blobUrl = window.URL.createObjectURL(response.data);
-  //   const a = document.createElement('a');
-  //   a.download = url.replace(/^.*[\\\/]/, '');
-  //   a.href = url;
-  //   document.body.appendChild(a);
-  //   a.target = "__blank"
-  //   a.click();
-  //   a.remove();
-  //   window.URL.revokeObjectURL(blobUrl);
-  // })
+    });
 }
 
 export function useUploadImage() {

@@ -100,9 +100,9 @@ export default function Chat({ params }: Props) {
             <input {...getInputProps()} />
           </button>
         </div>
-        <div className='flex flex-col rounded-xl border p-4 bg-gray-50 w-64 flex-1'>
+        <div className='flex flex-col rounded-2xl border p-4 bg-gray-50 w-64 flex-1'>
           <textarea
-            rows={2}
+            rows={1}
             className="grow focus:outline-none p-2 resize-none rounded-t-lg w-full bg-gray-50"
             placeholder="Write your message..."
             value={text}
@@ -205,19 +205,21 @@ const RenderAttachementViewer = ({ images = [], align }: { images: any[], align?
 const RenderAttachmentPreviewer = ({ images, removeImage }: { images: any[], removeImage: (id: string) => void }) => {
   const MAX_LEN = 10;
   return (
-    <div className='flex flex-row gap-4 overflow-x-auto h-fit py-4'>
-      {images.map((img, i) => (
-        <div key={i} className='flex flex-row relative border gap-2 p-2 rounded-lg'>
-          <span className='absolute cursor-pointer -top-3 -right-3 w-fit h-fit p-1 bg-[#CDCFD0] rounded-full' onClick={() => removeImage(img.id)}><X size={15} /> </span>
-          <div className='flex items-center'>
-            <Image className='min-w-[38px] min-h-[38px] rounded-lg' src={img.preview} alt="upload-picture" width={38} height={38} objectFit="contain" />
+    <>
+      {images.length > 0 && <div className='flex flex-row gap-4 overflow-x-auto h-fit py-4'>
+        {images.map((img, i) => (
+          <div key={i} className='flex flex-row relative border gap-2 p-2 rounded-lg'>
+            <span className='absolute cursor-pointer -top-3 -right-3 w-fit h-fit p-1 bg-[#CDCFD0] rounded-full' onClick={() => removeImage(img.id)}><X size={15} /> </span>
+            <div className='flex items-center'>
+              <Image className='min-w-[38px] min-h-[38px] rounded-lg' src={img.preview} alt="upload-picture" width={38} height={38} objectFit="contain" />
+            </div>
+            <div className='flex flex-col'>
+              <p className='text-sm text-title'>{img.name.length > MAX_LEN ? `${img.name.slice(0, MAX_LEN)}...` : img.name}</p>
+              <p className='text-sm text-body'>{img.size}</p>
+            </div>
           </div>
-          <div className='flex flex-col'>
-            <p className='text-sm text-title'>{img.name.length > MAX_LEN ? `${img.name.slice(0, MAX_LEN)}...` : img.name}</p>
-            <p className='text-sm text-body'>{img.size}</p>
-          </div>
-        </div>
-      ))}
-    </div>
+        ))}
+      </div>}
+    </>
   )
 }
