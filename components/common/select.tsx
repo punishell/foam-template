@@ -82,8 +82,8 @@ SelectItem.displayName = SelectPrimitive.Item.displayName;
 type SelectLabelRef = React.ElementRef<typeof SelectPrimitive.Label>;
 type SelectLabelProps = React.ComponentPropsWithoutRef<typeof SelectPrimitive.Label>;
 
-export const SelectLabel = React.forwardRef<SelectLabelRef, SelectLabelProps>(({ className, ...props }, ref) => (
+export const SelectGroupLabel = React.forwardRef<SelectLabelRef, SelectLabelProps>(({ className, ...props }, ref) => (
   <SelectPrimitive.Label ref={ref} className={cn('px-2 py-1.5 text-sm font-semibold', className)} {...props} />
 ));
 
-SelectLabel.displayName = SelectPrimitive.Label.displayName;
+SelectGroupLabel.displayName = SelectPrimitive.Label.displayName;
