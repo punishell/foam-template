@@ -1,10 +1,13 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { UserPlus } from 'lucide-react';
 import { UserBalance } from '@/components/common/user-balance';
+import { ReferralSideModal } from './refer';
 
 export const Header = () => {
+  const [referOpen, _setReferOpen] = useState(false);
   return (
     <div className="flex items-center justify-between">
+      <ReferralSideModal isOpen={referOpen} onOpenChange={(e) => _setReferOpen(e)} />
       <div className="text-3xl text-title font-bold">Hello Leslie</div>
 
       <div className="flex items-center gap-7">
@@ -12,7 +15,7 @@ export const Header = () => {
           <UserBalance />
           <span>|</span> <span className="text-body">Balance</span>
         </div>
-        <button className="flex gap-2 rounded-lg items-center text-primary text-sm font-bold bg-[#ECFCE5] px-3 py-1 border border-primary">
+        <button className="flex gap-2 rounded-lg items-center text-primary text-sm font-bold bg-[#ECFCE5] px-3 py-1 border border-primary" onClick={() => _setReferOpen(true)}>
           <UserPlus size={18} />
           <span>Refer</span>
         </button>
