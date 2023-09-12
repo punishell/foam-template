@@ -163,7 +163,7 @@ export const JobDetails: React.FC = () => {
                 <NumericInput
                   id="budget"
                   value={value}
-                  setValue={onChange}
+                  onChange={onChange}
                   placeholder="100"
                   className="w-full border border-line rounded-lg outline-none px-4 py-3 focus-within:border-secondary hover:border-secondary hover:duration-200"
                 />
