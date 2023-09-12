@@ -150,18 +150,18 @@ const Messages = ({ messages }: { messages: [] }) => {
   return (
     <>
       {messages.length > 0 &&
-        <div id="chat_div" className="flex flex-col gap-2 h-full overflow-y-auto py-6">
+        <div id="chat_div" className="flex flex-col h-full overflow-y-auto py-6">
           {messages.map((message: any, i) =>
             <div className="w-full" key={i}>
               {!message.isSent ?
-                <div className='flex flex-col mr-auto w-fit gap-2 max-w-[600px] px-5 py-2'>
-                  <RenderAttachementViewer images={message.attachments} align={'right'} />
+                <div className='flex flex-col mr-auto w-fit gap-2 max-w-[600px] px-5'>
+                  <RenderAttachmentViewer images={message.attachments} align={'right'} />
                   {message.content && <div className="mr-auto w-fit max-w-[600px] bg-[#ECFCE5] px-5 py-2 text-title rounded-r-[30px] rounded-tl-[30px] whitespace-pre">
                     {message.content}
                   </div>}
                 </div> :
-                <div className='flex flex-col ml-auto w-fit gap-2 max-w-[600px] px-5 py-2'>
-                  <RenderAttachementViewer images={message.attachments} align={'left'} />
+                <div className='flex flex-col ml-auto w-fit gap-2 max-w-[600px] px-5'>
+                  <RenderAttachmentViewer images={message.attachments} align={'left'} />
                   {message.content && <div className="ml-auto w-fit max-w-[600px] text-white px-5 py-2 bg-[#007C5B] rounded-l-[30px] rounded-tr-[30px] whitespace-pre">
                     {message.content}
                   </div>}
@@ -180,7 +180,7 @@ const Messages = ({ messages }: { messages: [] }) => {
   );
 };
 
-const RenderAttachementViewer = ({ images = [], align }: { images: any[], align?: 'left' | 'right' }) => {
+const RenderAttachmentViewer = ({ images = [], align }: { images: any[], align?: 'left' | 'right' }) => {
   const MAX_LEN = 15;
   const SingleAttachmentView = ({ img }: { img: any }) => {
     const downloadAttachments = useDownloadAttachment();

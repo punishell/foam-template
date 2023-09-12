@@ -6,13 +6,15 @@ interface TagInputProps {
   tags: string[];
   setTags: (tags: string[]) => void;
   className?: string;
+  placeholder?: string;
 }
 
-export const TagInput: React.FC<TagInputProps> = ({ tags, setTags, className }) => {
+export const TagInput: React.FC<TagInputProps> = ({ tags, setTags, className, placeholder }) => {
   const [inputValue, setInputValue] = React.useState('');
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === 'Enter' && inputValue.trim() !== '') {
+      event.preventDefault();
       setTags([...tags, inputValue.trim()]);
       setInputValue('');
     }
@@ -42,7 +44,7 @@ export const TagInput: React.FC<TagInputProps> = ({ tags, setTags, className }) 
       <input
         type="text"
         className="flex-grow outline-none peer"
-        placeholder="Add skills"
+        placeholder={placeholder || "Add skills"}
         value={inputValue}
         onChange={(event) => setInputValue(event.target.value)}
         onKeyDown={handleKeyDown}
