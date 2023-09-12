@@ -54,17 +54,28 @@ export const Calendar = ({ className, classNames, showOutsideDays = true, ...pro
   );
 };
 
-type DatePickerProps = Omit<DayPickerSingleProps, 'mode'>;
+type DatePickerProps = Omit<DayPickerSingleProps, 'mode'> & {
+  placeholder?: string;
+};
 
-export const DatePicker: React.FC<DatePickerProps> = ({ selected, onSelect, ...props }) => {
+export const DatePicker: React.FC<DatePickerProps> = ({ selected, onSelect, className, placeholder, ...props }) => {
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <button className="w-full border border-line rounded-lg outline-none px-4 py-3 focus-within:border-secondary hover:border-secondary hover:duration-200 flex gap-2 items-center text-body">
+        <button
+          className={cn(
+            'w-full border border-line rounded-lg outline-none px-4 py-3 focus-within:border-secondary hover:border-secondary hover:duration-200 flex gap-2 items-center text-body',
+            className,
+          )}
+        >
           <CalendarIcon className="h-5 w-5" />
 
           <span className="flex-1 text-left">
-            {selected ? <span>{format(selected, 'PPP')}</span> : <span className="text-gray-400">Pick a date</span>}
+            {selected ? (
+              <span>{format(selected, 'PPP')}</span>
+            ) : (
+              <span className="">{placeholder || 'Select a date'}</span>
+            )}
           </span>
         </button>
       </PopoverTrigger>
