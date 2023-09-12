@@ -23,5 +23,9 @@ export const useUserState = create<UserState>()((set) => ({
       tags: [],
     },
   },
+  twoFa: {
+    status: false,
+    type: '',
+  },
   setUser: (user: User) => set(user),
 }));

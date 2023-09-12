@@ -37,12 +37,16 @@ export const useEmail2FAState = create<Email2FAState>((set) => ({
 // Security Question State
 interface SecurityQuestion2FAState {
   isModalOpen: boolean;
+  securityQuestions: string[];
+  setSecurityQuestions: (securityQuestions: string[]) => void;
   closeModal: () => void;
   openModal: () => void;
 }
 
 export const useSecurityQuestion2FAState = create<SecurityQuestion2FAState>((set) => ({
   isModalOpen: false,
+  securityQuestions: [],
+  setSecurityQuestions: (securityQuestions: string[]) => set({ securityQuestions }),
   openModal: () => set({ isModalOpen: true }),
   closeModal: () => set({ isModalOpen: false }),
 }));

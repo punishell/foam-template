@@ -82,6 +82,7 @@ export default function Chat({ params }: Props) {
       setImageFiles([]);
     }
   }
+
   const removeImg = (id: string) => {
     const newImages = imageFiles.filter((f) => f.id != id)
     setImageFiles(newImages);
