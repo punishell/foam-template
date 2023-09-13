@@ -14,6 +14,7 @@ interface GetReferralStat {
   referralLink: string;
   totalAllowedInvites: number;
   inviteSent: number;
+  duration?: string;
 }
 
 interface FetchParams {

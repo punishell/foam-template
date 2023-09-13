@@ -4,7 +4,7 @@ import { Calendar, ChevronLeft, CopyIcon } from 'lucide-react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
-import { Button } from 'pakt-ui';
+import { Button, CopyToClipboard } from 'pakt-ui';
 import { UserAvatar } from '../common/user-avatar';
 
 import email from '@/lottiefiles/email.json';
@@ -13,6 +13,7 @@ import { TagInput } from '../common/tag-input';
 import { useGetReferral, useSendReferralInvite } from '@/lib/api/referral';
 import dayjs from 'dayjs';
 import { Spinner } from '../common';
+import { CopyText } from '@/lib/utils';
 
 
 interface ReferralModalProps {
@@ -38,6 +39,8 @@ export function ReferralSideModal({ isOpen, onOpenChange }: ReferralModalProps) 
   const sendInvite = useSendReferralInvite();
 
   const referralLink = data?.stats.referralLink;
+  const remainingInvites = (data?.stats?.totalAllowedInvites || 0) - (data?.stats?.inviteSent ?? 0);
+  const inviteDuration = data?.stats?.duration || "week";
 
   const recentReferrals = useMemo(() => (data?.referrals?.data || []).map(u => ({
     name: `${u?.referral?.firstName} ${u?.referral?.lastName}` || "",
@@ -59,6 +62,8 @@ export function ReferralSideModal({ isOpen, onOpenChange }: ReferralModalProps) 
     form.resetField("emails");
   };
 
+  const copyLink = () => CopyText(String(referralLink));
+
   return (
     <SideModal isOpen={isOpen} onOpenChange={onOpenChange} className="flex flex-col">
       <div className="flex flex-row p-6 bg-primary-gradient text-white font-bold text-2xl gap-4">
@@ -67,7 +72,7 @@ export function ReferralSideModal({ isOpen, onOpenChange }: ReferralModalProps) 
       {!isSentEmail ?
         <div className='flex flex-col p-6 gap-2'>
           <h3 className='text-2xl font-semibold'>Invite your friends, increase your Afroscore</h3>
-          <p className='text-base'>You can invite up to 3 people per week.</p>
+          <p className='text-base'>You can invite up to {remainingInvites} people per {inviteDuration}.</p>
           <div className='my-4 w-full rounded-2xl p-4 bg-primary-brighter border border-primary-darker'>
             <h3 className='text-lg font-bold'>Email Invite</h3>
             <form onSubmit={form.handleSubmit(onSubmit)} className='flex flex-col w-full relative my-4'>
@@ -94,7 +99,7 @@ export function ReferralSideModal({ isOpen, onOpenChange }: ReferralModalProps) 
             <div className='w-full relative my-4'>
               <div className='my-auto min-h-[51px] p-4 text-sm items-center rounded-xl border'>{referralLink}</div>
               <div className='absolute -right-1 top-0 h-full'>
-                <Button size="sm" className='min-h-full text-sm items-center !border-primary-darker' variant={"secondary"}>
+                <Button size="sm" className='min-h-full text-sm items-center !border-primary-darker' variant={"secondary"} onClick={copyLink}>
                   <span className='flex flex-row gap-2'>
                     <CopyIcon size={15} /> Copy
                   </span>

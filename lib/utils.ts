@@ -201,3 +201,5 @@ export function getPreviewByTypeUrl(url: string, type: string) {
   }
   return { preview, type };
 }
+
+export const CopyText = (text: string) => navigator.clipboard.writeText(text);
