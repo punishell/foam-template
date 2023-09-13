@@ -60,7 +60,7 @@ export const TalentBox: React.FC<{
             {/* <div className="absolute top-[5%] h-full w-full rounded-3xl mt-[3px]"> */}
             <div className="absolute top-[5%] h-full w-full rounded-3xl mt-[3px]" style={{ fill: "rgba(255, 237, 237, 0.37)", backdropFilter: "blur(29px)" }}>
               <div className="relative rounded-2xl border-t-0 px-5">
-                <div className="grid grid-rows-3 gap-1">
+                <div className="grid grid-rows-3 gap-2">
                   <span className="pb-0 pt-3 text-2xl font-semibold capitalize">{name}</span>
                   {<span className="text-base">{title || ""}</span>}
                   {skills?.length > 0 && (
@@ -114,7 +114,7 @@ export const TalentBox: React.FC<{
                   </div>
                 </div>
 
-                <div className="mt-4 flex items-center gap-4">
+                {/* <div className="mt-4 flex items-center gap-4">
                   <Link
                     href={`/messages?userId=${id}`}
                     className="flex h-[42px] grow items-center justify-center rounded-lg border border-[#007c5b] bg-white py-2 text-sm text-primary duration-200 hover:text-primary"
@@ -128,7 +128,7 @@ export const TalentBox: React.FC<{
                   >
                     View Profile
                   </Link>
-                </div>
+                </div> */}
               </div>
             </div>
           </div>

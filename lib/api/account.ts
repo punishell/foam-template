@@ -17,7 +17,7 @@ interface GetAccountResponse {
   profileCompleteness: 0;
   profile: {
     talent: {
-      tagIds?: [];
+      tagIds?: [{ name: string; color: string }];
       availability: string;
       tags?: [];
       about: string;

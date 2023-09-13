@@ -109,7 +109,7 @@ const AchievementBar: React.FC<AchievementBarProps> = ({ achievement, title }) =
 };
 
 
-export const Achievements = ({ achievements }: { achievements: [{ title: string, type: string, total: number, value: number, }] }) => {
+export const Achievements = ({ achievements }: { achievements: { title: string, type: string, total: number, value: number, }[] }) => {
   return (
     <div className="bg-primary-gradient p-[4px] rounded-2xl">
       <div className="bg-[#F8FFF4] py-4 px-6 rounded-xl gap-4 flex flex-col w-fit shrink-0">
