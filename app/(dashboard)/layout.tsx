@@ -53,7 +53,6 @@ export default function DashboardLayout({ children }: Props) {
   }
 
   return (
-    // <MessagingProvider>
     <AccountWrapper tokenSet={isTokenSet}>
       <div className="flex max-w-full h-screen w-screen">
         <Sidebar />
@@ -88,10 +87,9 @@ export default function DashboardLayout({ children }: Props) {
             </div>
           </div>
           <div className="absolute bg-repeat opacity-50 inset-0 bg-[url(/images/rain.png)]" />
-          <div className="relative h-screen pt-5 px-8 z-10 flex flex-col w-full isolate">{children}</div>
+          <div className="relative h-screen pt-5 px-8 z-10 flex flex-col w-full isolate overflow-y-auto">{children}</div>
         </div>
       </div>
     </AccountWrapper>
-    // </MessagingProvider>
   );
 }

@@ -13,7 +13,7 @@ export const axios = Axios.create({
 });
 
 export const axiosDefault = Axios.create({
-  headers: { "Access-Control-Allow-Origin": "*" },
+  headers: { 'Access-Control-Allow-Origin': '*' },
   responseType: 'blob',
 });
 

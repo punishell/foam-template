@@ -31,7 +31,7 @@ export interface User {
   twoFa: {
     status?: boolean;
     type?: string;
-  }
+  };
 }
 
 export interface Job {
@@ -83,11 +83,10 @@ interface JobDeliverable {
   status: 'pending' | 'ongoing' | 'completed';
 }
 
-
 export interface ImageUp {
   file: File;
   preview: string;
-  id: string,
-  name: string,
-  size: string,
+  id: string;
+  name: string;
+  size: string;
 }

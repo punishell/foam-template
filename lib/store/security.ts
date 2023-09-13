@@ -1,4 +1,4 @@
-import { create } from "zustand";
+import { create } from 'zustand';
 
 // App2FA
 interface AuthApp2FA {
@@ -15,9 +15,9 @@ export const useAuthApp2FAState = create<AuthApp2FA>((set) => ({
   isModalOpen: false,
   openModal: () => set({ isModalOpen: true }),
   closeModal: () => set({ isModalOpen: false }),
-  secret: "",
+  secret: '',
   setSecret: (secret: string) => set({ secret }),
-  qrCode: "",
+  qrCode: '',
   setQrCode: (qrCode: string) => set({ qrCode }),
 }));
 

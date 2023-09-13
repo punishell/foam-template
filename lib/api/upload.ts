@@ -38,12 +38,12 @@ export async function postUploadImages(uploadParams: UploadImageParams[]): Promi
 
 async function postDownloadAttachment(url: string): Promise<any> {
   const mainUrl = String(url);
-  return fetch(mainUrl, { mode: "no-cors" })
-    .then(response => {
+  return fetch(mainUrl, { mode: 'no-cors' })
+    .then((response) => {
       console.log(response);
       return response.blob();
     })
-    .then(blob => {
+    .then((blob) => {
       let blobUrl = window.URL.createObjectURL(blob);
       let a = document.createElement('a');
       a.download = url.replace(/^.*[\\\/]/, '');

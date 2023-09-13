@@ -1,15 +1,19 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { SideModal } from '../common/side-modal';
 import { Calendar, ChevronLeft, CopyIcon } from 'lucide-react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
-import { Button } from 'pakt-ui';
+import { Button, CopyToClipboard } from 'pakt-ui';
 import { UserAvatar } from '../common/user-avatar';
 
 import email from '@/lottiefiles/email.json';
 import Lottie from 'lottie-react';
 import { TagInput } from '../common/tag-input';
+import { useGetReferral, useSendReferralInvite } from '@/lib/api/referral';
+import dayjs from 'dayjs';
+import { Spinner } from '../common';
+import { CopyText } from '@/lib/utils';
 
 
 interface ReferralModalProps {
@@ -31,15 +35,34 @@ type LoginFormValues = z.infer<typeof referralSchema>;
 
 export function ReferralSideModal({ isOpen, onOpenChange }: ReferralModalProps) {
   const [isSentEmail, setIsSentEmail] = useState(false);
+  const { data } = useGetReferral({ page: 1, limit: 5, filter: {} });
+  const sendInvite = useSendReferralInvite();
+
+  const referralLink = data?.stats.referralLink;
+  const remainingInvites = (data?.stats?.totalAllowedInvites || 0) - (data?.stats?.inviteSent ?? 0);
+  const inviteDuration = data?.stats?.duration || "week";
+
+  const recentReferrals = useMemo(() => (data?.referrals?.data || []).map(u => ({
+    name: `${u?.referral?.firstName} ${u?.referral?.lastName}` || "",
+    title: u?.referral?.profile?.bio.title,
+    score: u?.referral?.score,
+    image: u?.referral?.profileImage?.url,
+    dated: dayjs(u?.createdAt).format("DD/MM/YYYY"),
+  })), [data])
 
   const form = useForm<LoginFormValues>({
     resolver: zodResolver(referralSchema),
   });
 
-  const onSubmit: SubmitHandler<LoginFormValues> = (values) => {
-    setIsSentEmail(true);
+  const onSubmit: SubmitHandler<LoginFormValues> = async (values) => {
+    const data = await sendInvite.mutateAsync(values)
+    if (data) {
+      setIsSentEmail(true);
+    }
     form.resetField("emails");
   };
+
+  const copyLink = () => CopyText(String(referralLink));
 
   return (
     <SideModal isOpen={isOpen} onOpenChange={onOpenChange} className="flex flex-col">
@@ -49,7 +72,7 @@ export function ReferralSideModal({ isOpen, onOpenChange }: ReferralModalProps) 
       {!isSentEmail ?
         <div className='flex flex-col p-6 gap-2'>
           <h3 className='text-2xl font-semibold'>Invite your friends, increase your Afroscore</h3>
-          <p className='text-base'>You can invite up to 3 people per week.</p>
+          <p className='text-base'>You can invite up to {remainingInvites} people per {inviteDuration}.</p>
           <div className='my-4 w-full rounded-2xl p-4 bg-primary-brighter border border-primary-darker'>
             <h3 className='text-lg font-bold'>Email Invite</h3>
             <form onSubmit={form.handleSubmit(onSubmit)} className='flex flex-col w-full relative my-4'>
@@ -63,10 +86,8 @@ export function ReferralSideModal({ isOpen, onOpenChange }: ReferralModalProps) 
                 />
               </div>
               <div className='flex w-full mt-4 mr-0 '>
-                {/* <div className='absolute -right-1 w-32 bottom-0'> */}
-                <Button className='min-h-[50px]' variant={"primary"} disabled={!form.formState.isValid} fullWidth>Send</Button>
+                <Button className='min-h-[50px]' variant={"primary"} disabled={!form.formState.isValid || sendInvite.isLoading} fullWidth>{sendInvite.isLoading ? <Spinner /> : "Send"}</Button>
               </div>
-              {/* <p className='text-sm text-body'>Use commas(,) to separate emails</p> */}
             </form>
           </div>
           <div className='relative w-full'>
@@ -76,9 +97,9 @@ export function ReferralSideModal({ isOpen, onOpenChange }: ReferralModalProps) 
           <div className='my-4'>
             <h3 className='text-lg font-bold'>Referral Link</h3>
             <div className='w-full relative my-4'>
-              <div className='my-auto min-h-[51px] p-4 text-sm items-center rounded-xl border'>{"https://afro.fund/ref/kyuopf"}</div>
+              <div className='my-auto min-h-[51px] p-4 text-sm items-center rounded-xl border'>{referralLink}</div>
               <div className='absolute -right-1 top-0 h-full'>
-                <Button size="sm" className='min-h-full text-sm items-center !border-primary-darker' variant={"secondary"}>
+                <Button size="sm" className='min-h-full text-sm items-center !border-primary-darker' variant={"secondary"} onClick={copyLink}>
                   <span className='flex flex-row gap-2'>
                     <CopyIcon size={15} /> Copy
                   </span>
@@ -90,7 +111,7 @@ export function ReferralSideModal({ isOpen, onOpenChange }: ReferralModalProps) 
             <h3 className='text-2xl font-bold'>Recently Referred</h3>
             <p className='text-base font-thin'>Your referrals that joined the Platform</p>
             <div className='flex flex-col gap-2 my-4'>
-              {recentReferrals.map((r, i) => <div key={i} className='bg-refer-bg flex flex-row justify-between w-full py-2 px-4 rounded-2xl border border-refer-border'>
+              {recentReferrals.length > 0 && recentReferrals.map((r, i) => <div key={i} className='bg-refer-bg flex flex-row justify-between w-full py-2 px-4 rounded-2xl border border-refer-border'>
                 <div className='flex flex-row gap-2'>
                   <UserAvatar size='xs' image={r.image} score={r.score} />
                   <span className='items-center my-auto'>
@@ -100,6 +121,11 @@ export function ReferralSideModal({ isOpen, onOpenChange }: ReferralModalProps) 
                 </div>
                 <div className='flex flex-row text-body gap-2 my-auto'><Calendar size={24} /> {r.dated}</div>
               </div>)}
+              {recentReferrals.length == 0 &&
+                <div className="flex bg-sky-lighter min-h-[139px] rounded-2xl p-4 items-center">
+                  <p className='m-auto text-body text-base'>Talents you refer will appear here</p>
+                </div>
+              }
             </div>
           </div>
         </div> :

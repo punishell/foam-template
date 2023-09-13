@@ -21,11 +21,7 @@ async function getTalentReview(userId: string, page: string, limit: string) {
   return await axios.get(`/reviews?userId=${userId}&page=${page}&limit=${limit}`);
 }
 
-import {
-  useQuery,
-  type QueryKey,
-  type UseQueryOptions,
-} from "@tanstack/react-query";
+import { useQuery, type QueryKey, type UseQueryOptions } from '@tanstack/react-query';
 import { parseFilterObjectToString } from '../utils';
 import { toast } from '@/components/common/toaster';
 
@@ -34,16 +30,16 @@ type GetTalentFetchSuccess = ApiResponse<any>;
 
 type GetTalentFetchDetailsError = ApiError<null>;
 
-const getQueryKey: QueryKey = ["talents"];
-const getQueryIdKey: QueryKey = ["talents-id"];
+const getQueryKey: QueryKey = ['talents'];
+const getQueryIdKey: QueryKey = ['talents-id'];
 
 export const useGetTalents = ({ limit, page, filter }: talentFetchParams) => {
   const options: UseQueryOptions<GetTalentFetchSuccess, GetTalentFetchDetailsError> = {
     queryFn: async () => {
-      return await getTalent({ limit, page, filter })
+      return await getTalent({ limit, page, filter });
     },
     onError: (error) => {
-      toast.error(error.response?.data.message || "An error fetching talents occurred");
+      toast.error(error.response?.data.message || 'An error fetching talents occurred');
     },
     // onSuccess: () => {},
     enabled: true,
@@ -55,18 +51,18 @@ export const useGetTalents = ({ limit, page, filter }: talentFetchParams) => {
 export const useGetTalentById = (id: string) => {
   const options: UseQueryOptions<any, GetTalentFetchDetailsError> = {
     queryFn: async () => {
-      const [talent, review] = await Promise.all([getTalentById(id), getTalentReview(id, "1", "4")]);
+      const [talent, review] = await Promise.all([getTalentById(id), getTalentReview(id, '1', '4')]);
       return { talent, review };
     },
     onError: (error) => {
-      toast.error(error.response?.data.message || "An error fetching talents occurred");
+      toast.error(error.response?.data.message || 'An error fetching talents occurred');
     },
     // onSuccess: () => {},
     enabled: true,
   };
 
   return useQuery(getQueryIdKey, options);
-}
+};
 
 // export const useGetTalentReviews = (userId: string) => {
 //   const options: UseQueryOptions<GetTalentFetchSuccess, GetTalentFetchDetailsError> = {
