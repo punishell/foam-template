@@ -7,6 +7,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
+    "format": "prettier --config .prettierrc '**/*.ts' --write",
+    "pre-commit": "npm run format && npm run lint && npm run build",
+    "test": "echo tested",
     "prepare": "husky install"
   },
   "dependencies": {
@@ -30,7 +33,6 @@
     "eslint": "8.45.0",
     "eslint-config-next": "13.4.10",
     "framer-motion": "^10.15.1",
-    "husky": "^8.0.3",
     "lottie-react": "^2.4.0",
     "lucide-react": "^0.263.1",
     "next": "^13.4.13",
@@ -60,14 +62,9 @@
     "zustand": "^4.3.9"
   },
   "devDependencies": {
-    "husky": "^8.0.0",
+    "husky": "^8.0.3",
     "lint-staged": "^14.0.1",
     "prettier": "^3.0.0",
     "prettier-plugin-tailwindcss": "^0.4.1"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "echo \"[Husky] pre-commit\""
-    }
   }
 }

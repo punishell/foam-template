@@ -5,7 +5,7 @@ import { useQuery, useMutation } from '@tanstack/react-query';
 import { useUserState } from '../store/account';
 
 interface GetReferrals {
-  data: any[],
+  data: any[];
   limit: number;
   pages: number;
   total: number;
@@ -45,10 +45,7 @@ async function postReferralInvite(values: SendReferralInviteParams): Promise<any
 export const useGetReferral = ({ page, limit, filter }: FetchParams) => {
   return useQuery({
     queryFn: async () => {
-      const response = await Promise.all([
-        fetchReferrals({ page, limit, filter }),
-        fetchReferralStats(),
-      ]);
+      const response = await Promise.all([fetchReferrals({ page, limit, filter }), fetchReferralStats()]);
       return { referrals: response[0], stats: response[1] };
     },
     queryKey: [`get-bookmark_req_${page}`, filter],
@@ -60,7 +57,6 @@ export const useGetReferral = ({ page, limit, filter }: FetchParams) => {
     },
   });
 };
-
 
 export function useSendReferralInvite() {
   return useMutation({

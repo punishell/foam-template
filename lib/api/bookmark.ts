@@ -21,7 +21,7 @@ async function getBookmarks({ page, limit, filter }: timelineFetchParams): Promi
   return res.data.data;
 }
 
-async function addToBookmark({ reference, type }: { reference: string, type: string }): Promise<any> {
+async function addToBookmark({ reference, type }: { reference: string; type: string }): Promise<any> {
   const res = await axios.post(`/bookmark`, { reference, type });
   return res.data.data;
 }
@@ -30,7 +30,6 @@ async function removeFromBookmark({ id }: { id: string }): Promise<any> {
   const res = await axios.delete(`/bookmark/${id}`);
   return res.data.data;
 }
-
 
 export const useGetBookmarks = ({ page, limit, filter }: timelineFetchParams) => {
   return useQuery({

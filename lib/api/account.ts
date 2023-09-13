@@ -5,37 +5,37 @@ import { useQuery, useMutation } from '@tanstack/react-query';
 import { useUserState } from '../store/account';
 
 interface GetAccountResponse {
-  _id: string,
-  type: string,
-  email: string,
-  lastName: string,
-  firstName: string,
-  score: 0,
+  _id: string;
+  type: string;
+  email: string;
+  lastName: string;
+  firstName: string;
+  score: 0;
   profileImage: {
-    url: string,
-  },
-  profileCompleteness: 0,
+    url: string;
+  };
+  profileCompleteness: 0;
   profile: {
     talent: {
-      tagIds?: []
-      availability: string,
-      tags?: [],
-      about: string,
-    },
+      tagIds?: [];
+      availability: string;
+      tags?: [];
+      about: string;
+    };
     bio: {
-      title: string,
-      description: string,
-    },
+      title: string;
+      description: string;
+    };
     contact: {
-      city: string,
-      country: string,
-    }
-  }
+      city: string;
+      country: string;
+    };
+  };
   twoFa: {
     status?: boolean;
     type?: string;
-  }
-  isPrivate?: boolean,
+  };
+  isPrivate?: boolean;
 }
 interface UpdateAccountParams {
   username?: string;
@@ -142,7 +142,6 @@ export const useGetAccount = () => {
     },
   });
 };
-
 
 export function useChangePassword() {
   return useMutation({

@@ -1,32 +1,30 @@
-import {
-  useQuery,
-  type QueryKey,
-  type UseQueryOptions,
-} from "@tanstack/react-query";
+import { useQuery, type QueryKey, type UseQueryOptions } from '@tanstack/react-query';
 import { axios, ApiError, ApiResponse } from '@/lib/axios';
-import { useWalletState } from "@/lib/store/wallet";
-import { toast } from "@/components/common/toaster";
+import { useWalletState } from '@/lib/store/wallet';
+import { toast } from '@/components/common/toaster';
 
 export interface IWallet {
   totalWalletBalance: string;
   value: string;
-  wallets: [{
-    _id: string;
-    amount: number;
-    usdValue: number;
-    coin: string;
-  }]
+  wallets: [
+    {
+      _id: string;
+      amount: number;
+      usdValue: number;
+      coin: string;
+    },
+  ];
 }
 
 export interface IWalletTx {
   page: string;
   pages: string;
   limit: string;
-  transactions: []
+  transactions: [];
 }
 
-const getWalletQueryKey: QueryKey = ["wallet-details"];
-const getWalletTxQueryKey: QueryKey = ["wallet-txs"];
+const getWalletQueryKey: QueryKey = ['wallet-details'];
+const getWalletTxQueryKey: QueryKey = ['wallet-txs'];
 // fetch wallets
 const fetchWallet = async () => await axios.get(`/wallet`);
 
@@ -39,7 +37,7 @@ const fetchWalletTransactions = async ({ limit, page }: { limit: number; page: n
 const fetchSingleTransactions = async (id: string) => {
   try {
     const { data } = await axios.get(`/transaction/${id}`);
-    if (data?.status === "success") {
+    if (data?.status === 'success') {
       return data?.data;
     }
   } catch (error: any) {
@@ -50,10 +48,8 @@ const fetchSingleTransactions = async (id: string) => {
 // single transactions
 export const fetchWalletStats = async ({ format }: { format: string }) => {
   try {
-    const { data } = await axios.get(
-      `/transaction/aggregate/stats?format=${format}`
-    );
-    if (data?.status === "success") {
+    const { data } = await axios.get(`/transaction/aggregate/stats?format=${format}`);
+    if (data?.status === 'success') {
       return data?.data;
     }
   } catch (error: any) {
@@ -65,7 +61,7 @@ export const fetchWalletStats = async ({ format }: { format: string }) => {
 const fetchWithdrawalStats = async (payload: any) => {
   try {
     const { data } = await axios.post(`/withdrawals`, payload);
-    if (data?.status === "success") {
+    if (data?.status === 'success') {
       return data;
     }
   } catch (error: any) {
@@ -76,7 +72,7 @@ const fetchWithdrawalStats = async (payload: any) => {
 const fetchExchangeRate = async () => {
   try {
     const { data } = await axios.get(`/wallet/exchange`);
-    if (data?.status === "success") {
+    if (data?.status === 'success') {
       return data;
     }
   } catch (error: any) {
@@ -91,25 +87,25 @@ export const useGetWalletDetails = () => {
       return await fetchWallet();
     },
     onError: (error) => {
-      toast.error(error.response?.data.message || "An error occurred");
+      toast.error(error.response?.data.message || 'An error occurred');
     },
     onSuccess: ({ data }) => {
-      setWallet(data.data)
+      setWallet(data.data);
     },
   };
 
   return useQuery(getWalletQueryKey, options);
 };
 
-export const useGetWalletTxs = ({ limit, page }: { limit: number, page: number }) => {
+export const useGetWalletTxs = ({ limit, page }: { limit: number; page: number }) => {
   const options: UseQueryOptions<ApiResponse<IWalletTx>, ApiError<null>> = {
     queryFn: async () => {
       return await fetchWalletTransactions({ limit, page });
     },
     onError: (error) => {
-      toast.error(error.response?.data.message || "An error occurred");
+      toast.error(error.response?.data.message || 'An error occurred');
     },
-    enabled: true
+    enabled: true,
   };
 
   return useQuery(getWalletTxQueryKey, options);
