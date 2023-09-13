@@ -32,6 +32,7 @@ module.exports = {
         'refer-border': '#E8E8E8',
         'refer-bg': '#F9F9F9',
         'input-bg': '#FCFCFD',
+        'sky-lighter': '#F7F9FA',
       },
       backgroundImage: {
         'auth-gradient': 'linear-gradient(180deg, #007C5B 0%, #00231A 100%)',
