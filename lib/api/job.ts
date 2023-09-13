@@ -264,3 +264,35 @@ export function useDeclinePrivateJobInvite() {
     },
   });
 }
+
+// OPEN JOBS
+
+// Apply to an open job
+
+interface ApplyToOpenJobParams {
+  bid: number;
+  jobId: string;
+  message: string;
+}
+
+async function postApplyToOpenJob(params: ApplyToOpenJobParams): Promise<ApiResponse> {
+  const res = await axios.post(`/bid`, {
+    bid: params.bid,
+    collection: params.jobId,
+    message: params.message,
+  });
+  return res.data.data;
+}
+
+export function useApplyToOpenJob() {
+  return useMutation({
+    mutationFn: postApplyToOpenJob,
+    mutationKey: ['apply-to-open-job'],
+    onError: (error: ApiError) => {
+      toast.error(error?.response?.data.message || 'An error occurred');
+    },
+    onSuccess: () => {
+      toast.success('Applied to job successfully');
+    },
+  });
+}
