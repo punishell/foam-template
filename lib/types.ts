@@ -24,7 +24,7 @@ export interface User {
     talent: {
       availability?: string;
       tags?: string[];
-      tagIds?: any[];
+      tagsIds?: { name: string; color: string }[];
       about?: string;
     };
   };
@@ -32,6 +32,7 @@ export interface User {
     status?: boolean;
     type?: string;
   };
+  achievements?: AchievementProps[];
 }
 
 export interface Job {
@@ -89,4 +90,10 @@ export interface ImageUp {
   id: string;
   name: string;
   size: string;
+}
+
+export interface AchievementProps {
+  type: string;
+  value: string;
+  total: string;
 }

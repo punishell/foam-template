@@ -26,6 +26,7 @@ import * as z from 'zod';
 import { Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm, SubmitHandler } from 'react-hook-form';
+import { StepIndicator } from '@/components/jobs/step-indicator';
 
 const schema = z.object({
   due: z.date({
@@ -57,7 +58,7 @@ export default function CreateJob() {
   const [files, setFiles] = React.useState<File[]>([]);
   const [uploadProgress, setUploadProgress] = React.useState(0);
 
-  const onDrop = React.useCallback(async (acceptedFiles: File[]) => {}, []);
+  const onDrop = React.useCallback(async (acceptedFiles: File[]) => { }, []);
 
   const { getRootProps, getInputProps } = useDropzone({
     onDrop,
@@ -402,23 +403,23 @@ const SkillInput = React.forwardRef<HTMLInputElement, SkillInputProps>(({ ...pro
 
 SkillInput.displayName = 'SkillInput';
 
-interface StepIndicatorProps {
-  isComplete?: boolean;
-  children: React.ReactNode;
-}
+// interface StepIndicatorProps {
+//   isComplete?: boolean;
+//   children: React.ReactNode;
+// }
 
-export const StepIndicator: React.FC<StepIndicatorProps> = ({ children, isComplete }) => {
-  return (
-    <label
-      className={cn(
-        'flex items-center gap-4 border rounded-lg py-3 px-3  duration-200 cursor-pointer border-gray-300 bg-gray-50 border-opacity-50 hover:bg-primary hover:bg-opacity-10',
-        {
-          'border-primary border-opacity-40 bg-green-300 bg-opacity-10 hover:bg-opacity-20 duration-200': isComplete,
-        },
-      )}
-    >
-      <Checkbox checked={isComplete} />
-      <span>{children}</span>
-    </label>
-  );
-};
+// export const StepIndicator: React.FC<StepIndicatorProps> = ({ children, isComplete }) => {
+//   return (
+//     <label
+//       className={cn(
+//         'flex items-center gap-4 border rounded-lg py-3 px-3  duration-200 cursor-pointer border-gray-300 bg-gray-50 border-opacity-50 hover:bg-primary hover:bg-opacity-10',
+//         {
+//           'border-primary border-opacity-40 bg-green-300 bg-opacity-10 hover:bg-opacity-20 duration-200': isComplete,
+//         },
+//       )}
+//     >
+//       <Checkbox checked={isComplete} />
+//       <span>{children}</span>
+//     </label>
+//   );
+// };

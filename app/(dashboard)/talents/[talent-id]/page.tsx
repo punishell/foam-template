@@ -24,23 +24,24 @@ export default function TalentDetails() {
   }, []);
 
   const talent = useMemo(() => ({
-    id: talentData?.talent?.data.data?._id,
-    name: `${talentData?.talent?.data.data.firstName} ${talentData?.talent?.data.data.lastName}`,
-    positon: talentData?.talent?.data.data?.profile?.bio?.title,
-    bio: talentData?.talent?.data.data.profile?.bio?.description,
-    score: talentData?.talent?.data.data?.score,
-    achievements: talentData?.talent?.data.data?.achievements.map((a: any) => ({ title: a.type, type: a.type, total: a.total, value: a.value })),
-    skills: talentData?.talent?.data?.data?.profile?.talent?.tags || [],
-    reviews: talentData?.review?.data?.data?.data,
+    id: talentData?.talent._id || "",
+    name: `${talentData?.talent?.firstName} ${talentData?.talent?.lastName}`,
+    position: talentData?.talent?.profile?.bio?.title || "",
+    bio: talentData?.talent?.profile?.bio?.description || "",
+    score: talentData?.talent?.score || 0,
+    achievements: (talentData?.talent?.achievements || []).map((a) => ({ title: a.type, type: a.type, total: Number(a.total), value: Number(a.value) })),
+    skills: (talentData?.talent?.profile?.talent?.tagsIds || []).map((t) => ({ name: t.name, backgroundColor: t.color })) || [],
+    reviews: talentData?.review?.data || [],
   }), [talentData]);
 
-  if (!isFetched && isFetching) {
+
+  if (!isFetched || isFetching) {
     return <div className="flex h-full w-full my-auto items-center justify-center z-20"><Spinner /></div>
   }
 
   return (
     <div className="flex flex-col gap-6 pt-6 overflow-y-auto">
-      <ProfileHeader _id={talent.id} name={talent.name} position={talent.positon} score={talent.score} skills={talent?.skills} />
+      <ProfileHeader _id={talent.id} name={talent.name} position={talent.position} score={talent.score} skills={talent?.skills} />
 
       <div className="flex gap-6">
         <Bio body={talent.bio} />

@@ -7,7 +7,7 @@ import { UserAvatar } from '@/components/common/user-avatar';
 import { getAvatarColor } from '@/lib/utils';
 import Link from 'next/link';
 
-export const ProfileHeader = ({ _id, name, position, score, skills }: { _id: string, name: string, position: string, score: number, skills: any[] }) => {
+export const ProfileHeader = ({ _id, name, position, score, skills, isLoggedIn }: { _id: string, name: string, position: string, score: number, skills: any[], isLoggedIn?: boolean }) => {
   const borderColor = getAvatarColor(score);
   return (
     <div className="w-full flex relative bg-white py-6 rounded-2xl gap-6 border border-line">
@@ -27,14 +27,22 @@ export const ProfileHeader = ({ _id, name, position, score, skills }: { _id: str
             </div>
 
             <div className="flex gap-3 items-center max-w-[300px] w-full">
-              <Link href={`/messages?userid=${_id}`}>
-                <Button fullWidth variant="secondary" size={'sm'}>
-                  Message
+              {!isLoggedIn ? <>
+                <Link href={`/messages?userid=${_id}`}>
+                  <Button fullWidth variant="secondary" size={'sm'}>
+                    Message
+                  </Button>
+                </Link>
+                <Button fullWidth variant="primary" size={'sm'}>
+                  Invite to Job
                 </Button>
-              </Link>
-              <Button fullWidth variant="primary" size={'sm'}>
-                Invite to Job
-              </Button>
+              </> :
+                <Link href={`/settings`}>
+                  <Button fullWidth variant="primary">
+                    Edit Profile
+                  </Button>
+                </Link>
+              }
             </div>
           </div>
         </div>
