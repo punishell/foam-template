@@ -18,7 +18,7 @@ export default function Profile() {
   const router = useRouter();
   const { _id: loggedInUser } = useUserState();
   const talentId = String(loggedInUser);
-  const { data: talentData, refetch: FetchTalent, isFetched, isFetching } = useGetTalentById(talentId);
+  const { data: talentData, refetch: FetchTalent, isFetching } = useGetTalentById(talentId);
 
   useEffect(() => {
     if (talentId) {
@@ -37,7 +37,7 @@ export default function Profile() {
     reviews: talentData?.review?.data || [],
   }), [talentData]);
 
-  if (!isFetched && isFetching) {
+  if (!isFetching) {
     return <div className="flex h-full w-full my-auto items-center justify-center z-20"><Spinner /></div>
   }
 
