@@ -38,7 +38,7 @@ export default function Login() {
           // @ts-ignore
           setUser(data);
           setCookie(AUTH_TOKEN_KEY, data.token);
-          return router.push('/overview');
+          return router.push('/overview', { scroll: false });
         }
 
         router.push(
@@ -57,14 +57,6 @@ export default function Login() {
         <div className="max-w-[200px]">
           <Image src="/images/logo.svg" alt="Logo" width={250} height={60} />
         </div>
-
-        <Link
-          className="rounded-lg border-2 bg-white !bg-opacity-10 px-5 py-2 text-white duration-200 hover:bg-opacity-30"
-          href="/signup"
-        >
-          {' '}
-          Signup
-        </Link>
       </Container>
 
       <Container className="mt-28 flex w-full max-w-2xl flex-col items-center gap-6">

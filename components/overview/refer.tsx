@@ -44,7 +44,7 @@ export function ReferralSideModal({ isOpen, onOpenChange }: ReferralModalProps) 
 
   const recentReferrals = useMemo(() => (data?.referrals?.data || []).map(u => ({
     name: `${u?.referral?.firstName} ${u?.referral?.lastName}` || "",
-    title: u?.referral?.profile?.bio.title,
+    title: u?.referral?.profile?.bio?.title || "",
     score: u?.referral?.score,
     image: u?.referral?.profileImage?.url,
     dated: dayjs(u?.createdAt).format("DD/MM/YYYY"),

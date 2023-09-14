@@ -26,30 +26,32 @@ export const TalentList: React.FC<TalentListProps> = ({ isLoading, talents, curr
   return (
     <div className="h-full w-full">
       {!isLoading ?
-        <div className="flex flex-col h-full">
-          <div className="mt-10 grid grid-cols-1 items-center justify-center gap-4 sm:grid-cols-2 md:grid-cols-3 md:gap-8">
-            {talents.length > 0 && talents.map((t: any, i: number) => (
-              <TalentBox
-                key={i}
-                id={t._id}
-                name={t.name}
-                title={t?.title}
-                score={t?.score}
-                imageUrl={t?.image}
-                skills={t?.skills}
-                achievements={t?.achievements ?? []}
+        <>
+          <div className="flex flex-col h-full">
+            <div className="mt-10 grid grid-cols-1 items-center justify-center gap-4 sm:grid-cols-2 md:grid-cols-3 md:gap-8">
+              {talents.length > 0 && talents.map((t: any, i: number) => (
+                <TalentBox
+                  key={i}
+                  id={t._id}
+                  name={t.name}
+                  title={t?.title}
+                  score={t?.score}
+                  imageUrl={t?.image}
+                  skills={t?.skills}
+                  achievements={t?.achievements ?? []}
+                />
+              ))}
+            </div>
+            {talents.length === 0 && <RenderEmpty />}
+            <div className="mt-auto py-4">
+              <Pagination
+                totalPages={totalPages}
+                setCurrentPage={handlePagination}
+                currentPage={currentPage}
               />
-            ))}
+            </div>
           </div>
-          {talents.length === 0 && <RenderEmpty />}
-          <div className="my-4">
-            <Pagination
-              totalPages={totalPages}
-              setCurrentPage={handlePagination}
-              currentPage={currentPage}
-            />
-          </div>
-        </div>
+        </>
         : <RenderLoading />}
     </div>
   );

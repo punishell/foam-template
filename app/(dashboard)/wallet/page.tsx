@@ -134,7 +134,7 @@ export default function Wallet() {
         </div>
         <div className='grow'>
           <WalletTransactions
-            data={walletTransactions}
+            data={[]}
             page={parseInt(walletTx?.data.data.page || "1")}
             limit={parseInt(walletTx?.data?.data?.limit || "10")}
             pageSize={parseInt(walletTx?.data?.data?.pages || "1")}

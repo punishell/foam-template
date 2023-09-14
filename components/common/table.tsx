@@ -46,7 +46,7 @@ export const Table = <T extends object>({
       <div className="flex min-h-[450px] items-center justify-center">
         <div className="flex flex-col items-center gap-2">
           <div className="max-w-[100px]">
-            <Image src="/empty-table.svg" width={200} height={200} alt="" />
+            <Image src="/images/empty-table.svg" width={200} height={200} alt="" />
           </div>
           <Text.h3 size="xs" className="text-center font-normal text-[#6C757D]">
             {emptyStateMessage || 'Table Content Will Appear Here'}

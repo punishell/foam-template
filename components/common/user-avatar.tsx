@@ -4,7 +4,7 @@ const sizesToPx: { [K in Size]: number } = {
   xs: 54,
   sm: 108,
   md: 142,
-  lg: 195,
+  lg: 165,
 };
 
 const sizesToPositions: { [K in Size]: number } = {
@@ -34,11 +34,13 @@ function getAvatarColor(paktScore: number) {
     return 'bg-blue-gradient ';
   }
   return 'bg-green-gradient';
-}
+};
+
 const sizes: Record<string, any> = {
   xs: 20,
   md: 30,
 };
+
 const getSizes = (size: string) => sizes[size] || 30;
 
 export const UserAvatar: React.FC<Props> = ({ image, score = 0, size = 'md' }) => {
