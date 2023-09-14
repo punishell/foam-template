@@ -80,7 +80,7 @@ const SkillCard: React.FC<SkillCardProps> = ({ label, Icon, isActive, toggleSele
     <button
       onClick={toggleSelection}
       className={clsx(
-        'text-title flex min-w-[200px] items-start gap-4 rounded-lg border p-6 duration-200 hover:bg-gray-100',
+        'text-title flex flex-col min-w-[200px] items-start gap-4 rounded-lg border p-6 duration-200 hover:bg-gray-100',
         {
           'border-[#E8E8E8] bg-[#FCFCFC]': !isActive,
           'border-[#007C5B] bg-[#007C5B1A]': isActive,
