@@ -75,7 +75,7 @@ const AchievementBar: React.FC<AchievementBarProps> = ({ achievement, title }) =
   return (
     <div className="flex flex-col gap-2 items-center">
       <div
-        className="p-2 rounded-3xl w-[120px]"
+        className="p-2 rounded-3xl w-[100px]"
         style={{
           border: `2px solid ${styles.borderColor}`,
           backgroundColor: styles.outerBackgroundColor,
@@ -114,7 +114,7 @@ export const Achievements = ({ achievements }: { achievements: { title: string, 
     <div className="bg-primary-gradient p-[4px] rounded-2xl">
       <div className="bg-[#F8FFF4] py-4 px-6 rounded-xl gap-4 flex flex-col w-fit shrink-0">
         <h3 className="text-center text-title text-lg font-medium">Achievements</h3>
-        <div className="grid grid-cols-4 gap-2 w-full">
+        <div className="grid grid-cols-4 gap-4 w-full">
           {achievements && achievements.length > 0 && achievements.map((ach, i) => {
             const typeData = getAchievementData(ach.type);
             return (<AchievementBar

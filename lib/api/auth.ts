@@ -27,7 +27,7 @@ async function postSignUp({ email, password, firstName, lastName, referral }: Si
     password,
     lastName,
     firstName,
-    referral
+    referral,
   });
   return res.data.data;
 }

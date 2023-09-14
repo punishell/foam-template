@@ -23,14 +23,21 @@ interface talentFetchParams {
   limit: number;
   filter: Record<string, any>;
 }
-
+interface talentListResponse {
+  data: User[];
+  pages: number;
+  page: number;
+  limit: number;
+  total: number;
+}
 interface reviewResponse {
   data: [];
 }
 
-async function getTalent({ limit = 20, page = 1, filter }: talentFetchParams) {
+async function getTalent({ limit = 20, page = 1, filter }: talentFetchParams): Promise<talentListResponse> {
   const filters = parseFilterObjectToString(filter);
-  return await axios.get(`/account/user?limit=${limit}&page=${page}&${filters}`);
+  const res = await axios.get(`/account/user?limit=${limit}&page=${page}&${filters}`);
+  return res.data.data;
 }
 
 async function getTalentById(id: string): Promise<User> {
@@ -44,7 +51,7 @@ async function getTalentReview(userId: string, page: string, limit: string): Pro
 }
 
 export const useGetTalents = ({ limit, page, filter }: talentFetchParams) => {
-  const options: UseQueryOptions<any, GetTalentFetchDetailsError> = {
+  const options: UseQueryOptions<talentListResponse, GetTalentFetchDetailsError> = {
     queryFn: async () => {
       return await getTalent({ limit, page, filter });
     },

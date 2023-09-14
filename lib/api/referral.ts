@@ -43,7 +43,7 @@ async function postReferralInvite(values: SendReferralInviteParams): Promise<any
 }
 
 async function validateReferral({ token }: { token: string }): Promise<any> {
-  const res = await axios.post("/auth/referral/validate", { token })
+  const res = await axios.post('/auth/referral/validate', { token });
   return res.data.data;
 }
 
@@ -72,7 +72,6 @@ export function useSendReferralInvite() {
     },
   });
 }
-
 
 export function useValidateReferral() {
   return useMutation({
