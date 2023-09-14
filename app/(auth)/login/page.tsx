@@ -38,7 +38,7 @@ export default function Login() {
           // @ts-ignore
           setUser(data);
           setCookie(AUTH_TOKEN_KEY, data.token);
-          return router.replace('/overview');
+          return router.push('/overview', { scroll: false });
         }
 
         router.push(
