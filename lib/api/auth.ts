@@ -18,14 +18,16 @@ interface SignupParams {
   password: string;
   lastName: string;
   firstName: string;
+  referral: string;
 }
 
-async function postSignUp({ email, password, firstName, lastName }: SignupParams): Promise<SignupResponse> {
+async function postSignUp({ email, password, firstName, lastName, referral }: SignupParams): Promise<SignupResponse> {
   const res = await axios.post('/auth/create-account', {
     email,
     password,
     lastName,
     firstName,
+    referral
   });
   return res.data.data;
 }

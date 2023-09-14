@@ -42,6 +42,11 @@ async function postReferralInvite(values: SendReferralInviteParams): Promise<any
   return res.data.data;
 }
 
+async function validateReferral({ token }: { token: string }): Promise<any> {
+  const res = await axios.post("/auth/referral/validate", { token })
+  return res.data.data;
+}
+
 export const useGetReferral = ({ page, limit, filter }: FetchParams) => {
   return useQuery({
     queryFn: async () => {
@@ -65,5 +70,13 @@ export function useSendReferralInvite() {
     onError: (error: ApiError) => {
       toast.error(error?.response?.data.message || 'An error occurred');
     },
+  });
+}
+
+
+export function useValidateReferral() {
+  return useMutation({
+    mutationFn: validateReferral,
+    mutationKey: ['validateReferral'],
   });
 }

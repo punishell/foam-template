@@ -1,16 +1,19 @@
 'use client';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import * as z from 'zod';
 import { useSignUp } from '@/lib/api';
 import { createQueryStrings } from '@/lib/utils';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { SubmitHandler, useForm } from 'react-hook-form';
-import { useRouter } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import { Spinner } from '@/components/common';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Input, Button } from 'pakt-ui';
 import { Container } from '@/components/common/container';
+import { useValidateReferral } from '@/lib/api/referral';
+import Lottie from 'lottie-react';
+import warning from "@/lottiefiles/warning-2.json";
 
 const passwordSchema = z
   .string()
@@ -37,14 +40,39 @@ type FormValues = z.infer<typeof formSchema>;
 
 export default function Signup() {
   const signup = useSignUp();
+  const validateRef = useValidateReferral();
   const router = useRouter();
+  const params = useParams();
+  const [isLoading, _setIsLoading] = useState(true);
+  const [errorMsg, _setErrorMsg] = useState(false);
+  const referralCode = String(params.code);
+
+  useEffect(() => {
+    validateReferral();
+  }, []);
+
+  const validateReferral = () => {
+    if (!referralCode) {
+      // throw error 
+      _setErrorMsg(true);
+      _setIsLoading(false);
+    }
+    // validate code here
+    validateRef.mutate({ token: referralCode }, {
+      onSuccess: () => { _setIsLoading(false) },
+      onError: async () => {
+        _setErrorMsg(true);
+        _setIsLoading(false);
+      }
+    })
+  }
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
   });
 
   const onSubmit: SubmitHandler<FormValues> = (values) => {
-    signup.mutate(values, {
+    signup.mutate({ ...values, referral: referralCode }, {
       onSuccess: ({ tempToken, email }) => {
         router.push(
           `/signup/verify?${createQueryStrings([
@@ -64,21 +92,17 @@ export default function Signup() {
 
   return (
     <React.Fragment>
-      <div>
-        <Container className="flex items-center justify-between mt-16">
-          <div className="max-w-[200px]">
-            <Image src="/images/logo.svg" alt="Logo" width={250} height={60} />
-          </div>
+      <Container className="flex items-center justify-between mt-16">
+        <div className="max-w-[200px]">
+          <Image src="/images/logo.svg" alt="Logo" width={250} height={60} />
+        </div>
 
-          <Link
-            className="rounded-lg border-2 bg-white !bg-opacity-10 px-5 py-2 text-white duration-200 hover:bg-opacity-30"
-            href="/login"
-          >
-            Login
-          </Link>
-        </Container>
-
-        <Container className="mt-28 flex w-full max-w-2xl flex-col items-center gap-6">
+        {!isLoading && <Link className="rounded-lg border-2 bg-white !bg-opacity-10 px-5 py-2 text-white duration-200 hover:bg-opacity-30" href="/login">
+          Login
+        </Link>}
+      </Container>
+      {!isLoading && !errorMsg &&
+        <Container className="flex h-full w-full max-w-2xl flex-col items-center justify-center gap-6">
           <div className="flex flex-col items-center gap-2 text-center text-white">
             <h3 className="font-sans text-3xl font-bold">Create Your Account</h3>
             <p className="font-sans text-base">Create Your Account</p>
@@ -148,7 +172,17 @@ export default function Signup() {
             </Button>
           </form>
         </Container>
-      </div>
+      }
+      {isLoading && <div className='flex h-full justify-center text-white'><Spinner /></div>}
+      {!isLoading && errorMsg &&
+        <Container className="mt-28 text-white text-center flex w-full max-w-xl flex-col items-center gap-2 justify-center p-8 rounded-2xl mx-auto  bg-[rgba(0,124,91,0.20)] backdrop-blur-md border border-white border-opacity-20 bg-[rgba(0, 124, 91, 0.20)] px-[40px] py-10 backdrop-blur-lg">
+          <div className="max-w-[150px] w-full flex items-center justify-center">
+            <Lottie animationData={warning} />
+          </div>
+          <h3 className='text-3xl font-bold'>Invalid Referral Code</h3>
+          <h6 className='text-lg font-thin flex-wrap opacity-[0.8]'>You need a valid referral code to be able to sign up to Afrofund. </h6>
+        </Container>
+      }
     </React.Fragment>
   );
 }
