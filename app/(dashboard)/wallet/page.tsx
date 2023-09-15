@@ -75,7 +75,7 @@ export default function Wallet() {
     setStatData(chartData);
   };
 
-  const loadpage = async () => {
+  const loadPage = async () => {
     return await Promise.all([
       fetchWalletTx(),
       getChartData(),
@@ -83,10 +83,8 @@ export default function Wallet() {
   }
 
   useEffect(() => {
-    loadpage();
+    loadPage();
   }, []);
-
-  console.log(pageIndex, pageSize)
 
 
   return (

@@ -7,7 +7,7 @@ interface WithdrawalParams {
   coin: string;
   amount: number;
   password: string;
-  confirm: boolean;
+  otp?: string;
 }
 
 async function postWithdrawalRequest(payload: WithdrawalParams): Promise<any> {
