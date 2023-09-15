@@ -9,8 +9,8 @@ interface OnboardingState {
 }
 
 export const useOnboardingState = create<OnboardingState>((set) => ({
-  skill: "",
-  image: "",
+  skill: '',
+  image: '',
   setSkill: (skill: string) => set({ skill }),
   setProfileImage: (image: string) => set({ image }),
 }));

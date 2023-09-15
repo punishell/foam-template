@@ -16,7 +16,7 @@ export function middleware(request: NextRequest) {
 }
 
 const redirectToLogin = (request: NextRequest) => {
-  const redirectUrl = `/login?from=${request.nextUrl.pathname}`;
+  const redirectUrl = `/login`;
   return NextResponse.redirect(new URL(redirectUrl, request.url));
 };
 
