@@ -29,7 +29,7 @@ export default function Talents() {
     [searchParams],
   );
 
-  const { data: talentData, refetch: fetchTalents, isFetched, isFetching } = useGetTalents({ page: parseInt(page), limit: parseInt(Limit), filter: { search: searchQ, skills: skillQ, range: rangeQ } });
+  const { data: talentData, refetch: fetchTalents, isFetched, isFetching } = useGetTalents({ page: parseInt(page), limit: parseInt(Limit), filter: { search: searchQ, tags: skillQ, range: rangeQ } });
 
   const talentLists = useMemo(() => {
     setIsSearching(false);

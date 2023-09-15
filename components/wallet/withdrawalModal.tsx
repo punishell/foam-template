@@ -16,7 +16,7 @@ import { useUserState } from "@/lib/store/account";
 const withdrawFormSchema = z.object({
   coin: z.string().min(1, 'Password is required'),
   address: z.string().min(1, 'Address is required'),
-  amount: z.number().min(1, 'Amount is required'),
+  amount: z.number().min(1, '$100 is the minimum required amount for withdrawal'),
   password: z.string().min(1, "password is required"),
   confirm: z.literal(true, {
     errorMap: () => ({ message: "You must accept Terms and Conditions" }),
@@ -40,21 +40,25 @@ export const WithdrawalModal = ({ isOpen, onChange, wallets }: { isOpen: boolean
   };
 
   const finalSubmit = (otp?: string) => {
+    const values = form.getValues();
     const payload = {
-      ...form.getValues(),
+      address: values.address,
+      amount: values.amount,
+      coin: values.coin,
+      password: values.password,
       otp,
     }
     withdraw.mutate(payload, {
       onSuccess: (data) => {
         console.log(data);
+        form.reset({})
       },
     });
   }
 
   const renderOption = (coin: string, balance: string) => (<div className="flex flex-row text-lg"><Image width={25} height={25} className="w-[25px] h-[25px] mr-4" src={coin == "avax" ? avax : usdc} alt={`logo for currency`} />{coin.toUpperCase()} (${balance})</div>)
 
-  console.log("vaa", form.getValues(), form.formState.errors, withdraw.isLoading, !form.formState.isValid)
-
+  console.log(form.formState.errors)
   return (
     <SideModal isOpen={isOpen} onOpenChange={onChange} className="gap-6">
 
@@ -88,8 +92,9 @@ export const WithdrawalModal = ({ isOpen, onChange, wallets }: { isOpen: boolean
               <span className="text-title font-medium">Network: Avax C-Chain</span>
             </div>
 
-            <div className="relative">
+            <div className="relative mb-4">
               <Input type="text" {...form.register('address')} />
+              <InputErrorMessage message={form.formState.errors.address?.message} />
             </div>
 
             <span className="text-info text-left text-sm">
@@ -100,27 +105,33 @@ export const WithdrawalModal = ({ isOpen, onChange, wallets }: { isOpen: boolean
 
           <div className="relative">
             <NumericInput value="" onChange={(e) => form.setValue("amount", Number(e))} />
+            <InputErrorMessage message={form.formState.errors.amount?.message} />
           </div>
 
           <div className="relative">
             <Input type="text" label="Password"  {...form.register('password')} />
+            <InputErrorMessage message={form.formState.errors.password?.message} />
           </div>
 
-          <div className="my-2 flex cursor-pointer items-center gap-2">
-            <Controller
-              name="confirm"
-              control={form.control}
-              render={({ field: { onChange, value } }) => (
-                <Checkbox id="confirm-withdrawal"
-                  {...form.register('confirm')}
-                  checked={value}
-                  onCheckedChange={onChange}
-                />
-              )}
-            />
-            <label htmlFor="confirm-withdrawal" className="cursor-pointer text-sm">
-              I understand that I will be charged a 0.5% fee for this transaction
-            </label>
+          <div className="my-2 relative flex flex-col cursor-pointer">
+            <div className="flex flex-row gap-2">
+              <Controller
+                name="confirm"
+                control={form.control}
+                render={({ field: { onChange, value } }) => (
+                  <Checkbox id="confirm-withdrawal"
+                    {...form.register('confirm')}
+                    checked={value}
+                    onCheckedChange={onChange}
+                  />
+                )}
+              />
+              <label htmlFor="confirm-withdrawal" className="cursor-pointer text-sm">
+                I understand that I will be charged a 0.5% fee for this transaction
+              </label>
+            </div>
+
+            <InputErrorMessage message={form.formState.errors.confirm?.message} />
           </div>
 
           <Button disabled={withdraw.isLoading || !form.formState.isValid} fullWidth>{withdraw.isLoading ? <Spinner /> : "Withdraw Funds"}</Button>

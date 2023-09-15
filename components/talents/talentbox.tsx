@@ -57,10 +57,10 @@ export const TalentBox: React.FC<{
                 strokeWidth={1.5}
               />
             </div>
-            <div className="absolute top-[5%] h-full w-full rounded-3xl mt-[3px]" style={{ fill: "rgba(255, 237, 237, 0.37)", backdropFilter: "blur(29px)" }}>
-              <div className="relative rounded-2xl border-t-0 pt-5 px-5">
+            <div className="absolute top-[5%] h-full w-full rounded-3xl" style={{ fill: "rgba(255, 237, 237, 0.37)", backdropFilter: "blur(29px)" }}>
+              <div className="relative rounded-2xl border-t-0 px-5">
                 <div className="grid grid-rows-3 gap-2">
-                  <span className="pb-0 pt-3 text-2xl font-semibold capitalize">{name}</span>
+                  <span className="pb-0 pt-3 text-2xl font-semibold capitalize my-auto">{name}</span>
                   {<span className="text-base">{title || ""}</span>}
                   {skills?.length > 0 && (
                     <div className="flex w-full items-center gap-2">
