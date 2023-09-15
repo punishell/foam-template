@@ -6,6 +6,7 @@ import { toast } from '@/components/common/toaster';
 interface UploadImageResponse {
   fileName: string;
   storageUrl: string;
+  _id: string;
 }
 
 interface UploadImageParams {

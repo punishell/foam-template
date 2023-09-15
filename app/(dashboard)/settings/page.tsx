@@ -15,7 +15,7 @@ export default function Settings() {
         tabs={[
           { label: 'Profile', value: 'profile', content: <ProfileView /> },
           { label: 'Security', value: 'security', content: <SecurityView /> },
-          { label: 'Notification', value: 'notification', content: <NotificationView /> },
+          // { label: 'Notification', value: 'notification', content: <NotificationView /> },
         ]}
       />
     </div>

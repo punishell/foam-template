@@ -56,6 +56,7 @@ interface UpdateAccountParams {
       tags?: string[];
     };
   };
+  profileImage?: string;
   isPrivate?: boolean;
 }
 

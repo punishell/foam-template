@@ -113,7 +113,7 @@ export default function Wallet() {
               <Button size="md" onClick={() => setIsOpen(true)}>
                 Withdraw
               </Button>
-              <WithdrawalModal isOpen={isOpen} onChange={setIsOpen} />
+              <WithdrawalModal isOpen={isOpen} onChange={setIsOpen} wallets={wallets} />
             </div>
             <div className="grid grid-cols-2 gap-6 h-full">
               {wallets.map((w, i) =>
