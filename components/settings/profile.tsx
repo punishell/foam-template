@@ -196,6 +196,7 @@ export const ProfileView = () => {
                       className="w-full !bg-[#FCFCFD] !border-[#E8E8E8]"
                       placeholder="Email Address"
                       label="Email Address"
+                      readOnly
                     />
                   </div>
                   <div id="input-row" className="flex flex-row justify-between gap-4 w-full">

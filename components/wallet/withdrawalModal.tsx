@@ -1,13 +1,63 @@
+'use client';
 import React from "react";
+import * as z from 'zod';
 import { X } from 'lucide-react';
+import Image from "next/image";
 import { Button, Select, Input, Checkbox } from 'pakt-ui';
-import { SideModal } from '@/components/common/side-modal';
+import { SubmitHandler, useForm } from 'react-hook-form';
 
-export const WithdrawalModal = ({ isOpen, onChange }: { isOpen: boolean; onChange: (state: boolean) => void }) => {
+import { SideModal } from '@/components/common/side-modal';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { avax, usdc } from "@/images/coins";
+import { useWithdraw } from "@/lib/api/withdraw";
+import { Spinner } from "../common";
+
+const withdrawFormSchema = z.object({
+  coin: z.string().min(1, 'Password is required'),
+  address: z.string().min(1, 'Address is required'),
+  amount: z.number().min(1, 'Amount is required'),
+  password: z.string().min(1, "password is required"),
+  confirm: z.literal(true, {
+    errorMap: () => ({ message: "You must accept Terms and Conditions" }),
+  }),
+});
+
+type withdrawFormValues = z.infer<typeof withdrawFormSchema>;
+
+export const WithdrawalModal = ({ isOpen, onChange, wallets }: { isOpen: boolean; onChange: (state: boolean) => void, wallets: any[], }) => {
+  const withdraw = useWithdraw();
+  const form = useForm<withdrawFormValues>({
+    resolver: zodResolver(withdrawFormSchema),
+  });
+
+  const onSubmit: SubmitHandler<withdrawFormValues> = (values) => {
+    // withdraw.mutate(values, {
+    //   onSuccess: (data) => {
+    //     if (data.isVerified) {
+    //       // @ts-ignore
+    //       setUser(data);
+    //       setCookie(AUTH_TOKEN_KEY, data.token);
+    //       return router.push('/overview');
+    //     }
+
+    //     router.push(
+    //       `/signup/verify?${createQueryStrings([
+    //         { name: 'email', value: data.email },
+    //         { name: 'token', value: data.tempToken?.token || '' },
+    //       ])}`,
+    //     );
+    //   },
+    // });
+  };
+
+  const renderOption = (coin: string, balance: string) => (<div className="flex flex-row text-lg"><Image width={25} height={25} className="w-[25px] h-[25px] mr-4" src={coin == "avax" ? avax : usdc} alt={`logo for currency`} />{coin.toUpperCase()} (${balance})</div>)
+
+  console.log("vaa", form.getValues(), form.formState.errors, withdraw.isLoading, !form.formState.isValid)
+
   return (
     <SideModal isOpen={isOpen} onOpenChange={onChange} className="gap-9">
       <div className="flex gap-2 bg-primary-gradient items-center py-6 px-4 text-white">
-        <button className="bg-white bg-opacity-10 h-10 w-10 border border-white border-opacity-25 rounded-lg flex items-center justify-center">
+        <button className="bg-white bg-opacity-10 h-10 w-10 border border-white border-opacity-25 rounded-lg flex items-center justify-center" onClick={() => onChange(false)}>
           <X size={24} />
         </button>
         <div className="flex flex-col grow text-center">
@@ -18,13 +68,16 @@ export const WithdrawalModal = ({ isOpen, onChange }: { isOpen: boolean; onChang
 
       <div className="px-6 flex flex-col gap-6">
         <Select
-          options={[
-            { label: 'USDC', value: 'usdc' },
-            { label: 'AVAX', value: 'avax' },
-          ]}
-          onChange={(value) => { }}
+          // @ts-ignore
+          options={wallets.map((s: any) => {
+            return {
+              label: renderOption(s.coin, s.usdValue),
+              value: s.coin.toUpperCase(),
+            }
+          })}
           label="Select Asset"
           placeholder="Choose Asset"
+          onChange={(e) => form.setValue("coin", e)}
         />
 
         <div className="flex flex-col gap-2">
@@ -34,7 +87,7 @@ export const WithdrawalModal = ({ isOpen, onChange }: { isOpen: boolean; onChang
           </div>
 
           <div className="relative">
-            <Input type="text" />
+            <Input type="text" {...form.register('address')} />
           </div>
 
           <span className="text-info text-left text-sm">
@@ -44,21 +97,24 @@ export const WithdrawalModal = ({ isOpen, onChange }: { isOpen: boolean; onChang
         </div>
 
         <div className="relative">
-          <NumericInput value="" onChange={() => { }} />
+          <NumericInput value="" onChange={(e) => form.setValue("amount", Number(e))} />
         </div>
 
         <div className="relative">
-          <Input type="text" label="Password" />
+          <Input type="text" label="Password"  {...form.register('password')} />
         </div>
 
         <div className="my-2 flex cursor-pointer items-center gap-2">
-          <Checkbox id="confirm-withdrawal" checked={true} onCheckedChange={() => { }} />
+          <Checkbox id="confirm-withdrawal"
+            checked={form.getValues().confirm}
+            // @ts-ignore
+            onCheckedChange={(e) => form.setValue("confirm", e)} />
           <label htmlFor="confirm-withdrawal" className="cursor-pointer text-sm">
             I understand that I will be charged a 0.5% fee for this transaction
           </label>
         </div>
 
-        <Button>Withdraw Funds</Button>
+        <Button disabled={withdraw.isLoading || !form.formState.isValid} fullWidth>{withdraw.isLoading ? <Spinner /> : "Withdraw Funds"}</Button>
       </div>
     </SideModal>
   );
