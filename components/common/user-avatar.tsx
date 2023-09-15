@@ -1,3 +1,10 @@
+import { useCallback, useState } from "react";
+import { GallerySvg } from "./gallery-svg";
+import { useDropzone } from 'react-dropzone';
+import { useUploadImage } from '@/lib/api/upload';
+import Image from "next/image";
+import { toast } from "./toaster";
+
 type Size = 'xs' | 'sm' | 'md' | 'lg';
 
 const sizesToPx: { [K in Size]: number } = {
@@ -18,6 +25,8 @@ interface Props {
   size?: Size;
   image?: string;
   score?: number;
+  useUpload?: boolean;
+  onUploadComplete?: (response: any) => void;
 }
 
 function getAvatarColor(paktScore: number) {
@@ -69,16 +78,85 @@ export const UserAvatar: React.FC<Props> = ({ image, score = 0, size = 'md' }) =
   );
 };
 
-export const UserAvatar2: React.FC<Props> = ({ image, size = 'md' }) => {
+export const UserAvatar2: React.FC<Props> = ({ image, size = 'md', useUpload = false, onUploadComplete }) => {
+  const [showUpload, setShowUpload] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const uploadImage = useUploadImage();
+  const [imageFile, setImageFile] = useState<{ file: File; preview: string; } | null>(null);
+
+  const onEnterLeave = (e: React.MouseEvent<HTMLDivElement, MouseEvent>, value: boolean) => {
+    e.preventDefault();
+    if (!useUpload) return setShowUpload(false);
+    setShowUpload(value);
+  };
+
+  const onDrop = useCallback(async (acceptedFiles: File[]) => {
+    const file = acceptedFiles[0];
+    setImageFile({
+      file,
+      preview: URL.createObjectURL(file),
+    });
+    handleUpload(file);
+  }, []);
+
+  const { getRootProps, getInputProps } = useDropzone({
+    onDrop,
+    maxFiles: 1,
+    noDrag: true,
+    accept: {
+      'image/*': [],
+    },
+  });
+
+  const handleUpload = async (file: File) => {
+    if (!file) return;
+    uploadImage.mutate(
+      { file: file, onProgress: setUploadProgress },
+      {
+        onSuccess: (data) => {
+          toast.success('Avatar uploaded successfully');
+          return onUploadComplete && onUploadComplete(data);
+        },
+      },
+    );
+  };
+
+  const h = size === 'sm' ? 80 : size === 'md' ? 120 : 150;
+  const w = size === 'sm' ? 80 : size === 'md' ? 120 : 150;
+  const iconSize = size === 'sm' ? 10 : size === 'md' ? 30 : 30;
+
+  const PreviewImg = imageFile ? imageFile.preview : image;
+
   return (
-    <div
-      className="bg-slate-200 text-white flex items-center justify-center rounded-full"
-      style={{
-        height: size === 'sm' ? 80 : size === 'md' ? 100 : 120,
-        width: size === 'sm' ? 80 : size === 'md' ? 100 : 120,
-      }}
-    >
-      <span className="text-2xl uppercase">HE</span>
+    <div className={`relative text-white flex items-center justify-center border overflow-hidden ${showUpload || uploadImage.isLoading ? "bg-lime-50" : "bg-slate-200"} duration-200 cursor-pointer rounded-full`} style={{ height: h, width: w }} onMouseEnter={e => onEnterLeave(e, true)} onMouseLeave={e => onEnterLeave(e, false)}>
+      {!uploadImage.isLoading && <>
+        {!showUpload ?
+          <div className="absolute inset-0 flex items-center justify-center">
+            {PreviewImg ?
+              <Image src={PreviewImg} alt="profile picture" layout="fill" objectFit="cover" /> :
+              <span className="visible text-2xl uppercase">HE</span>
+            }
+          </div>
+          :
+          <div className="flex flex-col text-center items-center" {...getRootProps()}>
+            <input {...getInputProps()} />
+            <div className="flex flex-row relative w-[30px] h-[30px]">
+              <GallerySvg size={iconSize} />
+            </div>
+            <span className="text-body text-xs flex flex-col gap-1">
+              <span>
+                <span className="text-[#23C16B]">Click</span>
+                <span> to upload</span>
+              </span>
+            </span>
+          </div>
+        }
+      </>}
+      {uploadImage.isLoading &&
+        <div className="text-body">
+          {uploadProgress}%
+        </div>
+      }
     </div>
   );
 };
