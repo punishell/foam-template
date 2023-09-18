@@ -1,15 +1,20 @@
 import React, { useMemo } from 'react';
 import Image from 'next/image';
 import { useGetLeaderBoard } from '@/lib/api/dashboard';
+import { AfroProfile } from '@/components/common/afro-profile';
 
 export const LeaderBoard = () => {
   const { data: leaderboardData } = useGetLeaderBoard();
-  const leaderboard = useMemo(() => (leaderboardData?.data || []).map((leader, i) => ({
-    name: `${leader?.firstName} ${leader?.lastName}`,
-    image: leader?.profileImage?.url,
-    score: leader?.score,
-    position: i + 1,
-  })), [leaderboardData?.data]);
+  const leaderboard = useMemo(
+    () =>
+      (leaderboardData?.data || []).map((leader, i) => ({
+        name: `${leader?.firstName} ${leader?.lastName}`,
+        image: leader?.profileImage?.url,
+        score: leader?.score,
+        position: i + 1,
+      })),
+    [leaderboardData?.data],
+  );
   return (
     <div className="w-full">
       <div className="text-xl font-bold text-center mb-6">Leaderboard</div>
@@ -17,10 +22,10 @@ export const LeaderBoard = () => {
       <div className="relative w-full bg-gradient-leaderboard rounded-2xl">
         <div className=" text-white px-3 py-6 flex flex-col gap-4">
           {leaderboard.map((l, i) => {
-            if (l.position == 1) return <FirstPlace key={i} name={l.name} score={l.score} />
-            if (l.position == 2) return <SecondPlace key={i} name={l.name} score={l.score} />
-            if (l.position == 3) return <ThirdPlace key={i} name={l.name} score={l.score} />
-            return <RunnerUp key={i} name={l.name} score={l.score} place={`${l.position}th`} />
+            if (l.position == 1) return <FirstPlace key={i} name={l.name} score={l.score} />;
+            if (l.position == 2) return <SecondPlace key={i} name={l.name} score={l.score} />;
+            if (l.position == 3) return <ThirdPlace key={i} name={l.name} score={l.score} />;
+            return <RunnerUp key={i} name={l.name} score={l.score} place={`${l.position}th`} />;
           })}
         </div>
       </div>
@@ -77,8 +82,8 @@ const FirstPlace: React.FC<LeaderBoardItemProps> = ({ name, score, avatar }) => 
           </linearGradient>
         </defs>
       </svg>
-      <div className="absolute inset-0 gap-3 flex items-center p-3">
-        <div className="w-[50px] h-[50px] rounded bg-purple-300"></div>
+      <div className="absolute inset-0 gap-3 flex items-center p-3 pl-1">
+        <AfroProfile score={Math.round(score)} size="sm" />
         <div className="grow">
           <span className="text-[#ECFCE5] text-lg">{name}</span>
           <div className="flex gap-2 justify-between items-center">
@@ -139,8 +144,8 @@ const SecondPlace: React.FC<LeaderBoardItemProps> = ({ name, score, avatar }) =>
           </linearGradient>
         </defs>
       </svg>
-      <div className="absolute inset-0 gap-3 flex items-center p-3">
-        <div className="w-[50px] h-[50px] rounded bg-purple-300"></div>
+      <div className="absolute inset-0 gap-3 flex items-center p-3 pl-1">
+        <AfroProfile score={Math.round(score)} size="sm" />
         <div className="grow">
           <span className="text-[#ECFCE5] text-lg">{name}</span>
           <div className="flex gap-2 justify-between items-center">
@@ -195,8 +200,8 @@ const ThirdPlace: React.FC<LeaderBoardItemProps> = ({ name, score, avatar }) => 
           </linearGradient>
         </defs>
       </svg>
-      <div className="absolute inset-0 gap-3 flex items-center p-3">
-        <div className="w-[50px] h-[50px] rounded bg-purple-300"></div>
+      <div className="absolute inset-0 gap-3 flex items-center p-3 pl-1">
+        <AfroProfile score={Math.round(score)} size="sm" />
         <div className="grow">
           <span className="text-[#ECFCE5] text-lg">{name}</span>
           <div className="flex gap-2 justify-between items-center">
@@ -218,10 +223,9 @@ const RunnerUp: React.FC<LeaderBoardItemProps> = ({ name, score, avatar, place }
           d="M0 16.468C0 7.585 7.198.402 16.08.463 43.22.65 97.673 1 123.5 1c25.828 0 80.281-.35 107.419-.537C239.802.403 247 7.585 247 16.468V45.42c0 8.797-7.076 15.936-15.873 15.962-17.277.052-50.402.118-107.627.118-57.225 0-90.35-.066-107.627-.118C7.076 61.356 0 54.217 0 45.42V16.468z"
         ></path>
       </svg>
-      <div className="absolute inset-0 gap-3 flex items-center p-3">
-        <div className="w-fit p-0.5 rounded-full bg-primary-gradient">
-          <div className="w-[50px] h-[50px] rounded-full bg-purple-300"></div>
-        </div>
+      <div className="absolute inset-0 gap-3 flex items-center p-3 pl-1">
+        <AfroProfile score={Math.round(score)} size="sm" />
+
         <div className="grow">
           <span className="text-[#ECFCE5] text-lg">{name}</span>
           <div className="flex gap-2 justify-between items-center">
