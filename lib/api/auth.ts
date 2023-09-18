@@ -107,11 +107,19 @@ interface LoginResponse {
   tempToken?: {
     token: string;
   };
+  twoFa?: {
+    status: true,
+    type: string
+  }
 }
 
 interface LoginParams {
   email: string;
   password: string;
+}
+interface Login2FAParams {
+  code: string;
+  tempToken: string;
 }
 
 async function postLogin({ email, password }: LoginParams): Promise<LoginResponse> {
@@ -119,11 +127,32 @@ async function postLogin({ email, password }: LoginParams): Promise<LoginRespons
   return res.data.data;
 }
 
+async function postLogin2FA({ code, tempToken }: Login2FAParams): Promise<LoginResponse> {
+  const res = await axios.post('/auth/login/2fa', { code, tempToken });
+  return res.data.data;
+}
+
+
 export function useLogin() {
   const { setUser } = useUserState();
   return useMutation({
     mutationFn: postLogin,
     mutationKey: ['login'],
+    onError: (error: ApiError) => {
+      toast.error(error?.response?.data.message || 'An error occurred');
+    },
+    onSuccess: (data) => {
+      // @ts-ignore
+      setUser(data);
+    },
+  });
+}
+
+export function useLoginOTP() {
+  const { setUser } = useUserState();
+  return useMutation({
+    mutationFn: postLogin2FA,
+    mutationKey: ['login_2fa'],
     onError: (error: ApiError) => {
       toast.error(error?.response?.data.message || 'An error occurred');
     },

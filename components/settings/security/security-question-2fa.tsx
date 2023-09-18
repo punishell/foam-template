@@ -177,7 +177,7 @@ const ActivateSecurityQuestion = ({ goToNextSlide }: SlideItemProps) => {
             <InputErrorMessage message={errors.confirmAnswer?.message} />
           </div>
 
-          <Button className="w-full" type="submit" fullWidth>
+          <Button className="w-full" fullWidth>
             {isLoading ? <Spinner /> : "Set Security Question"}
           </Button>
         </form>}
