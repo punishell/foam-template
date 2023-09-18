@@ -203,3 +203,5 @@ export function getPreviewByTypeUrl(url: string, type: string) {
 }
 
 export const CopyText = (text: string) => navigator.clipboard.writeText(text);
+
+export const spChars = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/;

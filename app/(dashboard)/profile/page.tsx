@@ -4,7 +4,7 @@ import React, { useEffect, useMemo } from 'react';
 import { Button } from 'pakt-ui';
 import { Briefcase } from 'lucide-react';
 import { UserAvatar } from '@/components/common/user-avatar';
-import { useGetTalentById } from '@/lib/api';
+import { useGetTalentById, useGetTalentReviewById } from '@/lib/api';
 import { useRouter } from 'next/navigation';
 import { Achievements } from '@/components/talents/achievement';
 import { Reviews } from '@/components/talents/review';
@@ -16,9 +16,9 @@ import { ProfileHeader } from '@/components/talents/header';
 
 export default function Profile() {
   const router = useRouter();
-  const { _id: loggedInUser } = useUserState();
-  const talentId = String(loggedInUser);
-  const { data: talentData, refetch: FetchTalent, isFetching } = useGetTalentById(talentId);
+  const user = useUserState();
+  const talentId = String(user?._id);
+  const { data: talentReviews, refetch: FetchTalent, isFetched, isFetching } = useGetTalentReviewById(talentId);
 
   useEffect(() => {
     if (talentId) {
@@ -27,19 +27,21 @@ export default function Profile() {
   }, []);
 
   const talent = useMemo(() => ({
-    id: talentData?.talent._id || "",
-    name: `${talentData?.talent?.firstName} ${talentData?.talent?.lastName}`,
-    position: talentData?.talent?.profile?.bio?.title || "",
-    bio: talentData?.talent?.profile?.bio?.description || "",
-    score: talentData?.talent?.score || 0,
-    achievements: (talentData?.talent?.achievements || []).map((a) => ({ title: a.type, type: a.type, total: Number(a.total), value: Number(a.value) })),
-    skills: (talentData?.talent?.profile?.talent?.tagsIds || []).map((t) => ({ name: t.name, backgroundColor: t.color })) || [],
-    reviews: talentData?.review?.data || [],
-  }), [talentData]);
+    id: user?._id,
+    name: `${user?.firstName} ${user?.lastName}`,
+    position: user?.profile?.bio?.title || "",
+    image: user?.profileImage?.url || "",
+    bio: user?.profile?.bio?.description || "",
+    score: user?.score || 0,
+    achievements: (user?.achievements || []).map((a) => ({ title: a.type, type: a.type, total: Number(a.total), value: Number(a.value) })),
+    skills: (user?.profile?.talent?.tagsIds || []).map((t) => ({ name: t.name, backgroundColor: t.color })) || [],
+  }), [user]);
 
-  if (!isFetching) {
-    return <div className="flex h-full w-full my-auto items-center justify-center z-20"><Spinner /></div>
-  }
+  // TODO:: Complete Review data
+  const reviews = useMemo(() => (talentReviews?.data || []).map((review) => ({
+    reviewer: "",
+    content: "",
+  })), [talentReviews?.data])
 
   return (
     <div className="flex flex-col gap-6 pt-6 overflow-y-auto">
@@ -49,7 +51,7 @@ export default function Profile() {
         <Bio body={talent.bio} />
         <Achievements achievements={talent.achievements} />
       </div>
-      <Reviews reviews={talent.reviews} />
+      <Reviews reviews={reviews} loading={!isFetched && isFetching} />
     </div>
   );
 }

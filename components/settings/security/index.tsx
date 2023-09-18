@@ -11,9 +11,8 @@ import { Spinner } from "@/components/common";
 import { useMemo } from "react";
 import { useUserState } from "@/lib/store/account";
 import { TWO_FA_CONSTANTS } from "@/lib/constants";
+import { spChars } from "@/lib/utils";
 
-
-const spChars = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/;
 
 const changePasswordFormSchema = z.object({
   currentPassword: z.string().min(1, 'Current Password is required'),
@@ -103,12 +102,13 @@ export const SecurityView = () => {
   )
 };
 
-const PasswordCriteria: React.FC<{
+export const PasswordCriteria: React.FC<{
   isValidated: boolean;
   criteria: string;
-}> = ({ isValidated, criteria }) => {
+  isSignUp?: boolean
+}> = ({ isValidated, criteria, isSignUp }) => {
   return (
-    <div className={`flex flex-row gap-4 items-center ${isValidated ? "text-success" : "text-body"}`}>
+    <div className={`flex flex-row gap-4 items-center ${isValidated ? "text-success" : `${isSignUp ? "text-white" : "text-body"}`}`}>
       <Check size={15} />
       {criteria}
     </div>

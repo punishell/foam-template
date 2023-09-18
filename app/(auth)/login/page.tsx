@@ -34,19 +34,29 @@ export default function Login() {
   const onSubmit: SubmitHandler<LoginFormValues> = (values) => {
     login.mutate(values, {
       onSuccess: (data) => {
-        if (data.isVerified) {
+        if (!data.isVerified) {
+          return router.push(
+            `/signup/verify?${createQueryStrings([
+              { name: 'email', value: data.email },
+              { name: 'token', value: data.tempToken?.token || '' },
+              { name: 'verifyType', value: 'email' },
+            ])}`,
+          );
+        } else if (data.twoFa?.status) {
+          return router.push(
+            `/login/verify?${createQueryStrings([
+              { name: 'token', value: data.tempToken?.token || '' },
+              { name: 'verifyType', value: '2fa' },
+              { name: 'type', value: data.twoFa.type },
+            ])}`,
+          );
+        }
+        else {
           // @ts-ignore
           setUser(data);
           setCookie(AUTH_TOKEN_KEY, data.token);
           return router.push('/overview');
         }
-
-        router.push(
-          `/signup/verify?${createQueryStrings([
-            { name: 'email', value: data.email },
-            { name: 'token', value: data.tempToken?.token || '' },
-          ])}`,
-        );
       },
     });
   };

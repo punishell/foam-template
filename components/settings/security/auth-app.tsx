@@ -165,7 +165,7 @@ const VerifyActivateAuthApp = ({ goToNextSlide, goToPreviousSlide }: SlideItemPr
           <div className="flex justify-center text-center my-2"><InputErrorMessage message={errors.otp?.message} /></div>
         </div>
 
-        <Button type="submit" className="mt-auto w-full justify-end self-end justify-self-end" fullWidth>
+        <Button className="mt-auto w-full justify-end self-end justify-self-end" fullWidth>
           {isLoading ? <Spinner /> : "Activate"}
         </Button>
       </form>
@@ -234,7 +234,7 @@ const VerifyDeactivateAuthApp = ({ goToNextSlide }: SlideItemProps) => {
           <InputErrorMessage message={errors.otp?.message} />
         </div>
 
-        <Button type="submit" className="mt-auto w-full justify-end self-end justify-self-end" fullWidth>
+        <Button className="mt-auto w-full justify-end self-end justify-self-end" fullWidth>
           {isLoading ? <Spinner /> : "Deactivate"}
         </Button>
       </form>

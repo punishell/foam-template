@@ -1,12 +1,12 @@
 'use client';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import * as z from 'zod';
 import { useSignUp } from '@/lib/api';
-import { createQueryStrings } from '@/lib/utils';
+import { createQueryStrings, spChars } from '@/lib/utils';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { useParams, useRouter } from 'next/navigation';
-import { Spinner } from '@/components/common';
+import { InputErrorMessage, Spinner } from '@/components/common';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Input, Button } from 'pakt-ui';
@@ -14,6 +14,7 @@ import { Container } from '@/components/common/container';
 import { useValidateReferral } from '@/lib/api/referral';
 import Lottie from 'lottie-react';
 import warning from "@/lottiefiles/warning-2.json";
+import { PasswordCriteria } from '@/components/settings/security';
 
 const passwordSchema = z
   .string()
@@ -90,6 +91,14 @@ export default function Signup() {
     });
   };
 
+  const validatingErr = useMemo(() => ({
+    isMinLength: form.getValues().password && form.getValues().password.length >= 8 || false,
+    checkLowerUpper: form.getValues().password && /[A-Z]/.test(form.getValues().password) && /[a-z]/.test(form.getValues().password) || false,
+    checkNumber: form.getValues().password && form.getValues().password.match(/\d+/g) ? true : false,
+    specialCharacter: form.getValues().password && spChars.test(form.getValues().password) || false,
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }), [form.watch("password")]);
+
   return (
     <React.Fragment>
       <Container className="flex items-center justify-between mt-16">
@@ -118,12 +127,14 @@ export default function Signup() {
                     First Name
                   </label>
                   <Input id="firstName" {...form.register('firstName')} placeholder="First Name" />
+                  <InputErrorMessage message={form.formState.errors.firstName?.message} />
                 </div>
                 <div className="flex flex-col gap-2">
                   <label htmlFor="lastName" className="text-white text-sm">
                     Last Name
                   </label>
                   <Input id="lastName" {...form.register('lastName')} placeholder="Last Name" />
+                  <InputErrorMessage message={form.formState.errors.lastName?.message} />
                 </div>
               </div>
 
@@ -132,6 +143,7 @@ export default function Signup() {
                   Email Address
                 </label>
                 <Input id="email" {...form.register('email')} placeholder="Email Address" />
+                <InputErrorMessage message={form.formState.errors.email?.message} />
               </div>
 
               <div className="flex flex-col gap-2">
@@ -145,6 +157,12 @@ export default function Signup() {
                   placeholder="Password"
                   type="password"
                 />
+                <div className="flex flex-col p-4 text-body text-xs gap-4">
+                  <PasswordCriteria isValidated={validatingErr.isMinLength} criteria="At least 8 characters" isSignUp={true} />
+                  <PasswordCriteria isValidated={validatingErr.checkLowerUpper} criteria="Upper and lower case characters" isSignUp={true} />
+                  <PasswordCriteria isValidated={validatingErr.checkNumber} criteria="1 or mote numbers" isSignUp={true} />
+                  <PasswordCriteria isValidated={validatingErr.specialCharacter} criteria="1 or more special characters" isSignUp={true} />
+                </div>
               </div>
 
               <div className="flex flex-col gap-2">

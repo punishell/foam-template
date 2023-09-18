@@ -48,7 +48,6 @@ export default function Talents() {
     }))
   }, [talentData?.data]);
 
-  console.log(talentData);
   useEffect(() => {
     fetchTalents();
   }, [searchParams]);
