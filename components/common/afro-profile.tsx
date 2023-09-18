@@ -28,10 +28,11 @@ const progressToColor = (progress: number) => {
   }
 };
 
-export const AfroProfile: React.FC<AfroProfileProps> = ({ size, score = 0, children }) => {
+export const AfroProfile: React.FC<AfroProfileProps> = ({ size, score = 63, children }) => {
   const id = React.useId();
   const sizeInPx = SIZE_TO_PX[size];
   const thickness = sizeInPx / 11;
+  const knobRadius = thickness * 1.2;
   const radius = (sizeInPx - thickness) / 2;
   const progressAngle = (score / 100) * 2 * Math.PI;
 
@@ -52,8 +53,6 @@ export const AfroProfile: React.FC<AfroProfileProps> = ({ size, score = 0, child
   const bgArcPath = bgArcGenerator();
   // @ts-ignore
   const progressArcPath = progressArcGenerator();
-
-  const knobRadius = thickness * 1.2;
 
   // Add a knob to the progress arc
   const knobX = (radius - thickness / 2) * Math.cos(progressAngle - Math.PI / 2);
@@ -151,7 +150,7 @@ export const AfroProfile: React.FC<AfroProfileProps> = ({ size, score = 0, child
           transform={`rotate(180, ${knobX + (sizeInPx + knobRadius) / 2}, ${knobY + (sizeInPx + knobRadius) / 2})`}
           fontSize={Math.round(sizeInPx / 10)}
         >
-          {`${score}`}
+          {`${Math.round(score)}`}
         </text>
       </svg>
     </div>
