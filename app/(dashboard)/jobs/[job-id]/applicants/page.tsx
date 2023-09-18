@@ -10,7 +10,7 @@ import { Button, Select, Checkbox } from 'pakt-ui';
 import { PageError } from '@/components/common/page-error';
 import { Pagination } from '@/components/common/pagination';
 import { PageLoading } from '@/components/common/page-loading';
-import { UserAvatar } from '@/components/common/user-avatar';
+import { AfroProfile } from '@/components/common/afro-profile';
 
 interface Props {
   params: {
@@ -148,7 +148,7 @@ const ApplicantCard: React.FC<ApplicantCardProps> = () => {
   return (
     <div className="w-full bg-white p-4 rounded-2xl border border-line flex flex-col gap-3">
       <div className="w-full flex gap-4">
-        {<UserAvatar score={50} size="sm" />}
+        {<AfroProfile score={50} size="sm" />}
         <div className="flex flex-col gap-2 grow">
           <div className="flex items-center justify-between gap-2">
             {<span className="text-title text-lg font-bold">{'Ibrahim Suleiman'}</span>}
