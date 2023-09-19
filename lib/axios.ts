@@ -20,10 +20,10 @@ export const axiosDefault = Axios.create({
 axios.interceptors.response.use(
   (response) => response,
   (error) => {
-    console.log(error.response.status);
+    console.log('erer==>:', error.response.status);
     if (error.response.status === 401) {
       deleteCookie(AUTH_TOKEN_KEY);
-      return redirect('/login');
+      return window.location.replace('/login');
     }
     return Promise.reject(error);
   },

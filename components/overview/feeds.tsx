@@ -24,7 +24,7 @@ export const Feeds = () => {
     }
   });
 
-  const timelineFeeds = useMemo(() => (timelineData?.data || []).map((feed) => ParseFeedView(feed, loggedInUser)), [timelineData?.data])
+  const timelineFeeds = useMemo(() => (timelineData?.data || []).map((feed, i) => ParseFeedView(feed, loggedInUser, i)), [timelineData?.data])
 
   if (isFetching && !isFetched) return <div className="flex flex-col gap-5 mt-4 rounded-2xl p-4 w-full"><Spinner /></div>
 
