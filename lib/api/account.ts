@@ -141,6 +141,7 @@ export const useGetAccount = () => {
       setUser(user);
       return user;
     },
+    // enabled: false,
   });
 };
 
