@@ -31,7 +31,6 @@ async function declineInvite({ id }: { id: string }): Promise<any> {
   return res.data.data;
 }
 
-
 export const useGetInvites = ({ page, limit, filter }: invitesFetchParams) => {
   return useQuery({
     queryFn: async () => await getInvites({ page, limit, filter }),

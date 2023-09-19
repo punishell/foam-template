@@ -34,10 +34,10 @@ export const Sidebar = () => {
           <span>Talents</span>
         </NavLink>
 
-        <NavLink href="/projects">
+        {/* <NavLink href="/projects">
           <Briefcase size={20} />
           <span>Projects</span>
-        </NavLink>
+        </NavLink> */}
 
         <NavLink href="/wallet">
           <Wallet size={20} />

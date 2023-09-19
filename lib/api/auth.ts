@@ -18,14 +18,16 @@ interface SignupParams {
   password: string;
   lastName: string;
   firstName: string;
+  referral: string;
 }
 
-async function postSignUp({ email, password, firstName, lastName }: SignupParams): Promise<SignupResponse> {
+async function postSignUp({ email, password, firstName, lastName, referral }: SignupParams): Promise<SignupResponse> {
   const res = await axios.post('/auth/create-account', {
     email,
     password,
     lastName,
     firstName,
+    referral,
   });
   return res.data.data;
 }
@@ -53,15 +55,7 @@ interface VerifyEmailParams {
 }
 
 async function postVerifyEmail({ otp, token }: VerifyEmailParams): Promise<VerifyEmailResponse> {
-  const res = await axios.post(
-    '/auth/account/verify',
-    { otp },
-    {
-      params: {
-        token,
-      },
-    },
-  );
+  const res = await axios.post('/auth/account/verify', { token: otp, tempToken: token });
   return res.data.data;
 }
 
@@ -113,17 +107,31 @@ interface LoginResponse {
   tempToken?: {
     token: string;
   };
+  twoFa?: {
+    status: true,
+    type: string
+  }
 }
 
 interface LoginParams {
   email: string;
   password: string;
 }
+interface Login2FAParams {
+  code: string;
+  tempToken: string;
+}
 
 async function postLogin({ email, password }: LoginParams): Promise<LoginResponse> {
   const res = await axios.post('/auth/login', { email, password });
   return res.data.data;
 }
+
+async function postLogin2FA({ code, tempToken }: Login2FAParams): Promise<LoginResponse> {
+  const res = await axios.post('/auth/login/2fa', { code, tempToken });
+  return res.data.data;
+}
+
 
 export function useLogin() {
   const { setUser } = useUserState();
@@ -136,7 +144,22 @@ export function useLogin() {
     onSuccess: (data) => {
       // @ts-ignore
       setUser(data);
-    }
+    },
+  });
+}
+
+export function useLoginOTP() {
+  const { setUser } = useUserState();
+  return useMutation({
+    mutationFn: postLogin2FA,
+    mutationKey: ['login_2fa'],
+    onError: (error: ApiError) => {
+      toast.error(error?.response?.data.message || 'An error occurred');
+    },
+    onSuccess: (data) => {
+      // @ts-ignore
+      setUser(data);
+    },
   });
 }
 

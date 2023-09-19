@@ -12,10 +12,15 @@ export const axios = Axios.create({
   },
 });
 
+export const axiosDefault = Axios.create({
+  headers: { 'Access-Control-Allow-Origin': '*' },
+  responseType: 'blob',
+});
+
 axios.interceptors.response.use(
   (response) => response,
   (error) => {
-    console.log('error====', error.response, error);
+    console.log(error.response.status);
     if (error.response.status === 401) {
       deleteCookie(AUTH_TOKEN_KEY);
       return redirect('/login');

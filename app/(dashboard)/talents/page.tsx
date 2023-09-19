@@ -9,7 +9,7 @@ import { TalentList } from "@/components/talents/talentList";
 import { parseFilterObjectToString } from "@/lib/utils";
 
 export default function Talents() {
-  const [isSearching, setIsearching] = useState(true);
+  const [isSearching, setIsSearching] = useState(true);
   const searchParams = useSearchParams();
   const pathname = usePathname();
   const queryParams = new URLSearchParams(searchParams as any);
@@ -29,41 +29,37 @@ export default function Talents() {
     [searchParams],
   );
 
-  const { data: talentData, refetch: fetchTalents, isFetched, isFetching } = useGetTalents({ page: parseInt(page), limit: parseInt(Limit), filter: { search: searchQ, skills: skillQ, range: rangeQ } });
+  const { data: talentData, refetch: fetchTalents, isFetched, isFetching } = useGetTalents({ page: parseInt(page), limit: parseInt(Limit), filter: { search: searchQ, tags: skillQ, range: rangeQ } });
 
   const talentLists = useMemo(() => {
-    setIsearching(false);
-    return (talentData?.data?.data?.data || []).map((talent: any) => ({
+    setIsSearching(false);
+    return (talentData?.data || []).map((talent: any) => ({
       _id: talent._id,
       name: `${talent.firstName} ${talent.lastName}`,
       title: talent?.profile?.bio?.title || "",
       score: talent?.score || 0,
       image: talent?.profileImage?.url || "",
-      skills: [
-        { name: "UI Design", color: "#B2E9AA" },
-        { name: "Figma", color: "#E9AAAA" },
-        { name: "Interaction", color: "#E9DBAA" },
-      ],
+      skills: (talent?.profile?.talent?.tagsIds || []).map((t: any) => ({ name: t.name, color: t.color })),
       achievements: talent?.achievements.map((a: any) => ({
         total: a.total,
         value: a.value,
         type: a.type,
       })),
     }))
-  }, [talentData?.data.data]);
+  }, [talentData?.data]);
 
   useEffect(() => {
     fetchTalents();
   }, [searchParams]);
 
   const handlePagination = (page: number) => {
-    setIsearching(true);
+    setIsSearching(true);
     return router.push(`${pathname}?${createQueryString('page', String(page))}`)
   };
 
   const handleSearch = (data: Record<string, any>) => {
     const query = parseFilterObjectToString(data);
-    setIsearching(true);
+    setIsSearching(true);
     return router.push(`${pathname}?${query}`);
   }
 
@@ -77,8 +73,8 @@ export default function Talents() {
         <TalentList
           isLoading={(!isFetched && isFetching) || isSearching}
           talents={talentLists}
-          totalPages={talentData?.data.data.pages}
-          currentPage={talentData?.data.data.page}
+          totalPages={Number(talentData?.pages)}
+          currentPage={Number(talentData?.page)}
           handlePagination={handlePagination}
         />
       </div>

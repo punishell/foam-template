@@ -7,7 +7,6 @@ import { RaceBy } from '@uiball/loaders';
 import { getCookie } from 'cookies-next';
 import { useRouter } from 'next/navigation';
 import { AUTH_TOKEN_KEY } from '@/lib/utils';
-import { useUserState } from '@/lib/store/account';
 import { useGetAccount } from '@/lib/api/account';
 
 const Loader = () => {

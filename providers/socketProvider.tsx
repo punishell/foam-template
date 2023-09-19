@@ -5,12 +5,14 @@ import { getCookie } from "cookies-next";
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { io, Socket } from "socket.io-client";
 import { useUserState } from "@/lib/store/account";
-import { AUTH_TOKEN_KEY } from "@/lib/utils";
+import { AUTH_TOKEN_KEY, formatBytes } from "@/lib/utils";
 import { axios } from "@/lib/axios";
 import { usePathname } from "next/navigation";
 import dayjs from "dayjs";
 import { toast } from "@/components/common/toaster";
 import { useRouter } from "next/navigation";
+import { ImageUp } from "@/lib/types";
+import { postUploadImages } from "@/lib/api/upload";
 
 export const MessageTypeEnums = {
   TEXT: "TEXT",
@@ -47,13 +49,21 @@ export type SocketContextType = {
     recipient: string,
     type: string,
     message: string,
-    conversation: string
+    conversation: string,
+    images: ImageUp[]
   ) => Promise<any>;
   markUserMessageAsSeen: (conversation: string) => Promise<any>;
   getConversationById: (id: string) => Promise<any>;
   setActiveConversation: (id: string) => void;
   unreadChatCount: number
 };
+interface chatImage {
+  size: string,
+  type: string,
+  name: string,
+  url: string,
+  _id: string,
+}
 const MIN_LEN = 25;
 const SOCKET_URL = process.env.NEXT_PUBLIC_SOCKET_URL;
 export const SocketContext = createContext<SocketContextType>(
@@ -174,15 +184,20 @@ export const MessagingProvider = ({ children }: { children: React.ReactNode }) =
   const getLastMessage = (messages: any[]) => messages.length > 0 ? messages[messages.length - 1].content : null;
   const getLastMessageTime = (messages: any[]) => messages.length > 0 ? dayjs(messages[messages.length - 1].createdAt).format("HH:ss A") : null;
   const getConversationById = (id: string) => conversations.find((c: any) => c.id == id);
+  const parseMessageAttachments = (attachments: chatImage[]) => attachments && attachments.length > 0 ? attachments.map((a) => ({
+    size: formatBytes(Number(a.size), 0),
+    type: a.type,
+    name: a.name,
+    url: a.url,
+  })) : []
   const parseMessages = (messages: []) => messages.map((m: any) => ({
     content: m.content,
     isSent: m.user == loggedInUser,
     isRead: !!(m.readBy && m.readBy.includes(loggedInUser)),
-  }))
-
+    attachments: parseMessageAttachments(m.attachments),
+  }));
   const setUnreadChats = (conversations: any[]) => {
     const unread = conversations.reduce((a: any, b) => a + b.unreadcount, 0);
-    console.log("unread=-=-=-=->", unread);
     setUnreadChatCount(unread);
   }
 
@@ -211,6 +226,7 @@ export const MessagingProvider = ({ children }: { children: React.ReactNode }) =
       const { data } = await axios.get(`/chat`);
       if (data?.status === "success") {
         const payload = data?.data;
+        console.log("dpdpd", payload);
         const parsedConversation = parseUserchats(payload);
         setConversations(parsedConversation);
         setLoadingChats(false);
@@ -245,16 +261,50 @@ export const MessagingProvider = ({ children }: { children: React.ReactNode }) =
     }
   };
 
+  const UploadFiles = async (images: ImageUp[]) => {
+    const uploadFll = [];
+    const updateProgress = (id: string, progress: number) => {
+      // set upload progress for images
+      const currentMessage = currentConversation.messages ? currentConversation.messages.find((m: any) => !!m.sending) : null;
+      if (currentMessage) {
+        // update progress with value
+        const currentImage = currentMessage.attachments.find((img: ImageUp) => img.id == id);
+        if (currentImage) {
+          const imgData = { ...currentImage, progress };
+          const newImages = [...currentMessage.attachments, imgData];
+        }
+      }
+    }
+    // create 
+    for (let i = 0; i < images.length; i++) {
+      const em = images[i];
+      const callbackFunc = (progress: number) => updateProgress(em.id, progress);
+      uploadFll.push({
+        file: em.file,
+        onProgress: callbackFunc
+      })
+    }
+    const resp = await postUploadImages(uploadFll);
+    console.log("Resp-=-==>", resp);
+    return resp.map((r: any) => r._id);
+  }
+
   const sendUserMessage = async (
     sender: string,
     recipient: string,
     type = MessageTypeEnums.TEXT,
     message: string,
-    conversation: string
+    conversation: string,
+    images: ImageUp[],
   ) => {
+    let attachments: string[] = [];
     try {
       const conv = getConversationById(conversation);
-      setCurrentConversation({ ...conv, messages: [conv.messages, { content: message, isSent: true }] });
+      setCurrentConversation({ ...conv, messages: [...conv.messages, { content: message, isSent: true, sending: true, attachments: images }] });
+      if (images.length > 0) {
+        // perform image Uploads first before sending message
+        attachments = await UploadFiles(images);
+      }
       const sentMessage = await socket.emit(
         conversationEnums.SEND_MESSAGE,
         {
@@ -263,6 +313,7 @@ export const MessagingProvider = ({ children }: { children: React.ReactNode }) =
           type,
           message,
           conversationId: conversation,
+          attachments,
         },
         (conversation: any) => {
           return conversation;
@@ -293,7 +344,6 @@ export const MessagingProvider = ({ children }: { children: React.ReactNode }) =
   const SocketServer: SocketContextType = {
     currentConversation,
     loadingChats,
-    // loadingMessages,
     status,
     conversations,
     socket,

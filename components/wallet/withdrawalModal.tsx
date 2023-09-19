@@ -1,13 +1,69 @@
-import React from "react";
+'use client';
+import React, { useState } from "react";
+import * as z from 'zod';
 import { X } from 'lucide-react';
-import { Button, Select, Input, Checkbox } from 'pakt-ui';
-import { SideModal } from '@/components/common/side-modal';
+import Image from "next/image";
+import { Button, Select, Input, Checkbox, Text } from 'pakt-ui';
+import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 
-export const WithdrawalModal = ({ isOpen, onChange }: { isOpen: boolean; onChange: (state: boolean) => void }) => {
+import { SideModal } from '@/components/common/side-modal';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { avax, usdc } from "@/images/coins";
+import { useWithdraw } from "@/lib/api/withdraw";
+import { InputErrorMessage, OtpInput, Spinner } from "../common";
+import { useUserState } from "@/lib/store/account";
+
+const withdrawFormSchema = z.object({
+  coin: z.string().min(1, 'Password is required'),
+  address: z.string().min(1, 'Address is required'),
+  amount: z.number().min(1, '$100 is the minimum required amount for withdrawal'),
+  password: z.string().min(1, "password is required"),
+  confirm: z.literal(true, {
+    errorMap: () => ({ message: "You must accept Terms and Conditions" }),
+  }),
+});
+
+type withdrawFormValues = z.infer<typeof withdrawFormSchema>;
+
+export const WithdrawalModal = ({ isOpen, onChange, wallets }: { isOpen: boolean; onChange: (state: boolean) => void, wallets: any[], }) => {
+  const [is2FA, _setIs2FA] = useState(false);
+  const { twoFa } = useUserState();
+  const withdraw = useWithdraw();
+  const form = useForm<withdrawFormValues>({
+    resolver: zodResolver(withdrawFormSchema),
+  });
+
+  const onSubmit: SubmitHandler<withdrawFormValues> = (values) => {
+    if (twoFa.status) {
+      return _setIs2FA(true)
+    } else finalSubmit();
+  };
+
+  const finalSubmit = (otp?: string) => {
+    const values = form.getValues();
+    const payload = {
+      address: values.address,
+      amount: values.amount,
+      coin: values.coin,
+      password: values.password,
+      otp,
+    }
+    withdraw.mutate(payload, {
+      onSuccess: (data) => {
+        console.log(data);
+        form.reset({})
+      },
+    });
+  }
+
+  const renderOption = (coin: string, balance: string) => (<div className="flex flex-row text-lg"><Image width={25} height={25} className="w-[25px] h-[25px] mr-4" src={coin == "avax" ? avax : usdc} alt={`logo for currency`} />{coin.toUpperCase()} (${balance})</div>)
+
+  console.log(form.formState.errors)
   return (
-    <SideModal isOpen={isOpen} onOpenChange={onChange} className="gap-9">
+    <SideModal isOpen={isOpen} onOpenChange={onChange} className="gap-6">
+
       <div className="flex gap-2 bg-primary-gradient items-center py-6 px-4 text-white">
-        <button className="bg-white bg-opacity-10 h-10 w-10 border border-white border-opacity-25 rounded-lg flex items-center justify-center">
+        <button className="bg-white bg-opacity-10 h-10 w-10 border border-white border-opacity-25 rounded-lg flex items-center justify-center" onClick={() => onChange(false)}>
           <X size={24} />
         </button>
         <div className="flex flex-col grow text-center">
@@ -15,51 +71,74 @@ export const WithdrawalModal = ({ isOpen, onChange }: { isOpen: boolean; onChang
           <p>Withdraw funds to another wallet</p>
         </div>
       </div>
+      {!is2FA ? <>
+        <form className="px-6 flex flex-col gap-6" onSubmit={form.handleSubmit(onSubmit)}>
+          <Select
+            // @ts-ignore
+            options={wallets.map((s: any) => {
+              return {
+                label: renderOption(s.coin, s.usdValue),
+                value: s.coin.toUpperCase(),
+              }
+            })}
+            label="Select Asset"
+            placeholder="Choose Asset"
+            onChange={(e) => form.setValue("coin", e)}
+          />
 
-      <div className="px-6 flex flex-col gap-6">
-        <Select
-          options={[
-            { label: 'USDC', value: 'usdc' },
-            { label: 'AVAX', value: 'avax' },
-          ]}
-          onChange={(value) => { }}
-          label="Select Asset"
-          placeholder="Choose Asset"
-        />
+          <div className="flex flex-col gap-2">
+            <div className="flex items-center justify-between">
+              <span>Wallet Address</span>
+              <span className="text-title font-medium">Network: Avax C-Chain</span>
+            </div>
 
-        <div className="flex flex-col gap-2">
-          <div className="flex items-center justify-between">
-            <span>Wallet Address</span>
-            <span className="text-title font-medium">Network: Avax C-Chain</span>
+            <div className="relative mb-4">
+              <Input type="text" {...form.register('address')} />
+              <InputErrorMessage message={form.formState.errors.address?.message} />
+            </div>
+
+            <span className="text-info text-left text-sm">
+              Ensure you are sending to the right wallet address and on the Avax C-Chain. Sending to a wrong address or
+              network can result in loss of funds
+            </span>
           </div>
 
           <div className="relative">
-            <Input type="text" />
+            <NumericInput value="" onChange={(e) => form.setValue("amount", Number(e))} />
+            <InputErrorMessage message={form.formState.errors.amount?.message} />
           </div>
 
-          <span className="text-info text-left text-sm">
-            Ensure you are sending to the right wallet address and on the Avax C-Chain. Sending to a wrong address or
-            network can result in loss of funds
-          </span>
-        </div>
+          <div className="relative">
+            <Input type="text" label="Password"  {...form.register('password')} />
+            <InputErrorMessage message={form.formState.errors.password?.message} />
+          </div>
 
-        <div className="relative">
-          <NumericInput value="" onChange={() => { }} />
-        </div>
+          <div className="my-2 relative flex flex-col cursor-pointer">
+            <div className="flex flex-row gap-2">
+              <Controller
+                name="confirm"
+                control={form.control}
+                render={({ field: { onChange, value } }) => (
+                  <Checkbox id="confirm-withdrawal"
+                    {...form.register('confirm')}
+                    checked={value}
+                    onCheckedChange={onChange}
+                  />
+                )}
+              />
+              <label htmlFor="confirm-withdrawal" className="cursor-pointer text-sm">
+                I understand that I will be charged a 0.5% fee for this transaction
+              </label>
+            </div>
 
-        <div className="relative">
-          <Input type="text" label="Password" />
-        </div>
+            <InputErrorMessage message={form.formState.errors.confirm?.message} />
+          </div>
 
-        <div className="my-2 flex cursor-pointer items-center gap-2">
-          <Checkbox id="confirm-withdrawal" checked={true} onCheckedChange={() => { }} />
-          <label htmlFor="confirm-withdrawal" className="cursor-pointer text-sm">
-            I understand that I will be charged a 0.5% fee for this transaction
-          </label>
-        </div>
-
-        <Button>Withdraw Funds</Button>
-      </div>
+          <Button disabled={withdraw.isLoading || !form.formState.isValid} fullWidth>{withdraw.isLoading ? <Spinner /> : "Withdraw Funds"}</Button>
+        </form>
+      </> :
+        <TwoFAInput isLoading={false} onComplete={finalSubmit} type={twoFa.type} />
+      }
     </SideModal>
   );
 };
@@ -88,3 +167,53 @@ const NumericInput = ({ value, onChange }: { value: string; onChange: (value: st
     />
   );
 };
+
+
+const otpSchema = z.object({
+  otp: z.string().min(6).max(6),
+});
+
+type OtpFormValues = z.infer<typeof otpSchema>;
+
+const TwoFAInput = ({ isLoading, type, onComplete }: { isLoading: boolean, type?: string, onComplete: (otp: string) => void }) => {
+  const {
+    handleSubmit,
+    formState: { errors },
+    control,
+  } = useForm<OtpFormValues>({
+    resolver: zodResolver(otpSchema),
+  });
+
+  const onSubmit: SubmitHandler<OtpFormValues> = async ({ otp }) => {
+    return onComplete(otp);
+  };
+
+  return (
+    <React.Fragment>
+      <div className="flex items-center px-4">
+        <div className="flex flex-col items-center w-full text-center p-6 border rounded-2xl">
+          <div className="flex flex-col gap-4 w-full">
+            <Text.h3 size="xs">{type == "email" ? "Email OTP" : "Authenticator App"}</Text.h3>
+            <Text.p size="base">Enter the 6 digit code {type === "email" ? `Sent to your email` : "generated by your Authenticator app"}</Text.p>
+          </div>
+
+          <form className="flex flex-col gap-2 w-full" onSubmit={handleSubmit(onSubmit)}>
+            <div className="flex flex-col relative mx-auto my-4">
+              <Controller
+                name="otp"
+                control={control}
+                render={({ field: { onChange, value } }) => <OtpInput value={value} onChange={onChange} numInputs={6} />}
+              />
+              <div className="flex justify-center text-center my-2"><InputErrorMessage message={errors.otp?.message} /></div>
+            </div>
+            <div className="flex">
+              <Button type="submit" className="w-full justify-end self-end justify-self-end" fullWidth>
+                {isLoading ? <Spinner /> : "Verify"}
+              </Button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </React.Fragment>
+  )
+}

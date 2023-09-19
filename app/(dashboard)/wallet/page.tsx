@@ -12,6 +12,7 @@ import { useWalletState } from '@/lib/store/wallet';
 import { WalletTransactions } from '@/components/wallet/transactions';
 import { WalletBalanceChart, chartDataProps } from '@/components/wallet/chart';
 import { WithdrawalModal } from '@/components/wallet/withdrawalModal';
+import { PaginationState } from '@tanstack/react-table';
 
 const dateFormat = "DD/MM/YYYY";
 const MAX = 10;
@@ -19,16 +20,19 @@ const MAX = 10;
 export default function Wallet() {
   const [isOpen, setIsOpen] = React.useState(false);
   const [limit, _setLimit] = React.useState(10);
-  const [page, setPage] = React.useState(1);
+  const [{ pageIndex, pageSize }, setPagination] = React.useState<PaginationState>({
+    pageIndex: 1,
+    pageSize: 10,
+  });
   const [statData, setStatData] = React.useState<chartDataProps>({ weekly: [], monthly: [], yearly: [] });
   const { totalWalletBalance, wallets } = useWalletState();
-  const { data: walletTx, refetch: fetchWalletTx, isFetched: walletFetched, isFetching: walletIsFetching } = useGetWalletTxs({ limit, page });
+  const { data: walletTx, refetch: fetchWalletTx, isFetched: walletFetched, isFetching: walletIsFetching } = useGetWalletTxs({ limit: pageSize, page: pageIndex });
 
   const walletTransactions = useMemo(() => (walletTx?.data?.data.transactions ?? []).map((tx: any) => ({
     date: dayjs(tx.createdAt).format(dateFormat),
     type: tx.type,
     amount: tx.amount,
-    description: tx.description.length > MAX ? tx.description.slice(0, MAX) + "..." : tx.description,
+    description: tx.description && tx.description?.length > MAX ? tx.description.slice(0, MAX) + "..." : tx.description,
     coin: tx.currency.toUpperCase(),
     usdValue: formatUsd(tx.usdValue),
     status: tx.status,
@@ -36,27 +40,27 @@ export default function Wallet() {
 
   const getChartData = async () => {
     // const { payload: weekStat } = await fetchWalletStats({ format: "seven-day" });
-    const respon = await Promise.all([
+    const response = await Promise.all([
       fetchWalletStats({ format: "seven-day" }),
       fetchWalletStats({ format: "thirty-day" }),
       fetchWalletStats({ format: "yearly" }),
     ]);
 
-    const weeklyStats = respon[0].map((c: any) => {
+    const weeklyStats = response[0].map((c: any) => {
       return {
         date: String(dayjs(c.date).format(dateFormat)),
         amt: c.amount,
       };
     });
 
-    const monthlyStats = respon[1].map((c: any) => {
+    const monthlyStats = response[1].map((c: any) => {
       return {
         date: String(dayjs(c.date).format(dateFormat)),
         amt: c.amount,
       };
     });
 
-    const yearlyStats = respon[2].map((c: any) => {
+    const yearlyStats = response[2].map((c: any) => {
       return {
         date: String(dayjs(c.date).format(dateFormat)),
         amt: c.amount,
@@ -71,7 +75,7 @@ export default function Wallet() {
     setStatData(chartData);
   };
 
-  const loadpage = async () => {
+  const loadPage = async () => {
     return await Promise.all([
       fetchWalletTx(),
       getChartData(),
@@ -79,15 +83,10 @@ export default function Wallet() {
   }
 
   useEffect(() => {
-    loadpage();
+    loadPage();
   }, []);
 
 
-  useEffect(() => {
-    fetchWalletTx();
-  }, [page, limit]);
-
-  const changePage = (p: number) => setPage(p);
   return (
     <div className="flex flex-col h-full gap-6 overflow-auto">
       <div className="flex items-center justify-between">
@@ -112,7 +111,7 @@ export default function Wallet() {
               <Button size="md" onClick={() => setIsOpen(true)}>
                 Withdraw
               </Button>
-              <WithdrawalModal isOpen={isOpen} onChange={setIsOpen} />
+              <WithdrawalModal isOpen={isOpen} onChange={setIsOpen} wallets={wallets} />
             </div>
             <div className="grid grid-cols-2 gap-6 h-full">
               {wallets.map((w, i) =>
@@ -138,7 +137,7 @@ export default function Wallet() {
             page={parseInt(walletTx?.data.data.page || "1")}
             limit={parseInt(walletTx?.data?.data?.limit || "10")}
             pageSize={parseInt(walletTx?.data?.data?.pages || "1")}
-            onPageChange={changePage}
+            onPageChange={setPagination}
             loading={!walletFetched && walletIsFetching}
           />
         </div>

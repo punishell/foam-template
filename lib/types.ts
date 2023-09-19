@@ -24,10 +24,15 @@ export interface User {
     talent: {
       availability?: string;
       tags?: string[];
-      tagIds?: any[];
+      tagsIds?: { name: string; color: string }[];
       about?: string;
     };
   };
+  twoFa: {
+    status?: boolean;
+    type?: string;
+  };
+  achievements?: AchievementProps[];
 }
 
 export interface Job {
@@ -77,4 +82,18 @@ interface JobDeliverable {
   type: 'deliverable';
   description: string;
   status: 'pending' | 'ongoing' | 'completed';
+}
+
+export interface ImageUp {
+  file: File;
+  preview: string;
+  id: string;
+  name: string;
+  size: string;
+}
+
+export interface AchievementProps {
+  type: string;
+  value: string;
+  total: string;
 }

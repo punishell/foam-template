@@ -191,9 +191,9 @@ export const PublicJobCreatedFeed = ({
         <h3 className="text-title text-2xl font-normal">{title}</h3>
         <div className="justify-between items-center flex mt-auto">
           <div className="flex items-center gap-2">
-            <Button size="xs" variant="secondary">
+            {/* <Button size="xs" variant="secondary">
               Apply
-            </Button>
+            </Button> */}
             <Button size="xs" variant="outline">
               See Details
             </Button>
@@ -222,9 +222,9 @@ export const TalentJobUpdateFeed = () => {
 
         <div className="justify-between items-center flex mt-auto">
           <div className="flex items-center gap-2">
-            <Button size="xs" variant="secondary">
+            {/* <Button size="xs" variant="secondary">
               Update
-            </Button>
+            </Button> */}
             <Button size="xs" variant="outline">
               Message
             </Button>
@@ -259,9 +259,9 @@ export const JobDeliverableCompletionFeed = () => {
 
         <div className="justify-between items-center flex mt-auto">
           <div className="flex items-center gap-2">
-            <Button size="xs" variant="secondary">
+            {/* <Button size="xs" variant="secondary">
               See Update
-            </Button>
+            </Button> */}
             <Button size="xs" variant="outline">
               Message
             </Button>
@@ -293,9 +293,9 @@ export const JobCompletionFeed = () => {
 
         <div className="justify-between items-center flex mt-auto">
           <div className="flex items-center gap-2">
-            <Button size="xs" variant="secondary">
+            {/* <Button size="xs" variant="secondary">
               Update
-            </Button>
+            </Button> */}
             <Button size="xs" variant="outline">
               Message
             </Button>
@@ -371,7 +371,7 @@ export const PaymentReleased = () => {
         <div className="justify-between items-center flex mt-auto">
           <div className="flex items-center gap-2">
             <Button size="xs" variant="secondary">
-              Vie Wallet
+              View Wallet
             </Button>
           </div>
           <Bookmark size={20} />

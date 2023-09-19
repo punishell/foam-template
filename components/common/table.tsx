@@ -6,6 +6,7 @@ import { Text } from 'pakt-ui';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { ColumnDef, PaginationState, flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table';
 import { Pagination } from './pagination';
+import { Spinner } from './loader';
 
 interface TableProps<T extends Record<string, any>> {
   data?: T[];
@@ -14,6 +15,7 @@ interface TableProps<T extends Record<string, any>> {
   setPagination: React.Dispatch<React.SetStateAction<PaginationState>>;
   pageCount: number;
   emptyStateMessage?: string;
+  loading?: boolean;
 }
 
 export const Table = <T extends object>({
@@ -23,6 +25,7 @@ export const Table = <T extends object>({
   pageCount,
   setPagination,
   emptyStateMessage,
+  loading,
 }: TableProps<T>) => {
   const table = useReactTable({
     data,
@@ -41,12 +44,20 @@ export const Table = <T extends object>({
     setPagination((prev) => ({ ...prev, pageIndex: page }));
   };
 
-  if (data.length === 0) {
+  if (loading) {
+    return (
+      <div className='flex min-h-[450px] items-center justify-center'>
+        <Spinner />
+      </div>
+    )
+  }
+
+  if (!loading && data.length === 0) {
     return (
       <div className="flex min-h-[450px] items-center justify-center">
         <div className="flex flex-col items-center gap-2">
           <div className="max-w-[100px]">
-            <Image src="/empty-table.svg" width={200} height={200} alt="" />
+            <Image src="/images/empty-table.svg" width={200} height={200} alt="" />
           </div>
           <Text.h3 size="xs" className="text-center font-normal text-[#6C757D]">
             {emptyStateMessage || 'Table Content Will Appear Here'}

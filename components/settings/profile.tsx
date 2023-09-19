@@ -9,6 +9,7 @@ import { Button, Checkbox, Input, Select, Switch, Textarea } from 'pakt-ui';
 import { useGetAccount, useUpdateAccount } from '@/lib/api/account';
 import { Spinner } from '../common';
 import { TagInput } from '../common/tag-input';
+import { GallerySvg } from '../common/gallery-svg';
 import { AfroProfile } from '@/components/common/afro-profile';
 import { DefaultAvatar } from '@/components/common/default-avatar';
 import Image from 'next/image';
@@ -98,8 +99,20 @@ export const ProfileView = () => {
   const onSubmit: SubmitHandler<EditProfileFormValues> = (values) => {
     return updateAccountFunc(values);
   };
-  // TODO:: parse Error for input validations
 
+  const onUploadComplete = (response: any) => {
+    // update user account with image uploaded
+    updateAccount.mutate(
+      { profileImage: response._id },
+      {
+        onSuccess: () => {
+          userFetching();
+        },
+      },
+    );
+  };
+
+  // TODO:: parse Error for input validations
   return (
     <div className="flex flex-row relative gap-6 h-full grow overflow-auto">
       {!isFetched && <Spinner />}
@@ -113,6 +126,7 @@ export const ProfileView = () => {
                 </span>
               </div>
               <div className="flex justify-center item-center mx-auto text-center">
+                <UserAvatar2 image={userData?.avatar} useUpload={true} onUploadComplete={onUploadComplete} />
                 <AfroProfile score={40} size="md">
                   {userData.avatar ? (
                     <div className="relative rounded-full">
@@ -207,6 +221,7 @@ export const ProfileView = () => {
                       className="w-full !bg-[#FCFCFD] !border-[#E8E8E8]"
                       placeholder="Email Address"
                       label="Email Address"
+                      readOnly
                     />
                   </div>
                   <div id="input-row" className="flex flex-row justify-between gap-4 w-full">

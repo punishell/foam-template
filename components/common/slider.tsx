@@ -20,11 +20,13 @@ export const Slider = ({ items }: SliderProps) => {
 
   const handleNext = () => {
     if (currentSlide === items.length - 1) return;
+    if (currentSlide === items.length) return;
     setCurrentSlide((prev) => prev + 1);
   };
 
   const handlePrevious = () => {
     if (currentSlide === 0) return;
+    if (currentSlide === items.length) return;
     setCurrentSlide((prev) => prev - 1);
   };
 
