@@ -3,7 +3,7 @@ import React from 'react';
 import { Button } from 'pakt-ui';
 import { useRouter } from 'next/navigation';
 import { SideModal } from '@/components/common/side-modal';
-import { UserAvatar } from '@/components/common/user-avatar';
+import { AfroProfile } from '@/components/common/afro-profile';
 import { DeliverableProgressBar } from '@/components/common/deliverable-progress-bar';
 
 interface AssignedJobCardProps {
@@ -24,7 +24,7 @@ export const AssignedJobClientCard: React.FC<AssignedJobCardProps> = ({ inviter,
   return (
     <div className="gap-4 max-w-2xl bg-white rounded-3xl border-line w-full flex flex-col grow border p-4">
       <div className="w-full flex gap-4">
-        {<UserAvatar score={inviter.paktScore} size="sm" />}
+        {<AfroProfile score={inviter.paktScore} size="sm" />}
         <div className="flex flex-col gap-2 grow">
           <div className="flex items-center justify-between gap-2">
             {<span className="text-body text-lg font-bold">{inviter.name}</span>}
@@ -86,7 +86,7 @@ export const AssignedJobClientCard: React.FC<AssignedJobCardProps> = ({ inviter,
                     <th className="py-2 text-left font-normal text-body">Client</th>
                     <td className=" px-4 py-2">
                       <div className="flex gap-2 items-center">
-                        <UserAvatar score={40} size="xs" />
+                        <AfroProfile score={40} size="sm" />
                         <div className="flex flex-col">
                           <span className="text-title text-base font-bold">{inviter.name}</span>
                           <span className="text-sm ">Inviter</span>
@@ -153,7 +153,7 @@ export const AssignedJobTalentCard: React.FC<AssignedJobCardProps> = ({ inviter,
   return (
     <div className="gap-4 max-w-2xl bg-white rounded-3xl border-line w-full flex flex-col grow border p-4">
       <div className="w-full flex gap-4">
-        {<UserAvatar score={inviter.paktScore} size="sm" />}
+        {<AfroProfile score={inviter.paktScore} size="sm" />}
         <div className="flex flex-col gap-2 grow">
           <div className="flex items-center justify-between gap-2">
             {<span className="text-body text-lg font-bold">{inviter.name}</span>}
@@ -215,7 +215,7 @@ export const AssignedJobTalentCard: React.FC<AssignedJobCardProps> = ({ inviter,
                     <th className="py-2 text-left font-normal text-body">Client</th>
                     <td className=" px-4 py-2">
                       <div className="flex gap-2 items-center">
-                        <UserAvatar score={40} size="xs" />
+                        <AfroProfile score={40} size="sm" />
                         <div className="flex flex-col">
                           <span className="text-title text-base font-bold">{inviter.name}</span>
                           <span className="text-sm ">Inviter</span>

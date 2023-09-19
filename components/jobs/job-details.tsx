@@ -1,6 +1,6 @@
 import { format } from 'date-fns';
 import { Calendar, Tag } from 'lucide-react';
-import { UserAvatar } from '@/components/common/user-avatar';
+import { AfroProfile } from '@/components/common/afro-profile';
 interface JobHeaderProps {
   title: string;
   price: number;
@@ -31,7 +31,7 @@ export const JobHeader: React.FC<JobHeaderProps> = ({ title, price, dueDate, cre
       </div>
       {creator && (
         <div className="flex flex-col text-center gap-2  items-center">
-          <UserAvatar score={creator.score} />
+          <AfroProfile score={creator.score} size="md" />
           <span className="text-white text-xl font-bold">{creator.name}</span>
         </div>
       )}

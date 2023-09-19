@@ -1,7 +1,7 @@
-import React, { useMemo, useState } from 'react';
+import React, { useState } from 'react';
 import { Button } from 'pakt-ui';
 import { X, Bookmark, Briefcase, Clock4, Gavel } from 'lucide-react';
-import { UserAvatar } from '../common/user-avatar';
+import { AfroProfile } from '@/components/common/afro-profile';
 import Lottie from 'lottie-react';
 
 import win from '@/lottiefiles/win.json';
@@ -11,24 +11,39 @@ import failed from '@/lottiefiles/failed.json';
 import warning from '@/lottiefiles/warning.json';
 import { useSaveToBookmark } from '@/lib/api/bookmark';
 
-const RenderBookMark = ({ size = 20, isBookmarked, id }: { id: string, isBookmarked?: boolean, size: number }) => {
+const RenderBookMark = ({ size = 20, isBookmarked, id }: { id: string; isBookmarked?: boolean; size: number }) => {
   const [bookmarked, setBookmarked] = useState(isBookmarked);
-  const addBookmark = useSaveToBookmark()
-  const removeBookmark = useSaveToBookmark()
+  const addBookmark = useSaveToBookmark();
+  const removeBookmark = useSaveToBookmark();
   // const CallFuc = () => isBookmarked ? removeBookmark : addBookmark;
   const CallFuc = () => {
-    return bookmarked ? removeBookmark.mutate({ reference: id, type: "feed" }, {
-      onSuccess: (_data) => {
-        setBookmarked(!bookmarked)
-      }
-    }) : addBookmark.mutate({ reference: id, type: "feed" }, {
-      onSuccess: (_data) => {
-        setBookmarked(!bookmarked)
-      }
-    });
+    return bookmarked
+      ? removeBookmark.mutate(
+          { reference: id, type: 'feed' },
+          {
+            onSuccess: (_data) => {
+              setBookmarked(!bookmarked);
+            },
+          },
+        )
+      : addBookmark.mutate(
+          { reference: id, type: 'feed' },
+          {
+            onSuccess: (_data) => {
+              setBookmarked(!bookmarked);
+            },
+          },
+        );
   };
-  return <Bookmark fill={isBookmarked ? "#404446" : "#FFFFFF"} className='cursor-pointer' size={size} onClick={() => CallFuc()} />
-}
+  return (
+    <Bookmark
+      fill={isBookmarked ? '#404446' : '#FFFFFF'}
+      className="cursor-pointer"
+      size={size}
+      onClick={() => CallFuc()}
+    />
+  );
+};
 interface JobInvitePendingProps {
   _id: string;
   id: string;
@@ -66,7 +81,7 @@ export const JobFeedCard: React.FC<JobFeedCardProps> = (props) => {
 
     return (
       <JobFeedWrapper>
-        <UserAvatar score={97} />
+        <AfroProfile score={inviter.score} size="lg" />
 
         <div className="flex flex-col gap-4">
           <div className="flex justify-between items-center">
@@ -96,7 +111,7 @@ export const JobFeedCard: React.FC<JobFeedCardProps> = (props) => {
 
     return (
       <JobFeedWrapper>
-        <UserAvatar score={75} />
+        <AfroProfile score={inviter.score} size="lg" />
 
         <div className="flex flex-col gap-4 w-full">
           <div className="flex justify-between items-center">
@@ -106,10 +121,12 @@ export const JobFeedCard: React.FC<JobFeedCardProps> = (props) => {
             </span>
 
             <div className="flex items-center gap-2">
-              {invitationExpiry && <div className="flex gap-1 text-body items-center text-sm">
-                <Clock4 size={20} />
-                <span>Time left: 1:48:00</span>
-              </div>}
+              {invitationExpiry && (
+                <div className="flex gap-1 text-body items-center text-sm">
+                  <Clock4 size={20} />
+                  <span>Time left: 1:48:00</span>
+                </div>
+              )}
               <X size={20} />
             </div>
           </div>
@@ -146,14 +163,28 @@ export const JobFeedWrapper: React.FC<{ children: React.ReactNode }> = ({ childr
   );
 };
 
-export const PublicJobCreatedFeed = ({ creator, title, amount, jobId, _id, bookmarked }: { creator: string, title: string, amount: string, jobId: string, _id: string, bookmarked: boolean }) => {
+export const PublicJobCreatedFeed = ({
+  creator,
+  title,
+  amount,
+  jobId,
+  _id,
+  bookmarked,
+}: {
+  creator: string;
+  title: string;
+  amount: string;
+  jobId: string;
+  _id: string;
+  bookmarked: boolean;
+}) => {
   return (
     <JobFeedWrapper>
-      <UserAvatar score={54} size='md' />
+      <AfroProfile score={0} size="lg" />
       <div className="flex flex-col gap-4 w-full">
         <div className="flex justify-between items-center">
           <h3 className="text-body text-xl font-bold">
-            {creator} created a{" "}
+            {creator} created a{' '}
             <span className="px-2 text-lg text-title inline-flex rounded-full bg-green-300">${amount}</span> public job
           </h3>
         </div>
@@ -177,7 +208,7 @@ export const PublicJobCreatedFeed = ({ creator, title, amount, jobId, _id, bookm
 export const TalentJobUpdateFeed = () => {
   return (
     <div className="border-[#CDCFD0] bg-[#F9F9F9] gap-4 p-4 flex border z-10 w-full rounded-2xl relative overflow-hidden">
-      <UserAvatar score={75} />
+      <AfroProfile score={0} size="lg" />
       <div className="flex flex-col gap-4">
         <div className="flex justify-between items-center">
           <h3 className="text-title text-xl font-bold">Landing Page Design for a Lead Generation...</h3>
@@ -213,7 +244,7 @@ export const TalentJobUpdateFeed = () => {
 export const JobDeliverableCompletionFeed = () => {
   return (
     <div className="border-[#CDCFD0] bg-[#F9F9F9] gap-4 p-4 flex border z-10 w-full rounded-2xl relative overflow-hidden">
-      <UserAvatar score={75} />
+      <AfroProfile score={0} size="lg" />
       <div className="flex flex-col gap-4">
         <div className="flex justify-between items-center">
           <h3 className="text-title text-xl font-bold">Joon completed a deliverable</h3>
@@ -250,7 +281,7 @@ export const JobDeliverableCompletionFeed = () => {
 export const JobCompletionFeed = () => {
   return (
     <div className="border-[#CDCFD0] bg-[#F9F9F9] gap-4 p-4 flex border z-10 w-full rounded-2xl relative overflow-hidden">
-      <UserAvatar score={75} />
+      <AfroProfile score={0} size="lg" />
       <div className="flex flex-col gap-4 w-full">
         <div className="flex justify-between items-center">
           <h3 className="text-body text-xl font-bold">Joon completed a job</h3>
@@ -283,7 +314,7 @@ export const JobCompletionFeed = () => {
 export const JobReviewedFeed = () => {
   return (
     <div className="border-[#CDCFD0] bg-[#F9F9F9] gap-4 p-4 flex border  z-10 w-full rounded-2xl relative overflow-hidden">
-      <UserAvatar score={75} />
+      <AfroProfile score={0} size="lg" />
       <div className="flex flex-col gap-4">
         <div className="flex justify-between items-center">
           <h3 className="text-title text-xl font-bold">Theresa has reviewed your work</h3>
@@ -312,7 +343,6 @@ export const JobReviewedFeed = () => {
     </div>
   );
 };
-
 
 export const DeliverableProgressBar = () => {
   return (
@@ -358,7 +388,7 @@ export const PaymentReleased = () => {
 export const JobCancelled = () => {
   return (
     <div className="border-[#FF9898] gap-4 p-4 flex border bg-[#FFF4F4] z-10 w-full rounded-2xl relative overflow-hidden">
-      <UserAvatar score={75} />
+      <AfroProfile score={0} size="lg" />
       <div className="flex flex-col gap-4 w-full">
         <div className="flex justify-between items-center">
           <h3 className="text-title text-xl font-bold">Theresa Cancelled the Job</h3>
@@ -388,7 +418,7 @@ export const JobCancelled = () => {
 export const ReferralSignupFeed = ({ name }: { name: string }) => {
   return (
     <div className="border-[#CDCFD0] bg-[#F9F9F9] gap-4 p-4 flex border  z-10 w-full rounded-2xl relative overflow-hidden">
-      <UserAvatar score={75} />
+      <AfroProfile score={0} size="lg" />
       <div className="flex flex-col gap-4 w-full">
         <div className="flex justify-between items-center">
           <h3 className="text-title text-xl font-bold">{name} just signed up</h3>
@@ -421,7 +451,7 @@ export const ReferralSignupFeed = ({ name }: { name: string }) => {
 export const ReferralJobCompletion = () => {
   return (
     <div className="border-[#CDCFD0] bg-[#F9F9F9] gap-4 p-4 flex border  z-10 w-full rounded-2xl relative overflow-hidden">
-      <UserAvatar score={75} />
+      <AfroProfile score={0} size="lg" />
       <div className="flex flex-col gap-4 w-full">
         <div className="flex justify-between items-center">
           <h3 className="text-title text-xl font-bold">Shola completed a job</h3>

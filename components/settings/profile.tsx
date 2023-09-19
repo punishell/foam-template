@@ -1,4 +1,4 @@
-'usse client';
+'use client';
 import React, { useMemo, useState } from 'react';
 import * as z from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -10,10 +10,13 @@ import { useGetAccount, useUpdateAccount } from '@/lib/api/account';
 import { Spinner } from '../common';
 import { TagInput } from '../common/tag-input';
 import { GallerySvg } from '../common/gallery-svg';
+import { AfroProfile } from '@/components/common/afro-profile';
+import { DefaultAvatar } from '@/components/common/default-avatar';
+import Image from 'next/image';
 
 const ProfileStates = [
-  { label: 'Private', value: "true" },
-  { label: 'Public', value: "false" },
+  { label: 'Private', value: 'true' },
+  { label: 'Public', value: 'false' },
 ];
 
 const editProfileFormSchema = z.object({
@@ -24,7 +27,7 @@ const editProfileFormSchema = z.object({
   bio: z.string().min(1, 'Bio is required'),
   location: z.string().min(1, 'Location is required'),
   country: z.string().min(1, 'Country is required'),
-  tags: z.array(z.string()).nonempty({ message: "skills are required" }),
+  tags: z.array(z.string()).nonempty({ message: 'skills are reuqired' }),
   isPrivate: z.boolean().default(false).optional(),
 });
 
@@ -68,25 +71,28 @@ export const ProfileView = () => {
         },
         bio: {
           title: values.title,
-          description: values.bio
+          description: values.bio,
         },
         talent: {
           tags: [...values.tags],
         },
       },
-    }
-    updateAccount.mutate({ ...payload }, {
-      onSuccess: (data) => {
-        userFetching();
+    };
+    updateAccount.mutate(
+      { ...payload },
+      {
+        onSuccess: (data) => {
+          userFetching();
+        },
       },
-    });
+    );
   };
 
   const loading = updateAccount.isLoading || form.formState.isLoading;
 
   const toggleUserProfile = (state: string) => {
-    const validState = state == "true";
-    form.setValue("isPrivate", validState);
+    const validState = state == 'true';
+    form.setValue('isPrivate', validState);
     return updateAccountFunc({ ...form.getValues(), isPrivate: validState });
   };
 
@@ -96,12 +102,15 @@ export const ProfileView = () => {
 
   const onUploadComplete = (response: any) => {
     // update user account with image uploaded
-    updateAccount.mutate({ profileImage: response._id }, {
-      onSuccess: () => {
-        userFetching();
+    updateAccount.mutate(
+      { profileImage: response._id },
+      {
+        onSuccess: () => {
+          userFetching();
+        },
       },
-    });
-  }
+    );
+  };
 
   // TODO:: parse Error for input validations
   return (
@@ -113,11 +122,20 @@ export const ProfileView = () => {
             <div className="flex flex-col gap-4 p-4">
               <div className="flex justify-end min-h-[27px]">
                 <span className="bg-success-lighter text-success py-2 px-4 rounded-xl text-xs font-thin capitalize">
-                  {form.getValues().isPrivate ? "Private" : "Public"}
+                  {form.getValues().isPrivate ? 'Private' : 'Public'}
                 </span>
               </div>
               <div className="flex justify-center item-center mx-auto text-center">
                 <UserAvatar2 image={userData?.avatar} useUpload={true} onUploadComplete={onUploadComplete} />
+                <AfroProfile score={40} size="md">
+                  {userData.avatar ? (
+                    <div className="relative rounded-full">
+                      <Image src={userData.avatar} alt="" layout="fill" />
+                    </div>
+                  ) : (
+                    <DefaultAvatar />
+                  )}
+                </AfroProfile>
               </div>
               <div className="flex flex-row justify-center items-center">
                 <p className="text-lg font-bold text-title">
@@ -140,7 +158,7 @@ export const ProfileView = () => {
                   label="Profile Visibility"
                   options={ProfileStates}
                   onChange={(e: any) => toggleUserProfile(e)}
-                  placeholder={form.getValues().isPrivate ? "Private" : "Public"}
+                  placeholder={form.getValues().isPrivate ? 'Private' : 'Public'}
                   className="!bg-[#FCFCFD] !border-[#E8E8E8] capitalize"
                 />
                 <p className="text-sm my-4 text-body">
@@ -153,7 +171,8 @@ export const ProfileView = () => {
             <Switch />
           </div> */}
           </div>
-          <form className="flex flex-col w-4/5 overflow-y-auto min-h-full"
+          <form
+            className="flex flex-col w-4/5 overflow-y-auto min-h-full"
             onSubmit={form.handleSubmit(onSubmit)}
             onKeyDown={(e) => {
               if (e.key === 'Enter') {
@@ -164,8 +183,14 @@ export const ProfileView = () => {
             <div className="bg-white rounded-lg p-4 mb-4">
               <div className="flex flex-row justify-between h-[50px] items-center mb-4">
                 <p className="text-lg text-title font-bold">Edit Profile Details</p>
-                <Button title="Save Changes" variant={'secondary'} size="xs" type="submit" className='min-w-[132px] min-h-[37px]'>
-                  {loading ? <Spinner /> : "Save Changes"}
+                <Button
+                  title="Save Changes"
+                  variant={'secondary'}
+                  size="xs"
+                  type="submit"
+                  className="min-w-[132px] min-h-[37px]"
+                >
+                  {loading ? <Spinner /> : 'Save Changes'}
                 </Button>
               </div>
               <div className="flex">
@@ -225,7 +250,7 @@ export const ProfileView = () => {
                 <div className="flex flex-row gap-4">
                   <div className="w-1/2">
                     <p className="text-body text-sm">Add your top 3 skills first</p>
-                    <div className='min-h-[186px] border !bg-[#FCFCFD] !border-[#E8E8E8] rounded-lg'>
+                    <div className="min-h-[186px] border !bg-[#FCFCFD] !border-[#E8E8E8] rounded-lg">
                       <Controller
                         name="tags"
                         control={form.control}
@@ -233,7 +258,6 @@ export const ProfileView = () => {
                           <TagInput tags={value} setTags={onChange} className="items-start border border-none" />
                         )}
                       />
-
                     </div>
                   </div>
                   <div className="w-1/2">

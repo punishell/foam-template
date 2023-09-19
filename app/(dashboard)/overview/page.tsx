@@ -3,9 +3,10 @@
 import { Button } from 'pakt-ui';
 import { useRouter } from 'next/navigation';
 import { Tabs } from '@/components/common/tabs';
+import { useGetAccount } from '@/lib/api/account';
 import { Feeds } from '@/components/overview/feeds';
 import { Header } from '@/components/overview/header';
-import { PaktScore } from '@/components/overview/paktscore';
+import { AfroScore } from '@/components/overview/paktscore';
 import { LeaderBoard } from '@/components/overview/leaderboard';
 import { Invites } from '@/components/overview/invites';
 import { ActiveJobs } from '@/components/overview/activeJobs';
@@ -14,6 +15,8 @@ import { Search, Plus, Briefcase } from 'lucide-react';
 import { useUserState } from '@/lib/store/account';
 
 export default function Overview() {
+  const account = useGetAccount();
+
   return (
     <div className="flex flex-col overflow-y-auto gap-8 relative h-full">
       <Header />
@@ -35,7 +38,7 @@ export default function Overview() {
         </div>
 
         <div className="basis-[300px] shrink-0 h-full gap-7 w-fit flex flex-col items-center">
-          <PaktScore score={100} />
+          <AfroScore score={account.data?.score} />
           <LeaderBoard />
         </div>
       </div>

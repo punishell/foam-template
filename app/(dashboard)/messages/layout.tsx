@@ -5,6 +5,7 @@ import { Button, Slider } from 'pakt-ui';
 import { Modal } from '@/components/common';
 import { Spinner } from '@/components/common';
 import { TagInput } from '@/components/common/tag-input';
+import { AfroProfile } from '@/components/common/afro-profile';
 import { UserAvatar } from '@/components/common/user-avatar';
 import { useGetConnectionPreference, useUpdateConnectionPreference } from '@/lib/api/connection';
 import { Bell, Search, Settings2, XCircle, X } from 'lucide-react';
@@ -111,7 +112,7 @@ const SettingsModal = () => {
           />
         </div>
         <div>
-          <UserAvatar size="sm" score={minimumScore} />
+          <AfroProfile size="sm" score={minimumScore} />
         </div>
       </div>
 

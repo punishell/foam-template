@@ -2,7 +2,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { Bookmark, X } from 'lucide-react';
-import { UserAvatar } from '@/components/common/user-avatar';
+import { AfroProfile } from '@/components/common/afro-profile';
 
 interface OpenJobProps {
   id: string;
@@ -23,7 +23,7 @@ export const OpenJobCard: React.FC<OpenJobProps> = ({ creator, price, skills, ti
       className="gap-4 max-w-2xl bg-white rounded-3xl border-line w-full flex flex-col grow border p-4"
     >
       <div className="w-full flex gap-4">
-        {<UserAvatar score={creator.paktScore} size="sm" />}
+        {<AfroProfile score={creator.paktScore} size="sm" />}
 
         <div className="flex flex-col gap-2 grow">
           <div className="flex items-center justify-between gap-2">
