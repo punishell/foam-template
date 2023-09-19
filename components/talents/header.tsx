@@ -28,7 +28,7 @@ export const ProfileHeader = ({ _id, name, position, score, skills, isLoggedIn }
 
             {!isLoggedIn ?
               <div className="flex gap-3 items-center max-w-[300px] w-full">
-                <Link href={`/messages?userid=${_id}`}>
+                <Link href={`/messages?userId=${_id}`}>
                   <Button fullWidth variant="secondary" size={'sm'}>
                     Message
                   </Button>

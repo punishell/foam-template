@@ -121,7 +121,7 @@ export const MessagingProvider = ({ children }: { children: React.ReactNode }) =
       return () => socket?.off();
     }
   };
-
+  console.log("socket==>", socket, conversations);
   useEffect(() => {
     // Here we listen to popup events
     socket?.on(conversationEnums.POPUP_MESSAGE, async (c: any) => {
@@ -184,12 +184,14 @@ export const MessagingProvider = ({ children }: { children: React.ReactNode }) =
   const getLastMessage = (messages: any[]) => messages.length > 0 ? messages[messages.length - 1].content : null;
   const getLastMessageTime = (messages: any[]) => messages.length > 0 ? dayjs(messages[messages.length - 1].createdAt).format("HH:ss A") : null;
   const getConversationById = (id: string) => conversations.find((c: any) => c.id == id);
+
   const parseMessageAttachments = (attachments: chatImage[]) => attachments && attachments.length > 0 ? attachments.map((a) => ({
     size: formatBytes(Number(a.size), 0),
     type: a.type,
     name: a.name,
     url: a.url,
-  })) : []
+  })) : [];
+
   const parseMessages = (messages: []) => messages.map((m: any) => ({
     content: m.content,
     isSent: m.user == loggedInUser,
