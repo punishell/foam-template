@@ -72,7 +72,6 @@ export default function SignupVerifyEmail() {
       },
       {
         onSuccess: (data) => {
-          console.log(data.token)
           // @ts-ignore
           setCookie(AUTH_TOKEN_KEY, data.token);
           return router.push('/overview');

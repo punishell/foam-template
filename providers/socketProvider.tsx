@@ -121,7 +121,6 @@ export const MessagingProvider = ({ children }: { children: React.ReactNode }) =
       return () => socket?.off();
     }
   };
-  console.log("socket==>", socket, conversations);
   useEffect(() => {
     // Here we listen to popup events
     socket?.on(conversationEnums.POPUP_MESSAGE, async (c: any) => {
