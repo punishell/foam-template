@@ -5,7 +5,7 @@ import { Spinner } from '../common';
 import { AfroProfile } from '@/components/common/afro-profile';
 
 export const LeaderBoard = () => {
-  const { data: leaderboardData } = useGetLeaderBoard();
+  const { data: leaderboardData, isFetched, isFetching } = useGetLeaderBoard();
   const leaderboard = useMemo(
     () =>
       (leaderboardData?.data || []).map((leader, i) => ({
