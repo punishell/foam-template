@@ -1,5 +1,5 @@
 import Axios, { AxiosError, AxiosResponse } from 'axios';
-import { deleteCookie } from 'cookies-next';
+import { deleteCookie, getCookie } from 'cookies-next';
 import { redirect } from 'next/navigation';
 import { AUTH_TOKEN_KEY } from './utils';
 
@@ -20,10 +20,10 @@ export const axiosDefault = Axios.create({
 axios.interceptors.response.use(
   (response) => response,
   (error) => {
-    console.log('erer==>:', error.response.status);
+    console.log('status-code==>:', error.response.status);
     if (error.response.status === 401) {
       deleteCookie(AUTH_TOKEN_KEY);
-      return window.location.replace('/login');
+      return redirect('/login');
     }
     return Promise.reject(error);
   },
