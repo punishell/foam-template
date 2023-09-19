@@ -80,7 +80,6 @@ export const useGetTalentById = (id: string) => {
   return useQuery(getQueryIdKey, options);
 };
 
-
 export const useGetTalentReviewById = (id: string) => {
   const options: UseQueryOptions<reviewResponse, GetTalentFetchDetailsError> = {
     queryFn: async () => {

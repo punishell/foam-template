@@ -108,9 +108,9 @@ interface LoginResponse {
     token: string;
   };
   twoFa?: {
-    status: true,
-    type: string
-  }
+    status: true;
+    type: string;
+  };
 }
 
 interface LoginParams {
@@ -131,7 +131,6 @@ async function postLogin2FA({ code, tempToken }: Login2FAParams): Promise<LoginR
   const res = await axios.post('/auth/login/2fa', { code, tempToken });
   return res.data.data;
 }
-
 
 export function useLogin() {
   const { setUser } = useUserState();
