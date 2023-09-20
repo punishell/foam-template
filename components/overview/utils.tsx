@@ -23,6 +23,7 @@ export const ParseFeedView = (feed: DataFeedResponse, loggedInUser: string, key:
         title={feed?.title}
         _id={feed?._id}
         bookmarked={isBookmarked}
+        imageUrl={feed?.data?.creator?.profileImage?.url}
       />;
     case FEED_TYPES.COLLECTION_INVITE:
       return <JobFeedCard
@@ -34,6 +35,7 @@ export const ParseFeedView = (feed: DataFeedResponse, loggedInUser: string, key:
         inviter={inviter}
         _id={feed?._id}
         bookmarked={isBookmarked}
+      // imageUrl={feed?.data?.creator?.profileImage?.url}
       />;
     case FEED_TYPES.REFERRAL_SIGNUP:
       return <ReferralSignupFeed

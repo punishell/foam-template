@@ -3,6 +3,7 @@ import Image from 'next/image';
 import { useGetLeaderBoard } from '@/lib/api/dashboard';
 import { Spinner } from '../common';
 import { AfroProfile } from '@/components/common/afro-profile';
+import { ProfileImage } from './ProfileImage';
 
 export const LeaderBoard = () => {
   const { data: leaderboardData, isFetched, isFetching } = useGetLeaderBoard();
@@ -23,10 +24,10 @@ export const LeaderBoard = () => {
         <div className=" text-white px-3 py-6 flex flex-col gap-4">
           {!isFetched && isFetching && <Spinner />}
           {leaderboard.map((l, i) => {
-            if (l.position == 1) return <FirstPlace key={i} name={l.name} score={l.score} />;
-            if (l.position == 2) return <SecondPlace key={i} name={l.name} score={l.score} />;
-            if (l.position == 3) return <ThirdPlace key={i} name={l.name} score={l.score} />;
-            return <RunnerUp key={i} name={l.name} score={l.score} place={`${l.position}th`} />;
+            if (l.position == 1) return <FirstPlace key={i} name={l.name} score={l.score} avatar={l.image} />;
+            if (l.position == 2) return <SecondPlace key={i} name={l.name} score={l.score} avatar={l.image} />;
+            if (l.position == 3) return <ThirdPlace key={i} name={l.name} score={l.score} avatar={l.image} />;
+            return <RunnerUp key={i} name={l.name} score={l.score} place={`${l.position}th`} avatar={l.image} />;
           })}
         </div>
       </div>
@@ -84,12 +85,11 @@ const FirstPlace: React.FC<LeaderBoardItemProps> = ({ name, score, avatar }) => 
         </defs>
       </svg>
       <div className="absolute inset-0 gap-3 flex items-center p-3 pl-1">
-        <AfroProfile score={Math.round(score)} size="sm" />
+        <ProfileImage imageUrl={avatar} score={Math.round(score)} size='sm' />
         <div className="grow">
           <span className="text-[#ECFCE5] text-lg">{name}</span>
           <div className="flex gap-2 justify-between items-center">
             <span className="text-sm text-[#F2F4F5]">Afroscore: {score}</span>
-
             <Image src="/icons/medal-1.png" width={28} height={28} alt="" />
           </div>
         </div>
@@ -146,7 +146,7 @@ const SecondPlace: React.FC<LeaderBoardItemProps> = ({ name, score, avatar }) =>
         </defs>
       </svg>
       <div className="absolute inset-0 gap-3 flex items-center p-3 pl-1">
-        <AfroProfile score={Math.round(score)} size="sm" />
+        <ProfileImage imageUrl={avatar} score={Math.round(score)} size='sm' />
         <div className="grow">
           <span className="text-[#ECFCE5] text-lg">{name}</span>
           <div className="flex gap-2 justify-between items-center">
@@ -202,7 +202,7 @@ const ThirdPlace: React.FC<LeaderBoardItemProps> = ({ name, score, avatar }) => 
         </defs>
       </svg>
       <div className="absolute inset-0 gap-3 flex items-center p-3 pl-1">
-        <AfroProfile score={Math.round(score)} size="sm" />
+        <ProfileImage imageUrl={avatar} score={Math.round(score)} size='sm' />
         <div className="grow">
           <span className="text-[#ECFCE5] text-lg">{name}</span>
           <div className="flex gap-2 justify-between items-center">
@@ -225,8 +225,7 @@ const RunnerUp: React.FC<LeaderBoardItemProps> = ({ name, score, avatar, place }
         ></path>
       </svg>
       <div className="absolute inset-0 gap-3 flex items-center p-3 pl-1">
-        <AfroProfile score={Math.round(score)} size="sm" />
-
+        <ProfileImage imageUrl={avatar} score={Math.round(score)} size='sm' />
         <div className="grow">
           <span className="text-[#ECFCE5] text-lg">{name}</span>
           <div className="flex gap-2 justify-between items-center">
