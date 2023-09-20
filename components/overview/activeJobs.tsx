@@ -8,7 +8,7 @@ import { useUserState } from '@/lib/store/account';
 
 export const ActiveJobs = () => {
   const { _id: loggedInUser } = useUserState();
-  const { data: jobData, isFetched, isFetching } = useGetTimeline({ page: 1, limit: 10, filter: { type: [FEED_TYPES.COLLECTION_COMPLETED, FEED_TYPES.COLLECTION_CREATED, FEED_TYPES.COLLECTION_DELIVERED, FEED_TYPES.COLLECTION_UPDATE, FEED_TYPES.COLLECTION_CANCELLED] } });
+  const { data: jobData, isFetched, isFetching } = useGetTimeline({ page: 1, limit: 10, filter: { type: [FEED_TYPES.COLLECTION_COMPLETED, FEED_TYPES.COLLECTION_CREATED, FEED_TYPES.COLLECTION_DELIVERED, FEED_TYPES.COLLECTION_UPDATE, FEED_TYPES.COLLECTION_CANCELLED], isOwner: true } });
 
   const activeJobs = useMemo(() => (jobData?.data || []).map((feed, i) => ParseFeedView(feed, loggedInUser, i)), [jobData?.data]);
 

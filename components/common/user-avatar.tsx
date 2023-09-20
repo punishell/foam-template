@@ -128,35 +128,31 @@ export const UserAvatar2: React.FC<Props> = ({ image, size = 'md', useUpload = f
   const PreviewImg = imageFile ? imageFile.preview : image;
 
   return (
-    <div className={`relative text-white flex items-center justify-center border overflow-hidden ${showUpload || uploadImage.isLoading ? "bg-lime-50" : "bg-slate-200"} duration-200 cursor-pointer rounded-full`} style={{ height: h, width: w }} onMouseEnter={e => onEnterLeave(e, true)} onMouseLeave={e => onEnterLeave(e, false)}>
-      {!uploadImage.isLoading && <>
-        {!showUpload ?
-          <div className="absolute inset-0 flex items-center justify-center">
-            {PreviewImg ?
-              <Image src={PreviewImg} alt="profile picture" layout="fill" objectFit="cover" /> :
-              <span className="visible text-2xl uppercase">HE</span>
-            }
-          </div>
-          :
-          <div className="flex flex-col text-center items-center" {...getRootProps()}>
-            <input {...getInputProps()} />
-            <div className="flex flex-row relative w-[30px] h-[30px]">
-              <GallerySvg size={iconSize} />
-            </div>
-            <span className="text-body text-xs flex flex-col gap-1">
-              <span>
-                <span className="text-[#23C16B]">Click</span>
-                <span> to upload</span>
-              </span>
-            </span>
-          </div>
+    <div className={`relative text-white flex items-center justify-center border overflow-hidden bg-lime-50 duration-200 cursor-pointer rounded-full`} style={{ height: h, width: w }} onMouseEnter={e => onEnterLeave(e, true)} onMouseLeave={e => onEnterLeave(e, false)}>
+      <div className="absolute inset-0 flex items-center justify-center">
+        {PreviewImg ?
+          <Image src={PreviewImg} alt="profile picture" layout="fill" objectFit="cover" /> :
+          <span className="visible text-2xl uppercase">HE</span>
         }
-      </>}
+      </div>
+      {showUpload && !uploadImage.isLoading &&
+        <div className="z-20 backdrop-blur-sm bg-white/30 flex flex-col h-full w-full justify-center text-center items-center" {...getRootProps()}>
+          <input {...getInputProps()} />
+          <div className="flex flex-row relative w-[30px] h-[30px]">
+            <GallerySvg size={iconSize} />
+          </div>
+          <span className="text-body text-xs flex flex-col gap-1">
+            <span>
+              <span className="text-[#23C16B] font-bold">Click to upload</span>
+            </span>
+          </span>
+        </div>
+      }
       {uploadImage.isLoading &&
-        <div className="text-body">
+        <div className="z-20 backdrop-blur-sm bg-white/30 flex flex-col h-full w-full justify-center text-center items-center text-[#23C16B]">
           {uploadProgress}%
         </div>
       }
-    </div>
+    </div >
   );
 };
