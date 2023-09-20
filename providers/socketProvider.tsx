@@ -2,7 +2,7 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react-hooks/exhaustive-deps */
 import { getCookie } from "cookies-next";
-import React, { createContext, useContext, useEffect, useState } from "react";
+import React, { createContext, useCallback, useContext, useEffect, useState } from "react";
 import { io, Socket } from "socket.io-client";
 import { useUserState } from "@/lib/store/account";
 import { AUTH_TOKEN_KEY, formatBytes } from "@/lib/utils";
@@ -13,6 +13,8 @@ import { toast } from "@/components/common/toaster";
 import { useRouter } from "next/navigation";
 import { ImageUp } from "@/lib/types";
 import { postUploadImages } from "@/lib/api/upload";
+
+const MAX_RECONNECT_TIME = 1000;
 
 export const MessageTypeEnums = {
   TEXT: "TEXT",
@@ -80,6 +82,7 @@ export const MessagingProvider = ({ children }: { children: React.ReactNode }) =
   const [conversations, setConversations] = useState<any>([]);
   const [status, setStatus] = useState<string>("pending");
   const [loadingChats, setLoadingChats] = useState<boolean>(true);
+  const [socketReconnect, setSocketReconnect] = useState<boolean>(false);
   const [unreadChatCount, setUnreadChatCount] = useState<number>(0);
   const router = useRouter();
 
@@ -121,7 +124,7 @@ export const MessagingProvider = ({ children }: { children: React.ReactNode }) =
       return () => socket?.off();
     }
   };
-  console.log("socket==>", socket, conversations);
+  // console.log("socket==>", socket, socketReconnect);
   useEffect(() => {
     // Here we listen to popup events
     socket?.on(conversationEnums.POPUP_MESSAGE, async (c: any) => {
@@ -158,18 +161,32 @@ export const MessagingProvider = ({ children }: { children: React.ReactNode }) =
     connectChatInit();
   }, [loggedInUser]);
 
+  useEffect(() => {
+    if (socketReconnect) {
+      connectChatInit()
+    }
+  }, [socketReconnect])
+
+  const Reconnect = () => setTimeout(() => { setSocketReconnect(true) }, MAX_RECONNECT_TIME);
+
   const connectChatInit = async () => {
-    if (loggedInUser) {
+    const isSocketConnected = socket && socket.connected;
+    if (loggedInUser && !isSocketConnected && authToken) {
+      console.log("logging-=-socket...")
       try {
         const newSocket = io(SOCKET_URL as string, {
           extraHeaders: {
             "authorization": "Bearer " + authToken,
           },
         });
-        return setSocket(newSocket);
+        setSocket(newSocket);
+        setSocketReconnect(false);
       } catch (error: any) {
-        return null;
+        console.log("socket--er", error)
+        Reconnect();
       }
+    } else {
+      Reconnect()
     }
   };
 
@@ -342,6 +359,10 @@ export const MessagingProvider = ({ children }: { children: React.ReactNode }) =
       return null;
     }
   };
+
+  useEffect(() => {
+
+  })
 
   const SocketServer: SocketContextType = {
     currentConversation,

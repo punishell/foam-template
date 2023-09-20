@@ -127,15 +127,6 @@ export const ProfileView = () => {
               </div>
               <div className="flex justify-center item-center mx-auto text-center">
                 <UserAvatar2 image={userData?.avatar} useUpload={true} onUploadComplete={onUploadComplete} />
-                <AfroProfile score={40} size="md">
-                  {userData.avatar ? (
-                    <div className="relative rounded-full">
-                      <Image src={userData.avatar} alt="" layout="fill" />
-                    </div>
-                  ) : (
-                    <DefaultAvatar />
-                  )}
-                </AfroProfile>
               </div>
               <div className="flex flex-row justify-center items-center">
                 <p className="text-lg font-bold text-title">

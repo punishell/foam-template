@@ -5,7 +5,7 @@ import type { Metadata } from 'next';
 import { Toaster } from 'react-hot-toast';
 import { Providers } from '@/app/providers';
 import localFont from 'next/font/local';
-import { MessagingProvider } from '@/providers/socketProvider';
+
 export const metadata: Metadata = {
   title: 'Afrofund',
   description: '',
@@ -40,10 +40,8 @@ export default function RootLayout({ children }: Props) {
   return (
     <html lang="en">
       <body className={`${circularStd.variable} overflow-x-hidden font-sans h-screen overflow-y-hidden`}>
-        <MessagingProvider>
-          <Toaster position="top-right" gutter={8} />
-          <Providers>{children}</Providers>
-        </MessagingProvider>
+        <Toaster position="top-right" gutter={8} />
+        <Providers>{children}</Providers>
       </body>
     </html>
   );

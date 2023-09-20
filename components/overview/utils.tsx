@@ -5,7 +5,7 @@ import { JobFeedCard, PublicJobCreatedFeed, ReferralSignupFeed, ReferralJobCompl
 import { DataFeedResponse } from '@/lib/api/dashboard';
 
 
-export const ParseFeedView = (feed: DataFeedResponse, loggedInUser: string) => {
+export const ParseFeedView = (feed: DataFeedResponse, loggedInUser: string, key: number) => {
   const amount = feed?.data?.paymentFee;
   const isBookmarked = feed.isBookmarked;
   const inviter = {
@@ -16,6 +16,7 @@ export const ParseFeedView = (feed: DataFeedResponse, loggedInUser: string) => {
   switch (feed.type) {
     case FEED_TYPES.COLLECTION_CREATED:
       return <PublicJobCreatedFeed
+        key={key}
         creator={`${feed?.data?.creator?.firstName || ""} ${feed?.data?.creator?.lastName || ""}`}
         amount={amount}
         jobId={feed?.data?._id}
