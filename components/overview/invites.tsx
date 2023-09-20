@@ -25,6 +25,7 @@ export const Invites = () => {
   ), [inviteData?.data]);
 
   if (isFetching && !isFetched) return <div className="flex flex-col gap-5 mt-4 rounded-2xl p-4 w-full"><Spinner /></div>;
+  if (invites.length === 0) return <div className='flex flex-col gap-5 mt-4 w-full p-4'><p className='text-center'>No Invites Received</p></div>
 
   return (
     <div className="flex flex-col gap-5 mt-4 border border-line bg-white rounded-2xl p-4 w-full">
