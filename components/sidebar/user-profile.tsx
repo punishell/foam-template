@@ -1,7 +1,6 @@
 'use client';
 import React from 'react';
 import Image from 'next/image';
-import Avvvatars from 'avvvatars-react';
 import { useGetAccount } from '@/lib/api/account';
 import { UserAvatar } from '@/components/common/user-avatar';
 import { AfroProfile } from '@/components/common/afro-profile';
