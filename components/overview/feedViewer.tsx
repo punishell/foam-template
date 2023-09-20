@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Button } from 'pakt-ui';
 import { X, Bookmark, Briefcase, Clock4, Gavel } from 'lucide-react';
-import { AfroProfile } from '@/components/common/afro-profile';
 import Lottie from 'lottie-react';
 
 import win from '@/lottiefiles/win.json';
@@ -10,6 +9,7 @@ import gavel from '@/lottiefiles/gavel.json';
 import failed from '@/lottiefiles/failed.json';
 import warning from '@/lottiefiles/warning.json';
 import { useSaveToBookmark } from '@/lib/api/bookmark';
+import { ProfileImage } from './ProfileImage';
 
 const RenderBookMark = ({ size = 20, isBookmarked, id }: { id: string; isBookmarked?: boolean; size: number }) => {
   const [bookmarked, setBookmarked] = useState(isBookmarked);
@@ -19,21 +19,21 @@ const RenderBookMark = ({ size = 20, isBookmarked, id }: { id: string; isBookmar
   const CallFuc = () => {
     return bookmarked
       ? removeBookmark.mutate(
-          { reference: id, type: 'feed' },
-          {
-            onSuccess: (_data) => {
-              setBookmarked(!bookmarked);
-            },
+        { reference: id, type: 'feed' },
+        {
+          onSuccess: (_data) => {
+            setBookmarked(!bookmarked);
           },
-        )
+        },
+      )
       : addBookmark.mutate(
-          { reference: id, type: 'feed' },
-          {
-            onSuccess: (_data) => {
-              setBookmarked(!bookmarked);
-            },
+        { reference: id, type: 'feed' },
+        {
+          onSuccess: (_data) => {
+            setBookmarked(!bookmarked);
           },
-        );
+        },
+      );
   };
   return (
     <Bookmark
@@ -54,6 +54,7 @@ interface JobInvitePendingProps {
     avatar?: string;
     score: number;
   };
+  imageUrl?: string;
   invitationExpiry?: string;
   bookmarked?: boolean;
   type: 'job-invite-pending';
@@ -69,6 +70,7 @@ interface JobFilledProps {
   };
   bookmarked: boolean;
   type: 'job-invite-filled';
+  imageUrl?: string;
 }
 
 type JobFeedCardProps = JobInvitePendingProps | JobFilledProps;
@@ -77,11 +79,11 @@ export const JobFeedCard: React.FC<JobFeedCardProps> = (props) => {
   const { type } = props;
 
   if (type === 'job-invite-filled') {
-    const { _id, title, inviter, bookmarked } = props;
+    const { _id, title, inviter, bookmarked, imageUrl } = props;
 
     return (
       <JobFeedWrapper>
-        <AfroProfile score={inviter.score} size="lg" />
+        <ProfileImage imageUrl={imageUrl} />
 
         <div className="flex flex-col gap-4">
           <div className="flex justify-between items-center">
@@ -107,11 +109,11 @@ export const JobFeedCard: React.FC<JobFeedCardProps> = (props) => {
   }
 
   if (type === 'job-invite-pending') {
-    const { _id, title, amount, inviter, bookmarked, invitationExpiry, id } = props;
+    const { _id, title, amount, inviter, bookmarked, invitationExpiry, id, imageUrl } = props;
 
     return (
-      <JobFeedWrapper>
-        <AfroProfile score={inviter.score} size="lg" />
+      <JobFeedWrapper>=
+        <ProfileImage imageUrl={imageUrl} />
 
         <div className="flex flex-col gap-4 w-full">
           <div className="flex justify-between items-center">
@@ -170,6 +172,7 @@ export const PublicJobCreatedFeed = ({
   jobId,
   _id,
   bookmarked,
+  imageUrl,
 }: {
   creator: string;
   title: string;
@@ -177,10 +180,11 @@ export const PublicJobCreatedFeed = ({
   jobId: string;
   _id: string;
   bookmarked: boolean;
+  imageUrl?: string;
 }) => {
   return (
     <JobFeedWrapper>
-      <AfroProfile score={0} size="lg" />
+      <ProfileImage imageUrl={imageUrl} />
       <div className="flex flex-col gap-4 w-full">
         <div className="flex justify-between items-center">
           <h3 className="text-body text-xl font-bold">
@@ -191,9 +195,6 @@ export const PublicJobCreatedFeed = ({
         <h3 className="text-title text-2xl font-normal">{title}</h3>
         <div className="justify-between items-center flex mt-auto">
           <div className="flex items-center gap-2">
-            {/* <Button size="xs" variant="secondary">
-              Apply
-            </Button> */}
             <Button size="xs" variant="outline">
               See Details
             </Button>
@@ -208,7 +209,8 @@ export const PublicJobCreatedFeed = ({
 export const TalentJobUpdateFeed = () => {
   return (
     <div className="border-[#CDCFD0] bg-[#F9F9F9] gap-4 p-4 flex border z-10 w-full rounded-2xl relative overflow-hidden">
-      <AfroProfile score={0} size="lg" />
+      {/* <AfroProfile score={0} size="lg" /> */}
+      <ProfileImage imageUrl={""} />
       <div className="flex flex-col gap-4">
         <div className="flex justify-between items-center">
           <h3 className="text-title text-xl font-bold">Landing Page Design for a Lead Generation...</h3>
@@ -244,7 +246,7 @@ export const TalentJobUpdateFeed = () => {
 export const JobDeliverableCompletionFeed = () => {
   return (
     <div className="border-[#CDCFD0] bg-[#F9F9F9] gap-4 p-4 flex border z-10 w-full rounded-2xl relative overflow-hidden">
-      <AfroProfile score={0} size="lg" />
+      <ProfileImage imageUrl={""} />
       <div className="flex flex-col gap-4">
         <div className="flex justify-between items-center">
           <h3 className="text-title text-xl font-bold">Joon completed a deliverable</h3>
@@ -281,7 +283,7 @@ export const JobDeliverableCompletionFeed = () => {
 export const JobCompletionFeed = () => {
   return (
     <div className="border-[#CDCFD0] bg-[#F9F9F9] gap-4 p-4 flex border z-10 w-full rounded-2xl relative overflow-hidden">
-      <AfroProfile score={0} size="lg" />
+      <ProfileImage imageUrl={""} />
       <div className="flex flex-col gap-4 w-full">
         <div className="flex justify-between items-center">
           <h3 className="text-body text-xl font-bold">Joon completed a job</h3>
@@ -293,9 +295,6 @@ export const JobCompletionFeed = () => {
 
         <div className="justify-between items-center flex mt-auto">
           <div className="flex items-center gap-2">
-            {/* <Button size="xs" variant="secondary">
-              Update
-            </Button> */}
             <Button size="xs" variant="outline">
               Message
             </Button>
@@ -314,7 +313,7 @@ export const JobCompletionFeed = () => {
 export const JobReviewedFeed = () => {
   return (
     <div className="border-[#CDCFD0] bg-[#F9F9F9] gap-4 p-4 flex border  z-10 w-full rounded-2xl relative overflow-hidden">
-      <AfroProfile score={0} size="lg" />
+      <ProfileImage imageUrl={""} />
       <div className="flex flex-col gap-4">
         <div className="flex justify-between items-center">
           <h3 className="text-title text-xl font-bold">Theresa has reviewed your work</h3>
@@ -388,7 +387,7 @@ export const PaymentReleased = () => {
 export const JobCancelled = () => {
   return (
     <div className="border-[#FF9898] gap-4 p-4 flex border bg-[#FFF4F4] z-10 w-full rounded-2xl relative overflow-hidden">
-      <AfroProfile score={0} size="lg" />
+      <ProfileImage imageUrl={""} />
       <div className="flex flex-col gap-4 w-full">
         <div className="flex justify-between items-center">
           <h3 className="text-title text-xl font-bold">Theresa Cancelled the Job</h3>
@@ -418,7 +417,7 @@ export const JobCancelled = () => {
 export const ReferralSignupFeed = ({ name }: { name: string }) => {
   return (
     <div className="border-[#CDCFD0] bg-[#F9F9F9] gap-4 p-4 flex border  z-10 w-full rounded-2xl relative overflow-hidden">
-      <AfroProfile score={0} size="lg" />
+      <ProfileImage imageUrl={""} />
       <div className="flex flex-col gap-4 w-full">
         <div className="flex justify-between items-center">
           <h3 className="text-title text-xl font-bold">{name} just signed up</h3>
@@ -451,7 +450,7 @@ export const ReferralSignupFeed = ({ name }: { name: string }) => {
 export const ReferralJobCompletion = () => {
   return (
     <div className="border-[#CDCFD0] bg-[#F9F9F9] gap-4 p-4 flex border  z-10 w-full rounded-2xl relative overflow-hidden">
-      <AfroProfile score={0} size="lg" />
+      <ProfileImage imageUrl={""} />
       <div className="flex flex-col gap-4 w-full">
         <div className="flex justify-between items-center">
           <h3 className="text-title text-xl font-bold">Shola completed a job</h3>
