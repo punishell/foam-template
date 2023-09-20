@@ -2,7 +2,6 @@ import React, { useMemo } from 'react';
 import Image from 'next/image';
 import { useGetLeaderBoard } from '@/lib/api/dashboard';
 import { Spinner } from '../common';
-import { AfroProfile } from '@/components/common/afro-profile';
 import { ProfileImage } from './ProfileImage';
 
 export const LeaderBoard = () => {
