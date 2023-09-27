@@ -199,7 +199,7 @@ interface InviteTalentToJobParams {
 async function postInviteTalentToJob(params: InviteTalentToJobParams): Promise<ApiResponse> {
   const res = await axios.post(`/invite`, {
     collection: params.jobId,
-    receiver: params.talentId,
+    recipient: params.talentId,
   });
   return res.data.data;
 }
@@ -340,8 +340,8 @@ interface ConfirmJobPaymentParams {
 }
 
 async function postConfirmJobPayment(params: ConfirmJobPaymentParams): Promise<ApiResponse> {
-  // delay for 5 seconds
-  await new Promise((resolve) => setTimeout(resolve, 5000));
+  // delay for 10 seconds
+  await new Promise((resolve) => setTimeout(resolve, 10000));
   const res = await axios.post(`/payment/validate`, {
     collection: params.jobId,
   });
