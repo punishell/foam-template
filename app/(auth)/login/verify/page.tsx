@@ -60,11 +60,9 @@ export default function SignupVerifyEmail() {
   });
 
   const onSubmit: SubmitHandler<FormValues> = ({ otp }) => {
-
     if (typeof verifyType !== 'string' || typeof token !== 'string') {
       return router.push('/signup');
     }
-
     loginOTP.mutate(
       {
         code: otp,

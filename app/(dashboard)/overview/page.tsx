@@ -66,7 +66,7 @@ const JobHeader = () => {
               are to get hired.
             </p>
             <div className="h-[48px] w-[226px]">
-              <Button variant="primary" size="md" onClick={() => router.push('/talents')}>
+              <Button variant="primary" size="md" onClick={() => router.push('/settings')}>
                 <span className="flex items-center gap-2">
                   <span>Complete Profile</span>
                 </span>
