@@ -9,13 +9,13 @@ import { PageEmpty } from '@/components/common/page-empty';
 import { PageError } from '@/components/common/page-error';
 import { PageLoading } from '@/components/common/page-loading';
 
-interface Props { }
+interface Props {}
 
 export const OpenJobs: React.FC<Props> = () => {
   const jobsData = useGetJobs({ category: 'open' });
 
-  if (jobsData.isError) return <PageError />;
-  if (jobsData.isLoading) return <PageLoading />;
+  if (jobsData.isError) return <PageError className="rounded-lg border border-red-300 h-[90%]" />;
+  if (jobsData.isLoading) return <PageLoading className="h-[90%] rounded-lg border border-line" />;
 
   const jobs = jobsData.data.data;
 
@@ -48,7 +48,7 @@ interface AllJobsProps {
 }
 
 const AllJobs: React.FC<AllJobsProps> = ({ jobs }) => {
-  if (!jobs.length) return <PageEmpty label="No open jobs yet." className="rounded-lg border border-line h-full" />;
+  if (!jobs.length) return <PageEmpty label="No open jobs yet." className="rounded-lg border border-line h-[90%]" />;
 
   return (
     <div className="grid grid-cols-2 gap-4 overflow-y-auto pb-20">
@@ -78,7 +78,7 @@ interface SavedJobsProps {
 
 const SavedJobs: React.FC<SavedJobsProps> = ({ jobs }) => {
   if (!jobs.length)
-    return <PageEmpty label="Your saved jobs will appear here." className="rounded-lg border border-line h-full" />;
+    return <PageEmpty label="Your saved jobs will appear here." className="rounded-lg border border-line h-[90%]" />;
 
   return (
     <div className="grid grid-cols-2 gap-4 overflow-y-auto pb-20">

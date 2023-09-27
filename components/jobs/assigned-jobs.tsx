@@ -41,7 +41,7 @@ interface OngoingJobsProps {
 
 const OngoingJobs: React.FC<OngoingJobsProps> = ({ jobs }) => {
   if (!jobs.length)
-    return <PageEmpty label="Your ongoing jobs will appear here." className="rounded-lg border border-line h-full" />;
+    return <PageEmpty label="Your ongoing jobs will appear here." className="rounded-lg border border-line h-[90%]" />;
 
   return (
     <div className="grid grid-cols-2 gap-4 overflow-y-auto pb-20">
@@ -70,7 +70,9 @@ interface CompletedJobsProps {
 
 const CompletedJobs: React.FC<CompletedJobsProps> = ({ jobs }) => {
   if (!jobs.length)
-    return <PageEmpty label="Your completed jobs will appear here." className="rounded-lg border border-line h-full" />;
+    return (
+      <PageEmpty label="Your completed jobs will appear here." className="rounded-lg border border-line h-[90%]" />
+    );
 
   return (
     <div className="grid grid-cols-2 gap-4 overflow-y-auto pb-20">

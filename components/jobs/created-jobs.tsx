@@ -17,13 +17,15 @@ interface Props {}
 export const CreatedJobs: React.FC<Props> = () => {
   const jobsData = useGetJobs({ category: 'created' });
 
-  if (jobsData.isError) return <PageError />;
-  if (jobsData.isLoading) return <PageLoading />;
+  if (jobsData.isError) return <PageError className="rounded-lg border border-red-300 h-[90%]" />;
+  if (jobsData.isLoading) return <PageLoading className="h-[90%] rounded-lg border border-line" />;
 
   const jobs = jobsData.data.data;
 
-  const ongoingJobs = jobs.filter((job) => job.status === 'ongoing');
-  const unassignedJobs = jobs.filter((job) => job.status === 'pending');
+  const ongoingJobs = jobs.filter((job) => job.status === 'ongoing' && job.owner !== undefined);
+  const unassignedJobs = jobs.filter(
+    (job) => job.status === 'pending' || (job.status === 'ongoing' && job.owner === undefined),
+  );
   const completedJobs = jobs.filter((job) => job.status === 'completed');
 
   return (
@@ -49,7 +51,7 @@ interface UnassignedJobsProps {
 }
 
 const UnassignedJobs: React.FC<UnassignedJobsProps> = ({ jobs }) => {
-  if (!jobs.length) return <PageEmpty label="No open jobs yet." className="rounded-lg border border-line h-full" />;
+  if (!jobs.length) return <PageEmpty label="No open jobs yet." className="rounded-lg border border-line h-[90%]" />;
 
   return (
     <div className="grid grid-cols-2 gap-4 overflow-y-auto pb-20">
@@ -74,7 +76,7 @@ interface OngoingJobsProps {
 
 const OngoingJobs: React.FC<OngoingJobsProps> = ({ jobs }) => {
   if (!jobs.length)
-    return <PageEmpty label="Your ongoing jobs will appear here." className="rounded-lg border border-line h-full" />;
+    return <PageEmpty label="Your ongoing jobs will appear here." className="rounded-lg border border-line h-[90%]" />;
 
   return (
     <div className="grid grid-cols-2 gap-4 overflow-y-auto pb-20">
@@ -103,7 +105,9 @@ interface CompletedJobsProps {
 
 const CompletedJobs: React.FC<CompletedJobsProps> = ({ jobs }) => {
   if (!jobs.length)
-    return <PageEmpty label="Your completed jobs will appear here." className="rounded-lg border border-line h-full" />;
+    return (
+      <PageEmpty label="Your completed jobs will appear here." className="rounded-lg border border-line h-[80%]" />
+    );
 
   return (
     <div className="grid grid-cols-2 gap-4 overflow-y-auto pb-20">
