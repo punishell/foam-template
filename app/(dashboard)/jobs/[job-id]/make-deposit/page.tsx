@@ -41,6 +41,7 @@ import {
   usePrepareSendTransaction,
   useSendTransaction,
 } from 'wagmi';
+import { set } from 'date-fns';
 
 const { chains, publicClient } = configureChains([avalancheFuji, avalanche], [publicProvider()]);
 
@@ -207,7 +208,9 @@ const PaymentDetails: React.FC<PaymentDetailsProps> = ({ coin, jobId }) => {
           </div>
           <div className="flex items-center justify-between font-bold">
             <span>Total</span>
-            <span>${paymentDetails?.usdAmount}</span>
+            <span>
+              {paymentDetails?.amountToPay} {coin}
+            </span>
           </div>
         </div>
       </div>
@@ -538,7 +541,6 @@ const DepositUSDC: React.FC<WalletDepositProps> = ({ amount, depositAddress, job
 
   const { config } = usePrepareContractWrite({
     abi: erc20ABI,
-    enabled: false,
     chainId: CHAIN_ID,
     functionName: 'transfer',
     address: USDC_CONTRACT_ADDRESS,
@@ -582,7 +584,8 @@ const DepositUSDC: React.FC<WalletDepositProps> = ({ amount, depositAddress, job
     <div>
       <Button fullWidth disabled={!write || isLoading || confirmPayment.isLoading} onClick={() => write?.()}>
         <div className="flex items-center justify-center gap-2">
-          <span> Make Payment</span> <span>{(isLoading || confirmPayment.isLoading) && <Spinner />}</span>
+          <span> {confirmPayment.isLoading ? 'Confirming Payment' : 'Make Payment'}</span>{' '}
+          <span>{(isLoading || confirmPayment.isLoading) && <Spinner />}</span>
         </div>
       </Button>
     </div>
