@@ -26,26 +26,45 @@ export default function Profile() {
     } else router.back();
   }, []);
 
-  const talent = useMemo(() => ({
-    id: user?._id,
-    name: `${user?.firstName} ${user?.lastName}`,
-    position: user?.profile?.bio?.title || "",
-    image: user?.profileImage?.url || "",
-    bio: user?.profile?.bio?.description || "",
-    score: user?.score || 0,
-    achievements: (user?.achievements || []).map((a) => ({ title: a.type, type: a.type, total: Number(a.total), value: Number(a.value) })),
-    skills: (user?.profile?.talent?.tagsIds || []).map((t) => ({ name: t.name, backgroundColor: t.color })) || [],
-  }), [user]);
+  const talent = useMemo(
+    () => ({
+      id: user?._id,
+      name: `${user?.firstName} ${user?.lastName}`,
+      position: user?.profile?.bio?.title || '',
+      image: user?.profileImage?.url || '',
+      bio: user?.profile?.bio?.description || '',
+      score: user?.score || 0,
+      achievements: (user?.achievements || []).map((a) => ({
+        title: a.type,
+        type: a.type,
+        total: Number(a.total),
+        value: Number(a.value),
+      })),
+      skills: (user?.profile?.talent?.tagsIds || []).map((t) => ({ name: t.name, backgroundColor: t.color })) || [],
+    }),
+    [user],
+  );
 
   // TODO:: Complete Review data
-  const reviews = useMemo(() => (talentReviews?.data || []).map((review) => ({
-    reviewer: "",
-    content: "",
-  })), [talentReviews?.data])
+  const reviews = useMemo(
+    () =>
+      (talentReviews?.data || []).map((review) => ({
+        reviewer: '',
+        content: '',
+      })),
+    [talentReviews?.data],
+  );
 
   return (
     <div className="flex flex-col gap-6 pt-6 overflow-y-auto">
-      <ProfileHeader _id={talent.id} name={talent.name} position={talent.position} score={talent.score} skills={talent.skills} isLoggedIn={true} />
+      <ProfileHeader
+        _id={talent.id}
+        name={talent.name}
+        position={talent.position}
+        score={talent.score}
+        skills={talent.skills}
+        isOwnProfile={true}
+      />
 
       <div className="flex gap-6 w-full">
         <Bio body={talent.bio} />
@@ -55,7 +74,6 @@ export default function Profile() {
     </div>
   );
 }
-
 
 const Bio = ({ body }: { body: string }) => {
   return (
