@@ -67,6 +67,15 @@ export interface Job {
     name: string;
     color: string;
   }[];
+  // talent assigned to the job
+  owner?: {
+    score: number;
+    lastName: string;
+    firstName: string;
+    profileImage?: {
+      url: string;
+    };
+  };
   tagsData: string[];
   invites: any[]; // TODO: add type
   inviteAccepted: boolean;
