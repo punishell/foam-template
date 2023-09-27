@@ -83,7 +83,7 @@ export const JobFeedCard: React.FC<JobFeedCardProps> = (props) => {
       <JobFeedWrapper>
         <AfroProfile score={inviter.score} size="lg" />
 
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-4 py-4">
           <div className="flex justify-between items-center">
             <h3 className="text-title text-xl font-bold">Job Filled</h3>
 
@@ -113,7 +113,7 @@ export const JobFeedCard: React.FC<JobFeedCardProps> = (props) => {
       <JobFeedWrapper>
         <AfroProfile score={inviter.score} size="lg" />
 
-        <div className="flex flex-col gap-4 w-full">
+        <div className="flex flex-col gap-4 w-full py-4">
           <div className="flex justify-between items-center">
             <span className="text-body text-xl font-bold">
               {inviter.name} Invited you to a{' '}

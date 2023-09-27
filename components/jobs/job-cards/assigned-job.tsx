@@ -22,9 +22,9 @@ export const AssignedJobClientCard: React.FC<AssignedJobCardProps> = ({ inviter,
   const [showModal, setShowModal] = React.useState(false);
 
   return (
-    <div className="gap-4 max-w-2xl bg-white rounded-3xl border-line w-full flex flex-col grow border p-4">
+    <div className="gap-4 bg-white rounded-3xl border-line w-full flex flex-col grow border p-4">
       <div className="w-full flex gap-4">
-        {<AfroProfile score={inviter.paktScore} size="sm" />}
+        {<AfroProfile score={inviter.paktScore} size="lg" />}
         <div className="flex flex-col gap-2 grow">
           <div className="flex items-center justify-between gap-2">
             {<span className="text-body text-lg font-bold">{inviter.name}</span>}
@@ -151,9 +151,9 @@ export const AssignedJobTalentCard: React.FC<AssignedJobCardProps> = ({ inviter,
   const [showModal, setShowModal] = React.useState(false);
 
   return (
-    <div className="gap-4 max-w-2xl bg-white rounded-3xl border-line w-full flex flex-col grow border p-4">
+    <div className="gap-4 bg-white rounded-3xl border-line w-full flex flex-col grow border p-4">
       <div className="w-full flex gap-4">
-        {<AfroProfile score={inviter.paktScore} size="sm" />}
+        {<AfroProfile score={inviter.paktScore} size="md" />}
         <div className="flex flex-col gap-2 grow">
           <div className="flex items-center justify-between gap-2">
             {<span className="text-body text-lg font-bold">{inviter.name}</span>}

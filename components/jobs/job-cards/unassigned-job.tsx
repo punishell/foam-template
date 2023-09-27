@@ -13,7 +13,7 @@ export const UnAssignedJobCard: React.FC<UnAssignedJobCardProps> = ({ createdAt,
   const router = useRouter();
 
   return (
-    <div className="gap-4 max-w-2xl bg-white rounded-3xl border-line w-full flex flex-col grow border p-4">
+    <div className="gap-4 bg-white rounded-3xl border-line w-full flex flex-col grow border p-4">
       <div className="w-full flex gap-4">
         <div className="flex flex-col gap-2 grow">
           <div className="flex items-center justify-between gap-2">
