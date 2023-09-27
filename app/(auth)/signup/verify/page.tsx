@@ -65,7 +65,7 @@ export default function SignupVerifyEmail() {
       {
         onSuccess: ({ token }) => {
           setCookie(AUTH_TOKEN_KEY, token);
-          router.push('/onboarding/skills');
+          router.push('/onboarding');
         },
       },
     );
