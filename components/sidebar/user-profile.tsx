@@ -1,9 +1,7 @@
 'use client';
 import React from 'react';
 import Image from 'next/image';
-import Avvvatars from 'avvvatars-react';
 import { useGetAccount } from '@/lib/api/account';
-import { UserAvatar } from '@/components/common/user-avatar';
 import { AfroProfile } from '@/components/common/afro-profile';
 
 interface Props {
@@ -21,10 +19,10 @@ export const UserProfile = () => {
 
   return (
     <div className="flex flex-col items-center gap-2">
-      <AfroProfile score={account?.score ?? 0} size="lg">
+      <AfroProfile score={account?.score ?? 0} size="xl">
         <div className="h-full w-full rounded-full">
           {account?.profileImage?.url ? (
-            <Image src={account?.profileImage.url} alt="profile" layout="fill" className="rounded-full" />
+            <Image src={account?.profileImage.url} fill alt="profile" className="rounded-full" />
           ) : (
             <DefaultAvatar />
           )}

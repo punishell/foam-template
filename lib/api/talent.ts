@@ -64,7 +64,7 @@ export const useGetTalents = ({ limit, page, filter }: talentFetchParams) => {
   return useQuery(getQueryKey, options);
 };
 
-export const useGetTalentById = (id: string) => {
+export const useGetTalentById = (id: string, enabled: boolean = false) => {
   const options: UseQueryOptions<GetTalentFetchSuccess, GetTalentFetchDetailsError> = {
     queryFn: async () => {
       const [talent, review] = await Promise.all([getTalentById(id), getTalentReview(id, '1', '4')]);
@@ -74,13 +74,13 @@ export const useGetTalentById = (id: string) => {
     onError: (error) => {
       toast.error(error.response?.data.message || 'An error fetching talents occurred');
     },
-    enabled: false,
+    enabled,
   };
 
   return useQuery(getQueryIdKey, options);
 };
 
-export const useGetTalentReviewById = (id: string) => {
+export const useGetTalentReviewById = (id: string, enabled = false) => {
   const options: UseQueryOptions<reviewResponse, GetTalentFetchDetailsError> = {
     queryFn: async () => {
       const review = await getTalentReview(id, '1', '4');
@@ -90,7 +90,7 @@ export const useGetTalentReviewById = (id: string) => {
     onError: (error) => {
       toast.error(error.response?.data.message || 'An error fetching talents occurred');
     },
-    enabled: false,
+    enabled,
   };
 
   return useQuery(getQueryIdKey, options);

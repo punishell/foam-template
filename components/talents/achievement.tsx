@@ -1,6 +1,4 @@
-import { getAchievementData } from "@/lib/utils";
-
-type AchievementType = 'review' | 'referral' | 'five-star' | 'squad' | string;
+type AchievementType = 'review' | 'referral' | 'five-star' | 'squad';
 
 interface Achievement {
   value: number;
@@ -11,6 +9,7 @@ interface Achievement {
 
 type AchievementTypeMap = {
   [key in AchievementType]: {
+    title: string;
     textColor: string;
     borderColor: string;
     barColor: string;
@@ -22,6 +21,7 @@ type AchievementTypeMap = {
 
 const ACHIEVEMENT_STYLES: AchievementTypeMap = {
   review: {
+    title: 'Reviews',
     textColor: '#198155',
     borderColor: '#198155',
 
@@ -32,6 +32,7 @@ const ACHIEVEMENT_STYLES: AchievementTypeMap = {
     barIndicatorColor: '#7DDE86',
   },
   referral: {
+    title: 'Referrals',
     textColor: '#0065D0',
     borderColor: '#0065D0',
 
@@ -41,7 +42,8 @@ const ACHIEVEMENT_STYLES: AchievementTypeMap = {
     barColor: '#C0EEFF',
     barIndicatorColor: '#9BDCFD',
   },
-  ["five-star"]: {
+  ['five-star']: {
+    title: '5 Star Jobs',
     textColor: '#287B7B',
     borderColor: '#287B7B',
 
@@ -52,6 +54,7 @@ const ACHIEVEMENT_STYLES: AchievementTypeMap = {
     barIndicatorColor: '#487E7E',
   },
   squad: {
+    title: 'Squad',
     textColor: '#5538EE',
     borderColor: '#5538EE',
 
@@ -64,11 +67,10 @@ const ACHIEVEMENT_STYLES: AchievementTypeMap = {
 };
 
 interface AchievementBarProps {
-  title: string;
   achievement: Achievement;
 }
 
-const AchievementBar: React.FC<AchievementBarProps> = ({ achievement, title }) => {
+const AchievementBar: React.FC<AchievementBarProps> = ({ achievement }) => {
   const styles = ACHIEVEMENT_STYLES[achievement.type];
   const percentage = (achievement.value / achievement.maxValue) * 100;
 
@@ -103,73 +105,76 @@ const AchievementBar: React.FC<AchievementBarProps> = ({ achievement, title }) =
           </div>
         </div>
       </div>
-      <span className="text-body text-lg">{title}</span>
+      <span className="text-body text-lg">{styles.title}</span>
     </div>
   );
 };
 
+interface AchievementProps {
+  achievements?: {
+    title: string;
+    type: string;
+    value: number;
+    total: number;
+  }[];
+}
 
-export const Achievements = ({ achievements }: { achievements: { title: string, type: string, total: number, value: number, }[] }) => {
+export const Achievements: React.FC<AchievementProps> = ({ achievements = [] }) => {
   return (
-    <div className="bg-primary-gradient p-[4px] rounded-2xl">
+    <div className="bg-primary-gradient p-[4px] rounded-2xl shrink-0">
       <div className="bg-[#F8FFF4] py-4 px-6 rounded-xl gap-4 flex flex-col w-fit shrink-0">
         <h3 className="text-center text-title text-lg font-medium">Achievements</h3>
         <div className="grid grid-cols-4 gap-4 w-full">
-          {achievements && achievements.length > 0 && achievements.map((ach, i) => {
-            const typeData = getAchievementData(ach.type);
-            return (<AchievementBar
-              key={i}
-              title={typeData?.title ?? ""}
-              achievement={{
-                type: ach.type,
-                maxValue: ach.total,
-                minValue: 0,
-                value: ach.value,
-              }}
-            />)
-          }
-          )}
-          {!achievements || achievements.length < 1 &&
+          {achievements.length > 0 &&
+            achievements.map(({ total, type, value }) => {
+              return (
+                <AchievementBar
+                  key={type}
+                  achievement={{
+                    minValue: 0,
+                    value: value,
+                    maxValue: total,
+                    type: type as AchievementType,
+                  }}
+                />
+              );
+            })}
+          {achievements.length === 0 && (
             <>
               <AchievementBar
-                title="Reviews"
                 achievement={{
-                  type: 'reviews',
+                  type: 'review',
                   maxValue: 60,
                   minValue: 0,
-                  value: 10,
+                  value: 0,
                 }}
               />
               <AchievementBar
-                title="Referrals"
                 achievement={{
-                  type: 'referrals',
+                  type: 'referral',
                   maxValue: 20,
                   minValue: 0,
-                  value: 10,
+                  value: 0,
                 }}
               />
               <AchievementBar
-                title="5 Star Jobs"
                 achievement={{
-                  type: 'jobs',
+                  type: 'five-star',
                   maxValue: 10,
                   minValue: 0,
-                  value: 8,
+                  value: 0,
                 }}
               />
               <AchievementBar
-                title="Squad"
                 achievement={{
-                  type: 'squads',
+                  type: 'squad',
                   maxValue: 10,
                   minValue: 0,
-                  value: 5,
+                  value: 0,
                 }}
               />
-
             </>
-          }
+          )}
         </div>
       </div>
     </div>

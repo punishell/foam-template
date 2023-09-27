@@ -190,13 +190,13 @@ export function useAssignJobDeliverables() {
 // Assign job to talent
 // TODO
 
-// Invite talent to a private job
-interface InviteTalentToPrivateJobParams {
+// Invite talent to a job
+interface InviteTalentToJobParams {
   jobId: string;
   talentId: string;
 }
 
-async function postInviteTalentToPrivateJob(params: InviteTalentToPrivateJobParams): Promise<ApiResponse> {
+async function postInviteTalentToJob(params: InviteTalentToJobParams): Promise<ApiResponse> {
   const res = await axios.post(`/invite`, {
     collection: params.jobId,
     receiver: params.talentId,
@@ -204,9 +204,9 @@ async function postInviteTalentToPrivateJob(params: InviteTalentToPrivateJobPara
   return res.data.data;
 }
 
-export function useInviteTalentToPrivateJob() {
+export function useInviteTalentToJob() {
   return useMutation({
-    mutationFn: postInviteTalentToPrivateJob,
+    mutationFn: postInviteTalentToJob,
     mutationKey: ['invite-talent-to-private-job'],
     onError: (error: ApiError) => {
       toast.error(error?.response?.data.message || 'An error occurred');
@@ -293,6 +293,70 @@ export function useApplyToOpenJob() {
     },
     onSuccess: () => {
       toast.success('Applied to job successfully');
+    },
+  });
+}
+
+// Post Job Payment Details
+
+interface PostJobPaymentDetailsParams {
+  jobId: string;
+  coin: 'AVAX' | 'USDC';
+}
+
+interface PostJobPaymentDetailsResponse {
+  rate: number;
+  usdFee: number;
+  address: string;
+  usdAmount: number;
+  amountToPay: number;
+  expectedFee: number;
+  feePercentage: number;
+  collectionAmount: number;
+}
+
+async function postJobPaymentDetails(params: PostJobPaymentDetailsParams): Promise<PostJobPaymentDetailsResponse> {
+  const res = await axios.post(`/payment`, {
+    coin: params.coin,
+    collection: params.jobId,
+  });
+  return res.data.data;
+}
+
+export function usePostJobPaymentDetails() {
+  return useMutation({
+    mutationFn: postJobPaymentDetails,
+    mutationKey: ['get-job-payment-details'],
+    onError: (error: ApiError) => {
+      toast.error(error?.response?.data.message ?? 'An error occurred');
+    },
+  });
+}
+
+// Confirm Job Payment
+
+interface ConfirmJobPaymentParams {
+  jobId: string;
+}
+
+async function postConfirmJobPayment(params: ConfirmJobPaymentParams): Promise<ApiResponse> {
+  // delay for 5 seconds
+  await new Promise((resolve) => setTimeout(resolve, 5000));
+  const res = await axios.post(`/payment/validate`, {
+    collection: params.jobId,
+  });
+  return res.data.data;
+}
+
+export function useConfirmJobPayment() {
+  return useMutation({
+    mutationFn: postConfirmJobPayment,
+    mutationKey: ['confirm-job-payment'],
+    onError: (error: ApiError) => {
+      toast.error(error?.response?.data.message ?? 'An error occurred');
+    },
+    onSuccess: () => {
+      toast.success('Payment confirmed successfully');
     },
   });
 }

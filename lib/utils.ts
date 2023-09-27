@@ -67,8 +67,10 @@ export const emptyAchievement = [
   { id: 'squad', title: 'Squad', total: 10, textColor: '#D3180C', bgColor: '#FFE5E5' },
 ];
 
-export const getAchievementData = (type: string) => {
-  return emptyAchievement.find((emp) => emp.id == type);
+type AchievementType = 'review' | 'referral' | 'five-star' | 'squad';
+
+export const getAchievementData = (type: AchievementType) => {
+  return emptyAchievement.find(({ id }) => id == type);
 };
 
 export const colorFromScore = (score: number) => {

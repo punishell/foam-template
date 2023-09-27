@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Button } from 'pakt-ui';
 import { X, Bookmark, Briefcase, Clock4, Gavel } from 'lucide-react';
 import Lottie from 'lottie-react';
-
+import { AfroProfile } from '../common/afro-profile';
 import win from '@/lottiefiles/win.json';
 import alert from '@/lottiefiles/alert.json';
 import gavel from '@/lottiefiles/gavel.json';
@@ -19,21 +19,21 @@ const RenderBookMark = ({ size = 20, isBookmarked, id }: { id: string; isBookmar
   const CallFuc = () => {
     return bookmarked
       ? removeBookmark.mutate(
-        { reference: id, type: 'feed' },
-        {
-          onSuccess: (_data) => {
-            setBookmarked(!bookmarked);
+          { reference: id, type: 'feed' },
+          {
+            onSuccess: (_data) => {
+              setBookmarked(!bookmarked);
+            },
           },
-        },
-      )
+        )
       : addBookmark.mutate(
-        { reference: id, type: 'feed' },
-        {
-          onSuccess: (_data) => {
-            setBookmarked(!bookmarked);
+          { reference: id, type: 'feed' },
+          {
+            onSuccess: (_data) => {
+              setBookmarked(!bookmarked);
+            },
           },
-        },
-      );
+        );
   };
   return (
     <Bookmark
@@ -85,7 +85,7 @@ export const JobFeedCard: React.FC<JobFeedCardProps> = (props) => {
       <JobFeedWrapper>
         <ProfileImage imageUrl={imageUrl} />
 
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-4 py-4">
           <div className="flex justify-between items-center">
             <h3 className="text-title text-xl font-bold">Job Filled</h3>
 
@@ -112,10 +112,10 @@ export const JobFeedCard: React.FC<JobFeedCardProps> = (props) => {
     const { _id, title, amount, inviter, bookmarked, invitationExpiry, id, imageUrl } = props;
 
     return (
-      <JobFeedWrapper>=
+      <JobFeedWrapper>
+        =
         <ProfileImage imageUrl={imageUrl} />
-
-        <div className="flex flex-col gap-4 w-full">
+        <div className="flex flex-col gap-4 w-full py-4">
           <div className="flex justify-between items-center">
             <span className="text-body text-xl font-bold">
               {inviter.name} Invited you to a{' '}
@@ -144,7 +144,7 @@ export const JobFeedCard: React.FC<JobFeedCardProps> = (props) => {
                 Accept
               </Button>
             </div>
-            {/* <Bookmark size={20} /> */}
+
             <RenderBookMark size={20} isBookmarked={bookmarked} id={_id} />
           </div>
         </div>
@@ -155,7 +155,7 @@ export const JobFeedCard: React.FC<JobFeedCardProps> = (props) => {
 
 export const JobFeedWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   return (
-    <div className="border-blue-lighter gap-4 p-4 flex border bg-[#F1FBFF] z-10 w-full rounded-2xl relative overflow-hidden">
+    <div className="border-blue-lighter gap-4 px-4 pl-2 flex border bg-[#F1FBFF] z-10 w-full rounded-2xl relative overflow-hidden">
       {children}
 
       <div className="absolute right-0 -z-[1] translate-x-1/3 top-16">
@@ -184,12 +184,13 @@ export const PublicJobCreatedFeed = ({
 }) => {
   return (
     <JobFeedWrapper>
-      <ProfileImage imageUrl={imageUrl} />
-      <div className="flex flex-col gap-4 w-full">
+      <AfroProfile score={0} size="lg" />
+      <div className="flex flex-col gap-4 w-full py-4">
         <div className="flex justify-between items-center">
           <h3 className="text-body text-xl font-bold">
             {creator} created a{' '}
-            <span className="px-2 text-lg text-title inline-flex rounded-full bg-green-300">${amount}</span> public job
+            <span className="px-2 text-lg text-title inline-flex rounded-full bg-green-300">${amount ?? 0}</span> public
+            job
           </h3>
         </div>
         <h3 className="text-title text-2xl font-normal">{title}</h3>
@@ -208,10 +209,9 @@ export const PublicJobCreatedFeed = ({
 
 export const TalentJobUpdateFeed = () => {
   return (
-    <div className="border-[#CDCFD0] bg-[#F9F9F9] gap-4 p-4 flex border z-10 w-full rounded-2xl relative overflow-hidden">
-      {/* <AfroProfile score={0} size="lg" /> */}
-      <ProfileImage imageUrl={""} />
-      <div className="flex flex-col gap-4">
+    <div className="border-[#CDCFD0] bg-[#F9F9F9] gap-4 pl-2 px-4  flex border z-10 w-full rounded-2xl relative overflow-hidden">
+      <AfroProfile score={0} size="lg" />
+      <div className="flex flex-col gap-4 py-4">
         <div className="flex justify-between items-center">
           <h3 className="text-title text-xl font-bold">Landing Page Design for a Lead Generation...</h3>
 
@@ -245,9 +245,9 @@ export const TalentJobUpdateFeed = () => {
 
 export const JobDeliverableCompletionFeed = () => {
   return (
-    <div className="border-[#CDCFD0] bg-[#F9F9F9] gap-4 p-4 flex border z-10 w-full rounded-2xl relative overflow-hidden">
-      <ProfileImage imageUrl={""} />
-      <div className="flex flex-col gap-4">
+    <div className="border-[#CDCFD0] bg-[#F9F9F9] gap-4 pl-2 px-4  flex border z-10 w-full rounded-2xl relative overflow-hidden">
+      <AfroProfile score={0} size="lg" />
+      <div className="flex flex-col gap-4 py-4">
         <div className="flex justify-between items-center">
           <h3 className="text-title text-xl font-bold">Joon completed a deliverable</h3>
 
@@ -282,9 +282,9 @@ export const JobDeliverableCompletionFeed = () => {
 
 export const JobCompletionFeed = () => {
   return (
-    <div className="border-[#CDCFD0] bg-[#F9F9F9] gap-4 p-4 flex border z-10 w-full rounded-2xl relative overflow-hidden">
-      <ProfileImage imageUrl={""} />
-      <div className="flex flex-col gap-4 w-full">
+    <div className="border-[#CDCFD0] bg-[#F9F9F9] gap-4 pl-2 px-4  flex border z-10 w-full rounded-2xl relative overflow-hidden">
+      <AfroProfile score={0} size="lg" />
+      <div className="flex flex-col gap-4 w-full py-4">
         <div className="flex justify-between items-center">
           <h3 className="text-body text-xl font-bold">Joon completed a job</h3>
 
@@ -312,9 +312,9 @@ export const JobCompletionFeed = () => {
 
 export const JobReviewedFeed = () => {
   return (
-    <div className="border-[#CDCFD0] bg-[#F9F9F9] gap-4 p-4 flex border  z-10 w-full rounded-2xl relative overflow-hidden">
-      <ProfileImage imageUrl={""} />
-      <div className="flex flex-col gap-4">
+    <div className="border-[#CDCFD0] bg-[#F9F9F9] gap-4 pl-2 px-4  flex border  z-10 w-full rounded-2xl relative overflow-hidden">
+      <AfroProfile score={0} size="lg" />
+      <div className="flex flex-col gap-4 py-4">
         <div className="flex justify-between items-center">
           <h3 className="text-title text-xl font-bold">Theresa has reviewed your work</h3>
 
@@ -386,9 +386,9 @@ export const PaymentReleased = () => {
 
 export const JobCancelled = () => {
   return (
-    <div className="border-[#FF9898] gap-4 p-4 flex border bg-[#FFF4F4] z-10 w-full rounded-2xl relative overflow-hidden">
-      <ProfileImage imageUrl={""} />
-      <div className="flex flex-col gap-4 w-full">
+    <div className="border-[#FF9898] gap-4 pl-2 px-4 flex border bg-[#FFF4F4] z-10 w-full rounded-2xl relative overflow-hidden">
+      <AfroProfile score={0} size="lg" />
+      <div className="flex flex-col gap-4 w-full py-4">
         <div className="flex justify-between items-center">
           <h3 className="text-title text-xl font-bold">Theresa Cancelled the Job</h3>
 
@@ -417,7 +417,7 @@ export const JobCancelled = () => {
 export const ReferralSignupFeed = ({ name }: { name: string }) => {
   return (
     <div className="border-[#CDCFD0] bg-[#F9F9F9] gap-4 p-4 flex border  z-10 w-full rounded-2xl relative overflow-hidden">
-      <ProfileImage imageUrl={""} />
+      <ProfileImage imageUrl={''} />
       <div className="flex flex-col gap-4 w-full">
         <div className="flex justify-between items-center">
           <h3 className="text-title text-xl font-bold">{name} just signed up</h3>
@@ -450,7 +450,7 @@ export const ReferralSignupFeed = ({ name }: { name: string }) => {
 export const ReferralJobCompletion = () => {
   return (
     <div className="border-[#CDCFD0] bg-[#F9F9F9] gap-4 p-4 flex border  z-10 w-full rounded-2xl relative overflow-hidden">
-      <ProfileImage imageUrl={""} />
+      <ProfileImage imageUrl={''} />
       <div className="flex flex-col gap-4 w-full">
         <div className="flex justify-between items-center">
           <h3 className="text-title text-xl font-bold">Shola completed a job</h3>
