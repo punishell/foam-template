@@ -1,22 +1,31 @@
 'use client';
-import React from 'react';
+import React, { use } from 'react';
 import Image from 'next/image';
 import { Button } from 'pakt-ui';
 import { cn } from '@/lib/utils';
+import { useConfirmJobPayment } from '@/lib/api/job';
+import { RaceBy } from '@uiball/loaders';
+import { useInviteTalentToJob } from '@/lib/api/job';
 import { parseEther } from 'viem';
 import QRCode from 'react-qr-code';
-import abi from '@/lib/abi/erc20.json';
-import { Copy, Loader2, X } from 'lucide-react';
+import { useSearchParams } from 'next/navigation';
+import { erc20ABI } from '@wagmi/core';
+import { Copy, Loader2, X, ChevronLeft } from 'lucide-react';
 import { Modal } from '@/components/common';
 import * as Tabs from '@radix-ui/react-tabs';
 import { Spinner } from '@/components/common';
 import { useCopyToClipboard } from 'usehooks-ts';
-
-import { avalancheFuji } from 'wagmi/chains';
+import { useGetJobById, usePostJobPaymentDetails } from '@/lib/api/job';
+import { avalanche, avalancheFuji } from '@wagmi/core/chains';
 import { infuraProvider } from 'wagmi/providers/infura';
 import { publicProvider } from 'wagmi/providers/public';
+import { useRouter } from 'next/navigation';
 import { MetaMaskConnector } from 'wagmi/connectors/metaMask';
 import { InjectedConnector } from 'wagmi/connectors/injected';
+import { AlertCircle } from 'lucide-react';
+import { PageError } from '@/components/common/page-error';
+import { PageLoading } from '@/components/common/page-loading';
+
 import { WagmiConfig, configureChains, createConfig } from 'wagmi';
 import { WalletConnectConnector } from 'wagmi/connectors/walletConnect';
 import { CoinbaseWalletConnector } from 'wagmi/connectors/coinbaseWallet';
@@ -29,17 +38,11 @@ import {
   useSwitchNetwork,
   useContractWrite,
   usePrepareContractWrite,
+  usePrepareSendTransaction,
+  useSendTransaction,
 } from 'wagmi';
 
-const { chains, publicClient } = configureChains(
-  [avalancheFuji],
-  [
-    infuraProvider({
-      apiKey: process.env.NEXT_PUBLIC_INFURA_ID as string,
-    }),
-    publicProvider(),
-  ],
-);
+const { chains, publicClient } = configureChains([avalancheFuji, avalanche], [publicProvider()]);
 
 const wagmiConfig = createConfig({
   connectors: [
@@ -49,21 +52,18 @@ const wagmiConfig = createConfig({
         shimDisconnect: true,
       },
     }),
-    // new MetaMaskConnector({
-    //   chains,
-    // }),
     new CoinbaseWalletConnector({
       chains,
       options: {
         appName: 'Pakt',
       },
     }),
-    new WalletConnectConnector({
-      chains,
-      options: {
-        projectId: process.env.NEXT_PUBLIC_WALLET_CONNECT_ID as string,
-      },
-    }),
+    // new WalletConnectConnector({
+    //   chains,
+    //   options: {
+    //     projectId: process.env.NEXT_PUBLIC_WALLET_CONNECT_ID ?? '',
+    //   },
+    // }),
   ],
   publicClient,
 });
@@ -78,11 +78,7 @@ const WALLET_LOGO: Record<string, string> = {
   'Coinbase Wallet': '/icons/coinbase-wallet.svg',
 };
 
-interface MakePaymentModalProps {
-  appId: string;
-  closeModal: () => void;
-  gotoNextStep?: () => void;
-}
+type SUPPORTED_COINS = 'USDC' | 'AVAX';
 
 interface Props {
   params: {
@@ -92,105 +88,170 @@ interface Props {
 
 export default function MakeDepositPage({ params }: Props) {
   const jobId = params['job-id'];
-  const [isOpen, setIsOpen] = React.useState(false);
-  const [paymentMethod, setPaymentMethod] = React.useState<'usdc' | 'avax' | null>();
+  const [paymentCoin, setPaymentCoin] = React.useState<SUPPORTED_COINS>();
 
   return (
     <WagmiConfig config={wagmiConfig}>
-      <div className="flex">
-        <div className="w-full max-w-3xl bg-white p-6 rounded-3xl gap-6 flex flex-col border border-line">
-          <div className="flex flex-col gap-2">
-            <h2 className="text-2xl font-bold">Escrow Payment</h2>
-            <p className="text-body text-lg">
-              Every contracted engagement requires payment to be deposited in an escrow wallet prior to commencement of
-              work. This payment lives on the blockchain and cannot be accessed by Afro.Fund, nor Pakt, nor any third
-              party.
-            </p>
+      <div className="flex flex-col gap-6">
+        <div>
+          <div className="flex items-center gap-1">
+            <ChevronLeft size={24} strokeWidth={2} />
+            <span className="text-2xl font-medium">Make Deposit</span>
           </div>
-
-          <div className="flex flex-col gap-2">
-            <h2 className="text-lg font-bold">Choose Payment Method</h2>
-            <div className="flex gap-2 items-center">
-              <button
-                className={cn(
-                  'p-4 rounded-xl bg-white border-line flex items-center gap-2 border-[1.5px] hover:bg-gray-100 duration-200',
-                  {
-                    'border-secondary bg-green-50': paymentMethod === 'usdc',
-                  },
-                )}
-                onClick={() => setPaymentMethod('usdc')}
-              >
-                <Image src="/icons/usdc-logo.svg" alt="Coinbase" width={30} height={30} />
-                <span className="font-bold text-lg">USDC</span>
-              </button>
-              <button
-                className={cn(
-                  'p-4 rounded-xl bg-white border-line flex items-center gap-2 border-[1.5px] hover:bg-gray-100 duration-200',
-                  {
-                    'border-secondary bg-green-50': paymentMethod === 'avax',
-                  },
-                )}
-                onClick={() => setPaymentMethod('avax')}
-              >
-                <Image src="/icons/avax-logo.svg" alt="Coinbase" width={30} height={30} />
-                <span className="font-bold text-lg">AVAX</span>
-              </button>
+        </div>
+        <div className="flex">
+          <div className="w-full max-w-3xl bg-white p-6 rounded-3xl gap-6 flex flex-col border border-line">
+            <div className="flex flex-col gap-2">
+              <h2 className="text-2xl font-bold">Escrow Payment</h2>
+              <p className="text-body text-lg">
+                Every contracted engagement requires payment to be deposited in an escrow wallet prior to commencement
+                of work. This payment lives on the blockchain and cannot be accessed by Afro.Fund, nor Pakt, nor any
+                third party.
+              </p>
             </div>
-          </div>
 
-          <div className={cn('bg-[#ECFCE5] border border-[#198155] rounded-lg p-4 flex flex-col gap-4 text-[#198155]')}>
-            <h2 className="text-lg font-bold">Payment Details</h2>
-
-            <div className="flex flex-col gap-6 text-lg">
-              <div className="flex items-center justify-between">
-                <span>Amount</span>
-                <span>$7000.00</span>
-              </div>
-              <div className="flex items-center justify-between">
-                <span>Talent Recieves</span>
-                <span>$7000.00</span>
-              </div>
-              <div className="flex items-center justify-between">
-                <span>Transaction Fee</span>
-                <span>$350.00(5%)</span>
-              </div>
-              <div className="flex items-center justify-between font-bold">
-                <span>Total</span>
-                <span>$7000.00</span>
+            <div className="flex flex-col gap-2">
+              <h2 className="text-lg font-bold">Choose Payment Method</h2>
+              <div className="flex gap-2 items-center">
+                <button
+                  className={cn(
+                    'p-4 rounded-xl bg-white border-line flex items-center gap-2 border-[1.5px] hover:bg-green-50 duration-200',
+                    {
+                      'border-secondary bg-green-50': paymentCoin === 'USDC',
+                    },
+                  )}
+                  onClick={() => {
+                    setPaymentCoin('USDC');
+                  }}
+                >
+                  <Image src="/icons/usdc-logo.svg" alt="Coinbase" width={30} height={30} />
+                  <span className="font-bold text-lg">USDC</span>
+                </button>
+                <button
+                  className={cn(
+                    'p-4 rounded-xl bg-white border-line flex items-center gap-2 border-[1.5px] hover:bg-green-50 duration-200',
+                    {
+                      'border-secondary bg-green-50': paymentCoin === 'AVAX',
+                    },
+                  )}
+                  onClick={() => setPaymentCoin('AVAX')}
+                >
+                  <Image src="/icons/avax-logo.svg" alt="Coinbase" width={30} height={30} />
+                  <span className="font-bold text-lg">AVAX</span>
+                </button>
               </div>
             </div>
+
+            {paymentCoin && <PaymentDetails jobId={jobId} coin={paymentCoin} />}
           </div>
-
-          <div className="border border-line p-6 bg-[#FCFCFC] rounded-2xl flex flex-col items-center gap-4">
-            <div className="flex items-center gap-4">
-              <Image src="/icons/metamask.svg" alt="Coinbase" width={50} height={50} />
-              <Image src="/icons/coinbase.svg" alt="Coinbase" width={50} height={50} />
-              <Image src="/icons/wallet-connect.svg" alt="Coinbase" width={50} height={50} />
-            </div>
-            <p className="text-body">Connect your wallet of choice or pay with a deposit address.</p>
-          </div>
-
-          <Modal isOpen={isOpen} onOpenChange={setIsOpen}>
-            <MakePaymentModal appId="xxx" closeModal={() => setIsOpen(false)} />
-          </Modal>
-
-          <Button fullWidth onClick={() => setIsOpen(true)}>
-            Make Deposit
-          </Button>
         </div>
       </div>
     </WagmiConfig>
   );
 }
 
-interface MakePaymentModalProps {
-  appId: string;
-  closeModal: () => void;
+interface PaymentDetailsProps {
+  jobId: string;
+  coin: SUPPORTED_COINS;
 }
 
-const MakePaymentModal = ({ appId, closeModal }: MakePaymentModalProps) => {
-  // const { data: depositDetails, isLoading } = useGetDepositDetails({ appUUID: appId });
+const PaymentDetails: React.FC<PaymentDetailsProps> = ({ coin, jobId }) => {
+  const mutation = usePostJobPaymentDetails();
 
+  React.useEffect(() => {
+    mutation.mutate({ jobId, coin });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [coin]);
+
+  const [isOpen, setIsOpen] = React.useState(false);
+
+  if (mutation.isLoading)
+    return (
+      <div className="w-full bg-slate-50 min-h-[400px] rounded-xl flex items-center justify-center border border-line">
+        <RaceBy />
+      </div>
+    );
+
+  if (mutation.isError || !mutation.data)
+    return (
+      <div className="w-full bg-red-50 min-h-[400px] rounded-xl flex items-center justify-center border border-red-100">
+        <div className="flex flex-col gap-2 text-red-500 items-center">
+          <AlertCircle size={45} strokeWidth={2} />
+          <span>{mutation.error?.response?.data?.message ?? 'Something went wrong. Please try again later.'}</span>
+        </div>
+      </div>
+    );
+
+  const { data: paymentDetails } = mutation;
+  const depositAddress = paymentDetails.address;
+
+  return (
+    <div className="gap-6 flex flex-col  w-full">
+      <div className={cn('bg-[#ECFCE5] border border-[#198155] rounded-lg p-4 flex flex-col gap-4 text-[#198155]')}>
+        <h2 className="text-lg font-bold">Payment Details</h2>
+
+        <div className="flex flex-col gap-6 text-lg">
+          <div className="flex items-center justify-between">
+            <span>Amount</span>
+            <span>${paymentDetails?.collectionAmount}</span>
+          </div>
+          <div className="flex items-center justify-between">
+            <span>Talent Receives</span>
+            <span>${paymentDetails?.collectionAmount}</span>
+          </div>
+          <div className="flex items-center justify-between">
+            <span>Transaction Fee</span>
+            <span>
+              ${Number(paymentDetails?.usdFee).toFixed(2)} ({paymentDetails?.feePercentage}%)
+            </span>
+          </div>
+          <div className="flex items-center justify-between font-bold">
+            <span>Total</span>
+            <span>${paymentDetails?.usdAmount}</span>
+          </div>
+        </div>
+      </div>
+
+      <div className="border border-line p-6 bg-[#FCFCFC] rounded-2xl flex flex-col items-center gap-4">
+        <div className="flex items-center gap-4">
+          <Image src="/icons/metamask.svg" alt="Coinbase" width={50} height={50} />
+          <Image src="/icons/coinbase.svg" alt="Coinbase" width={50} height={50} />
+          <Image src="/icons/wallet-connect.svg" alt="Coinbase" width={50} height={50} />
+        </div>
+        <p className="text-body">Connect your wallet of choice or pay with a deposit address.</p>
+      </div>
+
+      <Modal isOpen={isOpen} onOpenChange={setIsOpen}>
+        <MakePaymentModal
+          depositAddress={depositAddress}
+          jobId={jobId}
+          closeModal={() => setIsOpen(false)}
+          coin={coin}
+          coinAmount={paymentDetails?.amountToPay}
+        />
+      </Modal>
+
+      <Button
+        fullWidth
+        onClick={() => {
+          setIsOpen(true);
+        }}
+      >
+        Make Deposit
+      </Button>
+    </div>
+  );
+};
+
+interface MakePaymentModalProps {
+  jobId: string;
+  coinAmount: number;
+  depositAddress: string;
+  closeModal: () => void;
+  coin: SUPPORTED_COINS;
+}
+
+const MakePaymentModal = ({ closeModal, depositAddress, jobId, coinAmount, coin }: MakePaymentModalProps) => {
   return (
     <div className="flex w-full flex-col gap-6 bg-white p-6 border rounded-2xl max-w-[400px] mx-auto">
       <div className="flex w-full items-center justify-between">
@@ -219,10 +280,22 @@ const MakePaymentModal = ({ appId, closeModal }: MakePaymentModalProps) => {
           </Tabs.List>
 
           <Tabs.Content value="connect-wallet">
-            <PayWithWallet appId={appId} closeModel={closeModal} amount={500} depositAddress={'xxx'} />
+            <PayWithWallet
+              jobId={jobId}
+              closeModel={closeModal}
+              amount={coinAmount}
+              depositAddress={depositAddress}
+              coin={coin}
+            />
           </Tabs.Content>
           <Tabs.Content value="deposit-to-address">
-            <DepositToAddress appId={appId} closeModel={closeModal} amount={500} depositAddress={'xxx'} />
+            <DepositToAddress
+              jobId={jobId}
+              coin={coin}
+              closeModel={closeModal}
+              amount={coinAmount}
+              depositAddress={depositAddress}
+            />
           </Tabs.Content>
         </Tabs.Root>
       </div>
@@ -231,30 +304,20 @@ const MakePaymentModal = ({ appId, closeModal }: MakePaymentModalProps) => {
 };
 
 interface DepositToAddressProps {
-  appId: string;
+  jobId: string;
   amount: number;
+  coin: SUPPORTED_COINS;
   depositAddress: string;
   closeModel: () => void;
 }
 
-const DepositToAddress = ({ amount, depositAddress, appId, closeModel }: DepositToAddressProps) => {
+const DepositToAddress = ({ amount, depositAddress, jobId, closeModel, coin }: DepositToAddressProps) => {
+  const router = useRouter();
+  const searchParams = useSearchParams();
   const [value, copy] = useCopyToClipboard();
-  //   const { mutateAsync: confirmDeposit, isLoading: isConfirming } = useConfirmDeposit();
-
-  //   const handleConfirmDeposit = async () => {
-  //     try {
-  //       const { data } = await confirmDeposit({ appUUID: appId, amount: amount, depositingAddress: depositAddress });
-  //       if (data?.status === 'success') {
-  //         gotoNextStep && gotoNextStep();
-  //         closeModel();
-  //       }
-  //     } catch (error) {
-  //       console.log('::error::', error);
-  //     }
-  //   };
-
-  // TODO
-  const isConfirming = false;
+  const confirmPayment = useConfirmJobPayment();
+  const talentId = searchParams.get('talent-id');
+  const inviteTalent = useInviteTalentToJob();
 
   return (
     <div className="flex flex-col gap-4">
@@ -264,7 +327,9 @@ const DepositToAddress = ({ amount, depositAddress, appId, closeModel }: Deposit
 
       <div className="border-primary text-primary flex justify-between gap-2 rounded-2xl border bg-[#ECFCE5] px-4 py-6">
         <span className="text-lg">Total Amount:</span>
-        <span className="text-2xl font-bold">${amount}</span>
+        <span className="text-lg font-bold">
+          {amount} {coin}
+        </span>
       </div>
 
       <div className="border-line flex w-full items-center justify-between gap-2 rounded-2xl border bg-[#fcfcfc] px-4 py-4">
@@ -286,70 +351,61 @@ const DepositToAddress = ({ amount, depositAddress, appId, closeModel }: Deposit
       </div>
 
       <Button
-        onClick={
-          () => {}
-          //   handleConfirmDeposit
-        }
+        onClick={() => {
+          confirmPayment.mutate(
+            { jobId },
+            {
+              onSuccess: () => {
+                if (talentId) {
+                  inviteTalent.mutate(
+                    {
+                      jobId,
+                      talentId,
+                    },
+                    {
+                      onSuccess: () => {
+                        router.push(`/jobs/${jobId}`);
+                      },
+                    },
+                  );
+                }
+                closeModel();
+              },
+              onError: () => {},
+            },
+          );
+        }}
         fullWidth
       >
-        {isConfirming ? <Spinner /> : 'I have made transfer'}
+        {confirmPayment.isLoading ? <Spinner /> : 'I have made transfer'}
       </Button>
     </div>
   );
 };
 
 interface PayWithWalletProps {
+  jobId: string;
   amount: number;
+  coin: SUPPORTED_COINS;
   depositAddress: string;
-  appId: string;
   closeModel: () => void;
-  gotoNextStep?: () => void;
 }
 
-const PayWithWallet = ({ amount, depositAddress, appId, gotoNextStep, closeModel }: PayWithWalletProps) => {
+const PayWithWallet = ({ amount, depositAddress, jobId, closeModel, coin }: PayWithWalletProps) => {
   const { chain } = useNetwork();
+  const { isConnected } = useAccount();
+  const isWrongChain = chain?.unsupported;
+
   const { switchNetwork } = useSwitchNetwork({
     chainId: CHAIN_ID,
   });
-  const isWrongChain = chain?.unsupported;
-  const { isConnected, connector: activeConnector } = useAccount();
-  // const { mutateAsync: confirmDeposit, isLoading: isConfirming } = useConfirmDeposit();
-  const { connect, connectors, isLoading: isConnecting, pendingConnector } = useConnect();
 
+  // switch network if wrong chain
   React.useEffect(() => {
     if (isWrongChain && switchNetwork) {
       switchNetwork();
     }
   }, [isConnected, isWrongChain, switchNetwork]);
-
-  //   const handleConfirmDeposit = async () => {
-  //     try {
-  //       const { data } = await confirmDeposit({ appUUID: appId, amount: amount, depositingAddress: depositAddress });
-  //       if (data?.status === 'success') {
-  //         gotoNextStep && gotoNextStep();
-  //         closeModel();
-  //       }
-  //     } catch (error) {
-  //       console.log('::error::', error);
-  //     }
-  //   };
-
-  //   const { config, error } = usePrepareContractWrite({
-  //     abi: contract.abi,
-  //     address: CONTRACT_ADDRESS,
-  //     functionName: 'transfer',
-  //     chainId: CHAIN_ID,
-  //     args: [depositAddress, parseEther(`${amount}`, 'wei')],
-  //   });
-
-  //   const { write, isSuccess, isLoading } = useContractWrite(config);
-
-  // useeffect to confirm deposit
-  //   React.useEffect(() => {
-  //     if (isSuccess) {
-  //       handleConfirmDeposit();
-  //     }
-  //   }, [isSuccess]);
 
   return (
     <div className="flex flex-col gap-8">
@@ -359,47 +415,176 @@ const PayWithWallet = ({ amount, depositAddress, appId, gotoNextStep, closeModel
         and acknowledge that you have read and understand the <span className="text-[#3772FF]">disclaimer.</span>
       </p>
 
-      <div className="flex flex-col gap-6">
-        {connectors.map((connector: Connector) => {
-          const isActive = isConnected && activeConnector?.id === connector.id;
-          const logo = WALLET_LOGO[connector.name];
+      <WalletConnectorList />
 
-          return (
-            <button
-              key={connector.name}
-              type="button"
-              disabled={!connector.ready}
-              onClick={() => connect({ connector })}
-              className={`hover:border-primary flex items-center justify-between rounded-2xl border border-[#DFDFE6] p-1 px-4 py-3 text-left duration-300 hover:!border-opacity-30 ${
-                isActive ? 'border-primary !border-opacity-60' : 'border-[#DFDFE6]'
-              }`}
-            >
-              <span className="flex w-full items-center gap-2">
-                <span>{connector.name}</span>
-                {isConnecting && pendingConnector?.id === connector.id && (
-                  <span className="animate-spin">{<Loader2 size={16} />}</span>
-                )}
-              </span>
+      {coin === 'AVAX' && (
+        <DepositAvax jobId={jobId} amount={amount} depositAddress={depositAddress} closeModel={closeModel} />
+      )}
+      {coin === 'USDC' && (
+        <DepositUSDC jobId={jobId} amount={amount} depositAddress={depositAddress} closeModel={closeModel} />
+      )}
+    </div>
+  );
+};
 
-              <span>{logo && <Image src={logo} width={20} height={20} alt="" />}</span>
-            </button>
-          );
-        })}
-      </div>
-      <div>
+const WalletConnectorList: React.FC = () => {
+  const { isConnected, connector: activeConnector } = useAccount();
+  const { connect, connectors, isLoading, pendingConnector } = useConnect();
+
+  return (
+    <div className="flex flex-col gap-6">
+      {connectors.map((connector: Connector) => {
+        const isActive = isConnected && activeConnector?.id === connector.id;
+        const logo = WALLET_LOGO[connector.name];
+
+        return (
+          <button
+            key={connector.name}
+            type="button"
+            disabled={!connector.ready}
+            onClick={() => connect({ connector: connector })}
+            className={`hover:border-primary flex items-center justify-between rounded-2xl border border-[#DFDFE6] p-1 px-4 py-3 text-left duration-300 hover:!border-opacity-30 ${
+              isActive ? 'border-primary !border-opacity-60 bg-green-50' : 'border-[#DFDFE6]'
+            }`}
+          >
+            <span className="flex w-full items-center gap-2">
+              <span>{connector.name}</span>
+              {isLoading && pendingConnector?.id === connector.id && (
+                <span className="animate-spin">{<Loader2 size={16} />}</span>
+              )}
+            </span>
+
+            <span>{logo && <Image src={logo} width={20} height={20} alt="" />}</span>
+          </button>
+        );
+      })}
+    </div>
+  );
+};
+
+interface WalletDepositProps {
+  jobId: string;
+  amount: number;
+  depositAddress: string;
+  closeModel: () => void;
+}
+
+const DepositAvax: React.FC<WalletDepositProps> = ({ depositAddress, amount, jobId }) => {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const confirmPayment = useConfirmJobPayment();
+  const talentId = searchParams.get('talent-id');
+  const inviteTalent = useInviteTalentToJob();
+
+  const { config } = usePrepareSendTransaction({
+    chainId: CHAIN_ID,
+    to: depositAddress,
+    value: parseEther(amount.toString()),
+  });
+
+  const { sendTransaction, error, isLoading, isError, isSuccess } = useSendTransaction(config);
+
+  React.useEffect(() => {
+    if (isSuccess) {
+      confirmPayment.mutate(
+        { jobId },
         {
-          //   <Button disabled={!write || isConfirming || isLoading} onClick={write} fullWidth>
-          //     {isConfirming ? <Spinner /> : 'Make Payment'}
-          //   </Button>
-        }
+          onSuccess: () => {
+            if (talentId) {
+              inviteTalent.mutate(
+                {
+                  jobId,
+                  talentId,
+                },
+                {
+                  onSuccess: () => {
+                    router.push(`/jobs/${jobId}`);
+                  },
+                },
+              );
+            }
+          },
+        },
+      );
+    }
 
-        <Button fullWidth>Make Payment</Button>
-        {/* {isSuccess && (
-            <Button onClick={handleConfirmDeposit} fullWidth>
-              {isConfirming ? <Spinner /> : "Confirm Deposit"}
-            </Button>
-          )} */}
-      </div>
+    if (isError) {
+      console.log(error);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isSuccess, isError]);
+
+  return (
+    <div>
+      <Button
+        disabled={!sendTransaction || isLoading || confirmPayment.isLoading}
+        onClick={() => sendTransaction?.()}
+        fullWidth
+      >
+        <div className="flex items-center justify-center gap-2">
+          <span> Make Payment</span> <span>{(isLoading || confirmPayment.isLoading) && <Spinner />}</span>
+        </div>
+      </Button>
+    </div>
+  );
+};
+
+const DepositUSDC: React.FC<WalletDepositProps> = ({ amount, depositAddress, jobId }) => {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const talentId = searchParams.get('talent-id');
+  const confirmPayment = useConfirmJobPayment();
+  const inviteTalent = useInviteTalentToJob();
+
+  const { config } = usePrepareContractWrite({
+    abi: erc20ABI,
+    enabled: false,
+    chainId: CHAIN_ID,
+    functionName: 'transfer',
+    address: USDC_CONTRACT_ADDRESS,
+    args: [`0x${depositAddress.substring(2)}`, parseEther(`${amount}`, 'wei')],
+  });
+
+  const { write, error, isError, isLoading, isSuccess } = useContractWrite(config);
+
+  React.useEffect(() => {
+    if (isSuccess) {
+      confirmPayment.mutate(
+        { jobId },
+        {
+          onSuccess: () => {
+            if (talentId) {
+              inviteTalent.mutate(
+                {
+                  jobId,
+                  talentId,
+                },
+                {
+                  onSuccess: () => {
+                    router.push(`/jobs/${jobId}`);
+                  },
+                },
+              );
+            }
+          },
+        },
+      );
+    }
+
+    if (isError) {
+      console.log(error);
+    }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isSuccess, isError]);
+
+  return (
+    <div>
+      <Button fullWidth disabled={!write || isLoading || confirmPayment.isLoading} onClick={() => write?.()}>
+        <div className="flex items-center justify-center gap-2">
+          <span> Make Payment</span> <span>{(isLoading || confirmPayment.isLoading) && <Spinner />}</span>
+        </div>
+      </Button>
     </div>
   );
 };
