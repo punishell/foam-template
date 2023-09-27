@@ -5,7 +5,7 @@ import { JobFeedCard } from './feedViewer';
 import { Spinner } from '../common';
 
 export const Invites = () => {
-  const { data: inviteData, isFetched, isFetching } = useGetInvites({ page: 1, limit: 10, filter: {} });
+  const { data: inviteData, isFetched, isFetching } = useGetInvites({ page: 1, limit: 10, filter: { status: "pending" } });
 
   const invites = useMemo(() => (inviteData?.data || []).map((feed, i) =>
     <JobFeedCard
