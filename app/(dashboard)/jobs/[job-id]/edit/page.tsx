@@ -8,6 +8,7 @@ import { useRouter } from 'next/navigation';
 import { Button } from 'pakt-ui';
 import { useDropzone } from 'react-dropzone';
 import { useUpdateJob } from '@/lib/api/job';
+import { useSearchParams } from 'next/navigation';
 import { Spinner } from '@/components/common';
 import { endOfYesterday, format } from 'date-fns';
 import { NumericInput } from '@/components/common/numeric-input';
@@ -93,12 +94,14 @@ interface JobEditFormProps {
 }
 
 const JobEditForm: React.FC<JobEditFormProps> = ({ job }) => {
+  const params = useSearchParams();
   const router = useRouter();
+  const talentId = params.get('talent-id');
   const updateJob = useUpdateJob();
   const [files, setFiles] = React.useState<File[]>([]);
   const [uploadProgress, setUploadProgress] = React.useState(0);
 
-  const onDrop = React.useCallback(async (acceptedFiles: File[]) => { }, []);
+  const onDrop = React.useCallback(async (acceptedFiles: File[]) => {}, []);
 
   const { getRootProps, getInputProps } = useDropzone({
     onDrop,
@@ -154,7 +157,6 @@ const JobEditForm: React.FC<JobEditFormProps> = ({ job }) => {
       {
         onSuccess(_data, { id }) {
           form.reset();
-          router.push(`/jobs/${id}`);
         },
       },
     );
@@ -392,8 +394,26 @@ const JobEditForm: React.FC<JobEditFormProps> = ({ job }) => {
               </div>
             </div>
           </div>
-          <div className="ml-auto max-w-[250px] w-full">
-            <Button fullWidth>{updateJob.isLoading ? <Spinner /> : 'Update Job'}</Button>
+          <div className="flex gap-4 items-center w-full justify-end">
+            {form.formState.isDirty && (
+              <div className=" max-w-[250px] w-full">
+                <Button fullWidth>{updateJob.isLoading ? <Spinner /> : 'Update Job'}</Button>
+              </div>
+            )}
+
+            {talentId && (
+              <div className="max-w-[250px] w-full">
+                <Button
+                  type="button"
+                  fullWidth
+                  onClick={() => {
+                    router.push(`/jobs/${job._id}/make-deposit/?talent-id=${talentId}`);
+                  }}
+                >
+                  {'Make Deposit'}
+                </Button>
+              </div>
+            )}
           </div>
         </div>
       </form>
