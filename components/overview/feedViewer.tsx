@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Button } from 'pakt-ui';
 import { useRouter } from 'next/navigation';
 import { X, Bookmark, Briefcase, Clock4, Gavel } from 'lucide-react';
@@ -9,42 +9,10 @@ import alert from '@/lottiefiles/alert.json';
 import gavel from '@/lottiefiles/gavel.json';
 import failed from '@/lottiefiles/failed.json';
 import warning from '@/lottiefiles/warning.json';
-import { useSaveToBookmark } from '@/lib/api/bookmark';
 import { ProfileImage } from './ProfileImage';
+import { RenderBookMark } from '../jobs/job-cards/render-bookmark';
+import Link from 'next/link';
 
-const RenderBookMark = ({ size = 20, isBookmarked, id }: { id: string; isBookmarked?: boolean; size: number }) => {
-  const [bookmarked, setBookmarked] = useState(isBookmarked);
-  const addBookmark = useSaveToBookmark();
-  const removeBookmark = useSaveToBookmark();
-  // const CallFuc = () => isBookmarked ? removeBookmark : addBookmark;
-  const CallFuc = () => {
-    return bookmarked
-      ? removeBookmark.mutate(
-          { reference: id, type: 'feed' },
-          {
-            onSuccess: (_data) => {
-              setBookmarked(!bookmarked);
-            },
-          },
-        )
-      : addBookmark.mutate(
-          { reference: id, type: 'feed' },
-          {
-            onSuccess: (_data) => {
-              setBookmarked(!bookmarked);
-            },
-          },
-        );
-  };
-  return (
-    <Bookmark
-      fill={isBookmarked ? '#404446' : '#FFFFFF'}
-      className="cursor-pointer"
-      size={size}
-      onClick={() => CallFuc()}
-    />
-  );
-};
 interface JobInvitePendingProps {
   jobId: string;
   title: string;
@@ -100,16 +68,12 @@ export const JobFeedCard: React.FC<JobFeedCardProps> = (props) => {
           </p>
 
           <div className="justify-between items-center flex mt-auto">
-            <Button
-              size="xs"
-              variant="secondary"
-              onClick={() => {
-                router.push('/jobs');
-              }}
-            >
-              See More Jobs
-            </Button>
-            <RenderBookMark size={20} isBookmarked={bookmarked} id={id} />
+            <Link href={'/jobs'}>
+              <Button size="xs" variant="secondary">
+                See More Jobs
+              </Button>
+            </Link>
+            <RenderBookMark size={20} isBookmarked={bookmarked} type="feed" id={id} bookmarkId={id} />
           </div>
         </div>
       </JobFeedWrapper>
@@ -143,19 +107,13 @@ export const JobFeedCard: React.FC<JobFeedCardProps> = (props) => {
           <span className="text-title text-2xl font-normal">{title}</span>
 
           <div className="justify-between items-center flex mt-auto">
-            <div className="flex items-center gap-2">
-              <Button
-                size="xs"
-                variant="secondary"
-                onClick={() => {
-                  router.push(`/jobs/${jobId}?invite-id=${inviteId}`);
-                }}
-              >
+            <Link href={`/jobs/${jobId}`} className="flex items-center gap-2">
+              <Button size="xs" variant="secondary">
                 See Details
               </Button>
-            </div>
+            </Link>
 
-            <RenderBookMark size={20} isBookmarked={bookmarked} id={inviteId} />
+            <RenderBookMark size={20} isBookmarked={bookmarked} id={inviteId} type="feed" bookmarkId={inviteId} />
           </div>
         </div>
       </JobFeedWrapper>
@@ -205,12 +163,12 @@ export const PublicJobCreatedFeed = ({
         </div>
         <h3 className="text-title text-2xl font-normal">{title}</h3>
         <div className="justify-between items-center flex mt-auto">
-          <div className="flex items-center gap-2">
+          <Link href={`/jobs/${jobId}`} className="flex items-center gap-2">
             <Button size="xs" variant="outline">
               See Details
             </Button>
-          </div>
-          <RenderBookMark size={20} isBookmarked={bookmarked} id={_id} />
+          </Link>
+          <RenderBookMark size={20} isBookmarked={bookmarked} type="feed" id={_id} bookmarkId={_id} />
         </div>
       </div>
     </JobFeedWrapper>

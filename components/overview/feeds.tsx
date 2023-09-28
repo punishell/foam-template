@@ -7,7 +7,7 @@ import { useUserState } from '@/lib/store/account';
 
 export const Feeds = () => {
   const { _id: loggedInUser } = useUserState()
-  const { data: timelineData, refetch: feedRefetch, isFetching, isFetched } = useGetTimeline({ page: 1, limit: 10, filter: {} });
+  const { data: timelineData, refetch: feedRefetch, isFetching, isFetched } = useGetTimeline({ page: 1, limit: 10, filter: { isPublic: true, isOwner: true } });
 
   // @ts-ignore
   const DismissAll = () => useDismissAllFeed().mutate({}, {

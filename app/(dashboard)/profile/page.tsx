@@ -64,6 +64,7 @@ export default function Profile() {
         score={talent.score}
         skills={talent.skills}
         isOwnProfile={true}
+        profileImage={talent.image}
       />
 
       <div className="flex gap-6 w-full">
