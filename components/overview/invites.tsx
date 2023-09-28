@@ -8,13 +8,13 @@ import { PageLoading } from '@/components/common/page-loading';
 export const Invites = () => {
   const query = useGetInvites({});
 
-  if (query.isLoading) return <PageLoading className="rounded-xl border border-line" />;
+  if (query.isLoading) return <PageLoading className="rounded-xl border border-line h-[80%]" />;
 
-  if (query.isError) return <PageError className="rounded-xl border border-red-100" />;
+  if (query.isError) return <PageError className="rounded-xl border border-red-100 h-[80%]" />;
 
   const invites = query.data.data;
 
-  if (invites.length === 0) return <PageEmpty />;
+  if (invites.length === 0) return <PageEmpty className="h-[80%]" />;
 
   return (
     <div className="flex flex-col gap-5 mt-4 border border-line bg-white rounded-2xl p-4 w-full">
