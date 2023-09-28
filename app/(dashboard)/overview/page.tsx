@@ -18,7 +18,7 @@ export default function Overview() {
   const account = useGetAccount();
 
   return (
-    <div className="flex flex-col overflow-y-auto gap-8 relative h-full">
+    <div className="flex flex-col gap-8 relative h-full">
       <Header />
 
       <div className="flex gap-6 h-full">
@@ -37,7 +37,7 @@ export default function Overview() {
           </div>
         </div>
 
-        <div className="basis-[300px] shrink-0 h-full gap-7 w-fit flex flex-col items-center">
+        <div className="basis-[300px] shrink-0 h-full gap-7 w-fit flex flex-col items-center overflow-y-auto">
           <AfroScore score={account.data?.score} />
           <LeaderBoard />
         </div>
@@ -62,8 +62,7 @@ const JobHeader = () => {
           <div className="gap-2 flex flex-[7] flex-col border-l-[1px] border-[#e8e8e8] pl-[24px]">
             <h4 className="text-xl font-bold">Complete your profile to start Applying for Jobs and Projects</h4>
             <p className="text-base leading-6 tracking-[0.75px] text-body">
-              Welcome to Afrofund! Fill out your profile - the more complete it is the more likely you
-              are to get hired.
+              Welcome to Afrofund! Fill out your profile - the more complete it is the more likely you are to get hired.
             </p>
             <div className="h-[48px] w-[226px]">
               <Button variant="primary" size="md" onClick={() => router.push('/settings')}>
@@ -75,7 +74,7 @@ const JobHeader = () => {
           </div>
         </div>
       </div>
-    )
+    );
   }
   return (
     <div className="grid gap-4 grid-cols-2">

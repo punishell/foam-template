@@ -1,5 +1,6 @@
 import React from 'react';
 import { Button } from 'pakt-ui';
+import { useRouter } from 'next/navigation';
 import { X, Bookmark, Briefcase, Clock4, Gavel } from 'lucide-react';
 import Lottie from 'lottie-react';
 import { AfroProfile } from '../common/afro-profile';
@@ -13,9 +14,9 @@ import { RenderBookMark } from '../jobs/job-cards/render-bookmark';
 import Link from 'next/link';
 
 interface JobInvitePendingProps {
-  _id: string;
-  id: string;
+  jobId: string;
   title: string;
+  inviteId: string;
   amount: string;
   inviter: {
     name: string;
@@ -29,7 +30,7 @@ interface JobInvitePendingProps {
 }
 
 interface JobFilledProps {
-  _id: string;
+  id: string;
   title: string;
   inviter: {
     name: string;
@@ -45,9 +46,10 @@ type JobFeedCardProps = JobInvitePendingProps | JobFilledProps;
 
 export const JobFeedCard: React.FC<JobFeedCardProps> = (props) => {
   const { type } = props;
+  const router = useRouter();
 
   if (type === 'job-invite-filled') {
-    const { _id, title, inviter, bookmarked, imageUrl } = props;
+    const { id, title, bookmarked, imageUrl } = props;
 
     return (
       <JobFeedWrapper>
@@ -66,12 +68,12 @@ export const JobFeedCard: React.FC<JobFeedCardProps> = (props) => {
           </p>
 
           <div className="justify-between items-center flex mt-auto">
-            <Link href={"/jobs"}>
+            <Link href={'/jobs'}>
               <Button size="xs" variant="secondary">
                 See More Jobs
               </Button>
             </Link>
-            <RenderBookMark size={20} isBookmarked={bookmarked} type="feed" id={_id} bookmarkId={_id} />
+            <RenderBookMark size={20} isBookmarked={bookmarked} type="feed" id={id} bookmarkId={id} />
           </div>
         </div>
       </JobFeedWrapper>
@@ -79,11 +81,10 @@ export const JobFeedCard: React.FC<JobFeedCardProps> = (props) => {
   }
 
   if (type === 'job-invite-pending') {
-    const { _id, title, amount, inviter, bookmarked, invitationExpiry, id, imageUrl } = props;
+    const { title, amount, inviter, bookmarked, invitationExpiry, inviteId, imageUrl, jobId } = props;
 
     return (
       <JobFeedWrapper>
-        =
         <ProfileImage imageUrl={imageUrl} />
         <div className="flex flex-col gap-4 w-full py-4">
           <div className="flex justify-between items-center">
@@ -106,13 +107,13 @@ export const JobFeedCard: React.FC<JobFeedCardProps> = (props) => {
           <span className="text-title text-2xl font-normal">{title}</span>
 
           <div className="justify-between items-center flex mt-auto">
-            <Link href={`/jobs/${id}`} className="flex items-center gap-2">
+            <Link href={`/jobs/${jobId}`} className="flex items-center gap-2">
               <Button size="xs" variant="secondary">
                 See Details
               </Button>
             </Link>
 
-            <RenderBookMark size={20} isBookmarked={bookmarked} id={_id} type="feed" bookmarkId={_id} />
+            <RenderBookMark size={20} isBookmarked={bookmarked} id={inviteId} type="feed" bookmarkId={inviteId} />
           </div>
         </div>
       </JobFeedWrapper>

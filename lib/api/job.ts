@@ -1,7 +1,7 @@
 import type { Job } from '@/lib/types';
 import { axios, ApiError, ApiResponse } from '@/lib/axios';
 import { toast } from '@/components/common/toaster';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
 // Create Job
 interface CreateJobParams {
@@ -26,7 +26,7 @@ async function postCreateJob(params: CreateJobParams): Promise<Job> {
 }
 
 export function useCreateJob() {
-  const assignJobDeliverables = useAssignJobDeliverables();
+  const assignJobDeliverables = useAttachDeliverablesToJob();
 
   return useMutation({
     mutationFn: postCreateJob,
@@ -102,7 +102,7 @@ export function useGetJobById(params: GetJobByIdParams) {
     queryFn: () => getJobById(params),
     queryKey: ['get-job-by-id', params],
     onError: (error: ApiError) => {
-      toast.error(error?.response?.data.message || 'An error occurred');
+      toast.error(error?.response?.data.message ?? 'An error occurred');
     },
   });
 }
@@ -132,13 +132,13 @@ async function postUpdateJob(params: UpdateJobParams): Promise<Job> {
 }
 
 export function useUpdateJob() {
-  const updateJobDeliverables = useAssignJobDeliverables();
+  const updateJobDeliverables = useAttachDeliverablesToJob();
 
   return useMutation({
     mutationFn: postUpdateJob,
     mutationKey: ['update-job'],
     onError: (error: ApiError) => {
-      toast.error(error?.response?.data.message || 'An error occurred');
+      toast.error(error?.response?.data.message ?? 'An error occurred');
     },
     onSuccess: (_, { deliverables = [], id, name }) => {
       updateJobDeliverables.mutate({
@@ -151,15 +151,15 @@ export function useUpdateJob() {
   });
 }
 
-// Assign Job Deliverables
+// Attach Deliverables to Job
 
-interface AssignJobDeliverablesParams {
+interface AttachDeliverablesToJobParams {
   jobId: string;
   replace?: boolean;
   deliverables: string[];
 }
 
-async function postAssignJobDeliverables(params: AssignJobDeliverablesParams): Promise<any> {
+async function postAttachDeliverablesToJob(params: AttachDeliverablesToJobParams): Promise<any> {
   const deliverables = params.deliverables.map((deliverable) => ({
     name: deliverable,
     description: deliverable,
@@ -174,9 +174,9 @@ async function postAssignJobDeliverables(params: AssignJobDeliverablesParams): P
   return res.data.data;
 }
 
-export function useAssignJobDeliverables() {
+export function useAttachDeliverablesToJob() {
   return useMutation({
-    mutationFn: postAssignJobDeliverables,
+    mutationFn: postAttachDeliverablesToJob,
     mutationKey: ['assign-job-deliverables'],
     onError: (error: ApiError) => {
       toast.error(error?.response?.data.message || 'Assigning deliverables failed');
@@ -184,11 +184,108 @@ export function useAssignJobDeliverables() {
   });
 }
 
-// Apply to an open job
-// TODO
+// Mark Deliverable as Complete
 
-// Assign job to talent
-// TODO
+interface MarkDeliverableAsCompleteParams {
+  jobId: string;
+  isComplete: boolean;
+  deliverableId: string;
+  totalDeliverables: number;
+  completedDeliverables: number;
+}
+
+async function postMarkDeliverableAsComplete(params: MarkDeliverableAsCompleteParams): Promise<ApiResponse> {
+  const res = await axios.patch(`/collection/${params.deliverableId}`, {
+    progress: params.isComplete ? 100 : 0,
+  });
+  return res.data;
+}
+
+export function useMarkDeliverableAsComplete() {
+  const updateJobProgress = useUpdateJobProgress();
+
+  return useMutation({
+    mutationFn: postMarkDeliverableAsComplete,
+    mutationKey: ['mark-deliverable-as-complete'],
+    onError: (error: ApiError) => {
+      toast.error(error?.response?.data.message ?? 'Marking deliverable as complete failed');
+    },
+    onSuccess: (_, { completedDeliverables, jobId, totalDeliverables, isComplete }) => {
+      const progressPercentage = (isComplete: boolean) => {
+        if (isComplete) return ((completedDeliverables + 1) / totalDeliverables) * 100;
+        return (completedDeliverables - 1 / totalDeliverables) * 100;
+      };
+
+      updateJobProgress.mutate({
+        jobId,
+        progress: progressPercentage(isComplete),
+      });
+      toast.success(`Deliverable marked as ${isComplete ? 'complete' : 'incomplete'} successfully`);
+    },
+  });
+}
+
+// Update Job Progress
+
+interface UpdateJobProgressParams {
+  jobId: string;
+  progress: number;
+}
+
+async function postUpdateJobProgress(params: UpdateJobProgressParams): Promise<ApiResponse> {
+  const res = await axios.patch(`/collection/${params.jobId}`, {
+    progress: params.progress,
+  });
+  return res.data.data;
+}
+
+export function useUpdateJobProgress() {
+  const queryClient = useQueryClient();
+  const jobsQuery = useGetJobs({ category: 'assigned' });
+
+  return useMutation({
+    mutationFn: postUpdateJobProgress,
+    mutationKey: ['update-job-progress'],
+    onError: (error: ApiError) => {
+      toast.error(error?.response?.data.message ?? 'Updating job progress failed');
+    },
+    onSuccess: () => {
+      jobsQuery.refetch();
+      queryClient.refetchQueries(['get-job-by-id']);
+    },
+  });
+}
+
+// Mark Job as Complete
+
+interface MarkJobAsCompleteParams {
+  jobId: string;
+}
+
+async function postMarkJobAsComplete(params: MarkJobAsCompleteParams): Promise<ApiResponse> {
+  const res = await axios.patch(`/collection/${params.jobId}`, {
+    status: 'completed',
+  });
+  return res.data.data;
+}
+
+export function useMarkJobAsComplete() {
+  const queryClient = useQueryClient();
+  const jobsQuery = useGetJobs({ category: 'assigned' });
+
+  return useMutation({
+    mutationFn: postMarkJobAsComplete,
+    mutationKey: ['mark-job-as-complete'],
+    onError: (error: ApiError) => {
+      toast.error(error?.response?.data.message ?? 'Marking job as complete failed');
+    },
+    onSuccess: () => {
+      jobsQuery.refetch();
+      queryClient.refetchQueries(['get-job-by-id']);
+      toast.success('Job marked as complete successfully');
+    },
+  });
+}
 
 // Invite talent to a job
 interface InviteTalentToJobParams {
@@ -199,7 +296,7 @@ interface InviteTalentToJobParams {
 async function postInviteTalentToJob(params: InviteTalentToJobParams): Promise<ApiResponse> {
   const res = await axios.post(`/invite`, {
     collection: params.jobId,
-    receiver: params.talentId,
+    recipient: params.talentId,
   });
   return res.data.data;
 }
@@ -270,16 +367,17 @@ export function useDeclinePrivateJobInvite() {
 // Apply to an open job
 
 interface ApplyToOpenJobParams {
-  bid: number;
   jobId: string;
+  amount: number;
   message: string;
 }
 
 async function postApplyToOpenJob(params: ApplyToOpenJobParams): Promise<ApiResponse> {
-  const res = await axios.post(`/bid`, {
-    bid: params.bid,
-    collection: params.jobId,
-    message: params.message,
+  const res = await axios.post(`/collection`, {
+    type: 'application',
+    name: 'Application',
+    parent: params.jobId,
+    paymentFee: params.amount,
   });
   return res.data.data;
 }
@@ -340,8 +438,8 @@ interface ConfirmJobPaymentParams {
 }
 
 async function postConfirmJobPayment(params: ConfirmJobPaymentParams): Promise<ApiResponse> {
-  // delay for 5 seconds
-  await new Promise((resolve) => setTimeout(resolve, 5000));
+  // delay for 10 seconds
+  await new Promise((resolve) => setTimeout(resolve, 10000));
   const res = await axios.post(`/payment/validate`, {
     collection: params.jobId,
   });

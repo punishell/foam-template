@@ -10,17 +10,17 @@ import { PageError } from '@/components/common/page-error';
 import { PageLoading } from '@/components/common/page-loading';
 import { useGetBookmarks } from '@/lib/api/bookmark';
 
-interface Props { }
+interface Props {}
 
 export const OpenJobs: React.FC<Props> = () => {
   const jobsData = useGetJobs({ category: 'open' });
-  const bookmarkData = useGetBookmarks({ page: 1, limit: 5, filter: { type: "collection" } })
+  const bookmarkData = useGetBookmarks({ page: 1, limit: 5, filter: { type: 'collection' } });
 
   if (jobsData.isError || bookmarkData.isError) return <PageError />;
   if (jobsData.isLoading) return <PageLoading />;
 
   const jobs = jobsData.data.data;
-  console.log(jobs, bookmarkData.data?.data)
+  console.log(jobs, bookmarkData.data?.data);
   return (
     <div className="flex flex-col gap-6 h-full">
       <JobSearchBar />
@@ -36,7 +36,14 @@ export const OpenJobs: React.FC<Props> = () => {
             {
               label: 'Saved',
               value: 'saved',
-              content: <SavedJobs jobs={bookmarkData.data?.data ?? []} isError={bookmarkData.isError} isLoading={bookmarkData.isLoading} onRefresh={bookmarkData.refetch} />,
+              content: (
+                <SavedJobs
+                  jobs={bookmarkData.data?.data ?? []}
+                  isError={bookmarkData.isError}
+                  isLoading={bookmarkData.isLoading}
+                  onRefresh={bookmarkData.refetch}
+                />
+              ),
             },
           ]}
         />
@@ -86,11 +93,10 @@ interface SavedJobsProps {
 }
 
 const SavedJobs: React.FC<SavedJobsProps> = ({ jobs, isError, isLoading, onRefresh }) => {
-
   if (isError) return <PageError />;
   if (isLoading) return <PageLoading />;
   if (!jobs.length)
-    return <PageEmpty label="Your saved jobs will appear here." className="rounded-lg border border-line h-full" />;
+    return <PageEmpty label="Your saved jobs will appear here." className="rounded-lg border border-line h-[90%]" />;
 
   return (
     <div className="grid grid-cols-2 gap-4 overflow-y-auto pb-20">

@@ -1,9 +1,13 @@
 'use client';
 import React from 'react';
 import { Button } from 'pakt-ui';
+import { format } from 'date-fns';
+import { Spinner } from '@/components/common';
+import { useDeclineInvite, useAcceptInvite } from '@/lib/api/invites';
 import type { Job } from '@/lib/types';
 import { useRouter } from 'next/navigation';
 import { useGetJobById } from '@/lib/api/job';
+import { useSearchParams } from 'next/navigation';
 import { useGetAccount } from '@/lib/api/account';
 import { Modal } from '@/components/common/modal';
 import { PageError } from '@/components/common/page-error';
@@ -61,7 +65,16 @@ const ClientJobDetails: React.FC<ClientJobDetailsProps> = ({ job }) => {
   return (
     <div className="flex gap-6 h-full">
       <div className="grow overflow-y-auto h-full flex flex-col pb-20">
-        <JobHeader title={job.name} price={job.paymentFee} dueDate={job.deliveryDate} />
+        <JobHeader
+          title={job.name}
+          price={job.paymentFee}
+          dueDate={job.deliveryDate}
+          creator={{
+            score: job.creator.score,
+            avatar: job.creator.profileImage?.url,
+            name: `${job.creator.firstName} ${job.creator.lastName}`,
+          }}
+        />
         <div className="bg-white flex flex-col w-full p-6 rounded-b-xl grow border-line border-t-0 border">
           <JobDeliverables
             deliverables={job.collections
@@ -164,6 +177,8 @@ interface TalentJobDetailsProps {
 // TALENT JOB DETAILS
 
 const TalentJobDetails: React.FC<TalentJobDetailsProps> = ({ job }) => {
+  const searchParams = useSearchParams();
+  const inviteId = searchParams.get('invite-id');
   const JOB_TYPE: 'private' | 'open' = job.isPrivate ? 'private' : 'open';
 
   const CTAS = {
@@ -177,36 +192,29 @@ const TalentJobDetails: React.FC<TalentJobDetailsProps> = ({ job }) => {
     <div className="flex gap-6 h-full">
       <div className="grow overflow-y-auto h-full flex flex-col pb-20">
         <JobHeader
-          title="Email Newsletter Design for a Monthly Newsletter"
-          price={6000}
+          title={job.name}
+          price={job.paymentFee}
           dueDate="2023"
           creator={{
-            score: 85,
-            avatar: '',
-            name: 'John Doe',
+            score: job.creator.score,
+            avatar: job.creator.profileImage?.url,
+            name: `${job.creator.firstName} ${job.creator.lastName}`,
           }}
         />
         <div className="bg-white flex flex-col w-full p-6 rounded-b-xl grow border-line border-t-0 border">
           <JobDeliverables
-            deliverables={[
-              'All the source files used to create the final design in a compatible format to provide the flexibility to modify the design elements in the future.',
-              'All the source files used to create the final design in a compatible format to provide the flexibility to modify the design elements in the future.',
-              'All the source files used to create the final design in a compatible format to provide the flexibility to modify the design elements in the future.',
-              'All the source files used to create the final design in a compatible format to provide the flexibility to modify the design elements in the future.',
-            ]}
+            deliverables={job.collections
+              .filter((collection) => collection.type === 'deliverable')
+              .map((collection) => collection.name)}
           />
 
-          <JobCtas jobId={job._id} />
+          <JobCtas jobId={job._id} inviteId={inviteId} />
         </div>
       </div>
 
       <div className="basis-[300px] h-full gap-7 w-fit flex flex-col items-center">
-        <JobDescription
-          description=" Are you a naturally goofy person who loves making people laugh? Do you have a wild imagination and a passion for
-        creating hilarious product designs? If so, we have the perfect short-term contract position for you as our Chief
-        Goofiness Officer!"
-        />
-        <JobSkills skills={['Adobe Photoshop', 'Adobe Illustrator', 'Figma']} />
+        <JobDescription description={job.description} />
+        <JobSkills skills={[...job.tagsData]} />
       </div>
     </div>
   );
@@ -263,17 +271,51 @@ const TalentApplicationSuccessModal = () => {
 };
 
 interface TalentPrivateJobCtasProps {
-  jobId: string;
+  inviteId: string | null;
 }
 
-const TalentPrivateJobCtas: React.FC<TalentPrivateJobCtasProps> = ({ jobId }) => {
+const TalentPrivateJobCtas: React.FC<TalentPrivateJobCtasProps> = ({ inviteId }) => {
+  const router = useRouter();
+  const acceptInvite = useAcceptInvite();
+  const declineInvite = useDeclineInvite();
+
+  if (!inviteId) return null;
+
   return (
     <div className="mt-auto w-full flex items-center justify-end">
       <div className="w-full flex items-center max-w-sm gap-4">
-        <Button fullWidth variant="danger">
-          Decline
+        <Button
+          fullWidth
+          variant="danger"
+          onClick={() => {
+            declineInvite.mutate(
+              { id: inviteId },
+              {
+                onSuccess: () => {
+                  router.push('/jobs');
+                },
+              },
+            );
+          }}
+        >
+          {declineInvite.isLoading ? <Spinner /> : 'Decline'}
         </Button>
-        <Button fullWidth>Accept</Button>
+
+        <Button
+          fullWidth
+          onClick={() => {
+            acceptInvite.mutate(
+              { id: inviteId },
+              {
+                onSuccess: () => {
+                  router.push('/jobs');
+                },
+              },
+            );
+          }}
+        >
+          {acceptInvite.isLoading ? <Spinner /> : 'Accept'}
+        </Button>
       </div>
     </div>
   );
