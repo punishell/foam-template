@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Button } from 'pakt-ui';
 import { X, Bookmark, Briefcase, Clock4, Gavel } from 'lucide-react';
 import Lottie from 'lottie-react';
@@ -8,7 +8,6 @@ import alert from '@/lottiefiles/alert.json';
 import gavel from '@/lottiefiles/gavel.json';
 import failed from '@/lottiefiles/failed.json';
 import warning from '@/lottiefiles/warning.json';
-import { useRemoveFromBookmark, useSaveToBookmark } from '@/lib/api/bookmark';
 import { ProfileImage } from './ProfileImage';
 import { RenderBookMark } from '../jobs/job-cards/render-bookmark';
 
