@@ -5,7 +5,7 @@ import { format } from 'date-fns';
 import type { Job } from '@/lib/types';
 import { Tabs } from '@/components/common/tabs';
 import { UnAssignedJobCard } from '@/components/jobs/job-cards/unassigned-job';
-import { AssignedJobClientCard } from '@/components/jobs/job-cards/assigned-job';
+import { ClientJobCard } from '@/components/jobs/job-cards/assigned-job';
 
 import { useGetJobs } from '@/lib/api/job';
 import { PageEmpty } from '@/components/common/page-empty';
@@ -80,14 +80,17 @@ const OngoingJobs: React.FC<OngoingJobsProps> = ({ jobs }) => {
 
   return (
     <div className="grid grid-cols-2 gap-4 overflow-y-auto pb-20">
-      {jobs.map(({ _id, paymentFee, name, creator }) => {
+      {jobs.map(({ _id, paymentFee, name, creator, progress, collections }) => {
         return (
-          <AssignedJobClientCard
-            id={_id}
+          <ClientJobCard
+            progress={progress}
+            totalDeliverables={collections.filter((collection) => collection.type === 'deliverable').length}
+            jobId={_id}
             key={_id}
             price={paymentFee}
             title={name}
-            inviter={{
+            talent={{
+              id: creator._id,
               paktScore: creator.score,
               avatar: creator.profileImage?.url,
               name: `${creator.firstName} ${creator.lastName}`,
@@ -111,14 +114,17 @@ const CompletedJobs: React.FC<CompletedJobsProps> = ({ jobs }) => {
 
   return (
     <div className="grid grid-cols-2 gap-4 overflow-y-auto pb-20">
-      {jobs.map(({ _id, paymentFee, name, creator }) => {
+      {jobs.map(({ _id, paymentFee, name, creator, collections, progress }) => {
         return (
-          <AssignedJobClientCard
-            id={_id}
+          <ClientJobCard
+            jobId={_id}
+            progress={progress}
+            totalDeliverables={collections.filter((collection) => collection.type === 'deliverable').length}
             key={_id}
             price={paymentFee}
             title={name}
-            inviter={{
+            talent={{
+              id: creator._id,
               paktScore: creator.score,
               avatar: creator.profileImage?.url,
               name: `${creator.firstName} ${creator.lastName}`,
