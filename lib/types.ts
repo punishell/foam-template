@@ -74,6 +74,8 @@ export interface Job {
   collections: Array<JobDeliverable>;
   status: 'pending' | 'ongoing' | 'completed' | 'waiting' | 'cancelled';
   payoutStatus: 'pending' | 'ongoing' | 'completed' | 'waiting' | 'cancelled';
+  isBookmarked?: boolean;
+  bookmarkId?: string;
 }
 
 interface JobDeliverable {
@@ -96,4 +98,27 @@ export interface AchievementProps {
   type: string;
   value: string;
   total: string;
+}
+export interface DataFeedResponse {
+  closed: boolean;
+  createdAt?: string;
+  updatedAt?: string;
+  creator: User;
+  data: { _id: string; paymentFee: string; creator: User; owner?: User };
+  description: string;
+  isBookmarked: boolean;
+  isPublic?: boolean;
+  owner: User;
+  owners?: User[];
+  title: string;
+  type: string;
+  _id: string;
+}
+
+export interface Bookmark {
+  _id: string;
+  type: string;
+  owner?: User;
+  data: Job;
+  feed: DataFeedResponse;
 }

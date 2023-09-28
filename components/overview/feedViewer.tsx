@@ -8,42 +8,10 @@ import alert from '@/lottiefiles/alert.json';
 import gavel from '@/lottiefiles/gavel.json';
 import failed from '@/lottiefiles/failed.json';
 import warning from '@/lottiefiles/warning.json';
-import { useSaveToBookmark } from '@/lib/api/bookmark';
+import { useRemoveFromBookmark, useSaveToBookmark } from '@/lib/api/bookmark';
 import { ProfileImage } from './ProfileImage';
+import { RenderBookMark } from '../jobs/job-cards/render-bookmark';
 
-const RenderBookMark = ({ size = 20, isBookmarked, id }: { id: string; isBookmarked?: boolean; size: number }) => {
-  const [bookmarked, setBookmarked] = useState(isBookmarked);
-  const addBookmark = useSaveToBookmark();
-  const removeBookmark = useSaveToBookmark();
-  // const CallFuc = () => isBookmarked ? removeBookmark : addBookmark;
-  const CallFuc = () => {
-    return bookmarked
-      ? removeBookmark.mutate(
-          { reference: id, type: 'feed' },
-          {
-            onSuccess: (_data) => {
-              setBookmarked(!bookmarked);
-            },
-          },
-        )
-      : addBookmark.mutate(
-          { reference: id, type: 'feed' },
-          {
-            onSuccess: (_data) => {
-              setBookmarked(!bookmarked);
-            },
-          },
-        );
-  };
-  return (
-    <Bookmark
-      fill={isBookmarked ? '#404446' : '#FFFFFF'}
-      className="cursor-pointer"
-      size={size}
-      onClick={() => CallFuc()}
-    />
-  );
-};
 interface JobInvitePendingProps {
   _id: string;
   id: string;
@@ -101,7 +69,7 @@ export const JobFeedCard: React.FC<JobFeedCardProps> = (props) => {
             <Button size="xs" variant="secondary">
               See More Jobs
             </Button>
-            <RenderBookMark size={20} isBookmarked={bookmarked} id={_id} />
+            <RenderBookMark size={20} isBookmarked={bookmarked} type="feed" id={_id} bookmarkId={_id} />
           </div>
         </div>
       </JobFeedWrapper>
@@ -145,7 +113,7 @@ export const JobFeedCard: React.FC<JobFeedCardProps> = (props) => {
               </Button>
             </div>
 
-            <RenderBookMark size={20} isBookmarked={bookmarked} id={_id} />
+            <RenderBookMark size={20} isBookmarked={bookmarked} id={_id} type="feed" bookmarkId={_id} />
           </div>
         </div>
       </JobFeedWrapper>
@@ -200,7 +168,7 @@ export const PublicJobCreatedFeed = ({
               See Details
             </Button>
           </div>
-          <RenderBookMark size={20} isBookmarked={bookmarked} id={_id} />
+          <RenderBookMark size={20} isBookmarked={bookmarked} type="feed" id={_id} bookmarkId={_id} />
         </div>
       </div>
     </JobFeedWrapper>
