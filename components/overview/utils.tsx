@@ -2,7 +2,7 @@ import React from 'react';
 
 import { FEED_TYPES } from '@/lib/utils';
 import { JobFeedCard, PublicJobCreatedFeed, ReferralSignupFeed, ReferralJobCompletion, PaymentReleased, TalentJobUpdateFeed, JobDeliverableCompletionFeed, JobCompletionFeed, JobReviewedFeed, JobCancelled, IssueResolutionRaiseFeed, IssueResolutionResolveFeed, IssueResolutionRejectFeed, SecondIssueResolutionRejectFeed, JuryInvitationFeed } from './feedViewer';
-import { DataFeedResponse } from '@/lib/api/dashboard';
+import { DataFeedResponse } from '@/lib/types';
 
 
 export const ParseFeedView = (feed: DataFeedResponse, loggedInUser: string, key: number) => {

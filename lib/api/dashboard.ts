@@ -2,6 +2,7 @@ import { ApiError, axios } from '@/lib/axios';
 import { toast } from '@/components/common/toaster';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { parseFilterObjectToString } from '../utils';
+import { DataFeedResponse } from '../types';
 
 interface CreatorData {
   _id: string;
@@ -10,23 +11,8 @@ interface CreatorData {
   score: number;
   profileImage?: { url: string };
 }
-export interface DataFeedResponse {
-  closed: boolean;
-  createdAt?: string;
-  updatedAt?: string;
-  creator: CreatorData;
-  data: { _id: string; paymentFee: string; creator: CreatorData; owner?: CreatorData };
-  description: string;
-  isBookmarked: boolean;
-  isPublic?: boolean;
-  owner: CreatorData;
-  owners?: CreatorData[];
-  title: string;
-  type: string;
-  _id: string;
-}
 
-interface GetFeedsresponse {
+interface GetFeedsResponse {
   data: DataFeedResponse[];
 }
 
@@ -40,7 +26,7 @@ interface timelineFetchParams {
   filter: Record<string, any>;
 }
 
-async function getTimelineFeeds({ page, limit, filter }: timelineFetchParams): Promise<GetFeedsresponse> {
+async function getTimelineFeeds({ page, limit, filter }: timelineFetchParams): Promise<GetFeedsResponse> {
   const filters = parseFilterObjectToString(filter);
   const res = await axios.get(`/feeds?page=${page}&limit=${limit}&${filters}`);
   return res.data.data;
@@ -68,7 +54,7 @@ export const useGetTimeline = ({ page, limit, filter }: timelineFetchParams) => 
     onError: (error: ApiError) => {
       toast.error(error?.response?.data.message || 'An error occurred');
     },
-    onSuccess: (data: GetFeedsresponse) => {
+    onSuccess: (data: GetFeedsResponse) => {
       return data;
     },
   });
