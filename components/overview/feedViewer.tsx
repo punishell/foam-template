@@ -10,6 +10,7 @@ import failed from '@/lottiefiles/failed.json';
 import warning from '@/lottiefiles/warning.json';
 import { ProfileImage } from './ProfileImage';
 import { RenderBookMark } from '../jobs/job-cards/render-bookmark';
+import Link from 'next/link';
 
 interface JobInvitePendingProps {
   _id: string;
@@ -65,9 +66,11 @@ export const JobFeedCard: React.FC<JobFeedCardProps> = (props) => {
           </p>
 
           <div className="justify-between items-center flex mt-auto">
-            <Button size="xs" variant="secondary">
-              See More Jobs
-            </Button>
+            <Link href={"/jobs"}>
+              <Button size="xs" variant="secondary">
+                See More Jobs
+              </Button>
+            </Link>
             <RenderBookMark size={20} isBookmarked={bookmarked} type="feed" id={_id} bookmarkId={_id} />
           </div>
         </div>
@@ -103,14 +106,11 @@ export const JobFeedCard: React.FC<JobFeedCardProps> = (props) => {
           <span className="text-title text-2xl font-normal">{title}</span>
 
           <div className="justify-between items-center flex mt-auto">
-            <div className="flex items-center gap-2">
+            <Link href={`/jobs/${id}`} className="flex items-center gap-2">
               <Button size="xs" variant="secondary">
                 See Details
               </Button>
-              <Button size="xs" variant="outline">
-                Accept
-              </Button>
-            </div>
+            </Link>
 
             <RenderBookMark size={20} isBookmarked={bookmarked} id={_id} type="feed" bookmarkId={_id} />
           </div>
@@ -162,11 +162,11 @@ export const PublicJobCreatedFeed = ({
         </div>
         <h3 className="text-title text-2xl font-normal">{title}</h3>
         <div className="justify-between items-center flex mt-auto">
-          <div className="flex items-center gap-2">
+          <Link href={`/jobs/${jobId}`} className="flex items-center gap-2">
             <Button size="xs" variant="outline">
               See Details
             </Button>
-          </div>
+          </Link>
           <RenderBookMark size={20} isBookmarked={bookmarked} type="feed" id={_id} bookmarkId={_id} />
         </div>
       </div>
