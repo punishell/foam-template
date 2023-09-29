@@ -166,7 +166,7 @@ const JobEditForm: React.FC<JobEditFormProps> = ({ job }) => {
     details: (!!form.watch("title") && !form.getFieldState('title').invalid) && (!!form.watch("due") && !form.getFieldState('due').invalid) && (!!form.watch("budget") && !form.getFieldState('budget').invalid),
     skills: (!!form.watch('firstSkill') && !form.getFieldState('firstSkill').invalid),
     description: (!!form.watch('description') && !form.getFieldState('description').invalid),
-    deliverables: (form.watch('deliverables').filter(r => r != '').length > 0 && !form.getFieldState('deliverables').invalid),
+    deliverables: ((Array.isArray(form.watch('deliverables')) && form.watch('deliverables').filter(r => r != '').length > 0) && !form.getFieldState('deliverables').invalid),
     classification: (!!form.watch('jobType') && !form.getFieldState('jobType').invalid) && (!!form.watch('visibility') && !form.getFieldState('visibility').invalid) && (!!form.watch('category') && !form.getFieldState('category').invalid)
   });
 
