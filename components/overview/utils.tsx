@@ -25,6 +25,7 @@ export const ParseFeedView = (feed: DataFeedResponse, loggedInUser: string, key:
   const amount = feed?.data?.paymentFee;
   const isBookmarked = feed.isBookmarked || false;
   const bookmarkId = feed.bookmarkId || feed._id;
+  console.log(bookmarkId, feed);
   const inviter = {
     avatar: feed?.data?.creator?.profileImage?.url || '',
     name: `${feed?.data?.creator?.firstName || ''} ${feed?.data?.creator?.lastName || ''}`,

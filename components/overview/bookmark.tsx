@@ -12,7 +12,7 @@ export const FeedsBookmark = () => {
   const { _id: loggedInUser } = useUserState();
   const { data: bookmarkData, isFetched, isFetching, refetch, isError } = useGetBookmarks({ page: 1, limit: 10, filter: { type: "feed" } });
 
-  const bookmarks = useMemo(() => (bookmarkData?.data || []).map((feed, i) => ParseFeedView({ ...feed.feed, isBookmarked: true }, loggedInUser, i, refetch)), [bookmarkData?.data]);
+  const bookmarks = useMemo(() => (bookmarkData?.data || []).map((feed, i) => ParseFeedView({ ...feed.feed, bookmarkId: feed._id, isBookmarked: true }, loggedInUser, i, refetch)), [bookmarkData?.data]);
 
   if (!isFetched && isFetching) return <PageLoading className="h-[80%]" />;
   if (isError) return <PageError className="rounded-xl border border-red-100 h-[80%]" />;
