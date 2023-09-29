@@ -10,7 +10,7 @@ interface JobSearchBarProps {
   skills?: string;
   range?: string;
   handleSearch?: (filter: any) => void;
-  isTalentView?:boolean;
+  isTalentView?: boolean;
 }
 
 const searchFormSchema = z.object({
@@ -36,7 +36,7 @@ export const JobSearchBar = ({ search, skills, range, isTalentView = false, hand
     if (search) form.setValue('search', search);
     if (skills) form.setValue('skills', skills);
   }
-  
+
   useEffect(() => { setDefaults() }, [search, skills, range]);
 
   const onSubmit: SubmitHandler<SearchFormValues> = (values) => {
@@ -46,9 +46,7 @@ export const JobSearchBar = ({ search, skills, range, isTalentView = false, hand
     <form onSubmit={form.handleSubmit(onSubmit)}>
       <div className="bg-white border-[#7DDE86] border p-6 w-full rounded-2xl flex gap-4 items-end">
         <div className="flex flex-col relative grow gap-1">
-          <label htmlFor="" className="text-sm">
-            {isTalentView ? "Search" : "Job Title"}
-          </label>
+          <label htmlFor="" className="text-sm">Search</label>
           <input
             type="text"
             placeholder="Enter"
@@ -57,9 +55,7 @@ export const JobSearchBar = ({ search, skills, range, isTalentView = false, hand
           />
         </div>
         <div className="flex flex-col relative grow gap-1">
-          <label htmlFor="" className="text-sm">
-            {isTalentView ? "Skill" : "Search"}
-          </label>
+          <label htmlFor="" className="text-sm">Skill</label>
           <input
             type="text"
             placeholder="Enter"

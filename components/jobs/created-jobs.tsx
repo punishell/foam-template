@@ -12,7 +12,7 @@ import { PageEmpty } from '@/components/common/page-empty';
 import { PageError } from '@/components/common/page-error';
 import { PageLoading } from '@/components/common/page-loading';
 
-interface Props {}
+interface Props { }
 
 export const CreatedJobs: React.FC<Props> = () => {
   const jobsData = useGetJobs({ category: 'created' });
@@ -51,7 +51,7 @@ interface UnassignedJobsProps {
 }
 
 const UnassignedJobs: React.FC<UnassignedJobsProps> = ({ jobs }) => {
-  if (!jobs.length) return <PageEmpty label="No open jobs yet." className="rounded-lg border border-line h-[90%]" />;
+  if (!jobs.length) return <PageEmpty label="No open jobs yet." className="rounded-lg border border-line h-full py-6" />;
 
   return (
     <div className="grid grid-cols-2 gap-4 overflow-y-auto pb-20">
@@ -76,7 +76,7 @@ interface OngoingJobsProps {
 
 const OngoingJobs: React.FC<OngoingJobsProps> = ({ jobs }) => {
   if (!jobs.length)
-    return <PageEmpty label="Your ongoing jobs will appear here." className="rounded-lg border border-line h-[90%]" />;
+    return <PageEmpty label="Your ongoing jobs will appear here." className="rounded-lg border border-line h-full py-6" />;
 
   return (
     <div className="grid grid-cols-2 gap-4 overflow-y-auto pb-20">
@@ -109,7 +109,7 @@ interface CompletedJobsProps {
 const CompletedJobs: React.FC<CompletedJobsProps> = ({ jobs }) => {
   if (!jobs.length)
     return (
-      <PageEmpty label="Your completed jobs will appear here." className="rounded-lg border border-line h-[80%]" />
+      <PageEmpty label="Your completed jobs will appear here." className="rounded-lg border border-line h-full py-6" />
     );
 
   return (

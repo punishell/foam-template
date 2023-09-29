@@ -112,7 +112,6 @@ export default function CreateJob() {
     deliverables: ((Array.isArray(form.watch('deliverables')) && form.watch('deliverables').filter(r => r != '').length > 0) && !form.getFieldState('deliverables').invalid),
     classification: (!!form.watch('jobType') && !form.getFieldState('jobType').invalid) && (!!form.watch('visibility') && !form.getFieldState('visibility').invalid) && (!!form.watch('category') && !form.getFieldState('category').invalid)
   });
-  console.log(form.watch('deliverables'))
 
   return (
     <div className="flex gap-6 overflow-y-auto pb-10">
@@ -348,7 +347,7 @@ export default function CreateJob() {
           </div>
           <div className="ml-auto max-w-[250px] w-full">
             <Button disabled={createJob.isLoading || !form.formState.isValid} fullWidth>
-              {createJob.isLoading ? <Spinner /> : 'Publish Job'}
+              {createJob.isLoading ? <Spinner /> : form.watch('visibility') == 'private' ? 'Create Job' : 'Post Job'}
             </Button>
           </div>
         </div>
