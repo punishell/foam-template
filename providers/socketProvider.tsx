@@ -2,12 +2,12 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react-hooks/exhaustive-deps */
 import { getCookie } from "cookies-next";
-import React, { createContext, useCallback, useContext, useEffect, useState } from "react";
+import React, { createContext, useCallback, useContext, useEffect, useRef, useState } from "react";
 import { io, Socket } from "socket.io-client";
 import { useUserState } from "@/lib/store/account";
 import { AUTH_TOKEN_KEY, formatBytes } from "@/lib/utils";
 import { axios } from "@/lib/axios";
-import { usePathname } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import dayjs from "dayjs";
 import { toast } from "@/components/common/toaster";
 import { useRouter } from "next/navigation";
@@ -44,6 +44,7 @@ export type SocketContextType = {
   status: string;
   conversations: any;
   socket: Socket | any;
+  startingNewChat: boolean,
   fetchUserChats: () => any;
   startUserInitializeConversation: (recipientId: string) => Promise<any>;
   sendUserMessage: (
@@ -71,12 +72,12 @@ const SOCKET_URL = process.env.NEXT_PUBLIC_SOCKET_URL;
 export const SocketContext = createContext<SocketContextType>(
   {} as SocketContextType
 );
+interface SocketResponse<T> { error: boolean, statusCode: number, message: string, data: T }
 
 const prefix = "messaging";
 export const MessagingProvider = ({ children }: { children: React.ReactNode }) => {
   const authToken = getCookie(AUTH_TOKEN_KEY);
-  const { _id } = useUserState();
-  const loggedInUser = _id;
+  const { _id: loggedInUser } = useUserState();
   const [socket, setSocket] = useState<Socket | null | any>(null);
   const [currentConversation, setCurrentConversation] = useState<any>(null);
   const [conversations, setConversations] = useState<any>([]);
@@ -84,26 +85,33 @@ export const MessagingProvider = ({ children }: { children: React.ReactNode }) =
   const [loadingChats, setLoadingChats] = useState<boolean>(true);
   const [socketReconnect, setSocketReconnect] = useState<boolean>(false);
   const [unreadChatCount, setUnreadChatCount] = useState<number>(0);
+  const [startingNewChat, setStartingNewChat] = useState(false);
   const router = useRouter();
+  const initiated = useRef(false);
+
+  // console.log("mesaging===", startingNewChat, loggedInUser, socket)
 
   const pathname = usePathname();
   const messagingScreen = pathname.includes(prefix);
 
   const SocketConnection = async () => {
-    if (socket && loggedInUser) {
+    if (socket && loggedInUser && !initiated.current) {
+      initiated.current = true
       socket.on("connect", function () {
         setSocket(socket);
-        socket.emit(conversationEnums.USER_CONNECT, { userId: loggedInUser }, (response: any) => {
-          const parsedConversation = parseUserChats(response);
-          setConversations(parsedConversation);
-          setLoadingChats(false);
-          setUnreadChats(parsedConversation);
+        socket.emit(conversationEnums.USER_CONNECT, { userId: loggedInUser }, (response: SocketResponse<any>) => {
+          if (!response.error) {
+            const parsedConversation = parseUserChats(response.data);
+            setConversations(parsedConversation);
+            setLoadingChats(false);
+            setUnreadChats(parsedConversation);
+          }
         });
 
         // Join Old Conversation If any
         socket?.emit(conversationEnums.JOIN_OLD_CONVERSATIIONS, { userId: loggedInUser }, () => { });
         socket?.on("disconnect", () => {
-          // console.log("has disconnected==", socket);
+          console.log("has disconnected==", socket);
           // TODO:: Perform Disconnect Function
         });
 
@@ -124,10 +132,12 @@ export const MessagingProvider = ({ children }: { children: React.ReactNode }) =
       return () => socket?.off();
     }
   };
-  // console.log("socket==>", socket, socketReconnect);
+
   useEffect(() => {
     // Here we listen to popup events
-    socket?.on(conversationEnums.POPUP_MESSAGE, async (c: any) => {
+    socket?.on(conversationEnums.POPUP_MESSAGE, async (response: any) => {
+      const c = response.data;
+      console.log("new-message", conversationEnums.POPUP_MESSAGE, response);
       await fetchUserChats(c._id);
       // notify user
       const messageContent =
@@ -165,7 +175,7 @@ export const MessagingProvider = ({ children }: { children: React.ReactNode }) =
     if (socketReconnect) {
       connectChatInit()
     }
-  }, [socketReconnect])
+  }, [socketReconnect]);
 
   const Reconnect = () => setTimeout(() => { setSocketReconnect(true) }, MAX_RECONNECT_TIME);
 
@@ -240,38 +250,39 @@ export const MessagingProvider = ({ children }: { children: React.ReactNode }) =
   })
   );
 
-  const fetchUserChats = async (currentConvoId?: string) => {
-    try {
-      const { data } = await axios.get(`/chat`);
-      if (data?.status === "success") {
-        const payload = data?.data;
-        console.log("dpdpd", payload);
-        const parsedConversation = parseUserChats(payload);
-        setConversations(parsedConversation);
-        setLoadingChats(false);
-        setUnreadChats(parsedConversation);
-        if (currentConvoId) {
-          const cOV = parsedConversation.find((c: any) => c.id == currentConvoId);
-          setCurrentConversation(cOV);
+  const fetchUserChats = async (currentConversationId?: string) => {
+    await socket.emit(conversationEnums.GET_ALL_CONVERSATIONS, { userId: loggedInUser },
+      (response: SocketResponse<any>) => {
+        console.log("fetched ===", response)
+        if (!response.error) {
+          const payload = response?.data;
+          const parsedConversation = parseUserChats(payload);
+          setConversations(parsedConversation);
+          setLoadingChats(false);
+          setUnreadChats(parsedConversation);
+          if (currentConversationId) {
+            const cOV = parsedConversation.find((c: any) => c.id == currentConversationId);
+            setCurrentConversation(cOV);
+          }
+          return payload.messages;
         }
-        return payload.messages;
       }
-    } catch (error: any) {
-      return error?.response?.data;
-    }
-  };
+    );
+  }
 
   const startUserInitializeConversation = async (recipientId: string) => {
     try {
-      console.log("starting-chat", recipientId);
-      const resp = await socket.emit(
+      setStartingNewChat(true);
+      return await socket.emit(
         conversationEnums.INITIALIZE_CONVERSATION,
         {
           senderId: loggedInUser,
           recipientId,
+          type: "DIRECT"
         },
         async (conversation: any) => {
-          console.log("conver===>", conversation);
+          await fetchUserChats();
+          setStartingNewChat(false)
           return router.push(`/messages/${conversation._id}`);
         }
       );
@@ -304,7 +315,6 @@ export const MessagingProvider = ({ children }: { children: React.ReactNode }) =
       })
     }
     const resp = await postUploadImages(uploadFll);
-    console.log("Resp-=-==>", resp);
     return resp.map((r: any) => r._id);
   }
 
@@ -318,31 +328,27 @@ export const MessagingProvider = ({ children }: { children: React.ReactNode }) =
   ) => {
     let attachments: string[] = [];
     try {
-      const conv = getConversationById(conversation);
-      setCurrentConversation({ ...conv, messages: [...conv.messages, { content: message, isSent: true, sending: true, attachments: images }] });
+      await markUserMessageAsSeen(conversation);
+      const currentConversation = getConversationById(conversation);
+      setCurrentConversation({ ...currentConversation, messages: [...currentConversation.messages, { content: message, isSent: true, sending: true, attachments: images }] });
       if (images.length > 0) {
         // perform image Uploads first before sending message
         attachments = await UploadFiles(images);
       }
-      const sentMessage = await socket.emit(
-        conversationEnums.SEND_MESSAGE,
-        {
-          senderId: sender,
-          recipientId: recipient,
-          type,
-          message,
-          conversationId: conversation,
-          attachments,
-        },
-        (conversation: any) => {
-          return conversation;
-        }
+      return await socket.emit(conversationEnums.SEND_MESSAGE, {
+        senderId: sender,
+        recipientId: recipient,
+        type,
+        message,
+        conversationId: conversation,
+        attachments,
+      }, async (_response: any) => {
+        const currentConversationId = currentConversation.id;
+        await fetchUserChats(currentConversationId);
+        return;
+      }
       );
-      const currenctConvId = currentConversation.id;
-      fetchUserChats(currenctConvId);
-      return sentMessage;
     } catch (error: any) {
-      // return error?.response?.data;
       return toast.error(error?.response?.data.message || 'Failed to Send Message Try again');
     }
   };
@@ -360,10 +366,6 @@ export const MessagingProvider = ({ children }: { children: React.ReactNode }) =
     }
   };
 
-  useEffect(() => {
-
-  })
-
   const SocketServer: SocketContextType = {
     currentConversation,
     loadingChats,
@@ -371,6 +373,7 @@ export const MessagingProvider = ({ children }: { children: React.ReactNode }) =
     conversations,
     socket,
     unreadChatCount,
+    startingNewChat,
     fetchUserChats,
     startUserInitializeConversation,
     sendUserMessage,
@@ -391,4 +394,3 @@ export const useMessaging = () => {
   if (!context) throw new Error("useSocket must be use inside SocketProvider");
   return context;
 };
-

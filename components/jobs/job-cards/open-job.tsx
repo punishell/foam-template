@@ -39,7 +39,7 @@ export const OpenJobCard: React.FC<OpenJobProps> = ({ creator, price, skills, ti
               <span className="px-3 text-base text-title inline-flex rounded-full bg-[#B2E9AA66]">${price}</span>
             </div>
           </div>
-          <div className="flex grow text-title text-2xl items-center">{title}</div>
+          <div className="flex grow text-title text-2xl">{title}</div>
         </div>
       </Link>
       <div className="flex items-center gap-2 justify-between mt-auto">

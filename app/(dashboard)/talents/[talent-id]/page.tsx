@@ -14,7 +14,7 @@ export default function TalentDetails() {
   const talentId = String(params['talent-id']);
   const talentData = useGetTalentById(talentId, true);
 
-  if (talentData.isLoading || talentData.isFetching) return <PageLoading />;
+  if (talentData.isLoading || (!talentData.isFetched && talentData.isFetching)) return <PageLoading />;
 
   if (talentData.isError) return <PageError />;
 

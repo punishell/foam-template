@@ -1,18 +1,16 @@
 'use client';
 
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Button, Slider } from 'pakt-ui';
 import { Modal } from '@/components/common';
 import { Spinner } from '@/components/common';
 import { TagInput } from '@/components/common/tag-input';
 import { AfroProfile } from '@/components/common/afro-profile';
-import { UserAvatar } from '@/components/common/user-avatar';
 import { useGetConnectionPreference, useUpdateConnectionPreference } from '@/lib/api/connection';
-import { Bell, Search, Settings2, XCircle, X } from 'lucide-react';
+import { XCircle, Settings } from 'lucide-react';
 import { UserBalance } from '@/components/common/user-balance';
 import { useMessaging } from '@/providers/socketProvider';
 import { ChatList, ChatListSearch } from '@/components/messaging/chatlist';
-import { useSearchParams } from 'next/navigation';
 
 interface Props {
   children: React.ReactNode;
@@ -20,23 +18,13 @@ interface Props {
 
 export default function MessagesLayout({ children }: Props) {
   const [settingsModalOpen, setSettingsModalOpen] = React.useState(false);
+  const { conversations, loadingChats } = useMessaging();
 
-  const { conversations, startUserInitializeConversation, loadingChats } = useMessaging();
-  const searchParams = useSearchParams();
-  const queryParams = new URLSearchParams(searchParams as any);
-  const userId = queryParams.get('userId');
-  useEffect(() => {
-    if (userId) startUserInitializeConversation(userId);
-  }, []);
   return (
     <div className="flex flex-col gap-6 h-full">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
           <span className="text-3xl text-title font-bold">Messages</span>
-
-          <button onClick={() => setSettingsModalOpen(true)}>
-            <Settings2 size={24} className="text-title" />
-          </button>
 
           <Modal isOpen={settingsModalOpen} onOpenChange={setSettingsModalOpen} className="max-w-xl">
             <SettingsModal />
@@ -48,15 +36,17 @@ export default function MessagesLayout({ children }: Props) {
             <UserBalance />
             <span>|</span> <span className="text-body">Balance</span>
           </div>
-          <button className="flex gap-2 items-center text-primary text-sm font-bold bg-[#008D6C1A] p-3 rounded-full">
-            <Bell size={18} />
-          </button>
         </div>
       </div>
 
       <div className="flex grow w-full h-[90%]">
         <div className="bg-white basis-[370px] grow-0 border h-full shrink-0 flex flex-col rounded-lg rounded-r-none border-line">
           <ChatListSearch />
+          <div className='flex relative items-center gap-2 px-4 pb-6'>
+            <Button variant={'outline'} className='!px-4 !py-2' onClick={() => setSettingsModalOpen(true)}>
+              <span className='flex flex-row text-sm font-bold items-center'>Set Connection Preference <Settings className='ml-2' size={16} /></span>
+            </Button>
+          </div>
           <ChatList conversations={conversations} loading={loadingChats} />
         </div>
 

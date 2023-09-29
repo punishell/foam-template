@@ -81,11 +81,11 @@ export const JobFeedCard: React.FC<JobFeedCardProps> = (props) => {
   }
 
   if (type === 'job-invite-pending') {
-    const { title, amount, inviter, bookmarked, invitationExpiry, inviteId, imageUrl, jobId } = props;
+    const { title, amount, inviter, bookmarked, invitationExpiry, inviteId, jobId } = props;
 
     return (
       <JobFeedWrapper>
-        <ProfileImage imageUrl={imageUrl} />
+        <ProfileImage imageUrl={inviter.avatar} />
         <div className="flex flex-col gap-4 w-full py-4">
           <div className="flex justify-between items-center">
             <span className="text-body text-xl font-bold">
@@ -139,14 +139,16 @@ export const PublicJobCreatedFeed = ({
   amount,
   jobId,
   _id,
-  bookmarked,
+  bookmark,
+  callback,
 }: {
   creator: { name: string; avatar: string; score: number };
   title: string;
   amount: string;
   jobId: string;
   _id: string;
-  bookmarked: boolean;
+  bookmark: { active: boolean; id: string };
+  callback?: () => void;
 }) => {
   console.log(creator);
   return (
@@ -167,7 +169,14 @@ export const PublicJobCreatedFeed = ({
               See Details
             </Button>
           </Link>
-          <RenderBookMark size={20} isBookmarked={bookmarked} type="feed" id={_id} bookmarkId={_id} />
+          <RenderBookMark
+            size={20}
+            isBookmarked={bookmark.active}
+            type="feed"
+            id={_id}
+            bookmarkId={bookmark.id}
+            callback={callback}
+          />
         </div>
       </div>
     </JobFeedWrapper>

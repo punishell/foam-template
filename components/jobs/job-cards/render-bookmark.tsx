@@ -15,33 +15,36 @@ export const RenderBookMark = ({ size = 20, isBookmarked, id, bookmarkId, type =
   const addBookmark = useSaveToBookmark();
   const removeBookmark = useRemoveFromBookmark();
   const CallFuc = () => {
-    return bookmarked
-      ? removeBookmark.mutate(
+    if (bookmarked) {
+      setBookmarked(false);
+      return removeBookmark.mutate(
         { id: bookmarkId },
         {
           onSuccess: (_data) => {
-            setBookmarked(!bookmarked);
+            setBookmarked(false);
           },
           onSettled: () => {
             callback && callback();
           }
         },
       )
-      : addBookmark.mutate(
-        { reference: id, type },
-        {
-          onSuccess: (_data) => {
-            setBookmarked(!bookmarked);
-          },
-          onSettled: () => {
-            callback && callback();
-          }
+    }
+    setBookmarked(true);
+    return addBookmark.mutate(
+      { reference: id, type },
+      {
+        onSuccess: (_data) => {
+          setBookmarked(true);
         },
-      );
+        onSettled: () => {
+          callback && callback();
+        }
+      },
+    );
   };
   return (
     <Bookmark
-      fill={isBookmarked ? '#404446' : '#FFFFFF'}
+      fill={bookmarked ? '#404446' : '#FFFFFF'}
       className="cursor-pointer"
       size={size}
       onClick={() => CallFuc()}

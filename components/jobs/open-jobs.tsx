@@ -10,7 +10,7 @@ import { PageError } from '@/components/common/page-error';
 import { PageLoading } from '@/components/common/page-loading';
 import { useGetBookmarks } from '@/lib/api/bookmark';
 
-interface Props {}
+interface Props { }
 
 export const OpenJobs: React.FC<Props> = () => {
   const jobsData = useGetJobs({ category: 'open' });
@@ -20,7 +20,6 @@ export const OpenJobs: React.FC<Props> = () => {
   if (jobsData.isLoading) return <PageLoading />;
 
   const jobs = jobsData.data.data;
-  console.log(jobs, bookmarkData.data?.data);
   return (
     <div className="flex flex-col gap-6 h-full">
       <JobSearchBar />

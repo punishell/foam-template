@@ -6,6 +6,7 @@ import { usePathname } from 'next/navigation';
 import { createQueryString } from '@/lib/utils';
 import { useSearchParams } from 'next/navigation';
 import * as RadixTabs from '@radix-ui/react-tabs';
+import { cn } from "@/lib/utils";
 
 interface Tab {
   label: string;
@@ -17,9 +18,10 @@ interface Props {
   tabs: Tab[];
   urlKey?: string;
   defaultTab?: string;
+  className?: string;
 }
 
-export const Tabs: React.FC<Props> = ({ tabs, defaultTab, urlKey }) => {
+export const Tabs: React.FC<Props> = ({ tabs, defaultTab, urlKey, className }) => {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -46,7 +48,7 @@ export const Tabs: React.FC<Props> = ({ tabs, defaultTab, urlKey }) => {
       value={activeTab}
       defaultValue={initialTab}
       onValueChange={handleTabChange}
-      className="flex flex-col gap-4 h-full relative overflow-auto"
+      className={cn("flex flex-col gap-4relative justify-start items-start w-full", className)}
     >
       <RadixTabs.List className="flex items-center border-b">
         {tabs.map((tab) => (
@@ -59,12 +61,12 @@ export const Tabs: React.FC<Props> = ({ tabs, defaultTab, urlKey }) => {
           </RadixTabs.Trigger>
         ))}
       </RadixTabs.List>
-      <div className="flex flex-col overflow-auto h-full">
+      <div className='overflow-y-auto scrollbar-hide grow mt-4 w-full'>
         {tabs.map((tab) => (
           <RadixTabs.Content
             key={tab.value}
             value={tab.value}
-            className="radix-state-active:flex radix-state-active:flex-col radix-state-active:h-full"
+            className="w-full radix-state-active:flex radix-state-active:flex-col radix-state-active:h-full overflow-y-auto grow-0 justify-start"
           >
             {tab.content}
           </RadixTabs.Content>

@@ -17,9 +17,9 @@ export const LeaderBoard = () => {
     [leaderboardData?.data],
   );
   return (
-    <div className="w-full">
+    <div className="flex flex-col grow w-full">
       <div className="text-xl font-bold text-center mb-6">Leaderboard</div>
-      <div className="relative w-full bg-gradient-leaderboard rounded-2xl min-h-[510px]">
+      <div className="relative w-full bg-gradient-leaderboard rounded-2xl grow overflow-y-auto">
         <div className=" text-white px-3 py-6 flex flex-col gap-4">
           {!isFetched && isFetching && <Spinner />}
           {leaderboard.map((l, i) => {
