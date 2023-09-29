@@ -18,7 +18,8 @@ export const AcceptedJobs: React.FC<Props> = () => {
 
   const jobs = jobsData.data.data;
 
-  const completedJob = jobs.filter((job) => job.progress === 100);
+  const completedJobs = jobs.filter((job) => job.payoutStatus === 'completed');
+  const ongoingJobs = jobs.filter((job) => job.payoutStatus !== 'completed' && job.owner !== undefined);
 
   return (
     <div className="flex flex-col gap-6 h-full">
@@ -28,9 +29,9 @@ export const AcceptedJobs: React.FC<Props> = () => {
           {
             label: 'Ongoing',
             value: 'ongoing',
-            content: <TalentOngoingJobs jobs={jobs} />,
+            content: <TalentOngoingJobs jobs={ongoingJobs} />,
           },
-          { label: 'Completed', value: 'completed', content: <TalentCompletedJobs jobs={completedJob} /> },
+          { label: 'Completed', value: 'completed', content: <TalentCompletedJobs jobs={completedJobs} /> },
         ]}
       />
     </div>
@@ -47,9 +48,10 @@ const TalentOngoingJobs: React.FC<OngoingJobsProps> = ({ jobs }) => {
 
   return (
     <div className="grid grid-cols-2 gap-4 overflow-y-auto pb-20">
-      {jobs.map(({ _id, paymentFee, name, creator, progress, collections }) => {
+      {jobs.map(({ _id, paymentFee, name, creator, progress, collections, status }) => {
         return (
           <TalentJobCard
+            status={status}
             jobId={_id}
             key={_id}
             progress={progress}
@@ -81,10 +83,11 @@ const TalentCompletedJobs: React.FC<CompletedJobsProps> = ({ jobs }) => {
 
   return (
     <div className="grid grid-cols-2 gap-4 overflow-y-auto pb-20">
-      {jobs.map(({ _id, paymentFee, name, creator, progress, collections }) => {
+      {jobs.map(({ _id, paymentFee, name, creator, progress, collections, status }) => {
         return (
           <TalentJobCard
             jobId={_id}
+            status={status}
             key={_id}
             progress={progress}
             price={paymentFee}
