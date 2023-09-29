@@ -133,6 +133,9 @@ export const AfroProfile: React.FC<AfroProfileProps> = ({ size, score = 63, chil
           />
         </foreignObject>
         <circle
+          style={{
+            display: score === 0 ? 'none' : 'block',
+          }}
           cx={knobX}
           cy={knobY}
           r={knobRadius}
@@ -141,6 +144,9 @@ export const AfroProfile: React.FC<AfroProfileProps> = ({ size, score = 63, chil
         ></circle>
 
         <text
+          style={{
+            display: score === 0 ? 'none' : 'block',
+          }}
           x={knobX + (sizeInPx + knobRadius) / 2}
           y={knobY + (sizeInPx + knobRadius) / 2}
           dy=".3em"

@@ -1,7 +1,7 @@
 'use client';
 import React from 'react';
-import { QueryCache, QueryClient, MutationCache, QueryClientProvider } from '@tanstack/react-query';
-
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 interface Props {
   children: React.ReactNode;
 }
@@ -10,22 +10,18 @@ export function Providers({ children }: Props) {
   const [queryClient] = React.useState(
     () =>
       new QueryClient({
-        queryCache: new QueryCache({
-          onError: (error) => {
-            if (error instanceof Error) {
-              console.error(`👀 Something went wrong 👀: ${error.message}`);
-            }
+        defaultOptions: {
+          queries: {
+            staleTime: 5 * 1000, // 5 seconds
           },
-        }),
-        mutationCache: new MutationCache({
-          onError: (error) => {
-            if (error instanceof Error) {
-              console.error(`👀 Something went wrong 👀: ${error.message}`);
-            }
-          },
-        }),
+        },
       }),
   );
 
-  return <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>;
+  return (
+    <QueryClientProvider client={queryClient}>
+      {children}
+      <ReactQueryDevtools initialIsOpen={false} />
+    </QueryClientProvider>
+  );
 }

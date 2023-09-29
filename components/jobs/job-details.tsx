@@ -1,6 +1,8 @@
+import Image from 'next/image';
 import { format } from 'date-fns';
 import { Calendar, Tag } from 'lucide-react';
 import { AfroProfile } from '@/components/common/afro-profile';
+import { DefaultAvatar } from '@/components/common/default-avatar';
 interface JobHeaderProps {
   title: string;
   price: number;
@@ -8,15 +10,15 @@ interface JobHeaderProps {
   creator?: {
     name: string;
     score: number;
-    avatar: string;
+    avatar?: string;
   };
 }
 
 export const JobHeader: React.FC<JobHeaderProps> = ({ title, price, dueDate, creator }) => {
   return (
-    <div className="bg-primary-gradient rounded-t-xl justify-between flex p-4 gap-4">
-      <div className="grow max-w-3xl flex flex-col gap-3">
-        <h2 className="text-3xl font-bold text-white max-w-[560px]">{title}</h2>
+    <div className="bg-primary-gradient rounded-t-xl justify-between items-center flex p-4 gap-4">
+      <div className="max-w-2xl flex flex-col gap-6 w-full">
+        <h2 className="text-3xl font-medium text-white">{title}</h2>
         <div className="flex gap-4 items-center mt-auto">
           <span className="bg-[#C9F0FF] text-[#0065D0] gap-2 flex items-center px-3 rounded-full py-1">
             <Tag size={20} />
@@ -30,8 +32,16 @@ export const JobHeader: React.FC<JobHeaderProps> = ({ title, price, dueDate, cre
         </div>
       </div>
       {creator && (
-        <div className="flex flex-col text-center gap-2  items-center">
-          <AfroProfile score={creator.score} size="md" />
+        <div className="flex flex-col text-center gap-0 items-center">
+          <AfroProfile score={creator.score} size="lg">
+            <div className="h-full w-full rounded-full">
+              {creator.avatar ? (
+                <Image src={creator.avatar} fill alt="profile" className="rounded-full" />
+              ) : (
+                <DefaultAvatar />
+              )}
+            </div>
+          </AfroProfile>
           <span className="text-white text-xl font-bold">{creator.name}</span>
         </div>
       )}

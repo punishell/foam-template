@@ -57,7 +57,7 @@ export interface Job {
     };
   };
   category: string;
-  progress: number;
+  progress: number; // 0 - 100
   isPrivate: boolean;
   deliveryDate: string;
   description: string;
@@ -67,6 +67,15 @@ export interface Job {
     name: string;
     color: string;
   }[];
+  // talent assigned to the job
+  owner?: {
+    score: number;
+    lastName: string;
+    firstName: string;
+    profileImage?: {
+      url: string;
+    };
+  };
   tagsData: string[];
   invites: any[]; // TODO: add type
   inviteAccepted: boolean;
@@ -81,6 +90,8 @@ export interface Job {
 interface JobDeliverable {
   _id: string;
   name: string;
+  progress: number; // 0 or 100
+  updatedAt: string;
   type: 'deliverable';
   description: string;
   status: 'pending' | 'ongoing' | 'completed';
