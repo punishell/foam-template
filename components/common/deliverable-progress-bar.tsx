@@ -5,7 +5,7 @@ interface Props {
 
 const InProgress = () => <div className="bg-line rounded-full h-2 w-[30px] lg:w-[60px]" />;
 
-const Completed = () => <div className="bg-primary-gradient rounded-full h-2 w-[30px] lg:w-[60px]" />;
+const Completed = () => <div className="bg-[#23C16B] rounded-full h-2 w-[30px] lg:w-[60px]" />;
 
 export const DeliverableProgressBar: React.FC<Props> = ({ percentageProgress, totalDeliverables }) => {
   const progressBars = [];
