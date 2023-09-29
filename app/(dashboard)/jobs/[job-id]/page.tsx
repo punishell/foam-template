@@ -286,7 +286,8 @@ const TalentPrivateJobCtas: React.FC<TalentPrivateJobCtasProps> = ({ inviteId })
       <div className="w-full flex items-center max-w-sm gap-4">
         <Button
           fullWidth
-          variant="danger"
+          size="sm"
+          variant="secondary"
           onClick={() => {
             declineInvite.mutate(
               { id: inviteId },
@@ -303,18 +304,19 @@ const TalentPrivateJobCtas: React.FC<TalentPrivateJobCtasProps> = ({ inviteId })
 
         <Button
           fullWidth
+          size="sm"
           onClick={() => {
             acceptInvite.mutate(
               { id: inviteId },
               {
                 onSuccess: () => {
-                  router.push('/jobs');
+                  router.push('/jobs?jobs-type=accepted');
                 },
               },
             );
           }}
         >
-          {acceptInvite.isLoading ? <Spinner /> : 'Accept'}
+          {acceptInvite.isLoading ? <Spinner /> : 'Accept Invite'}
         </Button>
       </div>
     </div>
