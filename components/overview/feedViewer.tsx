@@ -81,11 +81,11 @@ export const JobFeedCard: React.FC<JobFeedCardProps> = (props) => {
   }
 
   if (type === 'job-invite-pending') {
-    const { title, amount, inviter, bookmarked, invitationExpiry, inviteId, imageUrl, jobId } = props;
+    const { title, amount, inviter, bookmarked, invitationExpiry, inviteId, jobId } = props;
 
     return (
       <JobFeedWrapper>
-        <ProfileImage imageUrl={imageUrl} />
+        <ProfileImage imageUrl={inviter.avatar} />
         <div className="flex flex-col gap-4 w-full py-4">
           <div className="flex justify-between items-center">
             <span className="text-body text-xl font-bold">
