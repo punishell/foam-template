@@ -101,7 +101,7 @@ const JobEditForm: React.FC<JobEditFormProps> = ({ job }) => {
   const [files, setFiles] = React.useState<File[]>([]);
   const [uploadProgress, setUploadProgress] = React.useState(0);
 
-  const onDrop = React.useCallback(async (acceptedFiles: File[]) => {}, []);
+  const onDrop = React.useCallback(async (acceptedFiles: File[]) => { }, []);
 
   const { getRootProps, getInputProps } = useDropzone({
     onDrop,
@@ -161,6 +161,14 @@ const JobEditForm: React.FC<JobEditFormProps> = ({ job }) => {
       },
     );
   };
+
+  const jobSteps = ({
+    details: (!!form.watch("title") && !form.getFieldState('title').invalid) && (!!form.watch("due") && !form.getFieldState('due').invalid) && (!!form.watch("budget") && !form.getFieldState('budget').invalid),
+    skills: (!!form.watch('firstSkill') && !form.getFieldState('firstSkill').invalid),
+    description: (!!form.watch('description') && !form.getFieldState('description').invalid),
+    deliverables: (form.watch('deliverables').filter(r => r != '').length > 0 && !form.getFieldState('deliverables').invalid),
+    classification: (!!form.watch('jobType') && !form.getFieldState('jobType').invalid) && (!!form.watch('visibility') && !form.getFieldState('visibility').invalid) && (!!form.watch('category') && !form.getFieldState('category').invalid)
+  });
 
   return (
     <div className="flex gap-6 overflow-y-auto pb-10">
@@ -420,27 +428,11 @@ const JobEditForm: React.FC<JobEditFormProps> = ({ job }) => {
       <div className="basis-[300px] shrink-0 grow-0 flex flex-col gap-6 ">
         <div className="bg-white p-6 rounded-xl min-h-[300px] border border-line flex flex-col gap-3">
           <h3 className="font-bold">Steps</h3>
-          <StepIndicator
-            isComplete={
-              !form.getFieldState('title').invalid &&
-              !form.getFieldState('due').invalid &&
-              !form.getFieldState('budget').invalid
-            }
-          >
-            Job Details
-          </StepIndicator>
-          <StepIndicator isComplete={!form.getFieldState('firstSkill').invalid}>Skills</StepIndicator>
-          <StepIndicator isComplete={!form.getFieldState('description').invalid}>Description</StepIndicator>
-          <StepIndicator isComplete={!form.getFieldState('deliverables').invalid}>Deliverables</StepIndicator>
-          <StepIndicator
-            isComplete={
-              !form.getFieldState('jobType').invalid &&
-              !form.getFieldState('visibility').invalid &&
-              !form.getFieldState('category').invalid
-            }
-          >
-            Classification
-          </StepIndicator>
+          <StepIndicator isComplete={jobSteps.details}>Job Details</StepIndicator>
+          <StepIndicator isComplete={jobSteps.skills}>Skills</StepIndicator>
+          <StepIndicator isComplete={jobSteps.description}>Description</StepIndicator>
+          <StepIndicator isComplete={jobSteps.deliverables}>Deliverables</StepIndicator>
+          <StepIndicator isComplete={jobSteps.classification}>Classification</StepIndicator>
         </div>
         <div className="bg-white p-6 rounded-xl min-h-[250px] border border-line flex flex-col gap-4">
           <div className="flex items-center gap-2">

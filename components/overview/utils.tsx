@@ -17,13 +17,12 @@ export const ParseFeedView = (feed: DataFeedResponse, loggedInUser: string, key:
     case FEED_TYPES.COLLECTION_CREATED:
       return <PublicJobCreatedFeed
         key={key}
-        creator={`${feed?.data?.creator?.firstName || ""} ${feed?.data?.creator?.lastName || ""}`}
+        creator={inviter}
         amount={amount}
         jobId={feed?.data?._id}
         title={feed?.title}
         _id={feed?._id}
         bookmarked={isBookmarked}
-        imageUrl={feed?.data?.creator?.profileImage?.url}
       />;
     case FEED_TYPES.COLLECTION_INVITE:
       return <JobFeedCard

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Plus, X } from 'lucide-react';
+import { Plus, Trash, Trash2, X } from 'lucide-react';
 
 interface DeliverablesProps {
   deliverables: string[];
@@ -57,7 +57,7 @@ export const DeliverablesInput: React.FC<DeliverablesProps> = ({ deliverables, s
                 onClick={() => deleteDeliverable(index)}
                 className="flex justify-center items-center duration-200 bg-slate-50 hover:bg-gray-100 border border-line rounded-lg basis-[50px] shrink-0"
               >
-                <X size={20} strokeWidth={2} className="text-title" />
+                <Trash2 size={20} strokeWidth={2} className="text-danger" />
               </button>
             </div>
           );
@@ -68,7 +68,7 @@ export const DeliverablesInput: React.FC<DeliverablesProps> = ({ deliverables, s
         type="button"
         onClick={addDeliverable}
         disabled={deliverables.length === MAX_DELIVERABLES}
-        className="text-base px-2 py-2 border border-primary border-opacity-30 text-primary text-center flex items-center justify-center rounded-lg bg-success bg-opacity-10 hover:bg-opacity-20 duration-200"
+        className="text-base px-2 py-2 border border-primary border-opacity-30 text-primary text-center flex items-center justify-center rounded-lg bg-success bg-opacity-10 hover:bg-opacity-20 duration-200 disabled:opacity-50"
       >
         <div className="flex gap-2 items-center">
           <Plus size={18} strokeWidth={2} />

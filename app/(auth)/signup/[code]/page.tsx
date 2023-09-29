@@ -177,12 +177,6 @@ export default function Signup() {
                   type="password"
                 />
               </div>
-
-              <div className="items-center justify-end flex">
-                <Link href="/forgot-password" className="text-white text-sm">
-                  Forgot Password?
-                </Link>
-              </div>
             </div>
 
             <Button className="" fullWidth disabled={!form.formState.isValid || signup.isLoading}>

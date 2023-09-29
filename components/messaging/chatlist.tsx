@@ -7,6 +7,7 @@ import { usePathname } from 'next/navigation';
 import { UserBalance } from '@/components/common/user-balance';
 import { useMessaging } from '@/providers/socketProvider';
 import { Spinner } from '../common';
+import { ProfileImage } from '../overview/ProfileImage';
 
 const ChatList = ({ conversations, loading }: { conversations: any[], loading: boolean }) => {
   return (
@@ -17,6 +18,7 @@ const ChatList = ({ conversations, loading }: { conversations: any[], loading: b
           key={i}
           chatId={c?.id}
           name={`${c?.sender?.firstName} ${c?.sender?.lastName}`}
+          avatar={c?.sender?.profileImage?.url}
           unreadCount={c?.unreadcount}
           lastMessage={c?.lastMessage ?? ""}
           time={c?.lastMessageTime}
@@ -43,13 +45,14 @@ const ChatListSearch = () => {
 
 interface ChatListItemProps {
   name: string;
+  avatar?: string;
   time: string;
   chatId: string;
   lastMessage: string;
   unreadCount: number;
 }
 
-const ChatListItem: React.FC<ChatListItemProps> = ({ name, unreadCount, lastMessage, time, chatId }) => {
+const ChatListItem: React.FC<ChatListItemProps> = ({ name, avatar, unreadCount, lastMessage, time, chatId }) => {
   const pathname = usePathname();
   const urlChatId = pathname.split('/')[2];
   const isActiveChat = urlChatId === chatId;
@@ -60,7 +63,8 @@ const ChatListItem: React.FC<ChatListItemProps> = ({ name, unreadCount, lastMess
         className={`flex w-full border-l-4 hover:bg-[#ECFCE5] duration-200 px-3 py-3 gap-2 items-center ${isActiveChat ? 'bg-[#ECFCE5] border-primary' : 'bg-white border-transparent'
           }`}
       >
-        <div className="h-10 w-10 shrink-0 rounded-full bg-slate-800"></div>
+        {/* <div className="h-10 w-10 shrink-0 rounded-full bg-slate-800"></div> */}
+        <ProfileImage score={0} imageUrl={avatar} size='sm' />
         <div className="grow flex flex-col">
           <div className="flex justify-between gap-2 items-center">
             <div className="flex gap-2 items-center">
