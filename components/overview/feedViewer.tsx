@@ -107,7 +107,7 @@ export const JobFeedCard: React.FC<JobFeedCardProps> = (props) => {
           <span className="text-title text-2xl font-normal">{title}</span>
 
           <div className="justify-between items-center flex mt-auto">
-            <Link href={`/jobs/${jobId}`} className="flex items-center gap-2">
+            <Link href={`/jobs/${jobId}?invite-id=${inviteId}`} className="flex items-center gap-2">
               <Button size="xs" variant="secondary">
                 See Details
               </Button>
@@ -141,14 +141,14 @@ export const PublicJobCreatedFeed = ({
   _id,
   bookmarked,
 }: {
-  creator: { name: string, avatar: string, score: number };
+  creator: { name: string; avatar: string; score: number };
   title: string;
   amount: string;
   jobId: string;
   _id: string;
   bookmarked: boolean;
 }) => {
-  console.log(creator)
+  console.log(creator);
   return (
     <JobFeedWrapper>
       <ProfileImage score={creator.score} imageUrl={creator.avatar} />
