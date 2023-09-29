@@ -2,6 +2,7 @@
 import React from 'react';
 import Image from 'next/image';
 import { Button } from 'pakt-ui';
+import { JobStatus } from '@/lib/types';
 import { useRouter } from 'next/navigation';
 import { SideModal } from '@/components/common/side-modal';
 import { AfroProfile } from '@/components/common/afro-profile';
@@ -13,6 +14,7 @@ interface ClientJobCardProps {
   jobId: string;
   title: string;
   price: number;
+  status: JobStatus;
   totalDeliverables: number;
   progress: number; // 0 to 100
   talent: {
@@ -29,10 +31,11 @@ export const ClientJobCard: React.FC<ClientJobCardProps> = ({
   title,
   jobId,
   progress,
+  status,
   totalDeliverables,
 }) => {
   const router = useRouter();
-  const [showModal, setShowModal] = React.useState(false);
+  const [isUpdateModalOpen, setIsUpdateModalOpen] = React.useState(false);
 
   return (
     <div className="gap-4 bg-white rounded-3xl border-line w-full flex flex-col grow border p-4">
@@ -59,14 +62,16 @@ export const ClientJobCard: React.FC<ClientJobCardProps> = ({
       </div>
       <div className="flex items-center gap-2 justify-between mt-auto">
         <div className="gap-2 flex items-center">
-          <Button size="xs" variant="secondary" onClick={() => setShowModal(true)}>
-            See Updates
-          </Button>
+          {
+            <Button size="xs" variant="secondary" onClick={() => setIsUpdateModalOpen(true)}>
+              {status === 'completed' ? 'Review' : 'See Updates'}
+            </Button>
+          }
           <Button
             size="xs"
             variant="outline"
             onClick={() => {
-              router.push('/messages/123');
+              router.push(`/messages?userId=${talent.id}`);
             }}
           >
             Message Talent
@@ -75,8 +80,12 @@ export const ClientJobCard: React.FC<ClientJobCardProps> = ({
 
         {<DeliverableProgressBar percentageProgress={progress} totalDeliverables={totalDeliverables} />}
 
-        <SideModal isOpen={showModal} onOpenChange={() => setShowModal(false)} className="flex flex-col">
-          <ClientJobModal jobId={jobId} />
+        <SideModal
+          isOpen={isUpdateModalOpen}
+          onOpenChange={() => setIsUpdateModalOpen(false)}
+          className="flex flex-col"
+        >
+          <ClientJobModal jobId={jobId} closeModal={() => setIsUpdateModalOpen(false)} />
         </SideModal>
       </div>
     </div>
@@ -87,6 +96,7 @@ interface TalentJobCardProps {
   jobId: string;
   title: string;
   price: number;
+  status: JobStatus;
   totalDeliverables: number;
   progress: number; // 0 to 100
   client: {
@@ -103,10 +113,11 @@ export const TalentJobCard: React.FC<TalentJobCardProps> = ({
   title,
   progress,
   jobId,
+  status,
   totalDeliverables,
 }) => {
   const router = useRouter();
-  const [showModal, setShowModal] = React.useState(false);
+  const [isUpdateModalOpen, setIsUpdateModalOpen] = React.useState(false);
 
   return (
     <div className="gap-4 bg-white rounded-3xl border-line w-full flex flex-col grow border p-4">
@@ -131,9 +142,10 @@ export const TalentJobCard: React.FC<TalentJobCardProps> = ({
       </div>
       <div className="flex items-center gap-2 justify-between mt-auto">
         <div className="gap-2 flex items-center">
-          <Button size="xs" variant="secondary" onClick={() => setShowModal(true)}>
-            Update
+          <Button size="xs" variant="secondary" onClick={() => setIsUpdateModalOpen(true)}>
+            {status === 'completed' ? 'Review' : 'Update'}
           </Button>
+
           <Button
             size="xs"
             variant="outline"
@@ -147,8 +159,12 @@ export const TalentJobCard: React.FC<TalentJobCardProps> = ({
 
         {<DeliverableProgressBar percentageProgress={progress} totalDeliverables={totalDeliverables} />}
 
-        <SideModal isOpen={showModal} onOpenChange={() => setShowModal(false)} className="flex flex-col">
-          <TalentJobModal jobId={jobId} />
+        <SideModal
+          isOpen={isUpdateModalOpen}
+          onOpenChange={() => setIsUpdateModalOpen(false)}
+          className="flex flex-col"
+        >
+          <TalentJobModal jobId={jobId} closeModal={() => setIsUpdateModalOpen(false)} />
         </SideModal>
       </div>
     </div>
