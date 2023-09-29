@@ -85,7 +85,6 @@ export default function SignupVerifyEmail() {
       {
         onSuccess: () => {
           setIsResendDisabled(true);
-          toast.success('OTP sent successfully');
         },
       },
     );
@@ -149,8 +148,8 @@ export default function SignupVerifyEmail() {
                 <Button
                   size="xs"
                   fullWidth
-                  variant="secondary"
-                  onClick={handleResendOTP}
+                  variant="outline"
+                  onClick={!(resendOTP.isLoading || isResendDisabled) ? handleResendOTP : () => { }}
                   disabled={resendOTP.isLoading || isResendDisabled}
                 >
                   {resendOTP.isLoading ? <Spinner size={16} /> : 'Resend OTP'}

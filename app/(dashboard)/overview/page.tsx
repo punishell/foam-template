@@ -18,26 +18,24 @@ export default function Overview() {
   const account = useGetAccount();
 
   return (
-    <div className="flex flex-col gap-8 relative h-full">
+    <div className="h-full gap-8">
       <Header />
 
-      <div className="flex gap-6 h-full">
-        <div className="grow h-full pb-20">
+      <div className="flex gap-6 h-[92%] mt-6 justify-start pb-4 overflow-y-auto">
+        <div className="w-full h-full gap-7">
           <JobHeader />
-
-          <div className="mt-6 h-full w-full">
-            <Tabs
-              tabs={[
-                { label: 'Your Feed', value: 'feed', content: <Feeds /> },
-                { label: 'Active Jobs', value: 'active', content: <ActiveJobs /> },
-                { label: 'Invites', value: 'invites', content: <Invites /> },
-                { label: 'Bookmarks', value: 'bookmarks', content: <FeedsBookmark /> },
-              ]}
-            />
-          </div>
+          <Tabs
+            className='h-[79%] my-4'
+            tabs={[
+              { label: 'Your Feed', value: 'feed', content: <Feeds /> },
+              { label: 'Active Jobs', value: 'active', content: <ActiveJobs /> },
+              { label: 'Invites', value: 'invites', content: <Invites /> },
+              { label: 'Bookmarks', value: 'bookmarks', content: <FeedsBookmark /> },
+            ]}
+          />
         </div>
 
-        <div className="basis-[300px] shrink-0 h-full gap-7 w-fit flex flex-col items-center overflow-y-auto">
+        <div className="flex flex-col basis-[300px] shrink-0 h-full gap-7 w-fit items-center">
           <AfroScore score={account.data?.score} />
           <LeaderBoard />
         </div>
@@ -97,7 +95,7 @@ const JobHeader = () => {
       <div className="border-2 p-4 relative overflow-hidden rounded-2xl bg-[#C9F0FF] border-blue-darkest">
         <div className="flex flex-col gap-4">
           <p className="text-xl font-bold max-w-[260px]">Browse through list of jobs that matches your skill set</p>
-          <Button variant="secondary" size="sm" onClick={() => router.push('/talents')}>
+          <Button variant="secondary" size="sm" onClick={() => router.push('/jobs')}>
             <span className="flex items-center gap-2">
               <Search size={20} />
               <span>Find Jobs</span>

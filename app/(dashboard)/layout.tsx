@@ -29,6 +29,7 @@ function AccountWrapper({ children, tokenSet }: DashProps) {
   if (!tokenSet || (!isFetched && isFetching)) {
     return <Loader />;
   }
+
   return (
     <>{children}</>
   )
@@ -89,7 +90,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               </div>
             </div>
             <div className="absolute bg-repeat opacity-50 inset-0 bg-[url(/images/rain.png)]" />
-            <div className="relative h-screen pt-5 px-8 z-10 flex flex-col w-full isolate">{children}</div>
+            <div className="relative h-full pt-5 px-8 z-10 flex flex-col w-full isolate">{children}</div>
           </div>
         </div>
       </MessagingProvider>
