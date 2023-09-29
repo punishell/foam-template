@@ -24,7 +24,7 @@ import { DataFeedResponse } from '@/lib/types';
 export const ParseFeedView = (feed: DataFeedResponse, loggedInUser: string, key: number, callback?: () => void) => {
   const amount = feed?.data?.paymentFee;
   const isBookmarked = feed.isBookmarked || false;
-  const bookmarkId = feed.bookmarkId || "";
+  const bookmarkId = feed.bookmarkId || feed._id;
   const inviter = {
     avatar: feed?.data?.creator?.profileImage?.url || '',
     name: `${feed?.data?.creator?.firstName || ''} ${feed?.data?.creator?.lastName || ''}`,

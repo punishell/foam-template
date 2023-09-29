@@ -14,6 +14,8 @@ export const RenderBookMark = ({ size = 20, isBookmarked, id, bookmarkId, type =
   const [bookmarked, setBookmarked] = useState(isBookmarked);
   const addBookmark = useSaveToBookmark();
   const removeBookmark = useRemoveFromBookmark();
+
+  console.log("Resp-==>", isBookmarked, bookmarked)
   const CallFuc = () => {
     if (bookmarked) {
       setBookmarked(false);
