@@ -33,7 +33,7 @@ export const JobHeader: React.FC<JobHeaderProps> = ({ title, price, dueDate, cre
       </div>
       {creator && (
         <div className="flex flex-col text-center gap-0 items-center">
-          <AfroProfile score={creator.score} size="lg">
+          <AfroProfile score={creator.score} size="md">
             <div className="h-full w-full rounded-full">
               {creator.avatar ? (
                 <Image src={creator.avatar} fill alt="profile" className="rounded-full" />
