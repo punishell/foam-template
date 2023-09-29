@@ -2,12 +2,12 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react-hooks/exhaustive-deps */
 import { getCookie } from "cookies-next";
-import React, { createContext, useCallback, useContext, useEffect, useState } from "react";
+import React, { createContext, useCallback, useContext, useEffect, useRef, useState } from "react";
 import { io, Socket } from "socket.io-client";
 import { useUserState } from "@/lib/store/account";
 import { AUTH_TOKEN_KEY, formatBytes } from "@/lib/utils";
 import { axios } from "@/lib/axios";
-import { usePathname } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import dayjs from "dayjs";
 import { toast } from "@/components/common/toaster";
 import { useRouter } from "next/navigation";
@@ -44,6 +44,7 @@ export type SocketContextType = {
   status: string;
   conversations: any;
   socket: Socket | any;
+  startingNewChat: boolean,
   fetchUserChats: () => any;
   startUserInitializeConversation: (recipientId: string) => Promise<any>;
   sendUserMessage: (
@@ -84,6 +85,7 @@ export const MessagingProvider = ({ children }: { children: React.ReactNode }) =
   const [loadingChats, setLoadingChats] = useState<boolean>(true);
   const [socketReconnect, setSocketReconnect] = useState<boolean>(false);
   const [unreadChatCount, setUnreadChatCount] = useState<number>(0);
+  const [startingNewChat, setStartingNewChat] = useState(false);
   const router = useRouter();
 
   const pathname = usePathname();
@@ -165,7 +167,7 @@ export const MessagingProvider = ({ children }: { children: React.ReactNode }) =
     if (socketReconnect) {
       connectChatInit()
     }
-  }, [socketReconnect])
+  }, [socketReconnect]);
 
   const Reconnect = () => setTimeout(() => { setSocketReconnect(true) }, MAX_RECONNECT_TIME);
 
@@ -263,15 +265,17 @@ export const MessagingProvider = ({ children }: { children: React.ReactNode }) =
 
   const startUserInitializeConversation = async (recipientId: string) => {
     try {
-      console.log("starting-chat", recipientId);
-      const resp = await socket.emit(
+      setStartingNewChat(true);
+      return await socket.emit(
         conversationEnums.INITIALIZE_CONVERSATION,
         {
           senderId: loggedInUser,
           recipientId,
+          type: "DIRECT"
         },
         async (conversation: any) => {
-          console.log("conver===>", conversation);
+          await fetchUserChats();
+          setStartingNewChat(false)
           return router.push(`/messages/${conversation._id}`);
         }
       );
@@ -304,7 +308,6 @@ export const MessagingProvider = ({ children }: { children: React.ReactNode }) =
       })
     }
     const resp = await postUploadImages(uploadFll);
-    console.log("Resp-=-==>", resp);
     return resp.map((r: any) => r._id);
   }
 
@@ -371,6 +374,7 @@ export const MessagingProvider = ({ children }: { children: React.ReactNode }) =
     conversations,
     socket,
     unreadChatCount,
+    startingNewChat,
     fetchUserChats,
     startUserInitializeConversation,
     sendUserMessage,

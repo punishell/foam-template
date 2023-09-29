@@ -117,7 +117,8 @@ export interface DataFeedResponse {
   creator: User;
   data: { _id: string; paymentFee: string; creator: User; owner?: User };
   description: string;
-  isBookmarked: boolean;
+  isBookmarked?: boolean;
+  bookmarkId?: string;
   isPublic?: boolean;
   owner: User;
   owners?: User[];

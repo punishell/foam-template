@@ -21,9 +21,10 @@ import {
 } from './feedViewer';
 import { DataFeedResponse } from '@/lib/types';
 
-export const ParseFeedView = (feed: DataFeedResponse, loggedInUser: string, key: number) => {
+export const ParseFeedView = (feed: DataFeedResponse, loggedInUser: string, key: number, callback?: () => void) => {
   const amount = feed?.data?.paymentFee;
-  const isBookmarked = feed.isBookmarked;
+  const isBookmarked = feed.isBookmarked || false;
+  const bookmarkId = feed.bookmarkId || "";
   const inviter = {
     avatar: feed?.data?.creator?.profileImage?.url || '',
     name: `${feed?.data?.creator?.firstName || ''} ${feed?.data?.creator?.lastName || ''}`,
@@ -38,7 +39,8 @@ export const ParseFeedView = (feed: DataFeedResponse, loggedInUser: string, key:
         jobId={feed?.data?._id}
         title={feed?.title}
         _id={feed?._id}
-        bookmarked={isBookmarked}
+        bookmark={{ active: isBookmarked, id: bookmarkId }}
+        callback={callback}
       />;
     case FEED_TYPES.COLLECTION_INVITE:
       return (

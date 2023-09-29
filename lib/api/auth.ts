@@ -99,7 +99,6 @@ export function useResendOTP() {
 }
 
 // Login
-
 interface LoginResponse {
   email: string;
   token: string;

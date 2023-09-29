@@ -139,16 +139,17 @@ export const PublicJobCreatedFeed = ({
   amount,
   jobId,
   _id,
-  bookmarked,
+  bookmark,
+  callback,
 }: {
   creator: { name: string, avatar: string, score: number };
   title: string;
   amount: string;
   jobId: string;
   _id: string;
-  bookmarked: boolean;
+  bookmark: { active: boolean, id: string };
+  callback?: () => void;
 }) => {
-  console.log(creator)
   return (
     <JobFeedWrapper>
       <ProfileImage score={creator.score} imageUrl={creator.avatar} />
@@ -167,7 +168,7 @@ export const PublicJobCreatedFeed = ({
               See Details
             </Button>
           </Link>
-          <RenderBookMark size={20} isBookmarked={bookmarked} type="feed" id={_id} bookmarkId={_id} />
+          <RenderBookMark size={20} isBookmarked={bookmark.active} type="feed" id={_id} bookmarkId={bookmark.id} callback={callback} />
         </div>
       </div>
     </JobFeedWrapper>
