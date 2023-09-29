@@ -94,7 +94,7 @@ export const MessagingProvider = ({ children }: { children: React.ReactNode }) =
       socket.on("connect", function () {
         setSocket(socket);
         socket.emit(conversationEnums.USER_CONNECT, { userId: loggedInUser }, (response: any) => {
-          const parsedConversation = parseUserchats(response);
+          const parsedConversation = parseUserChats(response);
           setConversations(parsedConversation);
           setLoadingChats(false);
           setUnreadChats(parsedConversation);
@@ -195,9 +195,9 @@ export const MessagingProvider = ({ children }: { children: React.ReactNode }) =
 
   const getConversationHeader = (conversation: any) => {
     const sender = conversation.recipients.find((r: any) => r._id !== loggedInUser);
-    return conversation.type == "DIRECT" ? { title: `${sender?.firstName} ${sender?.lastName}`, description: sender?.profile?.bio?.title } : { title: conversation.title, description: conversation.description };
+    return conversation.type == "DIRECT" ? { title: `${sender?.firstName} ${sender?.lastName}`, description: sender?.profile?.bio?.title, avatar: sender?.profileImage?.url, score: sender?.score } : { title: conversation.title, description: conversation.description, score: 0, avatar: "" };
   };
-  const getUnreadcount = (messages: any[]) => messages.filter((r: any) => !!!(r.readBy && !!r.readBy.includes(loggedInUser)) && r.user != loggedInUser).length;
+  const getUnreadCount = (messages: any[]) => messages.filter((r: any) => !!!(r.readBy && !!r.readBy.includes(loggedInUser)) && r.user != loggedInUser).length;
   const getLastMessage = (messages: any[]) => messages.length > 0 ? messages[messages.length - 1].content : null;
   const getLastMessageTime = (messages: any[]) => messages.length > 0 ? dayjs(messages[messages.length - 1].createdAt).format("HH:ss A") : null;
   const getConversationById = (id: string) => conversations.find((c: any) => c.id == id);
@@ -225,7 +225,7 @@ export const MessagingProvider = ({ children }: { children: React.ReactNode }) =
     return setCurrentConversation(conversation);
   }
 
-  const parseUserchats = (payload: any[]) => payload.map((c: any) => ({
+  const parseUserChats = (payload: any[]) => payload.map((c: any) => ({
     id: c._id,
     messages: parseMessages(c.messages),
     sender: getSender(c.recipients),
@@ -234,7 +234,7 @@ export const MessagingProvider = ({ children }: { children: React.ReactNode }) =
     header: getConversationHeader(c),
     createdAt: dayjs(c.createdAt).format("MMMM D, YYYY"),
     type: c.type,
-    unreadcount: getUnreadcount(c.messages),
+    unreadcount: getUnreadCount(c.messages),
     lastMessage: getLastMessage(c.messages),
     lastMessageTime: getLastMessageTime(c.messages),
   })
@@ -246,7 +246,7 @@ export const MessagingProvider = ({ children }: { children: React.ReactNode }) =
       if (data?.status === "success") {
         const payload = data?.data;
         console.log("dpdpd", payload);
-        const parsedConversation = parseUserchats(payload);
+        const parsedConversation = parseUserChats(payload);
         setConversations(parsedConversation);
         setLoadingChats(false);
         setUnreadChats(parsedConversation);

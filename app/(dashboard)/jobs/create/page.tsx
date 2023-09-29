@@ -1,5 +1,5 @@
 'use client';
-import React from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import { useCreateJob } from '@/lib/api/job';
@@ -68,6 +68,7 @@ export default function CreateJob() {
 
   const form = useForm<FormValues>({
     reValidateMode: 'onChange',
+    mode: 'all',
     resolver: zodResolver(schema),
   });
 
@@ -103,6 +104,14 @@ export default function CreateJob() {
       },
     );
   };
+
+  const jobSteps = ({
+    details: (!!form.watch("title") && !form.getFieldState('title').invalid) && (!!form.watch("due") && !form.getFieldState('due').invalid) && (!!form.watch("budget") && !form.getFieldState('budget').invalid),
+    skills: (!!form.watch('firstSkill') && !form.getFieldState('firstSkill').invalid),
+    description: (!!form.watch('description') && !form.getFieldState('description').invalid),
+    deliverables: (form.watch('deliverables').filter(r => r != '').length > 0 && !form.getFieldState('deliverables').invalid),
+    classification: (!!form.watch('jobType') && !form.getFieldState('jobType').invalid) && (!!form.watch('visibility') && !form.getFieldState('visibility').invalid) && (!!form.watch('category') && !form.getFieldState('category').invalid)
+  });
 
   return (
     <div className="flex gap-6 overflow-y-auto pb-10">
@@ -171,7 +180,7 @@ export default function CreateJob() {
         </div>
         <div className="p-6 flex flex-col gap-10">
           <div className="flex flex-col gap-2">
-            <h3 className="text-black text-lg font-medium">Preferred Skills</h3>
+            <h3 className="text-black text-lg font-medium">Preferred Skills<span className='ml-4 text-body text-sm font-thin'>You can add up to three</span></h3>
             <div className="flex gap-2 items-center justify-start">
               <div className="relative">
                 <SkillInput {...form.register('firstSkill')} />
@@ -216,7 +225,7 @@ export default function CreateJob() {
             </div>
           </div>
           <div className="flex flex-col gap-2">
-            <h3 className="text-black text-lg font-medium">Deliverables</h3>
+            <h3 className="text-black text-lg font-medium">Deliverables <span className='ml-4 text-body text-sm font-thin'>You can create up to five deliverables</span></h3>
 
             <div className="relative">
               <Controller
@@ -346,27 +355,11 @@ export default function CreateJob() {
       <div className="basis-[300px] shrink-0 grow-0 flex flex-col gap-6 h-fit">
         <div className="bg-white p-6 rounded-xl min-h-[300px] border border-line flex flex-col gap-3 h-fit">
           <h3 className="font-bold">Steps</h3>
-          <StepIndicator
-            isComplete={
-              !form.getFieldState('title').invalid &&
-              !form.getFieldState('due').invalid &&
-              !form.getFieldState('budget').invalid
-            }
-          >
-            Job Details
-          </StepIndicator>
-          <StepIndicator isComplete={!form.getFieldState('firstSkill').invalid}>Skills</StepIndicator>
-          <StepIndicator isComplete={!form.getFieldState('description').invalid}>Description</StepIndicator>
-          <StepIndicator isComplete={!form.getFieldState('deliverables').invalid}>Deliverables</StepIndicator>
-          <StepIndicator
-            isComplete={
-              !form.getFieldState('jobType').invalid &&
-              !form.getFieldState('visibility').invalid &&
-              !form.getFieldState('category').invalid
-            }
-          >
-            Classification
-          </StepIndicator>
+          <StepIndicator isComplete={jobSteps.details}>Job Details</StepIndicator>
+          <StepIndicator isComplete={jobSteps.skills}>Skills</StepIndicator>
+          <StepIndicator isComplete={jobSteps.description}>Description</StepIndicator>
+          <StepIndicator isComplete={jobSteps.deliverables}>Deliverables</StepIndicator>
+          <StepIndicator isComplete={jobSteps.classification}>Classification</StepIndicator>
         </div>
         <div className="bg-white p-6 rounded-xl min-h-[250px] border border-line flex flex-col gap-4">
           <div className="flex items-center gap-2">

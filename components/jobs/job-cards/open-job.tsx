@@ -4,6 +4,8 @@ import Link from 'next/link';
 import { Bookmark, X } from 'lucide-react';
 import { AfroProfile } from '@/components/common/afro-profile';
 import { RenderBookMark } from './render-bookmark';
+import { UserAvatar } from '@/components/common/user-avatar';
+import { ProfileImage } from '@/components/overview/ProfileImage';
 
 interface OpenJobProps {
   id: string;
@@ -28,7 +30,7 @@ export const OpenJobCard: React.FC<OpenJobProps> = ({ creator, price, skills, ti
   return (
     <div className="gap-4 bg-white rounded-3xl border-line w-full flex flex-col grow border p-4">
       <Link href={`/jobs/${id}`} className="w-full flex gap-4">
-        {<AfroProfile score={creator.paktScore} size="md" />}
+        <ProfileImage imageUrl={creator.avatar} score={creator.paktScore} size='md' />
 
         <div className="flex flex-col gap-2 grow">
           <div className="flex items-center justify-between gap-2">

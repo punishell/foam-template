@@ -140,23 +140,22 @@ export const PublicJobCreatedFeed = ({
   jobId,
   _id,
   bookmarked,
-  imageUrl,
 }: {
-  creator: string;
+  creator: { name: string, avatar: string, score: number };
   title: string;
   amount: string;
   jobId: string;
   _id: string;
   bookmarked: boolean;
-  imageUrl?: string;
 }) => {
+  console.log(creator)
   return (
     <JobFeedWrapper>
-      <AfroProfile score={0} size="lg" />
+      <ProfileImage score={creator.score} imageUrl={creator.avatar} />
       <div className="flex flex-col gap-4 w-full py-4">
         <div className="flex justify-between items-center">
           <h3 className="text-body text-xl font-bold">
-            {creator} created a{' '}
+            {creator.name} created a{' '}
             <span className="px-2 text-lg text-title inline-flex rounded-full bg-green-300">${amount ?? 0}</span> public
             job
           </h3>

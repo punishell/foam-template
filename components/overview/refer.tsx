@@ -14,6 +14,7 @@ import { useGetReferral, useSendReferralInvite } from '@/lib/api/referral';
 import dayjs from 'dayjs';
 import { Spinner } from '../common';
 import { CopyText } from '@/lib/utils';
+import { ProfileImage } from './ProfileImage';
 
 
 interface ReferralModalProps {
@@ -113,7 +114,8 @@ export function ReferralSideModal({ isOpen, onOpenChange }: ReferralModalProps) 
             <div className='flex flex-col gap-2 my-4'>
               {recentReferrals.length > 0 && recentReferrals.map((r, i) => <div key={i} className='bg-refer-bg flex flex-row justify-between w-full py-2 px-4 rounded-2xl border border-refer-border'>
                 <div className='flex flex-row gap-2'>
-                  <UserAvatar size='xs' image={r.image} score={r.score} />
+                  {/* <UserAvatar size='xs' image={r.image} score={r.score} /> */}
+                  <ProfileImage score={r.score} imageUrl={r.image} size='sm' />
                   <span className='items-center my-auto'>
                     <h3 className='text-lg text-title'>{r.name}</h3>
                     <p className='text-title text-sm'>{r.title}</p>

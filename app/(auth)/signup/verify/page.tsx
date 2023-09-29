@@ -110,50 +110,52 @@ export default function SignupVerifyEmail() {
           className="flex relative z-[100] w-full mx-auto max-w-[600px] flex-col bg-[rgba(0,124,91,0.20)] backdrop-blur-md items-center gap-6 rounded-2xl border border-white border-opacity-20 bg-[rgba(0, 124, 91, 0.20)] px-[40px] py-10 backdrop-blur-lg"
           onSubmit={form.handleSubmit(onSubmit)}
         >
-          <Controller
-            name="otp"
-            control={form.control}
-            render={({ field: { onChange, value } }) => {
-              return (
-                <ReactOTPInput
-                  value={value}
-                  onChange={onChange}
-                  shouldAutoFocus={true}
-                  numInputs={6}
-                  containerStyle="gap-3 flex"
-                  inputStyle={{
-                    width: '46px',
-                    height: '46px',
-                    borderRadius: '4px',
-                    border: '1px solid #D0DDD5',
-                  }}
-                  renderInput={(props) => (
-                    <input
-                      {...props}
-                      className="w-full rounded-md px-3 !select-none py-2 focus:outline-none focus:ring-1 focus:ring-primary"
-                    />
-                  )}
-                />
-              );
-            }}
-          />
+          <div className='flex flex-col w-fit gap-4'>
+            <Controller
+              name="otp"
+              control={form.control}
+              render={({ field: { onChange, value } }) => {
+                return (
+                  <ReactOTPInput
+                    value={value}
+                    onChange={onChange}
+                    shouldAutoFocus={true}
+                    numInputs={6}
+                    containerStyle="gap-3 flex"
+                    inputStyle={{
+                      width: '46px',
+                      height: '46px',
+                      borderRadius: '4px',
+                      border: '1px solid #D0DDD5',
+                    }}
+                    renderInput={(props) => (
+                      <input
+                        {...props}
+                        className="w-full rounded-md px-3 !select-none py-2 focus:outline-none focus:ring-1 focus:ring-primary"
+                      />
+                    )}
+                  />
+                );
+              }}
+            />
 
-          <Button fullWidth disabled={verifyEmail.isLoading || !form.formState.isValid}>
-            {verifyEmail.isLoading ? <Spinner /> : 'Verify Email'}
-          </Button>
+            <Button fullWidth disabled={verifyEmail.isLoading || !form.formState.isValid}>
+              {verifyEmail.isLoading ? <Spinner /> : 'Verify Email'}
+            </Button>
 
-          <div className="flex flex-col gap-4 items-center w-full">
-            <span className="text-white">{formatCountdown(countdown)}</span>
-            <div className="w-full max-w-[150px]">
-              <Button
-                size="xs"
-                fullWidth
-                variant="secondary"
-                onClick={handleResendOTP}
-                disabled={resendOTP.isLoading || isResendDisabled}
-              >
-                {resendOTP.isLoading ? <Spinner size={16} /> : 'Resend OTP'}
-              </Button>
+            <div className="flex flex-col gap-4 items-center w-full">
+              <span className="text-white">{formatCountdown(countdown)}</span>
+              <div className="w-full max-w-[150px]">
+                <Button
+                  size="xs"
+                  fullWidth
+                  variant="secondary"
+                  onClick={handleResendOTP}
+                  disabled={resendOTP.isLoading || isResendDisabled}
+                >
+                  {resendOTP.isLoading ? <Spinner size={16} /> : 'Resend OTP'}
+                </Button>
+              </div>
             </div>
           </div>
         </form>

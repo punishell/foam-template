@@ -31,18 +31,15 @@ export const ParseFeedView = (feed: DataFeedResponse, loggedInUser: string, key:
   };
   switch (feed.type) {
     case FEED_TYPES.COLLECTION_CREATED:
-      return (
-        <PublicJobCreatedFeed
-          key={key}
-          creator={`${feed?.data?.creator?.firstName || ''} ${feed?.data?.creator?.lastName || ''}`}
-          amount={amount}
-          jobId={feed?.data?._id}
-          title={feed?.title}
-          _id={feed?._id}
-          bookmarked={isBookmarked}
-          imageUrl={feed?.data?.creator?.profileImage?.url}
-        />
-      );
+      return <PublicJobCreatedFeed
+        key={key}
+        creator={inviter}
+        amount={amount}
+        jobId={feed?.data?._id}
+        title={feed?.title}
+        _id={feed?._id}
+        bookmarked={isBookmarked}
+      />;
     case FEED_TYPES.COLLECTION_INVITE:
       return (
         <JobFeedCard
@@ -54,7 +51,7 @@ export const ParseFeedView = (feed: DataFeedResponse, loggedInUser: string, key:
           inviter={inviter}
           jobId={feed._id}
           bookmarked={isBookmarked}
-          // imageUrl={feed?.data?.creator?.profileImage?.url}
+        // imageUrl={feed?.data?.creator?.profileImage?.url}
         />
       );
     case FEED_TYPES.REFERRAL_SIGNUP:

@@ -9,6 +9,7 @@ import Image from 'next/image';
 import { DefaultAvatar } from '@/components/common/default-avatar';
 import Link from 'next/link';
 import { InviteTalentModal } from '@/components/talents/invite-talent';
+import { ProfileImage } from '../overview/ProfileImage';
 
 interface Props {
   _id: string;
@@ -30,13 +31,7 @@ export const ProfileHeader: React.FC<Props> = ({ _id, name, position, score, ski
 
       <div className="w-full flex relative bg-white py-6 rounded-2xl gap-6 border border-line">
         <div className="absolute left-[0%] top-[0%] shrink-0">
-          <AfroProfile score={score} size="xl">
-            {profileImage ? (
-              <Image src={profileImage} alt="profile" layout="fill" className="rounded-full" />
-            ) : (
-              <DefaultAvatar />
-            )}
-          </AfroProfile>
+          <ProfileImage imageUrl={profileImage} score={score} size='xl' />
         </div>
         <div className="flex flex-col gap-0 grow">
           <div
