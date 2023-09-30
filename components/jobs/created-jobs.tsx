@@ -55,7 +55,7 @@ const UnassignedJobs: React.FC<UnassignedJobsProps> = ({ jobs }) => {
 
   return (
     <div className="grid grid-cols-2 gap-4 overflow-y-auto pb-20">
-      {jobs.map(({ _id, paymentFee, name, createdAt }) => {
+      {jobs.map(({ _id, paymentFee, name, tagsData, createdAt }) => {
         return (
           <UnAssignedJobCard
             id={_id}
@@ -63,6 +63,7 @@ const UnassignedJobs: React.FC<UnassignedJobsProps> = ({ jobs }) => {
             price={paymentFee}
             title={name}
             createdAt={format(new Date(createdAt), 'dd MMM yyyy')}
+            skills={tagsData.join(',')}
           />
         );
       })}

@@ -2,10 +2,11 @@
 
 import React from 'react';
 import Rating from 'react-rating';
-import { Star } from 'lucide-react';
+import { ArrowLeftCircle, ArrowRightCircle, Star } from 'lucide-react';
 import { Carousel } from '@/components/common/carousel';
 import { AfroProfile } from '@/components/common/afro-profile';
 import { Spinner } from '@/components/common/';
+import { ProfileImage } from '../overview/ProfileImage';
 
 interface ReviewProps {
   body: string;
@@ -15,6 +16,7 @@ interface ReviewProps {
     name: string;
     title: string;
     afroScore: number;
+    avatar: string;
   };
 }
 
@@ -24,11 +26,11 @@ const Review: React.FC<ReviewProps> = ({ body, title, rating, user }) => {
       <div>
         <span className="text-xl font-medium text-title">{title}</span>
       </div>
-      <div className="text-body">{body}</div>
+      <div className="text-body min-h-[72px]">{body}</div>
 
       <div className="flex justify-between items-center">
         <div className="flex gap-3 items-center">
-          <AfroProfile size="sm" score={0} />
+          <ProfileImage size="sm" score={user.afroScore} imageUrl={user?.avatar} />
           <div className="flex flex-col">
             <span className="text-sm text-title font-medium">{user.name}</span>
             <span className="text-sm text-body">{user.title}</span>
@@ -46,10 +48,16 @@ const Review: React.FC<ReviewProps> = ({ body, title, rating, user }) => {
   );
 };
 
-export const Reviews = ({ reviews, loading }: { reviews: any[]; loading: boolean }) => {
+export const Reviews = ({ reviews, loading }: { reviews: ReviewProps[]; loading: boolean }) => {
   return (
     <div className="flex flex-col bg-primary-gradient p-4 rounded-4 gap-3 rounded-2xl">
-      <h3 className="text-white font-medium text-2xl">Reviews</h3>
+      <div className='flex flex-row justify-between'>
+        <h3 className="text-white font-medium text-2xl">Reviews</h3>
+        <div className='flex flex-row gap-2'>
+          <ArrowLeftCircle size={32} className='text-white' />
+          <ArrowRightCircle size={32} className='text-white' />
+        </div>
+      </div>
 
       {loading ? (
         <div className="flex  min-h-[307px] w-full text-white my-auto items-center justify-center z-20">
@@ -62,14 +70,10 @@ export const Reviews = ({ reviews, loading }: { reviews: any[]; loading: boolean
             reviews.map((_review, i) => (
               <Review
                 key={i}
-                title="Great work"
-                body="I have over 13 years of experience crafting award-winning mobile and web apps at well-known tech companies like Google, Nest, and GE, and have worked and consulted at a variety of startups and companies in Silicon Valley. I&nbsp;believe in designing with intention in both work and life. &nbsp; I thrive in bringing clarity to ambiguity"
-                rating={4}
-                user={{
-                  name: 'Cameron Williamson',
-                  title: 'Full-stack developer',
-                  afroScore: 100,
-                }}
+                title={_review.title}
+                body={_review.body}
+                rating={_review.rating}
+                user={_review.user}
               />
             ))}
           {!reviews ||

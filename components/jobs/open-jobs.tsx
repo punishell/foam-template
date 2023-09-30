@@ -57,7 +57,7 @@ interface AllJobsProps {
 }
 
 const AllJobs: React.FC<AllJobsProps> = ({ jobs, onRefresh }) => {
-  if (!jobs.length) return <PageEmpty label="No open jobs yet." className="rounded-lg border border-line h-full" />;
+  if (!jobs.length) return <PageEmpty label="No open jobs yet." className="rounded-lg border border-line h-full py-6" />;
 
   return (
     <div className="grid grid-cols-2 gap-4 overflow-y-auto pb-20">
@@ -95,7 +95,7 @@ const SavedJobs: React.FC<SavedJobsProps> = ({ jobs, isError, isLoading, onRefre
   if (isError) return <PageError />;
   if (isLoading) return <PageLoading />;
   if (!jobs.length)
-    return <PageEmpty label="Your saved jobs will appear here." className="rounded-lg border border-line h-[90%]" />;
+    return <PageEmpty label="Your saved jobs will appear here." className="rounded-lg border border-line h-full py-6" />;
 
   return (
     <div className="grid grid-cols-2 gap-4 overflow-y-auto pb-20">

@@ -368,7 +368,7 @@ export default function CreateJob() {
           </div>
           <div className="ml-auto max-w-[250px] w-full">
             <Button disabled={createJob.isLoading || !form.formState.isValid} fullWidth>
-              {createJob.isLoading ? <Spinner /> : 'Publish Job'}
+              {createJob.isLoading ? <Spinner /> : form.watch('visibility') == 'private' ? 'Create Job' : 'Post Job'}
             </Button>
           </div>
         </div>

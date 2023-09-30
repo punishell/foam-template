@@ -1,7 +1,6 @@
 import { ApiError, axios } from '@/lib/axios';
 import { toast } from '@/components/common/toaster';
 import { useMutation, useQuery } from '@tanstack/react-query';
-import { parseFilterObjectToString } from '../utils';
 
 // Get Invites
 interface getInviteParams {
@@ -49,12 +48,11 @@ interface GetInviteResponse {
 }
 
 async function getInvites({ page = 1, limit = 10, filter }: getInviteParams): Promise<GetInviteResponse> {
-  const filters = parseFilterObjectToString(filter || {});
   const res = await axios.get('/invite', {
     params: {
       page,
       limit,
-      filter: filters,
+      ...filter,
     },
   });
   return res.data.data;
@@ -63,7 +61,7 @@ async function getInvites({ page = 1, limit = 10, filter }: getInviteParams): Pr
 export const useGetInvites = ({ page, limit, filter }: getInviteParams) => {
   return useQuery({
     queryFn: async () => await getInvites({ page, limit, filter }),
-    queryKey: ['get-invites'],
+    queryKey: [`get_invites_${page}_${limit}_${filter}`],
     onError: (error: ApiError) => {
       toast.error(error?.response?.data.message || 'An error occurred');
     },

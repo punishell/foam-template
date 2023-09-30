@@ -122,7 +122,7 @@ export const TalentJobCard: React.FC<TalentJobCardProps> = ({
   return (
     <div className="gap-4 bg-white rounded-3xl border-line w-full flex flex-col grow border p-4">
       <div className="w-full flex gap-4">
-        <AfroProfile score={client.paktScore} size="md">
+        <AfroProfile score={client.paktScore} size="sm">
           <div className="h-full w-full rounded-full">
             {client.avatar ? (
               <Image src={client.avatar} fill alt="profile" className="rounded-full" />

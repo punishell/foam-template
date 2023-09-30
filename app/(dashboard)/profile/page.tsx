@@ -18,7 +18,7 @@ export default function Profile() {
   const router = useRouter();
   const user = useUserState();
   const talentId = String(user?._id);
-  const { data: talentReviews, refetch: FetchTalent, isFetched, isFetching } = useGetTalentReviewById(talentId);
+  const { data: talentReviews, refetch: FetchTalent, isFetched, isFetching } = useGetTalentReviewById(talentId, "1", "10");
 
   useEffect(() => {
     if (talentId) {
@@ -44,16 +44,7 @@ export default function Profile() {
     }),
     [user],
   );
-
-  // TODO:: Complete Review data
-  const reviews = useMemo(
-    () =>
-      (talentReviews?.data || []).map((review) => ({
-        reviewer: '',
-        content: '',
-      })),
-    [talentReviews?.data],
-  );
+  const reviews = talentReviews?.data || [];
 
   return (
     <div className="flex flex-col gap-6 pt-6 overflow-y-auto">
@@ -71,7 +62,20 @@ export default function Profile() {
         <Bio body={talent.bio} />
         <Achievements achievements={talent.achievements} />
       </div>
-      <Reviews reviews={reviews} loading={!isFetched && isFetching} />
+      <Reviews
+        reviews={
+          reviews?.map((a) => ({
+            title: a.data.name,
+            body: a.review,
+            rating: a.rating,
+            user: {
+              afroScore: a.owner.score,
+              name: `${a.owner.firstName}${a.owner.lastName}`,
+              title: a.owner.profile.bio?.title || "",
+              avatar: a.owner.profileImage?.url ?? "",
+            }
+          })) ?? []
+        } loading={!isFetched && isFetching} />
     </div>
   );
 }

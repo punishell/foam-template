@@ -141,3 +141,14 @@ export interface Bookmark {
   data: Job;
   feed: DataFeedResponse;
 }
+
+export interface Review {
+  _id: string;
+  data: Job;
+  owner: User;
+  rating: number;
+  receiver: User;
+  review: string;
+  createdAt?: string;
+  updatedAt?: string;
+}

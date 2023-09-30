@@ -1,7 +1,6 @@
 import { ApiError, axios } from '@/lib/axios';
 import { toast } from '@/components/common/toaster';
 import { useMutation, useQuery } from '@tanstack/react-query';
-import { parseFilterObjectToString } from '../utils';
 import { DataFeedResponse } from '../types';
 
 interface CreatorData {
@@ -27,8 +26,13 @@ interface timelineFetchParams {
 }
 
 async function getTimelineFeeds({ page, limit, filter }: timelineFetchParams): Promise<GetFeedsResponse> {
-  const filters = parseFilterObjectToString(filter);
-  const res = await axios.get(`/feeds?page=${page}&limit=${limit}&${filters}`);
+  const res = await axios.get(`/feeds`, {
+    params: {
+      page,
+      limit,
+      ...filter,
+    },
+  });
   return res.data.data;
 }
 
@@ -63,7 +67,7 @@ export const useGetTimeline = ({ page, limit, filter }: timelineFetchParams) => 
 export const useGetLeaderBoard = () => {
   return useQuery({
     queryFn: async () => await getLeaderBoard(),
-    queryKey: ['get-leaderboard'],
+    queryKey: ['get-leader-board'],
     onError: (error: ApiError) => {
       toast.error(error?.response?.data.message || 'An error occurred');
     },
