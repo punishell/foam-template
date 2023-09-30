@@ -3,7 +3,7 @@
 import React from 'react';
 import { PageError } from '@/components/common/page-error';
 import { PageLoading } from '@/components/common/page-loading';
-import { useGetTalentById } from '@/lib/api';
+import { useGetTalentById, useGetTalentReviewById } from '@/lib/api';
 import { useParams } from 'next/navigation';
 import { Achievements } from '@/components/talents/achievement';
 import { Reviews } from '@/components/talents/review';
@@ -13,12 +13,14 @@ export default function TalentDetails() {
   const params = useParams();
   const talentId = String(params['talent-id']);
   const talentData = useGetTalentById(talentId, true);
+  const reviewData = useGetTalentReviewById(talentId, "1", "10", true);
 
   if (talentData.isLoading || (!talentData.isFetched && talentData.isFetching)) return <PageLoading />;
 
   if (talentData.isError) return <PageError />;
 
   const talent = talentData.data.talent;
+  const reviews = reviewData.data;
 
   return (
     <div className="flex flex-col gap-6 pt-6 overflow-y-auto">
@@ -44,11 +46,16 @@ export default function TalentDetails() {
       </div>
       <Reviews
         reviews={
-          talent.achievements?.map((a) => ({
-            title: a.type,
-            type: a.type,
-            total: Number(a.total),
-            value: Number(a.value),
+          reviews?.data.map((a) => ({
+            title: a.data.name,
+            body: a.review,
+            rating: a.rating,
+            user: {
+              afroScore: a.owner.score,
+              name: `${a.owner.firstName}${a.owner.lastName}`,
+              title: a.owner.profile.bio?.title || "",
+              avatar: a.owner.profileImage?.url ?? "",
+            }
           })) ?? []
         }
         loading={talentData.isLoading}
