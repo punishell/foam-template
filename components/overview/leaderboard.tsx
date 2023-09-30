@@ -6,16 +6,12 @@ import { ProfileImage } from './ProfileImage';
 
 export const LeaderBoard = () => {
   const { data: leaderboardData, isFetched, isFetching } = useGetLeaderBoard();
-  const leaderboard = useMemo(
-    () =>
-      (leaderboardData?.data || []).map((leader, i) => ({
-        name: `${leader?.firstName} ${leader?.lastName}`,
-        image: leader?.profileImage?.url,
-        score: leader?.score,
-        position: i + 1,
-      })),
-    [leaderboardData?.data],
-  );
+  const leaderboard = (leaderboardData?.data || []).map((leader, i) => ({
+    name: `${leader?.firstName} ${leader?.lastName}`,
+    image: leader?.profileImage?.url,
+    score: leader?.score,
+    position: i + 1,
+  }));
   return (
     <div className="flex flex-col grow w-full">
       <div className="text-xl font-bold text-center mb-6">Leaderboard</div>

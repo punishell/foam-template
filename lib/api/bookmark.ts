@@ -18,8 +18,10 @@ interface timelineFetchParams {
 async function getBookmarks({ page, limit, filter }: timelineFetchParams): Promise<GetBookMarkResponse> {
   const res = await axios.get(`/bookmark`, {
     params: {
-      page, limit, ...filter
-    }
+      page,
+      limit,
+      ...filter,
+    },
   });
   return res.data.data;
 }

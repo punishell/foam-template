@@ -237,7 +237,7 @@ const TalentApplicationFormModal = () => {
           <input
             type="text"
             id="due"
-            placeholder="Enter Bid"
+            placeholder="Enter Bid (e.g $100)"
             className="w-full border bg-[#FCFCFD] border-line rounded-lg outline-none px-4 py-3 focus-within:border-secondary hover:border-secondary hover:duration-200"
           />
         </div>
