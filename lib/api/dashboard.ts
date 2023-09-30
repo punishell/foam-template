@@ -28,8 +28,10 @@ interface timelineFetchParams {
 async function getTimelineFeeds({ page, limit, filter }: timelineFetchParams): Promise<GetFeedsResponse> {
   const res = await axios.get(`/feeds`, {
     params: {
-      page, limit, ...filter
-    }
+      page,
+      limit,
+      ...filter,
+    },
   });
   return res.data.data;
 }
@@ -65,7 +67,7 @@ export const useGetTimeline = ({ page, limit, filter }: timelineFetchParams) => 
 export const useGetLeaderBoard = () => {
   return useQuery({
     queryFn: async () => await getLeaderBoard(),
-    queryKey: ['get-leaderboard'],
+    queryKey: ['get-leader-board'],
     onError: (error: ApiError) => {
       toast.error(error?.response?.data.message || 'An error occurred');
     },

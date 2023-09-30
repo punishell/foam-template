@@ -33,8 +33,10 @@ interface reviewResponse {
 async function getTalent({ limit = 20, page = 1, filter }: talentFetchParams): Promise<talentListResponse> {
   const res = await axios.get(`/account/user`, {
     params: {
-      page, limit, ...filter
-    }
+      page,
+      limit,
+      ...filter,
+    },
   });
   return res.data.data;
 }
