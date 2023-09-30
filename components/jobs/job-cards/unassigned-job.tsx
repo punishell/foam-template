@@ -22,7 +22,7 @@ export const UnAssignedJobCard: React.FC<UnAssignedJobCardProps> = ({ createdAt,
 
             <span className="px-3 text-base text-title inline-flex rounded-full bg-[#B2E9AA66]">${price}</span>
           </div>
-          <div className="grow text-title text-2xl">{title}</div>
+          <div className="grow text-title text-2xl min-h-[58px]">{title}</div>
         </div>
       </div>
       <div className="flex items-center gap-2 justify-between mt-auto">

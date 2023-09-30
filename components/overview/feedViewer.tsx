@@ -150,7 +150,6 @@ export const PublicJobCreatedFeed = ({
   bookmark: { active: boolean; id: string };
   callback?: () => void;
 }) => {
-  console.log(creator);
   return (
     <JobFeedWrapper>
       <ProfileImage score={creator.score} imageUrl={creator.avatar} />
