@@ -10,7 +10,7 @@ import { PageError } from '@/components/common/page-error';
 import { PageLoading } from '@/components/common/page-loading';
 import { useGetBookmarks } from '@/lib/api/bookmark';
 
-interface Props { }
+interface Props {}
 
 export const OpenJobs: React.FC<Props> = () => {
   const jobsData = useGetJobs({ category: 'open' });

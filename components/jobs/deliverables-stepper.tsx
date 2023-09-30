@@ -100,7 +100,7 @@ export const DeliverablesStepper: React.FC<DeliverablesStepperProps> = ({
   const completedDeliverables = deliverables.filter((deliverable) => deliverable.progress === 100).length;
 
   return (
-    <div className="flex flex-col w-full h-full grow">
+    <div className="flex flex-col w-full h-full grow pb-3">
       {deliverables
         .sort((a, b) => b.progress - a.progress)
         .map(({ deliverableId, description, jobId, progress, updatedAt }, index) => {
@@ -123,6 +123,7 @@ export const DeliverablesStepper: React.FC<DeliverablesStepperProps> = ({
       <div className="mt-auto">
         {isClient && totalDeliverables === completedDeliverables && (
           <Button
+            className="mt-6"
             size={'sm'}
             fullWidth
             onClick={() => {
@@ -143,7 +144,7 @@ export const DeliverablesStepper: React.FC<DeliverablesStepperProps> = ({
         )}
 
         {!isClient && totalDeliverables === completedDeliverables && (
-          <div className="bg-primary-gradient p-[2px] rounded-[10px]">
+          <div className="bg-primary-gradient p-[2px] rounded-[10px] mt-6">
             <div className="bg-green-50 rounded-lg py-3 px-2">Waiting for Client to approve job as complete.</div>
           </div>
         )}

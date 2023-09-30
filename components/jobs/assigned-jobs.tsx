@@ -13,13 +13,13 @@ interface Props {}
 export const AcceptedJobs: React.FC<Props> = () => {
   const jobsData = useGetJobs({ category: 'assigned' });
 
-  if (jobsData.isError) return <PageError className="rounded-xl border border-red-100 h-[90%]" />;
-  if (jobsData.isLoading) return <PageLoading className="rounded-xl border border-line h-[90%]" />;
+  if (jobsData.isError) return <PageError className="rounded-xl border border-red-100 h-[80vh]" />;
+  if (jobsData.isLoading) return <PageLoading className="rounded-xl border border-line h-[80vh]" />;
 
   const jobs = jobsData.data.data;
 
   const completedJobs = jobs.filter((job) => job.payoutStatus === 'completed');
-  const ongoingJobs = jobs.filter((job) => job.payoutStatus !== 'completed' && job.owner !== undefined);
+  const ongoingJobs = jobs.filter((job) => job.payoutStatus !== 'completed' && job.inviteAccepted);
 
   return (
     <div className="flex flex-col gap-6 h-full">
@@ -44,7 +44,7 @@ interface OngoingJobsProps {
 
 const TalentOngoingJobs: React.FC<OngoingJobsProps> = ({ jobs }) => {
   if (!jobs.length)
-    return <PageEmpty label="Your ongoing jobs will appear here." className="rounded-lg border border-line h-[90%]" />;
+    return <PageEmpty label="Your ongoing jobs will appear here." className="rounded-lg border border-line h-[80vh]" />;
 
   return (
     <div className="grid grid-cols-2 gap-4 overflow-y-auto pb-20">
@@ -78,7 +78,7 @@ interface CompletedJobsProps {
 const TalentCompletedJobs: React.FC<CompletedJobsProps> = ({ jobs }) => {
   if (!jobs.length)
     return (
-      <PageEmpty label="Your completed jobs will appear here." className="rounded-lg border border-line h-[90%]" />
+      <PageEmpty label="Your completed jobs will appear here." className="rounded-lg border border-line h-[80vh]" />
     );
 
   return (
