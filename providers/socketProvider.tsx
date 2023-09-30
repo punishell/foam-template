@@ -280,10 +280,12 @@ export const MessagingProvider = ({ children }: { children: React.ReactNode }) =
           recipientId,
           type: "DIRECT"
         },
-        async (conversation: any) => {
-          await fetchUserChats();
+        async (conversation: SocketResponse<any>) => {
+          console.log("SDGH==>", conversation)
+          await fetchUserChats(conversation.data._id);
           setStartingNewChat(false)
-          return router.push(`/messages/${conversation._id}`);
+          if (conversation.error) return router.back();
+          return router.push(`/messages/${conversation.data._id}`);
         }
       );
     } catch (error) {

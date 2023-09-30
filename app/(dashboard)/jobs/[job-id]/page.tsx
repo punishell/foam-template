@@ -24,7 +24,7 @@ export default function JobDetails({ params }: Props) {
   const jobId = params['job-id'];
   const accountData = useGetAccount();
   const jobData = useGetJobById({ jobId });
-
+  console.log(jobData.data)
   if (jobData.isError) return <PageError className="absolute inset-0" />;
   if (jobData.isLoading) return <PageLoading className="absolute inset-0" />;
 
@@ -82,7 +82,7 @@ const ClientJobDetails: React.FC<ClientJobDetailsProps> = ({ job }) => {
               .map((collection) => collection.name)}
           />
 
-          <JobCtas jobId={job._id} />
+          <JobCtas jobId={job._id} skills={job.tagsData} />
         </div>
       </div>
 
@@ -96,9 +96,10 @@ const ClientJobDetails: React.FC<ClientJobDetailsProps> = ({ job }) => {
 
 interface ClientPrivateJobCtasProps {
   jobId: string;
+  skills?: string[];
 }
 
-const ClientPrivateJobCtas: React.FC<ClientPrivateJobCtasProps> = ({ jobId }) => {
+const ClientPrivateJobCtas: React.FC<ClientPrivateJobCtasProps> = ({ jobId, skills }) => {
   const router = useRouter();
 
   return (
@@ -122,7 +123,7 @@ const ClientPrivateJobCtas: React.FC<ClientPrivateJobCtasProps> = ({ jobId }) =>
         <Button
           fullWidth
           onClick={() => {
-            router.push(`/talents`);
+            router.push(`/talents${skills && skills?.length > 0 ? `?skills=${skills?.join(",")}` : ""}`);
           }}
         >
           Find Talent
@@ -236,7 +237,7 @@ const TalentApplicationFormModal = () => {
           <input
             type="text"
             id="due"
-            placeholder="Frontend Developer"
+            placeholder="Enter Bid"
             className="w-full border bg-[#FCFCFD] border-line rounded-lg outline-none px-4 py-3 focus-within:border-secondary hover:border-secondary hover:duration-200"
           />
         </div>
@@ -331,7 +332,7 @@ const TalentOpenJobCtas: React.FC<TalentOpenJobCtasProps> = ({ jobId }) => {
   const [isApplyModalOpen, setIsApplyModalOpen] = React.useState(false);
 
   return (
-    <div className="max-w-[200px] w-full">
+    <div className="max-w-[200px] w-full ml-auto">
       <Button fullWidth onClick={() => setIsApplyModalOpen(true)}>
         Apply
       </Button>

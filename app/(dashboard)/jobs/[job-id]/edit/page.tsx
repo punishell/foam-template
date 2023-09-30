@@ -403,11 +403,11 @@ const JobEditForm: React.FC<JobEditFormProps> = ({ job }) => {
             </div>
           </div>
           <div className="flex gap-4 items-center w-full justify-end">
-            {form.formState.isDirty && (
-              <div className=" max-w-[250px] w-full">
-                <Button fullWidth>{updateJob.isLoading ? <Spinner /> : 'Update Job'}</Button>
-              </div>
-            )}
+            <div className=" max-w-[250px] w-full">
+              <Button fullWidth>
+                {updateJob.isLoading ? <Spinner /> : 'Update Job'}
+              </Button>
+            </div>
 
             {talentId && (
               <div className="max-w-[250px] w-full">
