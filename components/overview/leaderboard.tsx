@@ -84,11 +84,11 @@ const FirstPlace: React.FC<LeaderBoardItemProps> = ({ name, score, avatar }) => 
         </defs>
       </svg>
       <div className="absolute inset-0 gap-3 flex items-center p-3 pl-1">
-        <ProfileImage imageUrl={avatar} score={Math.round(score)} size='sm' />
+        <ProfileImage imageUrl={avatar} score={Math.round(score)} size="sm" />
         <div className="grow">
           <span className="text-[#ECFCE5] text-lg">{name}</span>
           <div className="flex gap-2 justify-between items-center">
-            <span className="text-sm text-[#F2F4F5]">Afroscore: {score}</span>
+            <span className="text-sm text-[#F2F4F5]">Afroscore: {Math.round(score)}</span>
             <Image src="/icons/medal-1.png" width={28} height={28} alt="" />
           </div>
         </div>
@@ -145,11 +145,11 @@ const SecondPlace: React.FC<LeaderBoardItemProps> = ({ name, score, avatar }) =>
         </defs>
       </svg>
       <div className="absolute inset-0 gap-3 flex items-center p-3 pl-1">
-        <ProfileImage imageUrl={avatar} score={Math.round(score)} size='sm' />
+        <ProfileImage imageUrl={avatar} score={Math.round(score)} size="sm" />
         <div className="grow">
           <span className="text-[#ECFCE5] text-lg">{name}</span>
           <div className="flex gap-2 justify-between items-center">
-            <span className="text-sm text-[#F2F4F5]">Afroscore: {score}</span>
+            <span className="text-sm text-[#F2F4F5]">Afroscore: {Math.round(score)}</span>
             <Image src="/icons/medal-2.png" width={28} height={28} alt="" />
           </div>
         </div>
@@ -201,11 +201,11 @@ const ThirdPlace: React.FC<LeaderBoardItemProps> = ({ name, score, avatar }) => 
         </defs>
       </svg>
       <div className="absolute inset-0 gap-3 flex items-center p-3 pl-1">
-        <ProfileImage imageUrl={avatar} score={Math.round(score)} size='sm' />
+        <ProfileImage imageUrl={avatar} score={Math.round(score)} size="sm" />
         <div className="grow">
           <span className="text-[#ECFCE5] text-lg">{name}</span>
           <div className="flex gap-2 justify-between items-center">
-            <span className="text-sm text-[#F2F4F5]">Afroscore: {score}</span>
+            <span className="text-sm text-[#F2F4F5]">Afroscore: {Math.round(score)}</span>
             <Image src="/icons/medal-3.png" width={28} height={28} alt="" />
           </div>
         </div>
@@ -224,11 +224,11 @@ const RunnerUp: React.FC<LeaderBoardItemProps> = ({ name, score, avatar, place }
         ></path>
       </svg>
       <div className="absolute inset-0 gap-3 flex items-center p-3 pl-1">
-        <ProfileImage imageUrl={avatar} score={Math.round(score)} size='sm' />
+        <ProfileImage imageUrl={avatar} score={Math.round(score)} size="sm" />
         <div className="grow">
           <span className="text-[#ECFCE5] text-lg">{name}</span>
           <div className="flex gap-2 justify-between items-center">
-            <span className="text-sm text-[#F2F4F5]">Afroscore: {score}</span>
+            <span className="text-sm text-[#F2F4F5]">Afroscore: {Math.round(score)}</span>
             <span className="text-sm text-[#CDCFD0]">{place}</span>
           </div>
         </div>

@@ -22,11 +22,11 @@ export const CreatedJobs: React.FC<Props> = () => {
 
   const jobs = jobsData.data.data;
 
-  const ongoingJobs = jobs.filter((job) => job.status === 'ongoing' && job.owner !== undefined);
+  const completedJobs = jobs.filter((job) => job.payoutStatus === 'completed');
+  const ongoingJobs = jobs.filter((job) => job.payoutStatus !== 'completed' && job.owner !== undefined);
   const unassignedJobs = jobs.filter(
     (job) => job.status === 'pending' || (job.status === 'ongoing' && job.owner === undefined),
   );
-  const completedJobs = jobs.filter((job) => job.status === 'completed');
 
   return (
     <div className="flex flex-col gap-6 h-full">
@@ -80,20 +80,21 @@ const OngoingJobs: React.FC<OngoingJobsProps> = ({ jobs }) => {
 
   return (
     <div className="grid grid-cols-2 gap-4 overflow-y-auto pb-20">
-      {jobs.map(({ _id, paymentFee, name, creator, progress, collections }) => {
+      {jobs.map(({ _id, paymentFee, name, creator, progress, collections, status, owner }) => {
         return (
           <ClientJobCard
             progress={progress}
+            status={status}
             totalDeliverables={collections.filter((collection) => collection.type === 'deliverable').length}
             jobId={_id}
             key={_id}
             price={paymentFee}
             title={name}
             talent={{
-              id: creator._id,
-              paktScore: creator.score,
-              avatar: creator.profileImage?.url,
-              name: `${creator.firstName} ${creator.lastName}`,
+              id: owner?._id ?? '',
+              paktScore: owner?.score ?? 0,
+              avatar: owner?.profileImage?.url,
+              name: `${owner?.firstName} ${owner?.lastName}`,
             }}
           />
         );
@@ -114,10 +115,11 @@ const CompletedJobs: React.FC<CompletedJobsProps> = ({ jobs }) => {
 
   return (
     <div className="grid grid-cols-2 gap-4 overflow-y-auto pb-20">
-      {jobs.map(({ _id, paymentFee, name, creator, collections, progress }) => {
+      {jobs.map(({ _id, paymentFee, name, creator, collections, progress, status }) => {
         return (
           <ClientJobCard
             jobId={_id}
+            status={status}
             progress={progress}
             totalDeliverables={collections.filter((collection) => collection.type === 'deliverable').length}
             key={_id}

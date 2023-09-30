@@ -107,7 +107,7 @@ export const JobFeedCard: React.FC<JobFeedCardProps> = (props) => {
           <span className="text-title text-2xl font-normal">{title}</span>
 
           <div className="justify-between items-center flex mt-auto">
-            <Link href={`/jobs/${jobId}`} className="flex items-center gap-2">
+            <Link href={`/jobs/${jobId}?invite-id=${inviteId}`} className="flex items-center gap-2">
               <Button size="xs" variant="secondary">
                 See Details
               </Button>
@@ -142,14 +142,15 @@ export const PublicJobCreatedFeed = ({
   bookmark,
   callback,
 }: {
-  creator: { name: string, avatar: string, score: number };
+  creator: { name: string; avatar: string; score: number };
   title: string;
   amount: string;
   jobId: string;
   _id: string;
-  bookmark: { active: boolean, id: string };
+  bookmark: { active: boolean; id: string };
   callback?: () => void;
 }) => {
+  console.log(creator);
   return (
     <JobFeedWrapper>
       <ProfileImage score={creator.score} imageUrl={creator.avatar} />
@@ -168,7 +169,14 @@ export const PublicJobCreatedFeed = ({
               See Details
             </Button>
           </Link>
-          <RenderBookMark size={20} isBookmarked={bookmark.active} type="feed" id={_id} bookmarkId={bookmark.id} callback={callback} />
+          <RenderBookMark
+            size={20}
+            isBookmarked={bookmark.active}
+            type="feed"
+            id={_id}
+            bookmarkId={bookmark.id}
+            callback={callback}
+          />
         </div>
       </div>
     </JobFeedWrapper>

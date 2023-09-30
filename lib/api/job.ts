@@ -213,12 +213,11 @@ export function useMarkDeliverableAsComplete() {
     onSuccess: (_, { completedDeliverables, jobId, totalDeliverables, isComplete }) => {
       const progressPercentage = (isComplete: boolean) => {
         if (isComplete) return ((completedDeliverables + 1) / totalDeliverables) * 100;
-        return (completedDeliverables - 1 / totalDeliverables) * 100;
+        else return ((completedDeliverables - 1) / totalDeliverables) * 100;
       };
-
       updateJobProgress.mutate({
         jobId,
-        progress: progressPercentage(isComplete),
+        progress: Math.floor(progressPercentage(isComplete)),
       });
       toast.success(`Deliverable marked as ${isComplete ? 'complete' : 'incomplete'} successfully`);
     },
@@ -282,7 +281,41 @@ export function useMarkJobAsComplete() {
     onSuccess: () => {
       jobsQuery.refetch();
       queryClient.refetchQueries(['get-job-by-id']);
-      toast.success('Job marked as complete successfully');
+      toast.success('Job marked as completed');
+    },
+  });
+}
+
+// Create Job Review
+
+interface CreateJobReviewParams {
+  jobId: string;
+  rating: number;
+  review: string;
+  recipientId: string;
+}
+
+async function postCreateJobReview(params: CreateJobReviewParams): Promise<ApiResponse> {
+  const res = await axios.post(`/reviews`, {
+    review: params.review,
+    rating: params.rating,
+    collectionId: params.jobId,
+    receiver: params.recipientId,
+  });
+  return res.data.data;
+}
+
+export function useCreateJobReview() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: postCreateJobReview,
+    mutationKey: ['create-job-review'],
+    onError: (error: ApiError) => {
+      toast.error(error?.response?.data.message || 'An error occurred');
+    },
+    onSuccess: () => {
+      queryClient.refetchQueries(['get-job-by-id']);
+      toast.success('Your review has been submitted successfully');
     },
   });
 }
