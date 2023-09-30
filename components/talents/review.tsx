@@ -2,7 +2,7 @@
 
 import React from 'react';
 import Rating from 'react-rating';
-import { Star } from 'lucide-react';
+import { ArrowLeftCircle, ArrowRightCircle, Star } from 'lucide-react';
 import { Carousel } from '@/components/common/carousel';
 import { AfroProfile } from '@/components/common/afro-profile';
 import { Spinner } from '@/components/common/';
@@ -49,7 +49,13 @@ const Review: React.FC<ReviewProps> = ({ body, title, rating, user }) => {
 export const Reviews = ({ reviews, loading }: { reviews: any[]; loading: boolean }) => {
   return (
     <div className="flex flex-col bg-primary-gradient p-4 rounded-4 gap-3 rounded-2xl">
-      <h3 className="text-white font-medium text-2xl">Reviews</h3>
+      <div className='flex flex-row justify-between'>
+        <h3 className="text-white font-medium text-2xl">Reviews</h3>
+        <div className='flex flex-row gap-2'>
+          <ArrowLeftCircle size={32} className='text-white' />
+          <ArrowRightCircle size={32} className='text-white' />
+        </div>
+      </div>
 
       {loading ? (
         <div className="flex  min-h-[307px] w-full text-white my-auto items-center justify-center z-20">
