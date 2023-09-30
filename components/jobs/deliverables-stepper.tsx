@@ -14,7 +14,7 @@ interface Deliverable {
 
 interface DeliverableProps extends Deliverable {
   isLast: boolean;
-  isNext: boolean;
+  isClient?: boolean;
 
   totalDeliverables: number;
   completedDeliverables: number;
@@ -23,7 +23,7 @@ interface DeliverableProps extends Deliverable {
 const DeliverableStep: React.FC<DeliverableProps> = ({
   jobId,
   isLast,
-  isNext,
+  isClient,
   updatedAt,
   progress,
   description,
@@ -35,7 +35,7 @@ const DeliverableStep: React.FC<DeliverableProps> = ({
   const [isComplete, setIsComplete] = React.useState(progress === 100);
 
   return (
-    <div className="flex gap-3 items-start py-3 relative w-full">
+    <div className="flex gap-3 items-start py-1 relative w-full">
       <div
         className="absolute top-0 left-3 translate-y-3 w-[2px] h-full"
         style={{
@@ -47,8 +47,7 @@ const DeliverableStep: React.FC<DeliverableProps> = ({
       <CheckButton
         isChecked={isComplete}
         onClick={() => {
-          if (!isNext) return;
-
+          if (isClient) return;
           mutation.mutate(
             {
               jobId,
@@ -87,51 +86,42 @@ const DeliverableStep: React.FC<DeliverableProps> = ({
 
 interface DeliverablesStepperProps {
   jobId: string;
+  readonly?: boolean;
   deliverables: Deliverable[];
 }
 
-export const DeliverablesStepper: React.FC<DeliverablesStepperProps> = ({ deliverables, jobId }) => {
+export const DeliverablesStepper: React.FC<DeliverablesStepperProps> = ({
+  deliverables,
+  jobId,
+  readonly: isClient,
+}) => {
   const mutation = useMarkJobAsComplete();
   const totalDeliverables = deliverables.length;
   const completedDeliverables = deliverables.filter((deliverable) => deliverable.progress === 100).length;
 
-  const isNext = (index: number) => {
-    // if there is only one deliverable, it is always next
-    if (totalDeliverables === 1) return true;
-
-    // if none is completed, the first deliverable is the next
-    if (completedDeliverables === 0) return index === 0;
-
-    // if last item. is is always next
-    if (index === totalDeliverables - 1) return true;
-
-    // if previous deliverable is completed, it is next
-    if (deliverables[index - 1].progress === 100) return true;
-
-    return false;
-  };
-
   return (
     <div className="flex flex-col w-full h-full grow">
-      {deliverables.map(({ deliverableId, description, jobId, progress, updatedAt }, index) => {
-        return (
-          <DeliverableStep
-            jobId={jobId}
-            progress={progress}
-            key={deliverableId}
-            updatedAt={updatedAt}
-            description={description}
-            deliverableId={deliverableId}
-            totalDeliverables={totalDeliverables}
-            isNext={isNext(index)}
-            isLast={index === totalDeliverables - 1}
-            completedDeliverables={completedDeliverables}
-          />
-        );
-      })}
+      {deliverables
+        .sort((a, b) => b.progress - a.progress)
+        .map(({ deliverableId, description, jobId, progress, updatedAt }, index) => {
+          return (
+            <DeliverableStep
+              jobId={jobId}
+              isClient={isClient}
+              progress={progress}
+              key={deliverableId}
+              updatedAt={updatedAt}
+              description={description}
+              deliverableId={deliverableId}
+              totalDeliverables={totalDeliverables}
+              isLast={index === totalDeliverables - 1}
+              completedDeliverables={completedDeliverables}
+            />
+          );
+        })}
 
       <div className="mt-auto">
-        {totalDeliverables === completedDeliverables && (
+        {isClient && totalDeliverables === completedDeliverables && (
           <Button
             size={'sm'}
             fullWidth
@@ -148,8 +138,14 @@ export const DeliverablesStepper: React.FC<DeliverablesStepperProps> = ({ delive
               );
             }}
           >
-            {mutation.isLoading ? <Spinner /> : 'Mark Job as Complete'}
+            {mutation.isLoading ? <Spinner size={20} /> : 'Mark Job as Complete'}
           </Button>
+        )}
+
+        {!isClient && totalDeliverables === completedDeliverables && (
+          <div className="bg-primary-gradient p-[2px] rounded-[10px]">
+            <div className="bg-green-50 rounded-lg py-3 px-2">Waiting for Client to approve job as complete.</div>
+          </div>
         )}
       </div>
     </div>

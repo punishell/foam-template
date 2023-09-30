@@ -39,23 +39,7 @@ export interface Job {
   _id: string;
   name: string;
   createdAt: string;
-  creator: {
-    _id: string;
-    score: number;
-    lastName: string;
-    firstName: string;
-    profileImage?: {
-      url: string;
-    };
-    profile: {
-      bio: {
-        title: string;
-        availability: string;
-        tags: any[]; // TODO: add type
-      };
-      talent: {};
-    };
-  };
+  creator: UserProfile;
   category: string;
   progress: number; // 0 - 100
   isPrivate: boolean;
@@ -68,23 +52,46 @@ export interface Job {
     color: string;
   }[];
   // talent assigned to the job
-  owner?: {
-    score: number;
-    lastName: string;
-    firstName: string;
-    profileImage?: {
-      url: string;
-    };
-  };
+  owner?: UserProfile;
+  ratings: Rating[] | null;
   tagsData: string[];
   invites: any[]; // TODO: add type
+  status: JobStatus;
+  bookmarkId?: string;
+  isBookmarked?: boolean;
   inviteAccepted: boolean;
   recipientCompletedJob: boolean;
   collections: Array<JobDeliverable>;
-  status: 'pending' | 'ongoing' | 'completed' | 'waiting' | 'cancelled';
   payoutStatus: 'pending' | 'ongoing' | 'completed' | 'waiting' | 'cancelled';
-  isBookmarked?: boolean;
-  bookmarkId?: string;
+}
+
+interface UserProfile {
+  _id: string;
+  score: number;
+  lastName: string;
+  firstName: string;
+  profileImage?: {
+    url: string;
+  };
+  profile: {
+    bio: {
+      title: string;
+      availability: string;
+      tags: any[]; // TODO: add type
+    };
+    talent: {};
+  };
+}
+
+export type JobStatus = 'pending' | 'ongoing' | 'completed' | 'waiting' | 'cancelled';
+
+interface Rating {
+  review: string;
+  rating: number;
+  createdAt: string;
+  updatedAt: string;
+  owner: UserProfile;
+  receiver: UserProfile;
 }
 
 interface JobDeliverable {
