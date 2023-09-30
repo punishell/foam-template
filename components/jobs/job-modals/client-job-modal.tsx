@@ -74,7 +74,18 @@ interface JobUpdatesProps {
 }
 
 const JobUpdates: React.FC<JobUpdatesProps> = ({ job }) => {
-  const { name, tags, description, createdAt, deliveryDate, paymentFee, collections, progress, _id, owner } = job;
+  const {
+    name,
+    tags,
+    description,
+    createdAt,
+    deliveryDate,
+    paymentFee,
+    collections,
+    progress,
+    _id: jobId,
+    owner,
+  } = job;
   const deliverables = collections.filter((collection) => collection.type === 'deliverable');
 
   return (
@@ -165,12 +176,12 @@ const JobUpdates: React.FC<JobUpdatesProps> = ({ job }) => {
 
           <div className="grow h-full">
             <DeliverablesStepper
-              jobId={_id}
+              jobId={jobId}
               readonly
               deliverables={deliverables.map(({ _id, name, progress, updatedAt }) => ({
                 progress,
                 updatedAt,
-                jobId: _id,
+                jobId: jobId,
                 description: name,
                 deliverableId: _id,
               }))}
