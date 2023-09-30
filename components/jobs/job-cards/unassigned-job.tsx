@@ -7,9 +7,10 @@ interface UnAssignedJobCardProps {
   title: string;
   price: number;
   createdAt: string;
+  skills?: string;
 }
 
-export const UnAssignedJobCard: React.FC<UnAssignedJobCardProps> = ({ createdAt, price, title, id }) => {
+export const UnAssignedJobCard: React.FC<UnAssignedJobCardProps> = ({ createdAt, price, title, id, skills }) => {
   const router = useRouter();
 
   return (
@@ -30,7 +31,7 @@ export const UnAssignedJobCard: React.FC<UnAssignedJobCardProps> = ({ createdAt,
             size="xs"
             variant="secondary"
             onClick={() => {
-              router.push('/talents');
+              router.push(`/talents${skills ? `?skills=${skills}` : ""}`);
             }}
           >
             Find Talent
