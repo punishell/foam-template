@@ -17,7 +17,7 @@ interface Props { }
 export const CreatedJobs: React.FC<Props> = () => {
   const jobsData = useGetJobs({ category: 'created' });
 
-  if (jobsData.isError) return <PageError className="rounded-lg border border-red-300 h-[90%]" />;
+  if (jobsData.isError) return <PageError className="rounded-lg border border-red-300 h-full py-6h-full py-6" />;
   if (jobsData.isLoading) return <PageLoading className="h-[90%] rounded-lg border border-line" />;
 
   const jobs = jobsData.data.data;
