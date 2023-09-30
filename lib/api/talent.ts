@@ -1,8 +1,6 @@
 import { axios, ApiError, ApiResponse } from '@/lib/axios';
-import { useMutation } from '@tanstack/react-query';
-import { User } from '@/lib/types';
+import { Review, User } from '@/lib/types';
 import { useQuery, type QueryKey, type UseQueryOptions } from '@tanstack/react-query';
-import { parseFilterObjectToString } from '../utils';
 import { toast } from '@/components/common/toaster';
 
 // Talent Fetch
@@ -10,13 +8,9 @@ import { toast } from '@/components/common/toaster';
 // GET ACCOUNT DETAILS
 type GetTalentFetchSuccess = {
   talent: User;
-  review: reviewResponse;
 };
 
 type GetTalentFetchDetailsError = ApiError<null>;
-
-const getQueryKey: QueryKey = ['talents'];
-const getQueryIdKey: QueryKey = ['talents-id'];
 
 interface talentFetchParams {
   page: number;
@@ -31,12 +25,17 @@ interface talentListResponse {
   total: number;
 }
 interface reviewResponse {
-  data: [];
+  data: Review[];
+  page: number;
+  count: number;
 }
 
 async function getTalent({ limit = 20, page = 1, filter }: talentFetchParams): Promise<talentListResponse> {
-  const filters = parseFilterObjectToString(filter);
-  const res = await axios.get(`/account/user?limit=${limit}&page=${page}&${filters}`);
+  const res = await axios.get(`/account/user`, {
+    params: {
+      page, limit, ...filter
+    }
+  });
   return res.data.data;
 }
 
@@ -51,10 +50,12 @@ async function getTalentReview(userId: string, page: string, limit: string): Pro
 }
 
 export const useGetTalents = ({ limit, page, filter }: talentFetchParams) => {
+  const getQueryKey: QueryKey = [`talents_${limit}_${page}_${filter}`];
   const options: UseQueryOptions<talentListResponse, GetTalentFetchDetailsError> = {
     queryFn: async () => {
       return await getTalent({ limit, page, filter });
     },
+    queryKey: getQueryKey,
     onError: (error) => {
       toast.error(error.response?.data.message || 'An error fetching talents occurred');
     },
@@ -65,33 +66,32 @@ export const useGetTalents = ({ limit, page, filter }: talentFetchParams) => {
 };
 
 export const useGetTalentById = (id: string, enabled: boolean = false) => {
-  const options: UseQueryOptions<GetTalentFetchSuccess, GetTalentFetchDetailsError> = {
+  const getQueryIdKey = [`talent_id_${id}`];
+  return useQuery({
     queryFn: async () => {
-      const [talent, review] = await Promise.all([getTalentById(id), getTalentReview(id, '1', '4')]);
-      return { talent, review };
+      const talent = await getTalentById(id);
+      return { talent };
     },
-    queryKey: ['talent_id_' + id],
-    onError: (error) => {
+    queryKey: getQueryIdKey,
+    onError: (error: GetTalentFetchDetailsError) => {
       toast.error(error.response?.data.message || 'An error fetching talents occurred');
     },
     enabled,
-  };
-
-  return useQuery(getQueryIdKey, options);
+  });
 };
 
-export const useGetTalentReviewById = (id: string, enabled = false) => {
-  const options: UseQueryOptions<reviewResponse, GetTalentFetchDetailsError> = {
+export const useGetTalentReviewById = (id: string, page: string, limit: string, enabled = false) => {
+  const getQueryIdReview = ['talent_review' + id];
+  // const options: UseQueryOptions<reviewResponse, > =
+  return useQuery({
     queryFn: async () => {
-      const review = await getTalentReview(id, '1', '4');
+      const review = await getTalentReview(id, page, limit);
       return review;
     },
-    queryKey: ['talent_review_id_' + id],
-    onError: (error) => {
+    queryKey: getQueryIdReview,
+    onError: (error: GetTalentFetchDetailsError) => {
       toast.error(error.response?.data.message || 'An error fetching talents occurred');
     },
     enabled,
-  };
-
-  return useQuery(getQueryIdKey, options);
+  });
 };

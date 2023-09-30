@@ -1,7 +1,6 @@
 import { ApiError, axios } from '@/lib/axios';
 import { toast } from '@/components/common/toaster';
 import { useMutation, useQuery } from '@tanstack/react-query';
-import { parseFilterObjectToString } from '../utils';
 import { Bookmark } from '../types';
 
 interface GetBookMarkResponse {
@@ -17,8 +16,11 @@ interface timelineFetchParams {
 }
 
 async function getBookmarks({ page, limit, filter }: timelineFetchParams): Promise<GetBookMarkResponse> {
-  const filters = parseFilterObjectToString(filter);
-  const res = await axios.get(`/bookmark?page=${page}&limit=${limit}&${filters}`);
+  const res = await axios.get(`/bookmark`, {
+    params: {
+      page, limit, ...filter
+    }
+  });
   return res.data.data;
 }
 
