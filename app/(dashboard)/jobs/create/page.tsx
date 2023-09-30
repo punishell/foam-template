@@ -58,7 +58,7 @@ export default function CreateJob() {
   const [files, setFiles] = React.useState<File[]>([]);
   const [uploadProgress, setUploadProgress] = React.useState(0);
 
-  const onDrop = React.useCallback(async (acceptedFiles: File[]) => { }, []);
+  const onDrop = React.useCallback(async (acceptedFiles: File[]) => {}, []);
 
   const { getRootProps, getInputProps } = useDropzone({
     onDrop,
@@ -105,13 +105,29 @@ export default function CreateJob() {
     );
   };
 
-  const jobSteps = ({
-    details: (!!form.watch("title") && !form.getFieldState('title').invalid) && (!!form.watch("due") && !form.getFieldState('due').invalid) && (!!form.watch("budget") && !form.getFieldState('budget').invalid),
-    skills: (!!form.watch('firstSkill') && !form.getFieldState('firstSkill').invalid),
-    description: (!!form.watch('description') && !form.getFieldState('description').invalid),
-    deliverables: ((Array.isArray(form.watch('deliverables')) && form.watch('deliverables').filter(r => r != '').length > 0) && !form.getFieldState('deliverables').invalid),
-    classification: (!!form.watch('jobType') && !form.getFieldState('jobType').invalid) && (!!form.watch('visibility') && !form.getFieldState('visibility').invalid) && (!!form.watch('category') && !form.getFieldState('category').invalid)
-  });
+  const jobSteps = {
+    details:
+      !!form.watch('title') &&
+      !form.getFieldState('title').invalid &&
+      !!form.watch('due') &&
+      !form.getFieldState('due').invalid &&
+      !!form.watch('budget') &&
+      !form.getFieldState('budget').invalid,
+    skills: !!form.watch('firstSkill') && !form.getFieldState('firstSkill').invalid,
+    description: !!form.watch('description') && !form.getFieldState('description').invalid,
+    deliverables:
+      Array.isArray(form.watch('deliverables')) &&
+      form.watch('deliverables').filter((r) => r != '').length > 0 &&
+      !form.getFieldState('deliverables').invalid,
+    classification:
+      !!form.watch('jobType') &&
+      !form.getFieldState('jobType').invalid &&
+      !!form.watch('visibility') &&
+      !form.getFieldState('visibility').invalid &&
+      !!form.watch('category') &&
+      !form.getFieldState('category').invalid,
+  };
+  console.log(form.watch('deliverables'));
 
   return (
     <div className="flex gap-6 overflow-y-auto pb-10">
@@ -162,7 +178,7 @@ export default function CreateJob() {
                 control={form.control}
                 render={({ field: { onChange, value } }) => (
                   <DatePicker
-                    className="bg-[#ECFCE5] border-[#198155] text-primary h-[45px]"
+                    className="bg-[#ECFCE5] border-[#198155] text-primary h-[45px] w-[250px]"
                     placeholder="Select Due Date"
                     selected={value}
                     onSelect={(date) => onChange(date)}
@@ -180,7 +196,9 @@ export default function CreateJob() {
         </div>
         <div className="p-6 flex flex-col gap-10">
           <div className="flex flex-col gap-2">
-            <h3 className="text-black text-lg font-medium">Preferred Skills<span className='ml-4 text-body text-sm font-thin'>You can add up to three</span></h3>
+            <h3 className="text-black text-lg font-medium">
+              Preferred Skills<span className="ml-4 text-body text-sm font-thin">You can add up to three</span>
+            </h3>
             <div className="flex gap-2 items-center justify-start">
               <div className="relative">
                 <SkillInput {...form.register('firstSkill')} />
@@ -225,7 +243,10 @@ export default function CreateJob() {
             </div>
           </div>
           <div className="flex flex-col gap-2">
-            <h3 className="text-black text-lg font-medium">Deliverables <span className='ml-4 text-body text-sm font-thin'>You can create up to five deliverables</span></h3>
+            <h3 className="text-black text-lg font-medium">
+              Deliverables{' '}
+              <span className="ml-4 text-body text-sm font-thin">You can create up to five deliverables</span>
+            </h3>
 
             <div className="relative">
               <Controller

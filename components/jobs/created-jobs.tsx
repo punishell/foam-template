@@ -12,20 +12,20 @@ import { PageEmpty } from '@/components/common/page-empty';
 import { PageError } from '@/components/common/page-error';
 import { PageLoading } from '@/components/common/page-loading';
 
-interface Props { }
+interface Props {}
 
 export const CreatedJobs: React.FC<Props> = () => {
   const jobsData = useGetJobs({ category: 'created' });
 
-  if (jobsData.isError) return <PageError className="rounded-lg border border-red-300 h-full py-6h-full py-6" />;
-  if (jobsData.isLoading) return <PageLoading className="h-[90%] rounded-lg border border-line" />;
+  if (jobsData.isError) return <PageError className="rounded-lg border border-red-300 h-[80vh]" />;
+  if (jobsData.isLoading) return <PageLoading className="h-[80vh] rounded-lg border border-line" />;
 
   const jobs = jobsData.data.data;
 
   const completedJobs = jobs.filter((job) => job.payoutStatus === 'completed');
-  const ongoingJobs = jobs.filter((job) => job.payoutStatus !== 'completed' && job.owner !== undefined);
+  const ongoingJobs = jobs.filter((job) => job.payoutStatus !== 'completed' && job.inviteAccepted);
   const unassignedJobs = jobs.filter(
-    (job) => job.status === 'pending' || (job.status === 'ongoing' && job.owner === undefined),
+    (job) => job.status === 'pending' || (job.status === 'ongoing' && job.inviteAccepted === false),
   );
 
   return (
@@ -51,7 +51,7 @@ interface UnassignedJobsProps {
 }
 
 const UnassignedJobs: React.FC<UnassignedJobsProps> = ({ jobs }) => {
-  if (!jobs.length) return <PageEmpty label="No open jobs yet." className="rounded-lg border border-line h-full py-6" />;
+  if (!jobs.length) return <PageEmpty label="No open jobs yet." className="rounded-lg border border-line h-[80vh]" />;
 
   return (
     <div className="grid grid-cols-2 gap-4 overflow-y-auto pb-20">
@@ -63,7 +63,7 @@ const UnassignedJobs: React.FC<UnassignedJobsProps> = ({ jobs }) => {
             price={paymentFee}
             title={name}
             createdAt={format(new Date(createdAt), 'dd MMM yyyy')}
-            skills={tagsData.join(",")}
+            skills={tagsData.join(',')}
           />
         );
       })}
@@ -77,7 +77,7 @@ interface OngoingJobsProps {
 
 const OngoingJobs: React.FC<OngoingJobsProps> = ({ jobs }) => {
   if (!jobs.length)
-    return <PageEmpty label="Your ongoing jobs will appear here." className="rounded-lg border border-line h-full py-6" />;
+    return <PageEmpty label="Your ongoing jobs will appear here." className="rounded-lg border border-line h-[80vh]" />;
 
   return (
     <div className="grid grid-cols-2 gap-4 overflow-y-auto pb-20">
@@ -111,7 +111,7 @@ interface CompletedJobsProps {
 const CompletedJobs: React.FC<CompletedJobsProps> = ({ jobs }) => {
   if (!jobs.length)
     return (
-      <PageEmpty label="Your completed jobs will appear here." className="rounded-lg border border-line h-full py-6" />
+      <PageEmpty label="Your completed jobs will appear here." className="rounded-lg border border-line h-[80vh]" />
     );
 
   return (

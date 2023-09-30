@@ -101,7 +101,7 @@ const JobEditForm: React.FC<JobEditFormProps> = ({ job }) => {
   const [files, setFiles] = React.useState<File[]>([]);
   const [uploadProgress, setUploadProgress] = React.useState(0);
 
-  const onDrop = React.useCallback(async (acceptedFiles: File[]) => { }, []);
+  const onDrop = React.useCallback(async (acceptedFiles: File[]) => {}, []);
 
   const { getRootProps, getInputProps } = useDropzone({
     onDrop,
@@ -146,7 +146,7 @@ const JobEditForm: React.FC<JobEditFormProps> = ({ job }) => {
       {
         id: job._id,
         name: title,
-        tags: [firstSkill, secondSkill, thirdSkill].filter(Boolean),
+        tags: filterDuplicates([firstSkill, secondSkill, thirdSkill]),
         category,
         description,
         deliverables,
@@ -157,18 +157,38 @@ const JobEditForm: React.FC<JobEditFormProps> = ({ job }) => {
       {
         onSuccess(_data, { id }) {
           form.reset();
+          if (talentId) {
+            router.push(`/jobs/${id}/make-deposit/?talent-id=${talentId}`);
+          } else {
+            router.push(`/jobs/${id}`);
+          }
         },
       },
     );
   };
 
-  const jobSteps = ({
-    details: (!!form.watch("title") && !form.getFieldState('title').invalid) && (!!form.watch("due") && !form.getFieldState('due').invalid) && (!!form.watch("budget") && !form.getFieldState('budget').invalid),
-    skills: (!!form.watch('firstSkill') && !form.getFieldState('firstSkill').invalid),
-    description: (!!form.watch('description') && !form.getFieldState('description').invalid),
-    deliverables: ((Array.isArray(form.watch('deliverables')) && form.watch('deliverables').filter(r => r != '').length > 0) && !form.getFieldState('deliverables').invalid),
-    classification: (!!form.watch('jobType') && !form.getFieldState('jobType').invalid) && (!!form.watch('visibility') && !form.getFieldState('visibility').invalid) && (!!form.watch('category') && !form.getFieldState('category').invalid)
-  });
+  const jobSteps = {
+    details:
+      !!form.watch('title') &&
+      !form.getFieldState('title').invalid &&
+      !!form.watch('due') &&
+      !form.getFieldState('due').invalid &&
+      !!form.watch('budget') &&
+      !form.getFieldState('budget').invalid,
+    skills: !!form.watch('firstSkill') && !form.getFieldState('firstSkill').invalid,
+    description: !!form.watch('description') && !form.getFieldState('description').invalid,
+    deliverables:
+      Array.isArray(form.watch('deliverables')) &&
+      form.watch('deliverables').filter((r) => r != '').length > 0 &&
+      !form.getFieldState('deliverables').invalid,
+    classification:
+      !!form.watch('jobType') &&
+      !form.getFieldState('jobType').invalid &&
+      !!form.watch('visibility') &&
+      !form.getFieldState('visibility').invalid &&
+      !!form.watch('category') &&
+      !form.getFieldState('category').invalid,
+  };
 
   return (
     <div className="flex gap-6 overflow-y-auto pb-10">
@@ -219,7 +239,7 @@ const JobEditForm: React.FC<JobEditFormProps> = ({ job }) => {
                 control={form.control}
                 render={({ field: { onChange, value } }) => (
                   <DatePicker
-                    className="bg-[#ECFCE5] border-[#198155] text-primary h-[45px]"
+                    className="bg-[#ECFCE5] border-[#198155] text-primary h-[45px] w-[250px]"
                     placeholder="Select Due Date"
                     selected={value}
                     onSelect={(date) => onChange(date)}
@@ -403,20 +423,22 @@ const JobEditForm: React.FC<JobEditFormProps> = ({ job }) => {
             </div>
           </div>
           <div className="flex gap-4 items-center w-full justify-end">
-            <div className=" max-w-[250px] w-full">
-              <Button fullWidth>
-                {updateJob.isLoading ? <Spinner /> : 'Update Job'}
-              </Button>
-            </div>
+            {!talentId && (
+              <div className=" max-w-[250px] w-full">
+                <Button onClick={form.handleSubmit(onSubmit)} fullWidth>
+                  {updateJob.isLoading ? <Spinner /> : 'Update Job'}
+                </Button>
+              </div>
+            )}
 
             {talentId && (
               <div className="max-w-[250px] w-full">
                 <Button
-                  type="button"
+                  onClick={form.handleSubmit(onSubmit)}
                   fullWidth
-                  onClick={() => {
-                    router.push(`/jobs/${job._id}/make-deposit/?talent-id=${talentId}`);
-                  }}
+                  // onClick={() => {
+                  //   router.push(`/jobs/${job._id}/make-deposit/?talent-id=${talentId}`);
+                  // }}
                 >
                   {'Make Deposit'}
                 </Button>
@@ -452,3 +474,9 @@ const JobEditForm: React.FC<JobEditFormProps> = ({ job }) => {
     </div>
   );
 };
+
+function filterDuplicates(arr: string[]): string[] {
+  return arr.filter((value, index, self) => {
+    return self.indexOf(value) === index;
+  });
+}
