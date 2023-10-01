@@ -440,6 +440,7 @@ async function postApplyToOpenJob(params: ApplyToOpenJobParams): Promise<ApiResp
   const res = await axios.post(`/collection`, {
     type: 'application',
     name: 'Application',
+    description: params.message,
     parent: params.jobId,
     paymentFee: params.amount,
   });
