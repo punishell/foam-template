@@ -122,7 +122,7 @@ export interface DataFeedResponse {
   createdAt?: string;
   updatedAt?: string;
   creator: User;
-  data: { _id: string; paymentFee: string; creator: User; owner?: User };
+  data: { _id: string; paymentFee: string; creator: User; owner?: User; invite: string };
   description: string;
   isBookmarked?: boolean;
   bookmarkId?: string;

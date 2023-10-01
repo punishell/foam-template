@@ -50,9 +50,9 @@ export const ParseFeedView = (feed: DataFeedResponse, loggedInUser: string, key:
           type="job-invite-pending"
           amount={amount}
           // invitationExpiry={feed?.expiresAt}
-          inviteId={feed?.data?._id}
+          inviteId={feed?.data?.invite}
           inviter={inviter}
-          jobId={feed._id}
+          jobId={feed?.data?._id}
           bookmarked={isBookmarked}
         // imageUrl={feed?.data?.creator?.profileImage?.url}
         />
