@@ -6,7 +6,7 @@ import { usePathname } from 'next/navigation';
 import { createQueryString } from '@/lib/utils';
 import { useSearchParams } from 'next/navigation';
 import * as RadixTabs from '@radix-ui/react-tabs';
-import { cn } from "@/lib/utils";
+import { cn } from '@/lib/utils';
 
 interface Tab {
   label: string;
@@ -48,9 +48,9 @@ export const Tabs: React.FC<Props> = ({ tabs, defaultTab, urlKey, className }) =
       value={activeTab}
       defaultValue={initialTab}
       onValueChange={handleTabChange}
-      className={cn("flex flex-col gap-4relative justify-start items-start w-full", className)}
+      className={cn('flex flex-col gap-4relative justify-start items-start w-full', className)}
     >
-      <RadixTabs.List className="flex items-center border-b">
+      <RadixTabs.List className="flex items-center border-b w-full">
         {tabs.map((tab) => (
           <RadixTabs.Trigger
             key={tab.value}
@@ -61,7 +61,7 @@ export const Tabs: React.FC<Props> = ({ tabs, defaultTab, urlKey, className }) =
           </RadixTabs.Trigger>
         ))}
       </RadixTabs.List>
-      <div className='overflow-y-auto scrollbar-hide grow mt-4 w-full'>
+      <div className="overflow-y-auto scrollbar-hide grow mt-4 w-full">
         {tabs.map((tab) => (
           <RadixTabs.Content
             key={tab.value}
