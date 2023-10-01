@@ -1,5 +1,5 @@
 'use client';
-import React, { use } from 'react';
+import React from 'react';
 import Image from 'next/image';
 import { Button } from 'pakt-ui';
 import { cn } from '@/lib/utils';
@@ -15,7 +15,7 @@ import { Modal } from '@/components/common';
 import * as Tabs from '@radix-ui/react-tabs';
 import { Spinner } from '@/components/common';
 import { useCopyToClipboard } from 'usehooks-ts';
-import { useGetJobById, usePostJobPaymentDetails } from '@/lib/api/job';
+import { usePostJobPaymentDetails } from '@/lib/api/job';
 import { avalanche, avalancheFuji } from '@wagmi/core/chains';
 import { infuraProvider } from 'wagmi/providers/infura';
 import { publicProvider } from 'wagmi/providers/public';
@@ -23,8 +23,6 @@ import { useRouter } from 'next/navigation';
 import { MetaMaskConnector } from 'wagmi/connectors/metaMask';
 import { InjectedConnector } from 'wagmi/connectors/injected';
 import { AlertCircle } from 'lucide-react';
-import { PageError } from '@/components/common/page-error';
-import { PageLoading } from '@/components/common/page-loading';
 
 import { WagmiConfig, configureChains, createConfig } from 'wagmi';
 import { WalletConnectConnector } from 'wagmi/connectors/walletConnect';
@@ -43,10 +41,11 @@ import {
 } from 'wagmi';
 import { set } from 'date-fns';
 
-const { chains, publicClient } = configureChains([avalancheFuji, avalanche], [publicProvider()]);
+const { chains, publicClient, webSocketPublicClient } = configureChains([avalancheFuji, avalanche], [publicProvider()]);
 
 const wagmiConfig = createConfig({
   connectors: [
+    // new MetaMaskConnector({ chains }),
     new InjectedConnector({
       chains,
       options: {
@@ -59,14 +58,15 @@ const wagmiConfig = createConfig({
         appName: 'Pakt',
       },
     }),
-    // new WalletConnectConnector({
-    //   chains,
-    //   options: {
-    //     projectId: process.env.NEXT_PUBLIC_WALLET_CONNECT_ID ?? '',
-    //   },
-    // }),
+    new WalletConnectConnector({
+      chains,
+      options: {
+        projectId: process.env.NEXT_PUBLIC_WALLET_CONNECT_ID ?? '',
+      },
+    }),
   ],
   publicClient,
+  webSocketPublicClient,
 });
 
 const CHAIN_ID = 43113;
@@ -224,7 +224,7 @@ const PaymentDetails: React.FC<PaymentDetailsProps> = ({ coin, jobId }) => {
         <p className="text-body">Connect your wallet of choice or pay with a deposit address.</p>
       </div>
 
-      <Modal isOpen={isOpen} onOpenChange={setIsOpen}>
+      <Modal isOpen={isOpen} onOpenChange={setIsOpen} disableClickOutside>
         <MakePaymentModal
           depositAddress={depositAddress}
           jobId={jobId}
@@ -260,7 +260,10 @@ const MakePaymentModal = ({ closeModal, depositAddress, jobId, coinAmount, coin 
       <div className="flex w-full items-center justify-between">
         <h2 className="text-2xl font-bold text-title">Make Payment</h2>
 
-        <button className="rounded-full border border-[#DFDFE6] p-2 text-black">
+        <button
+          className="rounded-full border border-[#DFDFE6] p-2 text-black hover:border-danger duration-200 hover:text-danger"
+          onClick={closeModal}
+        >
           <X size={16} strokeWidth={2} />
         </button>
       </div>
@@ -485,10 +488,9 @@ const DepositAvax: React.FC<WalletDepositProps> = ({ depositAddress, amount, job
     value: parseEther(amount.toString()),
   });
 
-  const { sendTransaction, error, isLoading, isError, isSuccess } = useSendTransaction(config);
-
-  React.useEffect(() => {
-    if (isSuccess) {
+  const { sendTransaction, isLoading } = useSendTransaction({
+    ...config,
+    onSuccess() {
       confirmPayment.mutate(
         { jobId },
         {
@@ -501,7 +503,7 @@ const DepositAvax: React.FC<WalletDepositProps> = ({ depositAddress, amount, job
                 },
                 {
                   onSuccess: () => {
-                    router.push(`/jobs/${jobId}`);
+                    router.push(`/jobs?jobs-type=created`);
                   },
                 },
               );
@@ -509,13 +511,11 @@ const DepositAvax: React.FC<WalletDepositProps> = ({ depositAddress, amount, job
           },
         },
       );
-    }
-
-    if (isError) {
-      console.log(error);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isSuccess, isError]);
+    },
+    onError(error) {
+      console.error('send transaction error:', error);
+    },
+  });
 
   return (
     <div>
@@ -538,6 +538,7 @@ const DepositUSDC: React.FC<WalletDepositProps> = ({ amount, depositAddress, job
   const talentId = searchParams.get('talent-id');
   const confirmPayment = useConfirmJobPayment();
   const inviteTalent = useInviteTalentToJob();
+  const [showReconfirmButton, setShowReconfirmButton] = React.useState(false);
 
   const { config } = usePrepareContractWrite({
     abi: erc20ABI,
@@ -547,12 +548,11 @@ const DepositUSDC: React.FC<WalletDepositProps> = ({ amount, depositAddress, job
     args: [`0x${depositAddress.substring(2)}`, parseEther(`${amount}`, 'wei')],
   });
 
-  const { write, error, isError, isLoading, isSuccess } = useContractWrite(config);
-
-  React.useEffect(() => {
-    if (isSuccess) {
+  const { write, isError, isLoading } = useContractWrite({
+    ...config,
+    onSuccess() {
       confirmPayment.mutate(
-        { jobId },
+        { jobId, delay: 6000 },
         {
           onSuccess: () => {
             if (talentId) {
@@ -563,25 +563,65 @@ const DepositUSDC: React.FC<WalletDepositProps> = ({ amount, depositAddress, job
                 },
                 {
                   onSuccess: () => {
-                    router.push(`/jobs/${jobId}`);
+                    router.push(`/jobs?jobs-type=created`);
                   },
                 },
               );
             }
           },
+          onError: () => {
+            setShowReconfirmButton(true);
+          },
         },
       );
-    }
-
-    if (isError) {
-      console.log(error);
-    }
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isSuccess, isError]);
+    },
+    onError(error) {
+      console.error('write error:', error);
+    },
+  });
 
   return (
-    <div>
+    <div className="flex flex-col gap-2">
+      {isError && (
+        <div className="bg-red-50 border border-red-200 rounded-lg p-2 flex flex-col gap-2 text-red-500 items-center text-sm">
+          <span>An error occurred while making payment.</span>
+        </div>
+      )}
+
+      {showReconfirmButton && (
+        <Button
+          fullWidth
+          disabled={confirmPayment.isLoading}
+          onClick={() => {
+            confirmPayment.mutate(
+              { jobId, delay: 6000 },
+              {
+                onSuccess: () => {
+                  if (talentId) {
+                    inviteTalent.mutate(
+                      {
+                        jobId,
+                        talentId,
+                      },
+                      {
+                        onSuccess: () => {
+                          router.push(`/jobs?jobs-type=created`);
+                        },
+                      },
+                    );
+                  }
+                },
+                onError: () => {
+                  setShowReconfirmButton(true);
+                },
+              },
+            );
+          }}
+        >
+          {confirmPayment.isLoading ? <Spinner /> : 'Confirm Payment'}
+        </Button>
+      )}
+
       <Button fullWidth disabled={!write || isLoading || confirmPayment.isLoading} onClick={() => write?.()}>
         <div className="flex items-center justify-center gap-2">
           <span> {confirmPayment.isLoading ? 'Confirming Payment' : 'Make Payment'}</span>{' '}
