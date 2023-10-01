@@ -1,7 +1,7 @@
 import React from 'react';
 import { format } from 'date-fns';
 import Image from 'next/image';
-import type { Job } from '@/lib/types';
+import { isJobDeliverable, type Job } from '@/lib/types';
 import Lottie from 'lottie-react';
 import { useGetJobById } from '@/lib/api/job';
 import success from '@/lottiefiles/success.json';
@@ -17,6 +17,7 @@ import { useCreateJobReview } from '@/lib/api/job';
 import Rating from 'react-rating';
 import { Star } from 'lucide-react';
 import { useReleaseJobPayment } from '@/lib/api/job';
+import is from 'date-fns/locale/is/index';
 interface TalentJobModalProps {
   jobId: string;
   closeModal?: () => void;
@@ -63,7 +64,7 @@ const JobUpdates: React.FC<JobUpdatesProps> = ({ job }) => {
     progress,
     _id: jobId,
   } = job;
-  const deliverables = collections.filter((collection) => collection.type === 'deliverable');
+  const deliverables = collections.filter(isJobDeliverable);
 
   return (
     <React.Fragment>
