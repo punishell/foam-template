@@ -1,7 +1,9 @@
 'use client';
 import React from 'react';
 import { Button } from 'pakt-ui';
+import { isJobDeliverable, isJobApplicant } from '@/lib/types';
 import { format } from 'date-fns';
+import { Info } from 'lucide-react';
 import { Spinner } from '@/components/common';
 import { useApplyToOpenJob } from '@/lib/api/job';
 import { useDeclineInvite, useAcceptInvite } from '@/lib/api/invites';
@@ -10,10 +12,23 @@ import { useRouter } from 'next/navigation';
 import { useDeleteJob, useGetJobById } from '@/lib/api/job';
 import { useSearchParams } from 'next/navigation';
 import { useGetAccount } from '@/lib/api/account';
+import Lottie from 'lottie-react';
+import success from '@/lottiefiles/success.json';
 import { Modal } from '@/components/common/modal';
 import { PageError } from '@/components/common/page-error';
 import { PageLoading } from '@/components/common/page-loading';
 import { JobHeader, JobDescription, JobSkills, JobDeliverables } from '@/components/jobs/job-details';
+
+import * as z from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm, SubmitHandler } from 'react-hook-form';
+
+const jobApplicationSchema = z.object({
+  message: z.string().optional(),
+  amount: z.coerce.number().min(100, { message: 'Amount must be at least $100' }).nonnegative(),
+});
+
+type JobApplicationFormValues = z.infer<typeof jobApplicationSchema>;
 
 interface Props {
   params: {
@@ -23,13 +38,13 @@ interface Props {
 
 export default function JobDetails({ params }: Props) {
   const jobId = params['job-id'];
-  const accountData = useGetAccount();
-  const jobData = useGetJobById({ jobId });
-  if (jobData.isError) return <PageError className="absolute inset-0" />;
-  if (jobData.isLoading) return <PageLoading className="absolute inset-0" />;
+  const accountQuery = useGetAccount();
+  const jobQuery = useGetJobById({ jobId });
+  if (jobQuery.isError || accountQuery.isError) return <PageError className="absolute inset-0" />;
+  if (jobQuery.isLoading || accountQuery.isLoading) return <PageLoading className="absolute inset-0" />;
 
-  const { data: job } = jobData;
-  const { data: account } = accountData;
+  const { data: job } = jobQuery;
+  const { data: account } = accountQuery;
   const USER_ROLE: 'client' | 'talent' = account?._id === job.creator._id ? 'client' : 'talent';
 
   const VIEWS = {
@@ -41,7 +56,7 @@ export default function JobDetails({ params }: Props) {
 
   return (
     <div className="h-full">
-      <CurrentView job={job} />
+      <CurrentView job={job} userId={account._id} />
     </div>
   );
 }
@@ -52,7 +67,6 @@ interface ClientJobDetailsProps {
 }
 
 const ClientJobDetails: React.FC<ClientJobDetailsProps> = ({ job }) => {
-  console.log('job', job);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = React.useState(false);
   const JOB_TYPE: 'private' | 'open' = job.isPrivate ? 'private' : 'open';
 
@@ -78,18 +92,17 @@ const ClientJobDetails: React.FC<ClientJobDetailsProps> = ({ job }) => {
         />
         <div className="bg-white flex flex-col w-full p-6 rounded-b-xl grow border-line border-t-0 border">
           <JobDeliverables
-            deliverables={job.collections
-              .filter((collection) => collection.type === 'deliverable')
-              .map((collection) => collection.name)}
+            deliverables={job.collections.filter(isJobDeliverable).map((collection) => collection.name)}
           />
 
-          {job.invites.length > 0 && (
-            <div className="p-4 bg-blue-50 border border-blue-300 rounded-lg my-3 text-body w-full">
-              Awaiting Talent Response
+          {job.invite && (
+            <div className="p-4 bg-blue-50 border border-blue-300 text-blue-500 rounded-lg my-3 flex items-center gap-2 w-full">
+              <Info size={20} />
+              <span>Awaiting Talent Response</span>
             </div>
           )}
 
-          {job.invites.length === 0 && (
+          {!job.invite && (
             <JobCtas jobId={job._id} skills={job.tagsData} openDeleteModal={() => setIsDeleteModalOpen(true)} />
           )}
         </div>
@@ -193,14 +206,8 @@ interface ClientDeleteJobModalProps {
 }
 
 const DeleteJobModal: React.FC<ClientDeleteJobModalProps> = ({ jobId, title, setModalOpen }) => {
-  const deleteMutate = useDeleteJob();
+  const deleteJobMutation = useDeleteJob();
   const router = useRouter();
-
-  const deleteCall = async () => {
-    await deleteMutate.mutateAsync({ id: jobId });
-    router.push('/jobs');
-    setModalOpen(false);
-  };
 
   return (
     <div className="border w-full max-w-xl flex flex-col gap-4 bg-white p-6 rounded-2xl">
@@ -210,8 +217,23 @@ const DeleteJobModal: React.FC<ClientDeleteJobModalProps> = ({ jobId, title, set
         <span className="text-body font-bold">{title}</span>
       </div>
       <div className="mt-auto w-full flex flex-row items-center justify-between gap-2">
-        <Button fullWidth variant="primary" onClick={deleteCall} disabled={deleteMutate.isLoading}>
-          {deleteMutate.isLoading ? <Spinner /> : 'Confirm'}
+        <Button
+          fullWidth
+          variant="primary"
+          onClick={() => {
+            deleteJobMutation.mutate(
+              { id: jobId },
+
+              {
+                onSuccess: () => {
+                  router.push('/jobs');
+                },
+              },
+            );
+          }}
+          disabled={deleteJobMutation.isLoading}
+        >
+          {deleteJobMutation.isLoading ? <Spinner /> : 'Confirm'}
         </Button>
         <Button fullWidth variant="outline" onClick={() => setModalOpen(false)}>
           Cancel
@@ -223,13 +245,18 @@ const DeleteJobModal: React.FC<ClientDeleteJobModalProps> = ({ jobId, title, set
 
 interface TalentJobDetailsProps {
   job: Job;
+  userId: string;
 }
 
 // TALENT JOB DETAILS
-const TalentJobDetails: React.FC<TalentJobDetailsProps> = ({ job }) => {
+const TalentJobDetails: React.FC<TalentJobDetailsProps> = ({ job, userId }) => {
   const searchParams = useSearchParams();
   const inviteId = searchParams.get('invite-id');
   const JOB_TYPE: 'private' | 'open' = job.isPrivate ? 'private' : 'open';
+
+  const jobApplicants = job.collections.filter(isJobApplicant);
+
+  const hasAlreadyApplied = jobApplicants.some((applicant) => applicant.creator._id === userId);
 
   const CTAS = {
     open: TalentOpenJobCtas,
@@ -244,7 +271,7 @@ const TalentJobDetails: React.FC<TalentJobDetailsProps> = ({ job }) => {
         <JobHeader
           title={job.name}
           price={job.paymentFee}
-          dueDate="2023"
+          dueDate={job.deliveryDate}
           creator={{
             score: job.creator.score,
             avatar: job.creator.profileImage?.url,
@@ -253,68 +280,16 @@ const TalentJobDetails: React.FC<TalentJobDetailsProps> = ({ job }) => {
         />
         <div className="bg-white flex flex-col w-full p-6 rounded-b-xl grow border-line border-t-0 border">
           <JobDeliverables
-            deliverables={job.collections
-              .filter((collection) => collection.type === 'deliverable')
-              .map((collection) => collection.name)}
+            deliverables={job.collections.filter(isJobDeliverable).map((collection) => collection.name)}
           />
 
-          <JobCtas jobId={job._id} inviteId={inviteId} />
+          <JobCtas jobId={job._id} inviteId={inviteId} hasAlreadyApplied={hasAlreadyApplied} />
         </div>
       </div>
 
       <div className="basis-[300px] h-full gap-7 w-fit flex flex-col items-center">
         <JobDescription description={job.description} />
         <JobSkills skills={[...job.tagsData]} />
-      </div>
-    </div>
-  );
-};
-
-const TalentApplicationFormModal = () => {
-  return (
-    <div className="border w-full max-w-xl flex flex-col gap-4 bg-white p-6 rounded-2xl">
-      <div className="flex flex-col gap-1 items-center">
-        <h2 className="font-medium text-2xl">Propose Price</h2>
-        <span className="text-body">What do you think is a fair price for this job</span>
-      </div>
-
-      <form className="flex flex-col gap-6 items-center">
-        <div className="flex flex-col gap-2 w-full">
-          <label htmlFor="due" className="text-title">
-            Enter Bid
-          </label>
-          <input
-            type="text"
-            id="due"
-            placeholder="Enter Bid (e.g $100)"
-            className="w-full border bg-[#FCFCFD] border-line rounded-lg outline-none px-4 py-3 focus-within:border-secondary hover:border-secondary hover:duration-200"
-          />
-        </div>
-
-        <div className="flex flex-col gap-2 w-full">
-          <label htmlFor="due" className="text-title">
-            Message (Optional)
-          </label>
-          <textarea
-            rows={3}
-            maxLength={400}
-            placeholder="Enter your message here"
-            className="w-full resize-none bg-[#FCFCFD] border border-line rounded-lg outline-none px-4 py-3 focus-within:border-secondary hover:border-secondary hover:duration-200"
-          />
-        </div>
-
-        <Button fullWidth>Send Application</Button>
-      </form>
-    </div>
-  );
-};
-
-const TalentApplicationSuccessModal = () => {
-  return (
-    <div className="border w-full max-w-xl flex flex-col gap-4 bg-white p-6 rounded-2xl">
-      <div className="flex flex-col gap-1 items-center">
-        <h2 className="font-medium text-2xl">Application Sent</h2>
-        <span className="text-body">You will get a notification if the client sends you a message</span>
       </div>
     </div>
   );
@@ -375,20 +350,126 @@ const TalentPrivateJobCtas: React.FC<TalentPrivateJobCtasProps> = ({ inviteId })
 
 interface TalentOpenJobCtasProps {
   jobId: string;
+  hasAlreadyApplied: boolean;
 }
 
-const TalentOpenJobCtas: React.FC<TalentOpenJobCtasProps> = ({ jobId }) => {
+const TalentOpenJobCtas: React.FC<TalentOpenJobCtasProps> = ({ jobId, hasAlreadyApplied }) => {
   const [isApplyModalOpen, setIsApplyModalOpen] = React.useState(false);
 
   return (
-    <div className="max-w-[200px] w-full ml-auto">
-      <Button fullWidth onClick={() => setIsApplyModalOpen(true)}>
-        Apply
-      </Button>
+    <React.Fragment>
+      {hasAlreadyApplied && (
+        <div className="p-4 bg-blue-50 border border-blue-300 text-blue-500 rounded-lg my-3 flex items-center gap-2 w-full">
+          <Info size={20} />
+          <span className="text-body text-center">You have already applied to this job</span>
+        </div>
+      )}
+      <div className="max-w-[200px] w-full ml-auto">
+        {!hasAlreadyApplied && (
+          <Button fullWidth onClick={() => setIsApplyModalOpen(true)}>
+            Apply
+          </Button>
+        )}
 
-      <Modal isOpen={isApplyModalOpen} onOpenChange={setIsApplyModalOpen}>
-        <TalentApplicationFormModal />
-      </Modal>
+        <Modal isOpen={isApplyModalOpen} onOpenChange={setIsApplyModalOpen}>
+          <TalentJobApplyModal jobId={jobId} />
+        </Modal>
+      </div>
+    </React.Fragment>
+  );
+};
+
+interface TalentJobApplyModalProps {
+  jobId: string;
+}
+
+const TalentJobApplyModal: React.FC<TalentJobApplyModalProps> = ({ jobId }) => {
+  const jobQuery = useGetJobById({ jobId });
+  const applyToOpenJob = useApplyToOpenJob();
+  const [showSuccessMessage, setShowSuccessMessage] = React.useState(false);
+
+  const form = useForm<JobApplicationFormValues>({
+    resolver: zodResolver(jobApplicationSchema),
+    defaultValues: {
+      message: '',
+    },
+  });
+
+  const onSubmit: SubmitHandler<JobApplicationFormValues> = ({ amount, message = '' }) => {
+    applyToOpenJob.mutate(
+      {
+        jobId,
+        amount,
+        message,
+      },
+      {
+        onSuccess: () => {
+          setShowSuccessMessage(true);
+          jobQuery.refetch();
+        },
+      },
+    );
+  };
+
+  if (showSuccessMessage) {
+    return (
+      <div className="border w-full max-w-xl flex flex-col gap-4 bg-white p-6 rounded-2xl">
+        <div className="flex flex-col gap-1 items-center">
+          <div className="max-w-[200px] -mt-[4]">
+            <Lottie animationData={success} loop={false} />
+          </div>
+
+          <h2 className="font-medium text-2xl">Application Sent</h2>
+          <span className="text-body">You will get a notification if the client sends you a message</span>
+        </div>
+      </div>
+    );
+  }
+  return (
+    <div className="border w-full max-w-xl flex flex-col gap-4 bg-white p-6 rounded-2xl">
+      <div className="flex flex-col gap-1 items-center">
+        <h2 className="font-medium text-2xl">Propose Price</h2>
+        <span className="text-body">What do you think is a fair price for this job</span>
+      </div>
+
+      <form className="flex flex-col gap-6 items-center" onSubmit={form.handleSubmit(onSubmit)}>
+        <div className="flex flex-col gap-2 w-full">
+          <label htmlFor="due" className="text-title">
+            Enter Bid
+          </label>
+          <input
+            type="text"
+            id="due"
+            {...form.register('amount')}
+            placeholder="Enter Bid (e.g $100)"
+            className="w-full border bg-[#FCFCFD] border-line rounded-lg outline-none px-4 py-3 focus-within:border-secondary hover:border-secondary hover:duration-200"
+          />
+
+          {form.formState.errors.amount && (
+            <span className="text-red-500 text-sm">{form.formState.errors.amount.message}</span>
+          )}
+        </div>
+
+        <div className="flex flex-col gap-2 w-full">
+          <label htmlFor="due" className="text-title">
+            Message (Optional)
+          </label>
+          <textarea
+            rows={3}
+            maxLength={400}
+            id="due"
+            {...form.register('message')}
+            placeholder="Enter your message here"
+            className="w-full resize-none bg-[#FCFCFD] border border-line rounded-lg outline-none px-4 py-3 focus-within:border-secondary hover:border-secondary hover:duration-200"
+          />
+
+          {form.formState.errors.message && (
+            <span className="text-red-500 text-sm">{form.formState.errors.message.message}</span>
+          )}
+        </div>
+
+        <Button fullWidth>{applyToOpenJob.isLoading ? <Spinner /> : 'Send Application'}</Button>
+      </form>
     </div>
   );
 };
