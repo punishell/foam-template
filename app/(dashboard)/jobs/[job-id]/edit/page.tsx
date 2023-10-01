@@ -1,6 +1,6 @@
 'use client';
 import React from 'react';
-import { Job } from '@/lib/types';
+import { Job, isJobDeliverable } from '@/lib/types';
 import { useGetJobById } from '@/lib/api/job';
 import { PageError } from '@/components/common/page-error';
 import { PageLoading } from '@/components/common/page-loading';
@@ -37,6 +37,7 @@ import { Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { StepIndicator } from '@/components/jobs/step-indicator';
+import { is } from 'date-fns/locale';
 
 const schema = z.object({
   due: z.date({
@@ -47,7 +48,7 @@ const schema = z.object({
   thirdSkill: z.string().optional().default(''),
   secondSkill: z.string().optional().default(''),
   firstSkill: z.string().nonempty({ message: 'At least, one skill is required' }),
-  budget: z.string().nonempty({ message: 'Budget is required' }),
+  budget: z.coerce.number().min(100, { message: 'Budget must be at least $100' }),
   title: z.string().nonempty({ message: 'Job title is required' }),
   description: z.string().nonempty({ message: 'Job description is required' }),
   category: z.string().nonempty({ message: 'Required' }),
@@ -113,10 +114,8 @@ const JobEditForm: React.FC<JobEditFormProps> = ({ job }) => {
     reValidateMode: 'onChange',
     resolver: zodResolver(schema),
     defaultValues: {
-      budget: job.paymentFee.toString(),
-      deliverables: job.collections
-        .filter((collection) => collection.type === 'deliverable')
-        .map((collection) => collection.name),
+      budget: job.paymentFee,
+      deliverables: job.collections.filter(isJobDeliverable).map((collection) => collection.name),
       title: job?.name,
       jobType: 'freelance',
       category: job?.category,
@@ -156,7 +155,6 @@ const JobEditForm: React.FC<JobEditFormProps> = ({ job }) => {
       },
       {
         onSuccess(_data, { id }) {
-          form.reset();
           if (talentId) {
             router.push(`/jobs/${id}/make-deposit/?talent-id=${talentId}`);
           } else {

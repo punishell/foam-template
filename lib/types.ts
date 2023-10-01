@@ -56,16 +56,17 @@ export interface Job {
   ratings: Rating[] | null;
   tagsData: string[];
   invites: any[]; // TODO: add type
+  invite: undefined | {};
   status: JobStatus;
   bookmarkId?: string;
   isBookmarked?: boolean;
   inviteAccepted: boolean;
   recipientCompletedJob: boolean;
-  collections: Array<JobDeliverable>;
+  collections: Collection[];
   payoutStatus: 'pending' | 'ongoing' | 'completed' | 'waiting' | 'cancelled';
 }
 
-interface UserProfile {
+export interface UserProfile {
   _id: string;
   score: number;
   lastName: string;
@@ -79,7 +80,9 @@ interface UserProfile {
       availability: string;
       tags: any[]; // TODO: add type
     };
-    talent: {};
+    talent: {
+      tags: string[];
+    };
   };
 }
 
@@ -94,7 +97,7 @@ interface Rating {
   receiver: UserProfile;
 }
 
-interface JobDeliverable {
+export type JobDeliverable = {
   _id: string;
   name: string;
   progress: number; // 0 or 100
@@ -102,7 +105,25 @@ interface JobDeliverable {
   type: 'deliverable';
   description: string;
   status: 'pending' | 'ongoing' | 'completed';
-}
+};
+
+export type JobApplicant = {
+  createdAt: string;
+  paymentFee: number;
+  description: string;
+  type: 'application';
+  creator: UserProfile;
+};
+
+type Collection = JobDeliverable | JobApplicant;
+
+export const isJobDeliverable = (collection: Collection): collection is JobDeliverable => {
+  return collection.type === 'deliverable';
+};
+
+export const isJobApplicant = (collection: Collection): collection is JobApplicant => {
+  return collection.type === 'application';
+};
 
 export interface ImageUp {
   file: File;

@@ -370,7 +370,7 @@ const DepositToAddress = ({ amount, depositAddress, jobId, closeModel, coin }: D
                     },
                     {
                       onSuccess: () => {
-                        router.push(`/jobs/${jobId}`);
+                        router.push(`/jobs?my-jobs=unassigned`);
                       },
                     },
                   );
@@ -503,7 +503,7 @@ const DepositAvax: React.FC<WalletDepositProps> = ({ depositAddress, amount, job
                 },
                 {
                   onSuccess: () => {
-                    router.push(`/jobs?jobs-type=created`);
+                    router.push(`/jobs?my-jobs=unassigned`);
                   },
                 },
               );
@@ -563,7 +563,7 @@ const DepositUSDC: React.FC<WalletDepositProps> = ({ amount, depositAddress, job
                 },
                 {
                   onSuccess: () => {
-                    router.push(`/jobs?jobs-type=created`);
+                    router.push(`/jobs?my-jobs=unassigned`);
                   },
                 },
               );
@@ -605,7 +605,7 @@ const DepositUSDC: React.FC<WalletDepositProps> = ({ amount, depositAddress, job
                       },
                       {
                         onSuccess: () => {
-                          router.push(`/jobs?jobs-type=created`);
+                          router.push(`//jobs?my-jobs=unassigned`);
                         },
                       },
                     );

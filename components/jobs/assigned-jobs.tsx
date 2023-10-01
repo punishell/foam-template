@@ -13,13 +13,18 @@ interface Props {}
 export const AcceptedJobs: React.FC<Props> = () => {
   const jobsData = useGetJobs({ category: 'assigned' });
 
-  if (jobsData.isError) return <PageError className="rounded-xl border border-red-100 h-[80vh]" />;
-  if (jobsData.isLoading) return <PageLoading className="rounded-xl border border-line h-[80vh]" />;
+  if (jobsData.isError) return <PageError className="rounded-2xl border border-red-200 h-[85vh]" />;
+  if (jobsData.isLoading) return <PageLoading className="rounded-2xl border border-line h-[85vh]" />;
 
   const jobs = jobsData.data.data;
 
-  const completedJobs = jobs.filter((job) => job.payoutStatus === 'completed');
-  const ongoingJobs = jobs.filter((job) => job.payoutStatus !== 'completed' && job.inviteAccepted);
+  // sort jobs by latest first
+  const sortedJobs = jobs.sort((a, b) => {
+    return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+  });
+
+  const completedJobs = sortedJobs.filter((job) => job.payoutStatus === 'completed');
+  const ongoingJobs = sortedJobs.filter((job) => job.payoutStatus !== 'completed' && job.inviteAccepted);
 
   return (
     <div className="flex flex-col gap-6 h-full">

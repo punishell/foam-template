@@ -1,5 +1,5 @@
 import React from 'react';
-import type { Job } from '@/lib/types';
+import { isJobDeliverable, type Job } from '@/lib/types';
 import { ChevronLeft } from 'lucide-react';
 import { format } from 'date-fns';
 import Image from 'next/image';
@@ -86,7 +86,7 @@ const JobUpdates: React.FC<JobUpdatesProps> = ({ job }) => {
     _id: jobId,
     owner,
   } = job;
-  const deliverables = collections.filter((collection) => collection.type === 'deliverable');
+  const deliverables = collections.filter(isJobDeliverable);
 
   return (
     <React.Fragment>

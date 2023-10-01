@@ -207,3 +207,7 @@ export function getPreviewByTypeUrl(url: string, type: string) {
 export const CopyText = (text: string) => navigator.clipboard.writeText(text);
 
 export const spChars = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/;
+
+export const paginate = <T>(array: T[], itemsPerPage: number, currentPage: number): T[] => {
+  return array.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+};

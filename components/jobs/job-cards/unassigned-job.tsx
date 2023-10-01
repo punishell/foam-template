@@ -8,9 +8,17 @@ interface UnAssignedJobCardProps {
   price: number;
   createdAt: string;
   skills?: string;
+  hasInvite: boolean;
 }
 
-export const UnAssignedJobCard: React.FC<UnAssignedJobCardProps> = ({ createdAt, price, title, id, skills }) => {
+export const UnAssignedJobCard: React.FC<UnAssignedJobCardProps> = ({
+  createdAt,
+  price,
+  title,
+  id,
+  skills,
+  hasInvite,
+}) => {
   const router = useRouter();
 
   return (
@@ -18,7 +26,14 @@ export const UnAssignedJobCard: React.FC<UnAssignedJobCardProps> = ({ createdAt,
       <div className="w-full flex gap-4">
         <div className="flex flex-col gap-2 grow">
           <div className="flex items-center justify-between gap-2">
-            {<span className="text-body text-lg">{createdAt}</span>}
+            <div className="flex items-center gap-2">
+              {<span className="text-body text-lg">{createdAt}</span>}
+              {hasInvite && (
+                <span className="px-3 text-blue-500 inline-flex rounded-full bg-blue-50 text-sm border border-blue-200">
+                  Awaiting Talent Response
+                </span>
+              )}
+            </div>
 
             <span className="px-3 text-base text-title inline-flex rounded-full bg-[#B2E9AA66]">${price}</span>
           </div>
@@ -27,15 +42,18 @@ export const UnAssignedJobCard: React.FC<UnAssignedJobCardProps> = ({ createdAt,
       </div>
       <div className="flex items-center gap-2 justify-between mt-auto">
         <div className="gap-2 flex items-center">
-          <Button
-            size="xs"
-            variant="secondary"
-            onClick={() => {
-              router.push(`/talents${skills ? `?skills=${skills}` : ""}`);
-            }}
-          >
-            Find Talent
-          </Button>
+          {!hasInvite && (
+            <Button
+              size="xs"
+              variant="secondary"
+              onClick={() => {
+                router.push(`/talents${skills ? `?skills=${skills}` : ''}`);
+              }}
+            >
+              Find Talent
+            </Button>
+          )}
+
           <Button
             size="xs"
             variant="outline"
