@@ -320,6 +320,37 @@ export function useCreateJobReview() {
   });
 }
 
+// Release Job Payment
+
+interface ReleaseJobPaymentParams {
+  jobId: string;
+}
+
+async function postReleaseJobPayment(params: ReleaseJobPaymentParams): Promise<ApiResponse> {
+  const res = await axios.post(`/payment/release`, {
+    collection: params.jobId,
+  });
+  return res.data.data;
+}
+
+export function useReleaseJobPayment() {
+  const queryClient = useQueryClient();
+  const jobsQuery = useGetJobs({ category: 'assigned' });
+
+  return useMutation({
+    mutationFn: postReleaseJobPayment,
+    mutationKey: ['release-job-payment'],
+    onError: (error: ApiError) => {
+      toast.error(error?.response?.data.message || 'An error occurred');
+    },
+    onSuccess: () => {
+      jobsQuery.refetch();
+      queryClient.refetchQueries(['get-job-by-id']);
+      toast.success('Payment released successfully');
+    },
+  });
+}
+
 // Invite talent to a job
 interface InviteTalentToJobParams {
   jobId: string;
