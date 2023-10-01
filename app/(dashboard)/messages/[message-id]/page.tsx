@@ -11,6 +11,7 @@ import { ImageUp } from '@/lib/types';
 import dayJs from "dayjs";
 import { useDownloadAttachment } from '@/lib/api/upload';
 import { ProfileImage } from '@/components/overview/ProfileImage';
+import Link from 'next/link';
 
 interface Props {
   params: {
@@ -95,10 +96,9 @@ export default function Chat({ params }: Props) {
       return sendMessage();
     }
   }
-
   return (
     <div className='flex flex-col h-full'>
-      <ChatBoxHeader title={currentConversation?.header?.title} description={currentConversation?.header?.description} time={currentConversation?.createdAt} avatar={currentConversation?.header?.avatar} score={currentConversation?.header?.score} />
+      <ChatBoxHeader _id={currentConversation.header._id} title={currentConversation?.header?.title} description={currentConversation?.header?.description} time={currentConversation?.createdAt} avatar={currentConversation?.header?.avatar} score={currentConversation?.header?.score} />
       <div className="grow w-full overflow-y-auto">
         <Messages messages={messages} />
       </div>
@@ -130,12 +130,12 @@ export default function Chat({ params }: Props) {
   );
 }
 
-const ChatBoxHeader = ({ title, description, time, score, avatar }: { title: string, description: string, time: string, score: number, avatar: string }) => {
+const ChatBoxHeader = ({ _id, title, description, time, score, avatar }: { _id: string, title: string, description: string, time: string, score: number, avatar: string }) => {
   return (
     <div className="flex gap-2 justify-between items-center border-b pb-3 border-line mb-3">
       <div className="flex gap-2 items-center">
         {/* <div className="h-[50px] flex w-[50px] bg-black rounded-full"></div> */}
-        <ProfileImage score={score} imageUrl={avatar} size="sm" />
+        <Link href={`/talents/${_id}`}><ProfileImage score={score} imageUrl={avatar} size="sm" /></Link>
         <div className="flex flex-col gap-1">
           <div className="text-title text-lg leading-none font-medium">{title}</div>
           <div className="text-body text-sm leading-none">{description}</div>

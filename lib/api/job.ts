@@ -491,3 +491,24 @@ export function useConfirmJobPayment() {
     },
   });
 }
+interface DeleteJobParams {
+  id: string;
+}
+
+async function postDeleteJob(params: DeleteJobParams): Promise<Job> {
+  const res = await axios.delete(`/collection/${params.id}`);
+  return res.data.data;
+}
+
+export function useDeleteJob() {
+  return useMutation({
+    mutationFn: postDeleteJob,
+    mutationKey: ['delete-job'],
+    onError: (error: ApiError) => {
+      toast.error(error?.response?.data.message ?? 'An error occurred');
+    },
+    onSuccess: () => {
+      toast.success(`Job deleted successfully`);
+    },
+  });
+}

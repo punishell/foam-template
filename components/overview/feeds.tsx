@@ -10,7 +10,7 @@ import { PageError } from '../common/page-error';
 
 export const Feeds = () => {
   const { _id: loggedInUser } = useUserState()
-  const { data: timelineData, refetch: feedRefetch, isFetching, isFetched, isError } = useGetTimeline({ page: 1, limit: 10, filter: { isPublic: true, isOwner: true } });
+  const { data: timelineData, refetch: feedRefetch, isFetching, isFetched, isError } = useGetTimeline({ page: 1, limit: 10, filter: { isOwner: true } });
 
   // @ts-ignore
   const DismissAll = () => useDismissAllFeed().mutate({}, {
