@@ -370,7 +370,7 @@ export function useInviteTalentToJob() {
     mutationFn: postInviteTalentToJob,
     mutationKey: ['invite-talent-to-private-job'],
     onError: (error: ApiError) => {
-      toast.error(error?.response?.data.message || 'An error occurred');
+      toast.error(error?.response?.data.message || 'An error occurred inviting talent');
     },
     onSuccess: () => {
       toast.success('Talent invited successfully');
@@ -499,11 +499,11 @@ export function usePostJobPaymentDetails() {
 
 interface ConfirmJobPaymentParams {
   jobId: string;
+  delay?: number;
 }
 
 async function postConfirmJobPayment(params: ConfirmJobPaymentParams): Promise<ApiResponse> {
-  // delay for 10 seconds
-  await new Promise((resolve) => setTimeout(resolve, 10000));
+  await new Promise((resolve) => setTimeout(resolve, params.delay ?? 0));
   const res = await axios.post(`/payment/validate`, {
     collection: params.jobId,
   });
