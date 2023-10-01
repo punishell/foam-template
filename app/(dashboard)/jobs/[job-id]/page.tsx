@@ -3,6 +3,7 @@ import React from 'react';
 import { Button } from 'pakt-ui';
 import { format } from 'date-fns';
 import { Spinner } from '@/components/common';
+import { useApplyToOpenJob } from '@/lib/api/job';
 import { useDeclineInvite, useAcceptInvite } from '@/lib/api/invites';
 import type { Job } from '@/lib/types';
 import { useRouter } from 'next/navigation';
@@ -51,6 +52,7 @@ interface ClientJobDetailsProps {
 }
 
 const ClientJobDetails: React.FC<ClientJobDetailsProps> = ({ job }) => {
+  console.log('job', job);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = React.useState(false);
   const JOB_TYPE: 'private' | 'open' = job.isPrivate ? 'private' : 'open';
 
@@ -81,7 +83,15 @@ const ClientJobDetails: React.FC<ClientJobDetailsProps> = ({ job }) => {
               .map((collection) => collection.name)}
           />
 
-          <JobCtas jobId={job._id} skills={job.tagsData} openDeleteModal={() => setIsDeleteModalOpen(true)} />
+          {job.invites.length > 0 && (
+            <div className="p-4 bg-blue-50 border border-blue-300 rounded-lg my-3 text-body w-full">
+              Awaiting Talent Response
+            </div>
+          )}
+
+          {job.invites.length === 0 && (
+            <JobCtas jobId={job._id} skills={job.tagsData} openDeleteModal={() => setIsDeleteModalOpen(true)} />
+          )}
         </div>
       </div>
 
@@ -127,7 +137,7 @@ const ClientPrivateJobCtas: React.FC<ClientPrivateJobCtasProps> = ({ jobId, skil
         <Button
           fullWidth
           onClick={() => {
-            router.push(`/talents${skills && skills?.length > 0 ? `?skills=${skills?.join(",")}` : ""}`);
+            router.push(`/talents${skills && skills?.length > 0 ? `?skills=${skills?.join(',')}` : ''}`);
           }}
         >
           Find Talent
@@ -188,20 +198,20 @@ const DeleteJobModal: React.FC<ClientDeleteJobModalProps> = ({ jobId, title, set
 
   const deleteCall = async () => {
     await deleteMutate.mutateAsync({ id: jobId });
-    router.push("/jobs");
+    router.push('/jobs');
     setModalOpen(false);
-  }
+  };
 
   return (
     <div className="border w-full max-w-xl flex flex-col gap-4 bg-white p-6 rounded-2xl">
       <div className="flex flex-col gap-1 items-center">
         <h2 className="font-medium text-2xl">Confirm Job Deletion</h2>
         <span className="text-body text-center">You are about to permanently delete job</span>
-        <span className='text-body font-bold'>{title}</span>
+        <span className="text-body font-bold">{title}</span>
       </div>
       <div className="mt-auto w-full flex flex-row items-center justify-between gap-2">
         <Button fullWidth variant="primary" onClick={deleteCall} disabled={deleteMutate.isLoading}>
-          {deleteMutate.isLoading ? <Spinner /> : "Confirm"}
+          {deleteMutate.isLoading ? <Spinner /> : 'Confirm'}
         </Button>
         <Button fullWidth variant="outline" onClick={() => setModalOpen(false)}>
           Cancel
