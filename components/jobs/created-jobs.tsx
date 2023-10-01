@@ -17,14 +17,19 @@ interface Props {}
 export const CreatedJobs: React.FC<Props> = () => {
   const jobsData = useGetJobs({ category: 'created' });
 
-  if (jobsData.isError) return <PageError className="rounded-lg border border-red-300 h-[80vh]" />;
-  if (jobsData.isLoading) return <PageLoading className="h-[80vh] rounded-lg border border-line" />;
+  if (jobsData.isError) return <PageError className="rounded-2xl border border-red-200 h-[85vh]" />;
+  if (jobsData.isLoading) return <PageLoading className="h-[85vh] rounded-2xl border border-line" />;
 
   const jobs = jobsData.data.data;
 
-  const completedJobs = jobs.filter((job) => job.payoutStatus === 'completed');
-  const ongoingJobs = jobs.filter((job) => job.payoutStatus !== 'completed' && job.inviteAccepted);
-  const unassignedJobs = jobs.filter(
+  // sort jobs by latest first
+  const sortedJobs = jobs.sort((a, b) => {
+    return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+  });
+
+  const completedJobs = sortedJobs.filter((job) => job.payoutStatus === 'completed');
+  const ongoingJobs = sortedJobs.filter((job) => job.payoutStatus !== 'completed' && job.inviteAccepted);
+  const unassignedJobs = sortedJobs.filter(
     (job) => job.status === 'pending' || (job.status === 'ongoing' && job.inviteAccepted === false),
   );
 
@@ -51,17 +56,18 @@ interface UnassignedJobsProps {
 }
 
 const UnassignedJobs: React.FC<UnassignedJobsProps> = ({ jobs }) => {
-  if (!jobs.length) return <PageEmpty label="No open jobs yet." className="rounded-lg border border-line h-[80vh]" />;
+  if (!jobs.length) return <PageEmpty label="No open jobs yet." className="rounded-2xl border border-line h-[80vh]" />;
 
   return (
     <div className="grid grid-cols-2 gap-4 overflow-y-auto pb-20">
-      {jobs.map(({ _id, paymentFee, name, tagsData, createdAt }) => {
+      {jobs.map(({ _id, paymentFee, name, tagsData, createdAt, invite }) => {
         return (
           <UnAssignedJobCard
             id={_id}
             key={_id}
             price={paymentFee}
             title={name}
+            hasInvite={invite !== undefined}
             createdAt={format(new Date(createdAt), 'dd MMM yyyy')}
             skills={tagsData.join(',')}
           />
@@ -77,7 +83,9 @@ interface OngoingJobsProps {
 
 const OngoingJobs: React.FC<OngoingJobsProps> = ({ jobs }) => {
   if (!jobs.length)
-    return <PageEmpty label="Your ongoing jobs will appear here." className="rounded-lg border border-line h-[80vh]" />;
+    return (
+      <PageEmpty label="Your ongoing jobs will appear here." className="rounded-2xl border border-line h-[80vh]" />
+    );
 
   return (
     <div className="grid grid-cols-2 gap-4 overflow-y-auto pb-20">
@@ -111,7 +119,7 @@ interface CompletedJobsProps {
 const CompletedJobs: React.FC<CompletedJobsProps> = ({ jobs }) => {
   if (!jobs.length)
     return (
-      <PageEmpty label="Your completed jobs will appear here." className="rounded-lg border border-line h-[80vh]" />
+      <PageEmpty label="Your completed jobs will appear here." className="rounded-2xl border border-line h-[80vh]" />
     );
 
   return (
