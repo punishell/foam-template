@@ -89,8 +89,6 @@ export const MessagingProvider = ({ children }: { children: React.ReactNode }) =
   const router = useRouter();
   const initiated = useRef(false);
 
-  // console.log("mesaging===", startingNewChat, loggedInUser, socket)
-
   const pathname = usePathname();
   const messagingScreen = pathname.includes(prefix);
 
@@ -111,7 +109,6 @@ export const MessagingProvider = ({ children }: { children: React.ReactNode }) =
         // Join Old Conversation If any
         socket?.emit(conversationEnums.JOIN_OLD_CONVERSATIIONS, { userId: loggedInUser }, () => { });
         socket?.on("disconnect", () => {
-          console.log("has disconnected==", socket);
           // TODO:: Perform Disconnect Function
         });
 
@@ -137,7 +134,6 @@ export const MessagingProvider = ({ children }: { children: React.ReactNode }) =
     // Here we listen to popup events
     socket?.on(conversationEnums.POPUP_MESSAGE, async (response: any) => {
       const c = response.data;
-      console.log("new-message", conversationEnums.POPUP_MESSAGE, response);
       await fetchUserChats(c._id);
       // notify user
       const messageContent =
@@ -182,7 +178,6 @@ export const MessagingProvider = ({ children }: { children: React.ReactNode }) =
   const connectChatInit = async () => {
     const isSocketConnected = socket && socket.connected;
     if (loggedInUser && !isSocketConnected && authToken) {
-      console.log("logging-=-socket...")
       try {
         const newSocket = io(SOCKET_URL as string, {
           extraHeaders: {
@@ -205,7 +200,7 @@ export const MessagingProvider = ({ children }: { children: React.ReactNode }) =
 
   const getConversationHeader = (conversation: any) => {
     const sender = conversation.recipients.find((r: any) => r._id !== loggedInUser);
-    return conversation.type == "DIRECT" ? { title: `${sender?.firstName} ${sender?.lastName}`, description: sender?.profile?.bio?.title, avatar: sender?.profileImage?.url, score: sender?.score } : { title: conversation.title, description: conversation.description, score: 0, avatar: "" };
+    return conversation.type == "DIRECT" ? { _id: sender._id, title: `${sender?.firstName} ${sender?.lastName}`, description: sender?.profile?.bio?.title, avatar: sender?.profileImage?.url, score: sender?.score } : { title: conversation.title, description: conversation.description, score: 0, avatar: "" };
   };
   const getUnreadCount = (messages: any[]) => messages.filter((r: any) => !!!(r.readBy && !!r.readBy.includes(loggedInUser)) && r.user != loggedInUser).length;
   const getLastMessage = (messages: any[]) => messages.length > 0 ? messages[messages.length - 1].content : null;
@@ -253,7 +248,6 @@ export const MessagingProvider = ({ children }: { children: React.ReactNode }) =
   const fetchUserChats = async (currentConversationId?: string) => {
     await socket.emit(conversationEnums.GET_ALL_CONVERSATIONS, { userId: loggedInUser },
       (response: SocketResponse<any>) => {
-        console.log("fetched ===", response)
         if (!response.error) {
           const payload = response?.data;
           const parsedConversation = parseUserChats(payload);
@@ -281,7 +275,6 @@ export const MessagingProvider = ({ children }: { children: React.ReactNode }) =
           type: "DIRECT"
         },
         async (conversation: SocketResponse<any>) => {
-          console.log("SDGH==>", conversation)
           await fetchUserChats(conversation.data._id);
           setStartingNewChat(false)
           if (conversation.error) return router.back();

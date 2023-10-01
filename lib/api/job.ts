@@ -90,7 +90,7 @@ interface GetJobByIdParams {
   jobId: string;
 }
 
-interface GetJobByIdResponse extends Job {}
+interface GetJobByIdResponse extends Job { }
 
 async function getJobById(params: GetJobByIdParams): Promise<GetJobByIdResponse> {
   const res = await axios.get(`/collection/${params.jobId}`);
@@ -488,6 +488,27 @@ export function useConfirmJobPayment() {
     },
     onSuccess: () => {
       toast.success('Payment confirmed successfully');
+    },
+  });
+}
+interface DeleteJobParams {
+  id: string;
+}
+
+async function postDeleteJob(params: DeleteJobParams): Promise<Job> {
+  const res = await axios.delete(`/collection/${params.id}`);
+  return res.data.data;
+}
+
+export function useDeleteJob() {
+  return useMutation({
+    mutationFn: postDeleteJob,
+    mutationKey: ['delete-job'],
+    onError: (error: ApiError) => {
+      toast.error(error?.response?.data.message ?? 'An error occurred');
+    },
+    onSuccess: () => {
+      toast.success(`Job deleted successfully`);
     },
   });
 }

@@ -6,7 +6,7 @@ import { Spinner } from '@/components/common';
 import { useDeclineInvite, useAcceptInvite } from '@/lib/api/invites';
 import type { Job } from '@/lib/types';
 import { useRouter } from 'next/navigation';
-import { useGetJobById } from '@/lib/api/job';
+import { useDeleteJob, useGetJobById } from '@/lib/api/job';
 import { useSearchParams } from 'next/navigation';
 import { useGetAccount } from '@/lib/api/account';
 import { Modal } from '@/components/common/modal';
@@ -24,7 +24,6 @@ export default function JobDetails({ params }: Props) {
   const jobId = params['job-id'];
   const accountData = useGetAccount();
   const jobData = useGetJobById({ jobId });
-  console.log(jobData.data)
   if (jobData.isError) return <PageError className="absolute inset-0" />;
   if (jobData.isLoading) return <PageLoading className="absolute inset-0" />;
 
@@ -47,12 +46,12 @@ export default function JobDetails({ params }: Props) {
 }
 
 // CLIENT JOB DETAILS
-
 interface ClientJobDetailsProps {
   job: Job;
 }
 
 const ClientJobDetails: React.FC<ClientJobDetailsProps> = ({ job }) => {
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = React.useState(false);
   const JOB_TYPE: 'private' | 'open' = job.isPrivate ? 'private' : 'open';
 
   const CTAS = {
@@ -82,7 +81,7 @@ const ClientJobDetails: React.FC<ClientJobDetailsProps> = ({ job }) => {
               .map((collection) => collection.name)}
           />
 
-          <JobCtas jobId={job._id} skills={job.tagsData} />
+          <JobCtas jobId={job._id} skills={job.tagsData} openDeleteModal={() => setIsDeleteModalOpen(true)} />
         </div>
       </div>
 
@@ -90,22 +89,27 @@ const ClientJobDetails: React.FC<ClientJobDetailsProps> = ({ job }) => {
         <JobDescription description={job.description} />
         <JobSkills skills={[...job.tagsData]} />
       </div>
+
+      <Modal isOpen={isDeleteModalOpen} onOpenChange={setIsDeleteModalOpen}>
+        <DeleteJobModal jobId={job._id} title={job.name} setModalOpen={setIsDeleteModalOpen} />
+      </Modal>
     </div>
   );
 };
 
 interface ClientPrivateJobCtasProps {
   jobId: string;
+  openDeleteModal: () => void;
   skills?: string[];
 }
 
-const ClientPrivateJobCtas: React.FC<ClientPrivateJobCtasProps> = ({ jobId, skills }) => {
+const ClientPrivateJobCtas: React.FC<ClientPrivateJobCtasProps> = ({ jobId, skills, openDeleteModal }) => {
   const router = useRouter();
 
   return (
     <div className="mt-auto w-full flex items-center justify-between gap-4">
       <div className="w-full max-w-[150px]">
-        <Button fullWidth variant="danger">
+        <Button fullWidth variant="danger" onClick={openDeleteModal}>
           Delete Job
         </Button>
       </div>
@@ -135,15 +139,16 @@ const ClientPrivateJobCtas: React.FC<ClientPrivateJobCtasProps> = ({ jobId, skil
 
 interface ClientOpenJobCtasProps {
   jobId: string;
+  openDeleteModal: () => void;
 }
 
-const ClientOpenJobCtas: React.FC<ClientOpenJobCtasProps> = ({ jobId }) => {
+const ClientOpenJobCtas: React.FC<ClientOpenJobCtasProps> = ({ jobId, openDeleteModal }) => {
   const router = useRouter();
 
   return (
     <div className="mt-auto w-full flex items-center justify-between gap-4">
       <div className="w-full max-w-[150px]">
-        <Button fullWidth variant="danger">
+        <Button fullWidth variant="danger" onClick={openDeleteModal}>
           Delete Job
         </Button>
       </div>
@@ -171,12 +176,46 @@ const ClientOpenJobCtas: React.FC<ClientOpenJobCtasProps> = ({ jobId }) => {
   );
 };
 
+interface ClientDeleteJobModalProps {
+  jobId: string;
+  title: string;
+  setModalOpen: (state: boolean) => void;
+}
+
+const DeleteJobModal: React.FC<ClientDeleteJobModalProps> = ({ jobId, title, setModalOpen }) => {
+  const deleteMutate = useDeleteJob();
+  const router = useRouter();
+
+  const deleteCall = async () => {
+    await deleteMutate.mutateAsync({ id: jobId });
+    router.push("/jobs");
+    setModalOpen(false);
+  }
+
+  return (
+    <div className="border w-full max-w-xl flex flex-col gap-4 bg-white p-6 rounded-2xl">
+      <div className="flex flex-col gap-1 items-center">
+        <h2 className="font-medium text-2xl">Confirm Job Deletion</h2>
+        <span className="text-body text-center">You are about to permanently delete job</span>
+        <span className='text-body font-bold'>{title}</span>
+      </div>
+      <div className="mt-auto w-full flex flex-row items-center justify-between gap-2">
+        <Button fullWidth variant="primary" onClick={deleteCall} disabled={deleteMutate.isLoading}>
+          {deleteMutate.isLoading ? <Spinner /> : "Confirm"}
+        </Button>
+        <Button fullWidth variant="outline" onClick={() => setModalOpen(false)}>
+          Cancel
+        </Button>
+      </div>
+    </div>
+  );
+};
+
 interface TalentJobDetailsProps {
   job: Job;
 }
 
 // TALENT JOB DETAILS
-
 const TalentJobDetails: React.FC<TalentJobDetailsProps> = ({ job }) => {
   const searchParams = useSearchParams();
   const inviteId = searchParams.get('invite-id');
