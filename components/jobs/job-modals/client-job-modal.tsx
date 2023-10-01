@@ -200,7 +200,7 @@ interface ReviewTalentProps {
 
 const MAX_COMMENT_LENGTH = 500;
 
-const ReviewTalent: React.FC<ReviewTalentProps> = ({ job }) => {
+const ReviewTalent: React.FC<ReviewTalentProps> = ({ job, closeModal }) => {
   const mutation = useCreateJobReview();
   const { description, name, _id, owner } = job;
   const [rating, setRating] = React.useState(0);
@@ -210,7 +210,9 @@ const ReviewTalent: React.FC<ReviewTalentProps> = ({ job }) => {
     <React.Fragment>
       <div className="py-6 px-4 bg-primary-gradient text-white font-bold text-2xl">
         <div className="flex items-center gap-2">
-          <ChevronLeft />
+          <button onClick={closeModal}>
+            <ChevronLeft />
+          </button>
           <span>Review</span>
         </div>
       </div>

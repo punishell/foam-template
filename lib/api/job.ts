@@ -320,6 +320,37 @@ export function useCreateJobReview() {
   });
 }
 
+// Release Job Payment
+
+interface ReleaseJobPaymentParams {
+  jobId: string;
+}
+
+async function postReleaseJobPayment(params: ReleaseJobPaymentParams): Promise<ApiResponse> {
+  const res = await axios.post(`/payment/release`, {
+    collection: params.jobId,
+  });
+  return res.data.data;
+}
+
+export function useReleaseJobPayment() {
+  const queryClient = useQueryClient();
+  const jobsQuery = useGetJobs({ category: 'assigned' });
+
+  return useMutation({
+    mutationFn: postReleaseJobPayment,
+    mutationKey: ['release-job-payment'],
+    onError: (error: ApiError) => {
+      toast.error(error?.response?.data.message || 'An error occurred');
+    },
+    onSuccess: () => {
+      jobsQuery.refetch();
+      queryClient.refetchQueries(['get-job-by-id']);
+      toast.success('Payment released successfully');
+    },
+  });
+}
+
 // Invite talent to a job
 interface InviteTalentToJobParams {
   jobId: string;
@@ -339,7 +370,7 @@ export function useInviteTalentToJob() {
     mutationFn: postInviteTalentToJob,
     mutationKey: ['invite-talent-to-private-job'],
     onError: (error: ApiError) => {
-      toast.error(error?.response?.data.message || 'An error occurred');
+      toast.error(error?.response?.data.message || 'An error occurred inviting talent');
     },
     onSuccess: () => {
       toast.success('Talent invited successfully');
@@ -468,11 +499,11 @@ export function usePostJobPaymentDetails() {
 
 interface ConfirmJobPaymentParams {
   jobId: string;
+  delay?: number;
 }
 
 async function postConfirmJobPayment(params: ConfirmJobPaymentParams): Promise<ApiResponse> {
-  // delay for 10 seconds
-  await new Promise((resolve) => setTimeout(resolve, 10000));
+  await new Promise((resolve) => setTimeout(resolve, params.delay ?? 0));
   const res = await axios.post(`/payment/validate`, {
     collection: params.jobId,
   });

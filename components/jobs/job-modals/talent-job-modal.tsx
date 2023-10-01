@@ -16,7 +16,7 @@ import { ChevronLeft } from 'lucide-react';
 import { useCreateJobReview } from '@/lib/api/job';
 import Rating from 'react-rating';
 import { Star } from 'lucide-react';
-
+import { useReleaseJobPayment } from '@/lib/api/job';
 interface TalentJobModalProps {
   jobId: string;
   closeModal?: () => void;
@@ -203,7 +203,8 @@ const MAX_COMMENT_LENGTH = 500;
 
 const ReviewClient: React.FC<ReviewClientProps> = ({ job, closeModal }) => {
   const mutation = useCreateJobReview();
-  const { description, name, _id, creator } = job;
+  const releasePaymentMutation = useReleaseJobPayment();
+  const { _id: jobId, creator } = job;
   const [rating, setRating] = React.useState(0);
   const [comment, setComment] = React.useState('');
 
@@ -213,7 +214,9 @@ const ReviewClient: React.FC<ReviewClientProps> = ({ job, closeModal }) => {
     <React.Fragment>
       <div className="py-6 px-4 bg-primary-gradient text-white font-bold text-2xl">
         <div className="flex items-center gap-2">
-          <ChevronLeft />
+          <button onClick={closeModal}>
+            <ChevronLeft />
+          </button>
           <span>Review</span>
         </div>
       </div>
@@ -297,16 +300,21 @@ const ReviewClient: React.FC<ReviewClientProps> = ({ job, closeModal }) => {
         <div className="mt-auto">
           <Button
             fullWidth
+            disabled={mutation.isLoading || rating === 0 || comment.length === 0}
             onClick={() => {
               mutation.mutate(
                 {
                   rating,
-                  jobId: _id,
+                  jobId: jobId,
                   review: comment,
                   recipientId: creator?._id ?? '',
                 },
                 {
-                  onSuccess: () => {},
+                  onSuccess: () => {
+                    releasePaymentMutation.mutate({
+                      jobId: jobId,
+                    });
+                  },
                 },
               );
             }}
