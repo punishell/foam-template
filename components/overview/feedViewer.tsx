@@ -88,7 +88,7 @@ export const JobFeedCard: React.FC<JobFeedCardProps> = (props) => {
 
     return (
       <JobFeedWrapper>
-        <ProfileImage imageUrl={inviter.avatar} />
+        <ProfileImage imageUrl={inviter.avatar} score={inviter.score} size="lg" />
         <div className="flex flex-col gap-4 w-full py-4">
           <div className="flex justify-between items-center">
             <span className="text-body text-xl font-bold">
@@ -157,7 +157,7 @@ export const PublicJobCreatedFeed = ({
 }) => {
   return (
     <JobFeedWrapper>
-      <ProfileImage score={creator.score} imageUrl={creator.avatar} />
+      <ProfileImage score={creator.score} imageUrl={creator.avatar} size='lg' />
       <div className="flex flex-col gap-4 w-full py-4">
         <div className="flex justify-between items-center">
           <h3 className="text-body text-xl font-bold">

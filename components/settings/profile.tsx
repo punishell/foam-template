@@ -114,7 +114,7 @@ export const ProfileView = () => {
 
   // TODO:: parse Error for input validations
   return (
-    <div className="flex flex-row relative gap-6 h-full grow overflow-auto">
+    <div className="flex flex-row relative gap-6 h-full grow overflow-y-auto">
       {!isFetched && <Spinner />}
       {isFetched && (
         <>

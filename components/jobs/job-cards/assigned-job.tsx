@@ -10,6 +10,7 @@ import { DefaultAvatar } from '@/components/common/default-avatar';
 import { ClientJobModal } from '@/components/jobs/job-modals/client-job-modal';
 import { TalentJobModal } from '@/components/jobs/job-modals/talent-job-modal';
 import { DeliverableProgressBar } from '@/components/common/deliverable-progress-bar';
+import { ProfileImage } from '@/components/overview/ProfileImage';
 interface ClientJobCardProps {
   jobId: string;
   title: string;
@@ -40,17 +41,7 @@ export const ClientJobCard: React.FC<ClientJobCardProps> = ({
   return (
     <div className="gap-4 bg-white rounded-3xl border-line w-full flex flex-col grow border p-4">
       <div className="w-full flex gap-4">
-        {
-          <AfroProfile score={talent.paktScore} size="lg">
-            <div className="h-full w-full rounded-full">
-              {talent.avatar ? (
-                <Image src={talent.avatar} fill alt="profile" className="rounded-full" />
-              ) : (
-                <DefaultAvatar />
-              )}
-            </div>
-          </AfroProfile>
-        }
+        <ProfileImage score={talent.paktScore} size='md' imageUrl={talent.avatar} />
         <div className="flex flex-col gap-2 grow">
           <div className="flex items-center justify-between gap-2">
             {<span className="text-body text-lg font-bold">{talent.name}</span>}
@@ -122,15 +113,7 @@ export const TalentJobCard: React.FC<TalentJobCardProps> = ({
   return (
     <div className="gap-4 bg-white rounded-3xl border-line w-full flex flex-col grow border p-4">
       <div className="w-full flex gap-4">
-        <AfroProfile score={client.paktScore} size="sm">
-          <div className="h-full w-full rounded-full">
-            {client.avatar ? (
-              <Image src={client.avatar} fill alt="profile" className="rounded-full" />
-            ) : (
-              <DefaultAvatar />
-            )}
-          </div>
-        </AfroProfile>
+        <ProfileImage score={client.paktScore} size="md" imageUrl={client.avatar} />
         <div className="flex flex-col gap-2 grow">
           <div className="flex items-center justify-between gap-2">
             {<span className="text-body text-lg font-bold">{client.name}</span>}

@@ -18,6 +18,7 @@ import Rating from 'react-rating';
 import { Star } from 'lucide-react';
 import { useReleaseJobPayment } from '@/lib/api/job';
 import is from 'date-fns/locale/is/index';
+import { useRouter } from 'next/navigation';
 interface TalentJobModalProps {
   jobId: string;
   closeModal?: () => void;
@@ -171,6 +172,7 @@ const JobUpdates: React.FC<JobUpdatesProps> = ({ job }) => {
 };
 
 const ReviewSuccess: React.FC = () => {
+  const router = useRouter();
   return (
     <div className="h-full px-4 flex items-center justify-center">
       <div className="flex flex-col gap-32 items-center">
@@ -184,7 +186,7 @@ const ReviewSuccess: React.FC = () => {
           <div className="flex flex-col gap-4 text-center items-center">
             <p className="text-lg text-body">Your review has submitted and payment has been released.</p>
             <div className="max-w-[200px] w-full">
-              <Button fullWidth size="sm">
+              <Button fullWidth size="sm" onClick={() => router.push("/wallet")}>
                 Go To Wallet
               </Button>
             </div>

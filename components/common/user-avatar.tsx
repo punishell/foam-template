@@ -5,13 +5,14 @@ import { useUploadImage } from '@/lib/api/upload';
 import Image from "next/image";
 import { toast } from "./toaster";
 
-type Size = 'xs' | 'sm' | 'md' | 'lg';
+type Size = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
 
 const sizesToPx: { [K in Size]: number } = {
   xs: 54,
   sm: 108,
   md: 142,
   lg: 165,
+  xl: 180,
 };
 
 const sizesToPositions: { [K in Size]: number } = {
@@ -19,6 +20,7 @@ const sizesToPositions: { [K in Size]: number } = {
   sm: 10,
   md: 24,
   lg: 34,
+  xl: 44,
 };
 
 interface Props {

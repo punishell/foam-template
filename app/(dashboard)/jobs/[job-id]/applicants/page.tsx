@@ -215,9 +215,9 @@ const ApplicantCard: React.FC<ApplicantCardProps> = ({ bid, talent, message }) =
 
       <div className="flex items-center justify-between">
         <div className="flex flex-wrap gap-2">
-          {profile.talent.tags.map((skill, index) => (
-            <span key={index} className="bg-green-100 grow whitespace-nowrap text-[#090A0A] rounded-full px-4 py-0.5">
-              {skill}
+          {(profile.talent.tagsIds && profile.talent.tagsIds.length > 0) && profile.talent.tagsIds.slice(0, 3).map((s, index) => (
+            <span key={index} style={{ background: s.color }} className={`bg-green-100 grow whitespace-nowrap text-[#090A0A] rounded-full px-4 py-0.5`}>
+              {s.name}
             </span>
           ))}
         </div>

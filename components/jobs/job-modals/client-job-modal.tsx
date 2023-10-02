@@ -22,7 +22,7 @@ interface ClientJobModalProps {
   closeModal?: () => void;
 }
 
-export const ClientJobModal: React.FC<ClientJobModalProps> = ({ jobId }) => {
+export const ClientJobModal: React.FC<ClientJobModalProps> = ({ jobId, closeModal }) => {
   const query = useGetJobById({ jobId });
 
   if (query.isError) return <PageError className="absolute inset-0" />;
@@ -34,7 +34,7 @@ export const ClientJobModal: React.FC<ClientJobModalProps> = ({ jobId }) => {
   const clientHasReviewed = job.ratings?.some((review) => review.owner._id === job.creator._id);
 
   if (clientHasReviewed) {
-    return <ReviewSuccess />;
+    return <ReviewSuccess closeModal={closeModal} />;
   }
 
   if (job.status === 'completed') {
@@ -44,7 +44,7 @@ export const ClientJobModal: React.FC<ClientJobModalProps> = ({ jobId }) => {
   return <JobUpdates job={job} />;
 };
 
-const ReviewSuccess: React.FC = () => {
+const ReviewSuccess: React.FC<{ closeModal?: () => void; }> = ({ closeModal }) => {
   return (
     <div className="h-full px-4 flex items-center justify-center">
       <div className="flex flex-col gap-32 items-center">
@@ -60,7 +60,7 @@ const ReviewSuccess: React.FC = () => {
               Your review has submitted. Talent will also review and payment will be released after.
             </p>
             <div className="max-w-[200px] w-full">
-              <Button fullWidth>Go To Wallet</Button>
+              <Button fullWidth onClick={closeModal}>Done</Button>
             </div>
           </div>
         </div>
@@ -293,7 +293,7 @@ const ReviewTalent: React.FC<ReviewTalentProps> = ({ job, closeModal }) => {
                   recipientId: owner?._id ?? '',
                 },
                 {
-                  onSuccess: () => {},
+                  onSuccess: () => { },
                 },
               );
             }}

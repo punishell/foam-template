@@ -56,7 +56,12 @@ export interface Job {
   ratings: Rating[] | null;
   tagsData: string[];
   invites: any[]; // TODO: add type
-  invite: undefined | {};
+  invite: undefined | {
+    _id: string;
+    sender: string;
+    receiver: string;
+    status: string;
+  };
   status: JobStatus;
   bookmarkId?: string;
   isBookmarked?: boolean;
@@ -82,6 +87,7 @@ export interface UserProfile {
     };
     talent: {
       tags: string[];
+      tagsIds?: { name: string; color: string }[];
     };
   };
 }

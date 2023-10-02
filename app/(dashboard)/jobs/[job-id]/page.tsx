@@ -24,7 +24,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm, SubmitHandler } from 'react-hook-form';
 
 const jobApplicationSchema = z.object({
-  message: z.string().optional(),
+  message: z.string().nonempty("Message is required"),
   amount: z.coerce.number().min(100, { message: 'Amount must be at least $100' }).nonnegative(),
 });
 
@@ -91,16 +91,16 @@ const ClientJobDetails: React.FC<ClientJobDetailsProps> = ({ job }) => {
           }}
         />
         <div className="bg-white flex flex-col w-full p-6 rounded-b-xl grow border-line border-t-0 border">
-          <JobDeliverables
-            deliverables={job.collections.filter(isJobDeliverable).map((collection) => collection.name)}
-          />
-
           {job.invite && (
             <div className="p-4 bg-blue-50 border border-blue-300 text-blue-500 rounded-lg my-3 flex items-center gap-2 w-full">
               <Info size={20} />
               <span>Awaiting Talent Response</span>
             </div>
           )}
+
+          <JobDeliverables
+            deliverables={job.collections.filter(isJobDeliverable).map((collection) => collection.name)}
+          />
 
           {!job.invite && (
             <JobCtas jobId={job._id} skills={job.tagsData} openDeleteModal={() => setIsDeleteModalOpen(true)} />
@@ -251,13 +251,13 @@ interface TalentJobDetailsProps {
 // TALENT JOB DETAILS
 const TalentJobDetails: React.FC<TalentJobDetailsProps> = ({ job, userId }) => {
   const searchParams = useSearchParams();
-  const inviteId = searchParams.get('invite-id');
+  const inviteId = job?.invite?._id || searchParams.get('invite-id');
   const JOB_TYPE: 'private' | 'open' = job.isPrivate ? 'private' : 'open';
 
   const jobApplicants = job.collections.filter(isJobApplicant);
 
   const hasAlreadyApplied = jobApplicants.some((applicant) => applicant.creator._id === userId);
-
+  const hasBeenInvited = Boolean(String(job?.invite?.receiver) == String(userId));
   const CTAS = {
     open: TalentOpenJobCtas,
     private: TalentPrivateJobCtas,
@@ -279,11 +279,17 @@ const TalentJobDetails: React.FC<TalentJobDetailsProps> = ({ job, userId }) => {
           }}
         />
         <div className="bg-white flex flex-col w-full p-6 rounded-b-xl grow border-line border-t-0 border">
+          {hasAlreadyApplied && (
+            <div className="p-4 bg-blue-50 border border-blue-300 text-blue-500 rounded-lg my-3 flex items-center gap-2 w-full">
+              <Info size={20} />
+              <span className="text-body text-center">You have already applied to this job</span>
+            </div>
+          )}
           <JobDeliverables
             deliverables={job.collections.filter(isJobDeliverable).map((collection) => collection.name)}
           />
 
-          <JobCtas jobId={job._id} inviteId={inviteId} hasAlreadyApplied={hasAlreadyApplied} />
+          <JobCtas jobId={job._id} inviteId={inviteId} hasBeenInvited={hasBeenInvited} hasAlreadyApplied={hasAlreadyApplied} />
         </div>
       </div>
 
@@ -297,14 +303,15 @@ const TalentJobDetails: React.FC<TalentJobDetailsProps> = ({ job, userId }) => {
 
 interface TalentPrivateJobCtasProps {
   inviteId: string | null;
+  hasBeenInvited: boolean;
 }
 
-const TalentPrivateJobCtas: React.FC<TalentPrivateJobCtasProps> = ({ inviteId }) => {
+const TalentPrivateJobCtas: React.FC<TalentPrivateJobCtasProps> = ({ inviteId, hasBeenInvited }) => {
   const router = useRouter();
   const acceptInvite = useAcceptInvite();
   const declineInvite = useDeclineInvite();
 
-  if (!inviteId) return null;
+  if (!inviteId || !hasBeenInvited) return null;
 
   return (
     <div className="mt-auto w-full flex items-center justify-end">
@@ -350,20 +357,17 @@ const TalentPrivateJobCtas: React.FC<TalentPrivateJobCtasProps> = ({ inviteId })
 
 interface TalentOpenJobCtasProps {
   jobId: string;
+  inviteId: string | null;
   hasAlreadyApplied: boolean;
+  hasBeenInvited: boolean;
 }
 
-const TalentOpenJobCtas: React.FC<TalentOpenJobCtasProps> = ({ jobId, hasAlreadyApplied }) => {
+const TalentOpenJobCtas: React.FC<TalentOpenJobCtasProps> = ({ jobId, hasBeenInvited, inviteId, hasAlreadyApplied }) => {
   const [isApplyModalOpen, setIsApplyModalOpen] = React.useState(false);
+  if (hasBeenInvited) return <TalentPrivateJobCtas inviteId={inviteId} hasBeenInvited={hasBeenInvited} />;
 
   return (
     <React.Fragment>
-      {hasAlreadyApplied && (
-        <div className="p-4 bg-blue-50 border border-blue-300 text-blue-500 rounded-lg my-3 flex items-center gap-2 w-full">
-          <Info size={20} />
-          <span className="text-body text-center">You have already applied to this job</span>
-        </div>
-      )}
       <div className="max-w-[200px] w-full ml-auto">
         {!hasAlreadyApplied && (
           <Button fullWidth onClick={() => setIsApplyModalOpen(true)}>
@@ -452,7 +456,7 @@ const TalentJobApplyModal: React.FC<TalentJobApplyModalProps> = ({ jobId }) => {
 
         <div className="flex flex-col gap-2 w-full">
           <label htmlFor="due" className="text-title">
-            Message (Optional)
+            Message
           </label>
           <textarea
             rows={3}

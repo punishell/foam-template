@@ -12,7 +12,7 @@ import { PageEmpty } from '@/components/common/page-empty';
 import { PageError } from '@/components/common/page-error';
 import { PageLoading } from '@/components/common/page-loading';
 
-interface Props {}
+interface Props { }
 
 export const CreatedJobs: React.FC<Props> = () => {
   const jobsData = useGetJobs({ category: 'created' });
