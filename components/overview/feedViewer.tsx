@@ -28,7 +28,7 @@ interface JobInvitePendingProps {
   invitationExpiry?: string;
   bookmarked?: boolean;
   type: 'job-invite-pending';
-  close: (id: string) => void;
+  close?: (id: string) => void;
 }
 
 interface JobFilledProps {
@@ -103,7 +103,7 @@ export const JobFeedCard: React.FC<JobFeedCardProps> = (props) => {
                   <span>Time left: 1:48:00</span>
                 </div>
               )}
-              <X size={20} className='cursor-pointer' onClick={() => close(id)} />
+              {close && <X size={20} className='cursor-pointer' onClick={() => close(id)} />}
             </div>
           </div>
 
