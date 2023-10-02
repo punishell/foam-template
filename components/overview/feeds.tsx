@@ -10,30 +10,25 @@ import { PageError } from '../common/page-error';
 
 export const Feeds = () => {
   const { _id: loggedInUser } = useUserState()
-  const { data: timelineData, refetch: feedRefetch, isFetching, isFetched, isError } = useGetTimeline({ page: 1, limit: 10, filter: { isOwner: true } });
-
-  // @ts-ignore
-  const DismissAll = () => useDismissAllFeed().mutate({}, {
-    onSuccess: () => {
-      // refetch feeds
-      feedRefetch();
-    }
-  });
-
-  const DismissByID = (id: string) => useDismissFeed().mutate(id, {
-    onSuccess: () => {
-      // refetch feeds
-      feedRefetch();
-    }
-  });
+  const { data: timelineData, refetch: feedRefetch, isFetching, isFetched, isError } = useGetTimeline({ page: 1, limit: 100, filter: { isOwner: true, isPublic: true } });
 
   const callback = async () => {
     await Promise.all([
       feedRefetch(),
     ]);
   };
+  const dismissFeed = useDismissFeed();
 
-  const timelineFeeds = useMemo(() => (timelineData?.data || []).map((feed, i) => ParseFeedView(feed, loggedInUser, i, callback)), [timelineData?.data])
+  const dismissByID = (id: string) => {
+    dismissFeed.mutate(id, {
+      onSuccess: () => {
+        // refetch feeds
+        callback && callback();
+      }
+    });
+  }
+
+  const timelineFeeds = useMemo(() => (timelineData?.data || []).map((feed, i) => ParseFeedView(feed, loggedInUser, i, callback, dismissByID)), [timelineData?.data])
   if (!isFetched && isFetching) return <PageLoading className="h-[80%]" />;
   if (isError) return <PageError className="rounded-xl border border-red-100 h-[80%]" />;
   if (timelineFeeds.length === 0) return <PageEmpty className="h-[80%]" />;

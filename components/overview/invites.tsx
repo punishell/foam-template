@@ -22,6 +22,7 @@ export const Invites = () => {
         const { creator, name, _id: jobId, paymentFee } = data;
         return (
           <JobFeedCard
+            id={jobId}
             title={name}
             jobId={jobId}
             key={inviteId}
@@ -33,6 +34,7 @@ export const Invites = () => {
               avatar: creator.profileImage?.url,
               name: `${creator.firstName} ${creator.lastName}`,
             }}
+            close={() => { }}
           />
         );
       })}

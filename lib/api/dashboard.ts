@@ -42,12 +42,12 @@ async function getLeaderBoard(): Promise<GetTimelineResponse> {
 }
 
 async function dismissFeed(id: string): Promise<any> {
-  const res = await axios.put(`/feed/${id}/dismiss`);
+  const res = await axios.put(`/feeds/${id}/dismiss`);
   return res.data.data;
 }
 
 async function dismissAllFeed(): Promise<any> {
-  const res = await axios.put(`/feed/dismiss/all`);
+  const res = await axios.put(`/feeds/dismiss/all`);
   return res.data.data;
 }
 

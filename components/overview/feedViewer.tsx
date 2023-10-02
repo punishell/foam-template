@@ -14,6 +14,7 @@ import { RenderBookMark } from '../jobs/job-cards/render-bookmark';
 import Link from 'next/link';
 
 interface JobInvitePendingProps {
+  id: string;
   jobId: string;
   title: string;
   inviteId: string;
@@ -27,6 +28,7 @@ interface JobInvitePendingProps {
   invitationExpiry?: string;
   bookmarked?: boolean;
   type: 'job-invite-pending';
+  close?: (id: string) => void;
 }
 
 interface JobFilledProps {
@@ -40,6 +42,7 @@ interface JobFilledProps {
   bookmarked: boolean;
   type: 'job-invite-filled';
   imageUrl?: string;
+  close: (id: string) => void;
 }
 
 type JobFeedCardProps = JobInvitePendingProps | JobFilledProps;
@@ -81,7 +84,7 @@ export const JobFeedCard: React.FC<JobFeedCardProps> = (props) => {
   }
 
   if (type === 'job-invite-pending') {
-    const { title, amount, inviter, bookmarked, invitationExpiry, inviteId, jobId } = props;
+    const { id, title, amount, inviter, bookmarked, invitationExpiry, inviteId, jobId, close } = props;
 
     return (
       <JobFeedWrapper>
@@ -100,7 +103,7 @@ export const JobFeedCard: React.FC<JobFeedCardProps> = (props) => {
                   <span>Time left: 1:48:00</span>
                 </div>
               )}
-              <X size={20} />
+              {close && <X size={20} className='cursor-pointer' onClick={() => close(id)} />}
             </div>
           </div>
 
@@ -123,7 +126,7 @@ export const JobFeedCard: React.FC<JobFeedCardProps> = (props) => {
 
 export const JobFeedWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   return (
-    <div className="border-blue-lighter gap-4 px-4 pl-2 flex border bg-[#F1FBFF] z-10 w-full rounded-2xl relative overflow-hidden">
+    <div className="border-blue-lighter gap-4 px-4 pl-2 flex border bg-[#F1FBFF] z-10 w-full rounded-2xl relative overflow-hidden h-[174px]">
       {children}
 
       <div className="absolute right-0 -z-[1] translate-x-1/3 top-16">
@@ -141,6 +144,7 @@ export const PublicJobCreatedFeed = ({
   _id,
   bookmark,
   callback,
+  close,
 }: {
   creator: { name: string; avatar: string; score: number };
   title: string;
@@ -149,6 +153,7 @@ export const PublicJobCreatedFeed = ({
   _id: string;
   bookmark: { active: boolean; id: string };
   callback?: () => void;
+  close: (id: string) => void;
 }) => {
   return (
     <JobFeedWrapper>
@@ -160,6 +165,7 @@ export const PublicJobCreatedFeed = ({
             <span className="px-2 text-lg text-title inline-flex rounded-full bg-green-300">${amount ?? 0}</span> public
             job
           </h3>
+          <X size={20} className='cursor-pointer' onClick={() => close(_id)} />
         </div>
         <h3 className="text-title text-2xl font-normal">{title}</h3>
         <div className="justify-between items-center flex mt-auto">
@@ -389,15 +395,15 @@ export const JobCancelled = () => {
   );
 };
 
-export const ReferralSignupFeed = ({ name }: { name: string }) => {
+export const ReferralSignupFeed = ({ id, userId, name, close }: { id: string, name: string, userId: string, close: (id: string) => void }) => {
   return (
-    <div className="border-[#CDCFD0] bg-[#F9F9F9] gap-4 p-4 flex border  z-10 w-full rounded-2xl relative overflow-hidden">
+    <div className="border-[#CDCFD0] bg-[#F9F9F9] gap-4 p-4 flex border  z-10 w-full rounded-2xl relative overflow-hidden h-[174px]">
       <ProfileImage imageUrl={''} />
       <div className="flex flex-col gap-4 w-full">
         <div className="flex justify-between items-center">
           <h3 className="text-title text-xl font-bold">{name} just signed up</h3>
 
-          <X size={20} />
+          <X size={20} className='cursor-pointer' onClick={() => close(id)} />
         </div>
 
         <p className="text-body">
@@ -407,9 +413,11 @@ export const ReferralSignupFeed = ({ name }: { name: string }) => {
 
         <div className="justify-between items-center flex mt-auto">
           <div className="flex items-center gap-2">
-            <Button size="xs" variant="outline">
-              Message
-            </Button>
+            <Link href={`/messages?userId=${userId}`}>
+              <Button size="xs" variant="outline">
+                Message
+              </Button>
+            </Link>
           </div>
           <Bookmark size={20} />
         </div>
