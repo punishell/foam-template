@@ -20,12 +20,15 @@ import {
   JuryInvitationFeed,
 } from './feedViewer';
 import { DataFeedResponse } from '@/lib/types';
+import { useDismissFeed } from '@/lib/api/dashboard';
 
-export const ParseFeedView = (feed: DataFeedResponse, loggedInUser: string, key: number, callback?: () => void) => {
+export const ParseFeedView = (feed: DataFeedResponse, loggedInUser: string, key: number, callback?: () => void, dismissFeed?: (id: string) => void) => {
+
   const amount = feed?.data?.paymentFee;
   const isBookmarked = feed.isBookmarked || false;
   const bookmarkId = feed.bookmarkId || feed._id;
-  console.log(bookmarkId, feed);
+  const DismissByID = (id: string) => dismissFeed && dismissFeed(id);
+
   const inviter = {
     avatar: feed?.data?.creator?.profileImage?.url || '',
     name: `${feed?.data?.creator?.firstName || ''} ${feed?.data?.creator?.lastName || ''}`,
@@ -42,23 +45,24 @@ export const ParseFeedView = (feed: DataFeedResponse, loggedInUser: string, key:
         _id={feed?._id}
         bookmark={{ active: isBookmarked, id: bookmarkId }}
         callback={callback}
+        close={(id: string) => DismissByID(id)}
       />;
     case FEED_TYPES.COLLECTION_INVITE:
       return (
         <JobFeedCard
+          id={feed._id}
           title={feed?.title}
           type="job-invite-pending"
           amount={amount}
-          // invitationExpiry={feed?.expiresAt}
           inviteId={feed?.data?.invite}
           inviter={inviter}
           jobId={feed?.data?._id}
           bookmarked={isBookmarked}
-        // imageUrl={feed?.data?.creator?.profileImage?.url}
+          close={DismissByID}
         />
       );
     case FEED_TYPES.REFERRAL_SIGNUP:
-      return <ReferralSignupFeed name={`${feed?.creator?.firstName || ''} ${feed?.creator?.lastName || ''}`} />;
+      return <ReferralSignupFeed id={feed?._id} name={`${feed?.creator?.firstName || ''} ${feed?.creator?.lastName || ''}`} userId={feed?.creator?._id} close={DismissByID} />;
     case FEED_TYPES.REFERRAL_COLLECTION_COMPLETION:
       return <ReferralJobCompletion />;
     case FEED_TYPES.PAYMENT_RELEASED:
@@ -88,7 +92,11 @@ export const ParseFeedView = (feed: DataFeedResponse, loggedInUser: string, key:
           type="job-invite-filled"
           inviter={inviter}
           id={feed?._id}
-          bookmarked={false}
+          // amount={amount}
+          // inviteId={feed?.data?.invite}
+          // jobId={feed?.data?._id}
+          bookmarked={isBookmarked}
+          close={DismissByID}
         />
       );
   }

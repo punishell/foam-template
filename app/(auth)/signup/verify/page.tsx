@@ -15,6 +15,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { SubmitHandler, useForm, Controller } from 'react-hook-form';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { useVerifyEmail, useResendOTP } from '@/lib/api';
+import { Timer } from 'lucide-react';
 
 const formSchema = z.object({
   otp: z.string().min(6, { message: 'OTP is required' }),
@@ -24,7 +25,7 @@ type FormValues = z.infer<typeof formSchema>;
 
 export default function SignupVerifyEmail() {
   const [countdown, setCountdown] = React.useState(0);
-  const [isResendDisabled, setIsResendDisabled] = React.useState(false);
+  const [isResendDisabled, setIsResendDisabled] = React.useState(true);
 
   const router = useRouter();
   const resendOTP = useResendOTP();
@@ -63,8 +64,8 @@ export default function SignupVerifyEmail() {
         token,
       },
       {
-        onSuccess: ({ token }) => {
-          setCookie(AUTH_TOKEN_KEY, token);
+        onSuccess: ({ token: authToken }) => {
+          setCookie(AUTH_TOKEN_KEY, authToken);
           router.push('/onboarding');
         },
       },
@@ -151,8 +152,13 @@ export default function SignupVerifyEmail() {
                   variant="outline"
                   onClick={!(resendOTP.isLoading || isResendDisabled) ? handleResendOTP : () => { }}
                   disabled={resendOTP.isLoading || isResendDisabled}
+                  className='!border-white !text-white'
+                  style={{ opacity: (resendOTP.isLoading || isResendDisabled) ? 0.2 : 1 }}
                 >
-                  {resendOTP.isLoading ? <Spinner size={16} /> : 'Resend OTP'}
+                  <span className='flex flex-row gap-2'>
+                    <Timer size={16} className='text-white' />
+                    {resendOTP.isLoading ? <Spinner size={16} /> : 'Resend OTP'}
+                  </span>
                 </Button>
               </div>
             </div>
