@@ -34,12 +34,13 @@ export function useCreateJob() {
     onError: (error: ApiError) => {
       toast.error(error?.response?.data.message || 'An error occurred');
     },
-    onSuccess: ({ _id, name }, { deliverables = [] }) => {
-      assignJobDeliverables.mutate({
+    onSuccess: async ({ _id, name }, { deliverables = [] }) => {
+      await assignJobDeliverables.mutate({
         jobId: _id,
         deliverables,
       });
       toast.success(`Job ${name} created successfully`);
+      return
     },
   });
 }
@@ -90,7 +91,7 @@ interface GetJobByIdParams {
   jobId: string;
 }
 
-interface GetJobByIdResponse extends Job {}
+interface GetJobByIdResponse extends Job { }
 
 async function getJobById(params: GetJobByIdParams): Promise<GetJobByIdResponse> {
   const res = await axios.get(`/collection/${params.jobId}`);
@@ -140,8 +141,8 @@ export function useUpdateJob() {
     onError: (error: ApiError) => {
       toast.error(error?.response?.data.message ?? 'An error occurred');
     },
-    onSuccess: (_, { deliverables = [], id, name }) => {
-      updateJobDeliverables.mutate({
+    onSuccess: async (_, { deliverables = [], id, name }) => {
+      await updateJobDeliverables.mutate({
         jobId: id,
         deliverables,
         replace: true,

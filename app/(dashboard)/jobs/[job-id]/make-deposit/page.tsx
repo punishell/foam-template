@@ -93,7 +93,7 @@ export default function MakeDepositPage({ params }: Props) {
 
   return (
     <WagmiConfig config={wagmiConfig}>
-      <div className="flex flex-col gap-6">
+      <div className="flex flex-col gap-6 overflow-y-auto">
         <div>
           <div className="flex items-center gap-1">
             <ChevronLeft size={24} strokeWidth={2} />
@@ -361,9 +361,9 @@ const DepositToAddress = ({ amount, depositAddress, jobId, closeModel, coin }: D
           confirmPayment.mutate(
             { jobId },
             {
-              onSuccess: () => {
+              onSuccess: async () => {
                 if (talentId) {
-                  inviteTalent.mutate(
+                  await inviteTalent.mutate(
                     {
                       jobId,
                       talentId,
@@ -377,13 +377,13 @@ const DepositToAddress = ({ amount, depositAddress, jobId, closeModel, coin }: D
                 }
                 closeModel();
               },
-              onError: () => {},
+              onError: () => { },
             },
           );
         }}
         fullWidth
       >
-        {confirmPayment.isLoading ? <Spinner /> : 'I have made transfer'}
+        {(confirmPayment.isLoading || inviteTalent.isLoading) ? <Spinner /> : 'I have made transfer'}
       </Button>
     </div>
   );
@@ -449,9 +449,8 @@ const WalletConnectorList: React.FC = () => {
             type="button"
             disabled={!connector.ready}
             onClick={() => connect({ connector: connector })}
-            className={`hover:border-primary flex items-center justify-between rounded-2xl border border-[#DFDFE6] p-1 px-4 py-3 text-left duration-300 hover:!border-opacity-30 ${
-              isActive ? 'border-primary !border-opacity-60 bg-green-50' : 'border-[#DFDFE6]'
-            }`}
+            className={`hover:border-primary flex items-center justify-between rounded-2xl border border-[#DFDFE6] p-1 px-4 py-3 text-left duration-300 hover:!border-opacity-30 ${isActive ? 'border-primary !border-opacity-60 bg-green-50' : 'border-[#DFDFE6]'
+              }`}
           >
             <span className="flex w-full items-center gap-2">
               <span>{connector.name}</span>
