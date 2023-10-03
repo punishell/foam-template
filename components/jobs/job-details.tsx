@@ -63,7 +63,7 @@ export const JobDescription: React.FC<JobDescriptionProps> = ({ description }) =
 };
 
 interface JobSkillsProps {
-  skills: string[];
+  skills: { name: string, color: string }[];
 }
 
 export const JobSkills: React.FC<JobSkillsProps> = ({ skills }) => {
@@ -72,8 +72,8 @@ export const JobSkills: React.FC<JobSkillsProps> = ({ skills }) => {
       <h3 className="text-title text-lg font-bold">Preferred Skills</h3>
       <div className="flex flex-wrap gap-2">
         {skills.map((skill, index) => (
-          <span key={index} className="bg-[#F7F9FA] grow whitespace-nowrap text-[#090A0A] rounded-full px-4 py-2">
-            {skill}
+          <span key={index} className="bg-[#F7F9FA] grow whitespace-nowrap text-[#090A0A] rounded-full px-4 py-2" style={{ background: skill.color }}>
+            {skill.name}
           </span>
         ))}
       </div>

@@ -90,6 +90,7 @@ interface Props {
 
 export default function MakeDepositPage({ params }: Props) {
   const jobId = params['job-id'];
+  const router = useRouter();
   const { data: job, isLoading, isFetched, isError } = useGetJobById({ jobId });
   const mutation = usePostJobPaymentDetails();
   const [paymentCoin, setPaymentCoin] = React.useState<SUPPORTED_COINS>();
@@ -104,7 +105,7 @@ export default function MakeDepositPage({ params }: Props) {
       <div className="flex flex-col gap-6 overflow-y-auto">
         <div>
           <div className="flex items-center gap-1">
-            <ChevronLeft size={24} strokeWidth={2} />
+            <ChevronLeft size={24} strokeWidth={2} onClick={router.back} className='cursor-pointer' />
             <span className="text-2xl font-medium">Make Deposit</span>
           </div>
         </div>
@@ -155,8 +156,8 @@ export default function MakeDepositPage({ params }: Props) {
               jobId={jobId}
               coin={paymentCoin}
               paymentDetails={mutation.data}
-              isLoading={mutation.isLoading}
-              isError={mutation.isError}
+              isLoading={mutation.isLoading || (!isFetched && isLoading)}
+              isError={mutation.isError || isError}
               errMsg={mutation.error?.message}
               job={job}
             />}

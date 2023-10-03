@@ -130,7 +130,6 @@ export default function CreateJob() {
       !!form.watch('category') &&
       !form.getFieldState('category').invalid,
   };
-  console.log(form.watch('deliverables'));
 
   return (
     <div className="flex gap-6 overflow-y-auto pb-10">

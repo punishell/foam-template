@@ -110,7 +110,7 @@ const ClientJobDetails: React.FC<ClientJobDetailsProps> = ({ job }) => {
 
       <div className="basis-[300px] h-full gap-7 w-fit flex flex-col items-center">
         <JobDescription description={job.description} />
-        <JobSkills skills={[...job.tagsData]} />
+        <JobSkills skills={(job.tags || [])} />
       </div>
 
       <Modal isOpen={isDeleteModalOpen} onOpenChange={setIsDeleteModalOpen}>
@@ -300,7 +300,7 @@ const TalentJobDetails: React.FC<TalentJobDetailsProps> = ({ job, userId }) => {
 
       <div className="basis-[300px] h-full gap-7 w-fit flex flex-col items-center">
         <JobDescription description={job.description} />
-        <JobSkills skills={[...job.tagsData]} />
+        <JobSkills skills={job.tags || []} />
       </div>
     </div>
   );

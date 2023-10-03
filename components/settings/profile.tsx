@@ -5,14 +5,12 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { UserAvatar2 } from '@/components/common/user-avatar';
 import { ChevronDown, ChevronUp, InfoIcon, Mail, MapPin, Verified } from 'lucide-react';
-import { Button, Checkbox, Input, Select, Switch, Textarea } from 'pakt-ui';
+import { Button, Checkbox, Input, Select as SelectMain, Textarea } from 'pakt-ui';
 import { useGetAccount, useUpdateAccount } from '@/lib/api/account';
 import { Spinner } from '../common';
 import { TagInput } from '../common/tag-input';
-import { GallerySvg } from '../common/gallery-svg';
-import { AfroProfile } from '@/components/common/afro-profile';
-import { DefaultAvatar } from '@/components/common/default-avatar';
-import Image from 'next/image';
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@/components/common/select';
+import countryJson from "@/lib/country.json";
 
 const ProfileStates = [
   { label: 'Private', value: 'true' },
@@ -27,7 +25,7 @@ const editProfileFormSchema = z.object({
   bio: z.string().min(1, 'Bio is required'),
   location: z.string().min(1, 'Location is required'),
   country: z.string().min(1, 'Country is required'),
-  tags: z.array(z.string()).nonempty({ message: 'skills are reuqired' }),
+  tags: z.array(z.string()).nonempty({ message: 'skills are required' }),
   isPrivate: z.boolean().default(false).optional(),
 });
 
@@ -38,6 +36,7 @@ export const ProfileView = () => {
   const [acceptedDelete, setAcceptedDelete] = useState(false);
   const { data: userAccount, refetch: userFetching, isFetched } = useGetAccount();
   const updateAccount = useUpdateAccount();
+  const COUNTRY_LIST: { label: string, value: string }[] = (countryJson || []).map(c => ({ label: c.name, value: c.name }));
 
   const userData = useMemo(
     () => ({
@@ -50,7 +49,7 @@ export const ProfileView = () => {
       country: userAccount?.profile?.contact?.country,
       avatar: userAccount?.profileImage?.url,
       kycVerified: false,
-      tags: userAccount?.profile?.talent?.tags,
+      tags: userAccount?.profile?.talent?.tags || [],
       isPrivate: userAccount?.isPrivate || false,
     }),
     [userAccount],
@@ -74,7 +73,7 @@ export const ProfileView = () => {
           description: values.bio,
         },
         talent: {
-          tags: [...values.tags],
+          tags: [...(values.tags || [])],
         },
       },
     };
@@ -145,13 +144,25 @@ export const ProfileView = () => {
                 </p>
               </div>
               <div className="flex flex-col mt-4">
-                <Select
+                <SelectMain
                   label="Profile Visibility"
                   options={ProfileStates}
                   onChange={(e: any) => toggleUserProfile(e)}
                   placeholder={form.getValues().isPrivate ? 'Private' : 'Public'}
                   className="!bg-[#FCFCFD] !border-[#E8E8E8] capitalize"
                 />
+                {/* <Select defaultValue={form.getValues().isPrivate ? 'Private' : 'Public'} onValueChange={(e: any) => toggleUserProfile(e)} className="!bg-[#FCFCFD] !border-[#E8E8E8] capitalize">
+                  <SelectTrigger className="w-[180px] bg-[#F2F4F5] text-title text-base h-10 rounded-lg">
+                    <SelectValue placeholder="Profile Visibility" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {ProfileStates.map(({ label, value }) => (
+                      <SelectItem key={value} value={value} className="hover:bg-[#ECFCE5] rounded py-2">
+                        {label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select> */}
                 <p className="text-sm my-4 text-body">
                   Your visibility settings determine if your profile is searchable.
                 </p>
@@ -219,15 +230,39 @@ export const ProfileView = () => {
                     <Input
                       {...form.register('location')}
                       className="w-full !bg-[#FCFCFD] !border-[#E8E8E8]"
-                      placeholder="enter location"
-                      label="Location"
+                      placeholder="enter city"
+                      label="City"
                     />
-                    <Input
+
+                    <Controller
+                      name="country"
+                      control={form.control}
+                      render={({ field: { onChange, value } }) => {
+                        return (
+                          <div className='flex flex-col w-full gap-2'>
+                            <label> Country</label>
+                            <Select defaultValue={value} onValueChange={onChange}>
+                              <SelectTrigger className="w-full !bg-[#FCFCFD] !border-[#E8E8E8] text-title text-base h-10 rounded-lg h-[48px]">
+                                <SelectValue placeholder="Select Country" />
+                              </SelectTrigger>
+                              <SelectContent className='max-h-[200px] overflow-y-auto'>
+                                {COUNTRY_LIST.map(({ label, value }) => (
+                                  <SelectItem key={value} value={value} className="hover:bg-[#ECFCE5] rounded py-2">
+                                    {label}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                          </div>
+                        );
+                      }}
+                    />
+                    {/* <Input
                       {...form.register('country')}
                       className="w-full !bg-[#FCFCFD] !border-[#E8E8E8]"
                       placeholder="enter country"
                       label="Country"
-                    />
+                    /> */}
                   </div>
                 </div>
               </div>
