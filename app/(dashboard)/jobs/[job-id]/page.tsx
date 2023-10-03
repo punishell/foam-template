@@ -110,7 +110,7 @@ const ClientJobDetails: React.FC<ClientJobDetailsProps> = ({ job }) => {
 
       <div className="basis-[300px] h-full gap-7 w-fit flex flex-col items-center">
         <JobDescription description={job.description} />
-        <JobSkills skills={[...job.tagsData]} />
+        <JobSkills skills={(job.tags || [])} />
       </div>
 
       <Modal isOpen={isDeleteModalOpen} onOpenChange={setIsDeleteModalOpen}>
@@ -289,13 +289,18 @@ const TalentJobDetails: React.FC<TalentJobDetailsProps> = ({ job, userId }) => {
             deliverables={job.collections.filter(isJobDeliverable).map((collection) => collection.name)}
           />
 
-          <JobCtas jobId={job._id} inviteId={inviteId} hasBeenInvited={hasBeenInvited} hasAlreadyApplied={hasAlreadyApplied} />
+          <JobCtas jobId={job._id}
+            inviteId={inviteId}
+            hasBeenInvited={hasBeenInvited}
+            hasAlreadyApplied={hasAlreadyApplied}
+            jobCreator={job.creator._id}
+          />
         </div>
       </div>
 
       <div className="basis-[300px] h-full gap-7 w-fit flex flex-col items-center">
         <JobDescription description={job.description} />
-        <JobSkills skills={[...job.tagsData]} />
+        <JobSkills skills={job.tags || []} />
       </div>
     </div>
   );
@@ -304,12 +309,14 @@ const TalentJobDetails: React.FC<TalentJobDetailsProps> = ({ job, userId }) => {
 interface TalentPrivateJobCtasProps {
   inviteId: string | null;
   hasBeenInvited: boolean;
+  jobId: string;
+  jobCreator: string;
 }
 
-const TalentPrivateJobCtas: React.FC<TalentPrivateJobCtasProps> = ({ inviteId, hasBeenInvited }) => {
+const TalentPrivateJobCtas: React.FC<TalentPrivateJobCtasProps> = ({ inviteId, hasBeenInvited, jobId, jobCreator }) => {
   const router = useRouter();
-  const acceptInvite = useAcceptInvite();
-  const declineInvite = useDeclineInvite();
+  const acceptInvite = useAcceptInvite({ jobCreator, jobId });
+  const declineInvite = useDeclineInvite({ jobCreator, jobId });
 
   if (!inviteId || !hasBeenInvited) return null;
 
@@ -357,14 +364,15 @@ const TalentPrivateJobCtas: React.FC<TalentPrivateJobCtasProps> = ({ inviteId, h
 
 interface TalentOpenJobCtasProps {
   jobId: string;
+  jobCreator: string;
   inviteId: string | null;
   hasAlreadyApplied: boolean;
   hasBeenInvited: boolean;
 }
 
-const TalentOpenJobCtas: React.FC<TalentOpenJobCtasProps> = ({ jobId, hasBeenInvited, inviteId, hasAlreadyApplied }) => {
+const TalentOpenJobCtas: React.FC<TalentOpenJobCtasProps> = ({ jobId, jobCreator, hasBeenInvited, inviteId, hasAlreadyApplied }) => {
   const [isApplyModalOpen, setIsApplyModalOpen] = React.useState(false);
-  if (hasBeenInvited) return <TalentPrivateJobCtas inviteId={inviteId} hasBeenInvited={hasBeenInvited} />;
+  if (hasBeenInvited) return <TalentPrivateJobCtas inviteId={inviteId} hasBeenInvited={hasBeenInvited} jobId={jobId} jobCreator={jobCreator} />;
 
   return (
     <React.Fragment>
@@ -376,7 +384,7 @@ const TalentOpenJobCtas: React.FC<TalentOpenJobCtasProps> = ({ jobId, hasBeenInv
         )}
 
         <Modal isOpen={isApplyModalOpen} onOpenChange={setIsApplyModalOpen}>
-          <TalentJobApplyModal jobId={jobId} />
+          <TalentJobApplyModal jobId={jobId} jobCreator={jobCreator} />
         </Modal>
       </div>
     </React.Fragment>
@@ -385,11 +393,12 @@ const TalentOpenJobCtas: React.FC<TalentOpenJobCtasProps> = ({ jobId, hasBeenInv
 
 interface TalentJobApplyModalProps {
   jobId: string;
+  jobCreator: string;
 }
 
-const TalentJobApplyModal: React.FC<TalentJobApplyModalProps> = ({ jobId }) => {
+const TalentJobApplyModal: React.FC<TalentJobApplyModalProps> = ({ jobId, jobCreator }) => {
   const jobQuery = useGetJobById({ jobId });
-  const applyToOpenJob = useApplyToOpenJob();
+  const applyToOpenJob = useApplyToOpenJob({ jobCreator, jobId });
   const [showSuccessMessage, setShowSuccessMessage] = React.useState(false);
 
   const form = useForm<JobApplicationFormValues>({

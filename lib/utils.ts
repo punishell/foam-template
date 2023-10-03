@@ -145,6 +145,16 @@ export const FEED_TYPES = {
   ISSUE_RESOLUTION_GUILTY: 'issue_resolution_guilty',
   ISSUE_RESOLUTION_GUILTY_SECOND: 'second_issue_resolution_guilty',
   ISSUE_RESOLUTION_RESOLVED: 'issue_resolution_resolve',
+
+  PUBLIC_JOB_CREATED: 'public_job_created',
+  JOB_APPLICATION_SUBMITTED: 'job_application_submitted',
+  JOB_INVITATION_RECEIVED: 'job_invitation_received',
+  PUBLIC_JOB_FILLED: 'public_job_filled',
+  JOB_DELIVERABLE_UPDATE: 'job_deliverable_update',
+  JOB_INVITATION_ACCEPTED: 'job_invitation_accepted',
+  JOB_INVITATION_DECLINED: 'job_invitation_declined',
+  JOB_COMPLETION: 'job_Completion',
+  JOB_CANCELLED: 'job_cancelled',
 };
 
 export function getAvatarColor(paktScore: number) {

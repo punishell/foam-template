@@ -4,6 +4,15 @@ import Image from 'next/image';
 import { useGetAccount } from '@/lib/api/account';
 import { AfroProfile } from '@/components/common/afro-profile';
 
+type Size = 'sm' | 'md' | 'lg' | 'xl';
+
+const SIZE_TO_PX: Record<Size, number> = {
+  sm: 60,
+  md: 110,
+  lg: 150,
+  xl: 180,
+};
+
 interface Props {
   name: string;
   title?: string;
@@ -22,7 +31,7 @@ export const UserProfile = () => {
       <AfroProfile score={account?.score ?? 0} size="xl">
         <div className="h-full w-full rounded-full">
           {account?.profileImage?.url ? (
-            <Image src={account?.profileImage.url} fill alt="profile" className="rounded-full" />
+            <Image width={SIZE_TO_PX['xl']} height={SIZE_TO_PX["xl"]} src={account?.profileImage.url} alt="profile" className="p-3 rounded-full" />
           ) : (
             <DefaultAvatar />
           )}

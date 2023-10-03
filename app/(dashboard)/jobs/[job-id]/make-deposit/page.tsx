@@ -1,9 +1,9 @@
 'use client';
-import React from 'react';
+import React, { useRef } from 'react';
 import Image from 'next/image';
 import { Button } from 'pakt-ui';
 import { cn } from '@/lib/utils';
-import { useConfirmJobPayment } from '@/lib/api/job';
+import { PostJobPaymentDetailsResponse, useConfirmJobPayment, useGetJobById } from '@/lib/api/job';
 import { RaceBy } from '@uiball/loaders';
 import { useInviteTalentToJob } from '@/lib/api/job';
 import { parseEther } from 'viem';
@@ -40,6 +40,7 @@ import {
   useSendTransaction,
 } from 'wagmi';
 import { set } from 'date-fns';
+import { Job } from '@/lib/types';
 
 const { chains, publicClient, webSocketPublicClient } = configureChains([avalancheFuji, avalanche], [publicProvider()]);
 
@@ -89,14 +90,22 @@ interface Props {
 
 export default function MakeDepositPage({ params }: Props) {
   const jobId = params['job-id'];
+  const router = useRouter();
+  const { data: job, isLoading, isFetched, isError } = useGetJobById({ jobId });
+  const mutation = usePostJobPaymentDetails();
   const [paymentCoin, setPaymentCoin] = React.useState<SUPPORTED_COINS>();
+
+  const selectPaymentCoin = async (coin: SUPPORTED_COINS) => {
+    setPaymentCoin(coin);
+    await mutation.mutate({ jobId, coin });
+  };
 
   return (
     <WagmiConfig config={wagmiConfig}>
       <div className="flex flex-col gap-6 overflow-y-auto">
         <div>
           <div className="flex items-center gap-1">
-            <ChevronLeft size={24} strokeWidth={2} />
+            <ChevronLeft size={24} strokeWidth={2} onClick={router.back} className='cursor-pointer' />
             <span className="text-2xl font-medium">Make Deposit</span>
           </div>
         </div>
@@ -122,7 +131,7 @@ export default function MakeDepositPage({ params }: Props) {
                     },
                   )}
                   onClick={() => {
-                    setPaymentCoin('USDC');
+                    selectPaymentCoin('USDC');
                   }}
                 >
                   <Image src="/icons/usdc-logo.svg" alt="Coinbase" width={30} height={30} />
@@ -135,7 +144,7 @@ export default function MakeDepositPage({ params }: Props) {
                       'border-secondary bg-green-50': paymentCoin === 'AVAX',
                     },
                   )}
-                  onClick={() => setPaymentCoin('AVAX')}
+                  onClick={() => selectPaymentCoin('AVAX')}
                 >
                   <Image src="/icons/avax-logo.svg" alt="Coinbase" width={30} height={30} />
                   <span className="font-bold text-lg">AVAX</span>
@@ -143,7 +152,15 @@ export default function MakeDepositPage({ params }: Props) {
               </div>
             </div>
 
-            {paymentCoin && <PaymentDetails jobId={jobId} coin={paymentCoin} />}
+            {paymentCoin && <PaymentDetails
+              jobId={jobId}
+              coin={paymentCoin}
+              paymentDetails={mutation.data}
+              isLoading={mutation.isLoading || (!isFetched && isLoading)}
+              isError={mutation.isError || isError}
+              errMsg={mutation.error?.message}
+              job={job}
+            />}
           </div>
         </div>
       </div>
@@ -153,37 +170,33 @@ export default function MakeDepositPage({ params }: Props) {
 
 interface PaymentDetailsProps {
   jobId: string;
+  job?: Job;
   coin: SUPPORTED_COINS;
+  paymentDetails?: PostJobPaymentDetailsResponse;
+  isLoading: boolean;
+  isError: boolean;
+  errMsg?: string;
 }
 
-const PaymentDetails: React.FC<PaymentDetailsProps> = ({ coin, jobId }) => {
-  const mutation = usePostJobPaymentDetails();
-
-  React.useEffect(() => {
-    mutation.mutate({ jobId, coin });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [coin]);
-
+const PaymentDetails: React.FC<PaymentDetailsProps> = ({ coin, jobId, isLoading, isError, errMsg, paymentDetails, job }) => {
   const [isOpen, setIsOpen] = React.useState(false);
-
-  if (mutation.isLoading)
+  if (isLoading)
     return (
       <div className="w-full bg-slate-50 min-h-[400px] rounded-xl flex items-center justify-center border border-line">
         <RaceBy />
       </div>
     );
 
-  if (mutation.isError || !mutation.data)
+  if (isError || !paymentDetails || !job)
     return (
       <div className="w-full bg-red-50 min-h-[400px] rounded-xl flex items-center justify-center border border-red-100">
         <div className="flex flex-col gap-2 text-red-500 items-center">
           <AlertCircle size={45} strokeWidth={2} />
-          <span>{mutation.error?.response?.data?.message ?? 'Something went wrong. Please try again later.'}</span>
+          <span>{errMsg ?? 'Something went wrong. Please try again later.'}</span>
         </div>
       </div>
     );
 
-  const { data: paymentDetails } = mutation;
   const depositAddress = paymentDetails.address;
 
   return (
@@ -227,6 +240,7 @@ const PaymentDetails: React.FC<PaymentDetailsProps> = ({ coin, jobId }) => {
       <Modal isOpen={isOpen} onOpenChange={setIsOpen} disableClickOutside>
         <MakePaymentModal
           depositAddress={depositAddress}
+          job={job}
           jobId={jobId}
           closeModal={() => setIsOpen(false)}
           coin={coin}
@@ -248,13 +262,14 @@ const PaymentDetails: React.FC<PaymentDetailsProps> = ({ coin, jobId }) => {
 
 interface MakePaymentModalProps {
   jobId: string;
+  job: Job;
   coinAmount: number;
   depositAddress: string;
   closeModal: () => void;
   coin: SUPPORTED_COINS;
 }
 
-const MakePaymentModal = ({ closeModal, depositAddress, jobId, coinAmount, coin }: MakePaymentModalProps) => {
+const MakePaymentModal = ({ closeModal, depositAddress, jobId, job, coinAmount, coin }: MakePaymentModalProps) => {
   return (
     <div className="flex w-full flex-col gap-6 bg-white p-6 border rounded-2xl max-w-[400px] mx-auto">
       <div className="flex w-full items-center justify-between">
@@ -292,11 +307,13 @@ const MakePaymentModal = ({ closeModal, depositAddress, jobId, coinAmount, coin 
               amount={coinAmount}
               depositAddress={depositAddress}
               coin={coin}
+              job={job}
             />
           </Tabs.Content>
           <Tabs.Content value="deposit-to-address">
             <DepositToAddress
               jobId={jobId}
+              job={job}
               coin={coin}
               closeModel={closeModal}
               amount={coinAmount}
@@ -311,19 +328,20 @@ const MakePaymentModal = ({ closeModal, depositAddress, jobId, coinAmount, coin 
 
 interface DepositToAddressProps {
   jobId: string;
+  job: Job;
   amount: number;
   coin: SUPPORTED_COINS;
   depositAddress: string;
   closeModel: () => void;
 }
 
-const DepositToAddress = ({ amount, depositAddress, jobId, closeModel, coin }: DepositToAddressProps) => {
+const DepositToAddress = ({ amount, depositAddress, jobId, job, closeModel, coin }: DepositToAddressProps) => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [value, copy] = useCopyToClipboard();
   const confirmPayment = useConfirmJobPayment();
-  const talentId = searchParams.get('talent-id');
-  const inviteTalent = useInviteTalentToJob();
+  const talentId = searchParams.get('talent-id') ?? "";
+  const inviteTalent = useInviteTalentToJob({ talentId: talentId, job });
 
   return (
     <div className="flex flex-col gap-4">
@@ -376,6 +394,7 @@ const DepositToAddress = ({ amount, depositAddress, jobId, closeModel, coin }: D
                   );
                 }
                 closeModel();
+                return router.push(`/jobs?my-jobs=unassigned`);
               },
               onError: () => { },
             },
@@ -391,13 +410,14 @@ const DepositToAddress = ({ amount, depositAddress, jobId, closeModel, coin }: D
 
 interface PayWithWalletProps {
   jobId: string;
+  job: Job;
   amount: number;
   coin: SUPPORTED_COINS;
   depositAddress: string;
   closeModel: () => void;
 }
 
-const PayWithWallet = ({ amount, depositAddress, jobId, closeModel, coin }: PayWithWalletProps) => {
+const PayWithWallet = ({ amount, depositAddress, jobId, closeModel, coin, job }: PayWithWalletProps) => {
   const { chain } = useNetwork();
   const { isConnected } = useAccount();
   const isWrongChain = chain?.unsupported;
@@ -424,10 +444,10 @@ const PayWithWallet = ({ amount, depositAddress, jobId, closeModel, coin }: PayW
       <WalletConnectorList />
 
       {coin === 'AVAX' && (
-        <DepositAvax jobId={jobId} amount={amount} depositAddress={depositAddress} closeModel={closeModel} />
+        <DepositAvax jobId={jobId} amount={amount} depositAddress={depositAddress} closeModel={closeModel} job={job} />
       )}
       {coin === 'USDC' && (
-        <DepositUSDC jobId={jobId} amount={amount} depositAddress={depositAddress} closeModel={closeModel} />
+        <DepositUSDC jobId={jobId} amount={amount} depositAddress={depositAddress} closeModel={closeModel} job={job} />
       )}
     </div>
   );
@@ -471,15 +491,16 @@ interface WalletDepositProps {
   jobId: string;
   amount: number;
   depositAddress: string;
+  job: Job;
   closeModel: () => void;
 }
 
-const DepositAvax: React.FC<WalletDepositProps> = ({ depositAddress, amount, jobId }) => {
+const DepositAvax: React.FC<WalletDepositProps> = ({ depositAddress, amount, jobId, job }) => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const confirmPayment = useConfirmJobPayment();
-  const talentId = searchParams.get('talent-id');
-  const inviteTalent = useInviteTalentToJob();
+  const talentId = searchParams.get('talent-id') ?? "";
+  const inviteTalent = useInviteTalentToJob({ talentId, job });
 
   const { config } = usePrepareSendTransaction({
     chainId: CHAIN_ID,
@@ -531,12 +552,12 @@ const DepositAvax: React.FC<WalletDepositProps> = ({ depositAddress, amount, job
   );
 };
 
-const DepositUSDC: React.FC<WalletDepositProps> = ({ amount, depositAddress, jobId }) => {
+const DepositUSDC: React.FC<WalletDepositProps> = ({ amount, depositAddress, jobId, job }) => {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const talentId = searchParams.get('talent-id');
+  const talentId = searchParams.get('talent-id') ?? "";
   const confirmPayment = useConfirmJobPayment();
-  const inviteTalent = useInviteTalentToJob();
+  const inviteTalent = useInviteTalentToJob({ talentId, job });
   const [showReconfirmButton, setShowReconfirmButton] = React.useState(false);
 
   const { config } = usePrepareContractWrite({

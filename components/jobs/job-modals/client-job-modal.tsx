@@ -77,6 +77,7 @@ const JobUpdates: React.FC<JobUpdatesProps> = ({ job }) => {
   const {
     name,
     tags,
+    creator,
     description,
     createdAt,
     deliveryDate,
@@ -177,6 +178,7 @@ const JobUpdates: React.FC<JobUpdatesProps> = ({ job }) => {
           <div className="grow h-full">
             <DeliverablesStepper
               jobId={jobId}
+              jobCreator={creator._id}
               readonly
               deliverables={deliverables.map(({ _id, name, progress, updatedAt }) => ({
                 progress,
@@ -184,6 +186,7 @@ const JobUpdates: React.FC<JobUpdatesProps> = ({ job }) => {
                 jobId: jobId,
                 description: name,
                 deliverableId: _id,
+                jobCreator: creator._id
               }))}
             />
           </div>

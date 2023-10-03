@@ -2,6 +2,8 @@ import type { Job } from '@/lib/types';
 import { axios, ApiError, ApiResponse } from '@/lib/axios';
 import { toast } from '@/components/common/toaster';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useCreateFeed } from './feed';
+import { FEED_TYPES } from '../utils';
 
 // Create Job
 interface CreateJobParams {
@@ -27,6 +29,7 @@ async function postCreateJob(params: CreateJobParams): Promise<Job> {
 
 export function useCreateJob() {
   const assignJobDeliverables = useAttachDeliverablesToJob();
+  const createFeed = useCreateFeed();
 
   return useMutation({
     mutationFn: postCreateJob,
@@ -34,19 +37,29 @@ export function useCreateJob() {
     onError: (error: ApiError) => {
       toast.error(error?.response?.data.message || 'An error occurred');
     },
-    onSuccess: async ({ _id, name }, { deliverables = [] }) => {
+    onSuccess: async ({ _id, name, isPrivate, description, creator }, { deliverables = [] }) => {
       await assignJobDeliverables.mutate({
         jobId: _id,
         deliverables,
       });
+      // create feed is isPrivate is false
+      if (!isPrivate) {
+        await createFeed.mutate({
+          owners: [creator._id],
+          title: name,
+          description: description,
+          data: _id,
+          isPublic: true,
+          type: FEED_TYPES.PUBLIC_JOB_CREATED,
+        });
+      }
       toast.success(`Job ${name} created successfully`);
-      return
+      return;
     },
   });
 }
 
 // Get Jobs
-
 interface GetJobsParams {
   page?: number;
   limit?: number;
@@ -91,7 +104,7 @@ interface GetJobByIdParams {
   jobId: string;
 }
 
-interface GetJobByIdResponse extends Job { }
+interface GetJobByIdResponse extends Job {}
 
 async function getJobById(params: GetJobByIdParams): Promise<GetJobByIdResponse> {
   const res = await axios.get(`/collection/${params.jobId}`);
@@ -189,6 +202,7 @@ export function useAttachDeliverablesToJob() {
 
 interface MarkDeliverableAsCompleteParams {
   jobId: string;
+  jobCreator: string;
   isComplete: boolean;
   deliverableId: string;
   totalDeliverables: number;
@@ -204,6 +218,7 @@ async function postMarkDeliverableAsComplete(params: MarkDeliverableAsCompletePa
 
 export function useMarkDeliverableAsComplete() {
   const updateJobProgress = useUpdateJobProgress();
+  const createFeed = useCreateFeed();
 
   return useMutation({
     mutationFn: postMarkDeliverableAsComplete,
@@ -211,7 +226,7 @@ export function useMarkDeliverableAsComplete() {
     onError: (error: ApiError) => {
       toast.error(error?.response?.data.message ?? 'Marking deliverable as complete failed');
     },
-    onSuccess: (_, { completedDeliverables, jobId, totalDeliverables, isComplete }) => {
+    onSuccess: (_, { completedDeliverables, jobId, jobCreator, totalDeliverables, isComplete }) => {
       const progressPercentage = (isComplete: boolean) => {
         if (isComplete) return ((completedDeliverables + 1) / totalDeliverables) * 100;
         else return ((completedDeliverables - 1) / totalDeliverables) * 100;
@@ -219,6 +234,14 @@ export function useMarkDeliverableAsComplete() {
       updateJobProgress.mutate({
         jobId,
         progress: Math.floor(progressPercentage(isComplete)),
+      });
+      createFeed.mutate({
+        type: FEED_TYPES.JOB_DELIVERABLE_UPDATE,
+        owners: [jobCreator],
+        title: 'Job Deliverable Update',
+        description: 'Job Deliverable Update',
+        data: jobId,
+        isPublic: false,
       });
       toast.success(`Deliverable marked as ${isComplete ? 'complete' : 'incomplete'} successfully`);
     },
@@ -366,7 +389,8 @@ async function postInviteTalentToJob(params: InviteTalentToJobParams): Promise<A
   return res.data.data;
 }
 
-export function useInviteTalentToJob() {
+export function useInviteTalentToJob({ talentId, job }: { talentId: string; job: Job }) {
+  const createFeed = useCreateFeed();
   return useMutation({
     mutationFn: postInviteTalentToJob,
     mutationKey: ['invite-talent-to-private-job'],
@@ -374,6 +398,32 @@ export function useInviteTalentToJob() {
       toast.error(error?.response?.data.message || 'An error occurred inviting talent');
     },
     onSuccess: () => {
+      // create job invitation feed if job is public create feed for applicants
+      createFeed.mutate({
+        title: 'New Job Invitation',
+        description: 'New Job Invitation',
+        owners: [talentId],
+        data: job._id,
+        type: FEED_TYPES.JOB_INVITATION_RECEIVED,
+        isPublic: false,
+      });
+      if (!job.isPrivate) {
+        // create job filled notification for public job applicants
+        const applicants = job.collections
+          .filter((a) => a.type == 'application')
+          .map((a) => a.creator._id)
+          .filter((a) => a != talentId);
+        if (applicants.length > 0) {
+          createFeed.mutate({
+            owners: [...applicants],
+            title: 'Job Filled',
+            type: FEED_TYPES.PUBLIC_JOB_FILLED,
+            data: job._id,
+            description: 'Job Filled',
+            isPublic: false,
+          });
+        }
+      }
       toast.success('Talent invited successfully');
     },
   });
@@ -437,7 +487,7 @@ interface ApplyToOpenJobParams {
   message: string;
 }
 
-async function postApplyToOpenJob(params: ApplyToOpenJobParams): Promise<ApiResponse> {
+async function postApplyToOpenJob(params: ApplyToOpenJobParams): Promise<Job> {
   const res = await axios.post(`/collection`, {
     type: 'application',
     name: 'Application',
@@ -448,14 +498,26 @@ async function postApplyToOpenJob(params: ApplyToOpenJobParams): Promise<ApiResp
   return res.data.data;
 }
 
-export function useApplyToOpenJob() {
+export function useApplyToOpenJob({ jobCreator, jobId }: { jobCreator: string; jobId: string }) {
+  const createFeed = useCreateFeed();
+
   return useMutation({
     mutationFn: postApplyToOpenJob,
     mutationKey: ['apply-to-open-job'],
     onError: (error: ApiError) => {
       toast.error(error?.response?.data.message || 'An error occurred');
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
+      console.log(data);
+      // create new job application feed for job owner
+      createFeed.mutate({
+        owners: [jobCreator],
+        title: 'New Job application',
+        description: 'New Job application',
+        data: data._id,
+        isPublic: false,
+        type: FEED_TYPES.JOB_APPLICATION_SUBMITTED,
+      });
       toast.success('Applied to job successfully');
     },
   });
@@ -468,7 +530,7 @@ interface PostJobPaymentDetailsParams {
   coin: 'AVAX' | 'USDC';
 }
 
-interface PostJobPaymentDetailsResponse {
+export interface PostJobPaymentDetailsResponse {
   rate: number;
   usdFee: number;
   address: string;
