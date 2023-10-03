@@ -6,6 +6,7 @@ import { Button } from 'pakt-ui';
 
 interface Deliverable {
   jobId: string;
+  jobCreator: string;
   progress: number; // 0 or 100
   updatedAt: string;
   description: string;
@@ -22,6 +23,7 @@ interface DeliverableProps extends Deliverable {
 
 const DeliverableStep: React.FC<DeliverableProps> = ({
   jobId,
+  jobCreator,
   isLast,
   isClient,
   updatedAt,
@@ -55,6 +57,7 @@ const DeliverableStep: React.FC<DeliverableProps> = ({
               totalDeliverables,
               completedDeliverables,
               isComplete: !isComplete,
+              jobCreator,
             },
             {
               onError: () => {
@@ -86,6 +89,7 @@ const DeliverableStep: React.FC<DeliverableProps> = ({
 
 interface DeliverablesStepperProps {
   jobId: string;
+  jobCreator: string;
   readonly?: boolean;
   deliverables: Deliverable[];
 }
@@ -93,6 +97,7 @@ interface DeliverablesStepperProps {
 export const DeliverablesStepper: React.FC<DeliverablesStepperProps> = ({
   deliverables,
   jobId,
+  jobCreator,
   readonly: isClient,
 }) => {
   const mutation = useMarkJobAsComplete();
@@ -107,6 +112,7 @@ export const DeliverablesStepper: React.FC<DeliverablesStepperProps> = ({
           return (
             <DeliverableStep
               jobId={jobId}
+              jobCreator={jobCreator}
               isClient={isClient}
               progress={progress}
               key={deliverableId}

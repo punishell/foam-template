@@ -1,6 +1,8 @@
 import { ApiError, axios } from '@/lib/axios';
 import { toast } from '@/components/common/toaster';
 import { useMutation, useQuery } from '@tanstack/react-query';
+import { useCreateFeed } from './feed';
+import { FEED_TYPES } from '../utils';
 
 // Get Invites
 interface getInviteParams {
@@ -80,11 +82,21 @@ async function acceptInvite({ id }: { id: string }): Promise<AcceptInviteRespons
   return res.data.data;
 }
 
-export function useAcceptInvite() {
+export function useAcceptInvite({ jobCreator, jobId }: { jobCreator: string; jobId: string }) {
+  const createFeed = useCreateFeed();
   return useMutation({
     mutationFn: acceptInvite,
     mutationKey: ['invite-call-action'],
     onSuccess: () => {
+      // create feed for accept invite
+      createFeed.mutate({
+        owners: [jobCreator],
+        title: 'Invite Accepted',
+        description: 'Invite Accepted',
+        data: jobId,
+        type: FEED_TYPES.JOB_INVITATION_ACCEPTED,
+        isPublic: false,
+      });
       toast.success('Invite Accepted successfully');
     },
     onError: (error: ApiError) => {
@@ -105,11 +117,21 @@ async function declineInvite({ id }: { id: string }): Promise<DeclineInviteRespo
   return res.data.data;
 }
 
-export function useDeclineInvite() {
+export function useDeclineInvite({ jobCreator, jobId }: { jobCreator: string; jobId: string }) {
+  const createFeed = useCreateFeed();
   return useMutation({
     mutationFn: declineInvite,
     mutationKey: ['invite-call-action'],
     onSuccess: () => {
+      // create feed for decline invite
+      createFeed.mutate({
+        owners: [jobCreator],
+        title: 'Invite Accepted',
+        description: 'Invite Accepted',
+        data: jobId,
+        type: FEED_TYPES.JOB_INVITATION_DECLINED,
+        isPublic: false,
+      });
       toast.success('Invite Declined successfully');
     },
     onError: (error: ApiError) => {

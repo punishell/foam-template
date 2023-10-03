@@ -1,7 +1,7 @@
 'use client';
 import React, { useEffect, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
-import { cn } from '@/lib/utils';
+import { FEED_TYPES, cn } from '@/lib/utils';
 import { useCreateJob } from '@/lib/api/job';
 import { Checkbox, Button } from 'pakt-ui';
 import { useDropzone } from 'react-dropzone';
@@ -27,6 +27,8 @@ import { Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { StepIndicator } from '@/components/jobs/step-indicator';
+import { useCreateFeed } from '@/lib/api/feed';
+import { useUserState } from '@/lib/store/account';
 
 const schema = z.object({
   due: z.date({
@@ -55,10 +57,11 @@ type FormValues = z.infer<typeof schema>;
 export default function CreateJob() {
   const router = useRouter();
   const createJob = useCreateJob();
+  const { _id: userId } = useUserState();
   const [files, setFiles] = React.useState<File[]>([]);
   const [uploadProgress, setUploadProgress] = React.useState(0);
 
-  const onDrop = React.useCallback(async (acceptedFiles: File[]) => {}, []);
+  const onDrop = React.useCallback(async (acceptedFiles: File[]) => { }, []);
 
   const { getRootProps, getInputProps } = useDropzone({
     onDrop,

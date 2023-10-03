@@ -56,18 +56,21 @@ export interface Job {
   ratings: Rating[] | null;
   tagsData: string[];
   invites: any[]; // TODO: add type
-  invite: undefined | {
-    _id: string;
-    sender: string;
-    receiver: string;
-    status: string;
-  };
+  invite:
+    | undefined
+    | {
+        _id: string;
+        sender: string;
+        receiver: string;
+        status: string;
+      };
   status: JobStatus;
   bookmarkId?: string;
   isBookmarked?: boolean;
   inviteAccepted: boolean;
   recipientCompletedJob: boolean;
   collections: Collection[];
+  parent?: Collection;
   payoutStatus: 'pending' | 'ongoing' | 'completed' | 'waiting' | 'cancelled';
 }
 
@@ -111,9 +114,12 @@ export type JobDeliverable = {
   type: 'deliverable';
   description: string;
   status: 'pending' | 'ongoing' | 'completed';
+  creator: UserProfile;
 };
 
 export type JobApplicant = {
+  _id: string;
+  name: string;
   createdAt: string;
   paymentFee: number;
   description: string;
@@ -149,7 +155,7 @@ export interface DataFeedResponse {
   createdAt?: string;
   updatedAt?: string;
   creator: User;
-  data: { _id: string; paymentFee: string; creator: User; owner?: User; invite: string };
+  data: Job;
   description: string;
   isBookmarked?: boolean;
   bookmarkId?: string;

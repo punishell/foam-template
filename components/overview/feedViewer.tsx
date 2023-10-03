@@ -12,6 +12,8 @@ import warning from '@/lottiefiles/warning.json';
 import { ProfileImage } from './ProfileImage';
 import { RenderBookMark } from '../jobs/job-cards/render-bookmark';
 import Link from 'next/link';
+import { DeliverableProgressBar } from '../common/deliverable-progress-bar';
+import { progress } from 'framer-motion';
 
 interface JobInvitePendingProps {
   id: string;
@@ -45,24 +47,39 @@ interface JobFilledProps {
   close: (id: string) => void;
 }
 
-type JobFeedCardProps = JobInvitePendingProps | JobFilledProps;
+interface JobResponseProps {
+  id: string;
+  title: string;
+  inviter: {
+    name: string;
+    avatar: string;
+    score: number;
+  };
+  bookmarked: boolean;
+  accepted: boolean;
+  type: 'job-invite-response';
+  imageUrl?: string;
+  close: (id: string) => void;
+}
+
+type JobFeedCardProps = JobInvitePendingProps | JobFilledProps | JobResponseProps;
 
 export const JobFeedCard: React.FC<JobFeedCardProps> = (props) => {
   const { type } = props;
   const router = useRouter();
 
   if (type === 'job-invite-filled') {
-    const { id, title, bookmarked, imageUrl } = props;
+    const { id, title, bookmarked, inviter, close } = props;
 
     return (
       <JobFeedWrapper>
-        <ProfileImage imageUrl={imageUrl} />
+        <ProfileImage imageUrl={inviter.avatar} score={inviter.score} />
 
-        <div className="flex flex-col gap-4 py-4">
+        <div className="flex flex-col gap-4 py-4 w-full">
           <div className="flex justify-between items-center">
             <h3 className="text-title text-xl font-bold">Job Filled</h3>
 
-            <X size={20} />
+            {close && <X size={20} className='cursor-pointer' onClick={() => close(id)} />}
           </div>
 
           <p className="text-body">
@@ -122,6 +139,81 @@ export const JobFeedCard: React.FC<JobFeedCardProps> = (props) => {
       </JobFeedWrapper>
     );
   }
+
+  if (type === 'job-invite-response') {
+    const { id, title, bookmarked, inviter, close, accepted } = props;
+
+    return (
+      <JobFeedWrapper>
+        <ProfileImage imageUrl={inviter.avatar} score={inviter.score} />
+
+        <div className="flex flex-col gap-4 py-4 w-full">
+          <div className="flex justify-between items-center">
+            <h3 className="text-title text-xl font-bold">Job Invitation  {accepted ? "Accepted" : "Declined"}</h3>
+
+            {close && <X size={20} className='cursor-pointer' onClick={() => close(id)} />}
+          </div>
+
+          <p className="text-body">
+            The <span className="text-title text-bold">&quot;{title}&quot;</span> Job has been filled.
+            You can check job progress here
+          </p>
+
+          <div className="justify-between items-center flex mt-auto">
+            <Link href={`/jobs`}>
+              <Button size="xs" variant="secondary">
+                See Update
+              </Button>
+            </Link>
+            <RenderBookMark size={20} isBookmarked={bookmarked} type="feed" id={id} bookmarkId={id} />
+          </div>
+        </div>
+      </JobFeedWrapper>
+    );
+  }
+
+};
+
+type JobApplicationCardProps = {
+  id: string;
+  title: string;
+  applicant: {
+    name: string;
+    avatar: string;
+    score: number;
+  };
+  bookmarked: boolean;
+  jobId: string;
+  close: (id: string) => void;
+}
+
+export const JobApplicationCard: React.FC<JobApplicationCardProps> = (props) => {
+  const { id, title, jobId, bookmarked, applicant, close } = props;
+
+  return (
+    <JobFeedWrapper>
+      <ProfileImage imageUrl={applicant.avatar} score={applicant.score} />
+      <div className="flex flex-col gap-4 py-4 w-full">
+        <div className="flex justify-between items-center">
+          <h3 className="text-title text-xl font-bold">New Job Application</h3>
+          {close && <X size={20} className='cursor-pointer' onClick={() => close(id)} />}
+        </div>
+
+        <p className="text-body">
+          You Have Received a new job application for <span className="text-title text-bold">&quot;{title}&quot;</span> from {applicant.name}
+        </p>
+
+        <div className="justify-between items-center flex mt-auto">
+          <Link href={`/jobs/${jobId}/applicants`}>
+            <Button size="xs" variant="secondary">
+              View Applicants
+            </Button>
+          </Link>
+          <RenderBookMark size={20} isBookmarked={bookmarked} type="feed" id={id} bookmarkId={id} />
+        </div>
+      </div>
+    </JobFeedWrapper>
+  );
 };
 
 export const JobFeedWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -188,69 +280,58 @@ export const PublicJobCreatedFeed = ({
   );
 };
 
-export const TalentJobUpdateFeed = () => {
+interface TalentJobUpdateProps {
+  id: string;
+  title: string;
+  description: string;
+  talent: {
+    _id: string;
+    name: string;
+    avatar: string;
+    score: number;
+  };
+  bookmarked: boolean;
+  bookmarkId: string;
+  jobId: string;
+  creator: {
+    _id: string;
+    name: string;
+    avatar: string;
+    score: number;
+  };
+  isCreator: boolean;
+  progress: {
+    total: number,
+    progress: number
+  }
+  close: (id: string) => void;
+}
+
+export const JobUpdateFeed: React.FC<TalentJobUpdateProps> = ({ id, talent, creator, title, description, progress, bookmarked, isCreator, close }) => {
   return (
     <div className="border-[#CDCFD0] bg-[#F9F9F9] gap-4 pl-2 px-4  flex border z-10 w-full rounded-2xl relative overflow-hidden">
-      <AfroProfile score={0} size="lg" />
-      <div className="flex flex-col gap-4 py-4">
+      <ProfileImage imageUrl={talent.avatar} score={talent.score} />
+      <div className="flex flex-col gap-4 py-4 w-full">
         <div className="flex justify-between items-center">
-          <h3 className="text-title text-xl font-bold">Landing Page Design for a Lead Generation...</h3>
-
-          <X size={20} />
+          <h3 className="text-title text-xl font-bold">{!isCreator ? title : `${talent.name} completed a deliverable`}</h3>
+          {close && <X size={20} className='cursor-pointer' onClick={() => close(id)} />}
         </div>
-
         <p className="text-body">
-          The goal of this project is to create visually appealing and engaging materials that communicate
+          {!isCreator ? description : `✅ ${title}`}
         </p>
-
         <div className="justify-between items-center flex mt-auto">
           <div className="flex items-center gap-2">
             {/* <Button size="xs" variant="secondary">
               Update
             </Button> */}
-            <Button size="xs" variant="outline">
-              Message
-            </Button>
-            <DeliverableProgressBar />
+            <Link href={`/messages?userId=${isCreator ? talent._id : creator._id}`}>
+              <Button size="xs" variant="outline">
+                Message
+              </Button>
+            </Link>
+            <DeliverableProgressBar percentageProgress={progress.progress} totalDeliverables={progress.total} />
           </div>
-          <Bookmark size={20} />
-        </div>
-      </div>
-
-      <div className="absolute right-0 -z-[1] translate-x-1/3 top-16">
-        <Briefcase size={200} color="#F2F4F5" />
-      </div>
-    </div>
-  );
-};
-
-export const JobDeliverableCompletionFeed = () => {
-  return (
-    <div className="border-[#CDCFD0] bg-[#F9F9F9] gap-4 pl-2 px-4  flex border z-10 w-full rounded-2xl relative overflow-hidden">
-      <AfroProfile score={0} size="lg" />
-      <div className="flex flex-col gap-4 py-4">
-        <div className="flex justify-between items-center">
-          <h3 className="text-title text-xl font-bold">Joon completed a deliverable</h3>
-
-          <X size={20} />
-        </div>
-
-        <p className="text-body">
-          ✅ Initial design concepts for the email newsletter to provide a clear understanding of how the final design
-          will look like.
-        </p>
-
-        <div className="justify-between items-center flex mt-auto">
-          <div className="flex items-center gap-2">
-            {/* <Button size="xs" variant="secondary">
-              See Update
-            </Button> */}
-            <Button size="xs" variant="outline">
-              Message
-            </Button>
-            <DeliverableProgressBar />
-          </div>
-          <Bookmark size={20} />
+          <RenderBookMark size={20} isBookmarked={bookmarked} type="feed" id={id} bookmarkId={id} />
         </div>
       </div>
 
@@ -324,17 +405,17 @@ export const JobReviewedFeed = () => {
   );
 };
 
-export const DeliverableProgressBar = () => {
-  return (
-    <div className="flex items-center gap-1">
-      <div className="bg-primary-gradient rounded-full h-2 w-[60px]"></div>
-      <div className="bg-primary-gradient rounded-full h-2 w-[60px]"></div>
-      <div className="bg-primary-gradient rounded-full h-2 w-[60px]"></div>
-      <div className="bg-line rounded-full h-2 w-[60px]"></div>
-      <div className="bg-line rounded-full h-2 w-[60px]"></div>
-    </div>
-  );
-};
+// export const DeliverableProgressBar = () => {
+//   return (
+//     <div className="flex items-center gap-1">
+//       <div className="bg-primary-gradient rounded-full h-2 w-[60px]"></div>
+//       <div className="bg-primary-gradient rounded-full h-2 w-[60px]"></div>
+//       <div className="bg-primary-gradient rounded-full h-2 w-[60px]"></div>
+//       <div className="bg-line rounded-full h-2 w-[60px]"></div>
+//       <div className="bg-line rounded-full h-2 w-[60px]"></div>
+//     </div>
+//   );
+// };
 
 export const PaymentReleased = () => {
   return (
