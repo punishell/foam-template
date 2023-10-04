@@ -1,0 +1,153 @@
+import React from 'react';
+import { type Job } from '@/lib/types';
+import { ChevronLeft } from 'lucide-react';
+import Image from 'next/image';
+import { AfroProfile } from '@/components/common/afro-profile';
+import { DefaultAvatar } from '@/components/common/default-avatar';
+import { Button } from 'pakt-ui';
+import Rating from 'react-rating';
+import { Star } from 'lucide-react';
+import { useCreateJobReview } from '@/lib/api/job';
+import { Spinner } from '@/components/common';
+import success from '@/lottiefiles/success.json';
+import Lottie from 'lottie-react';
+
+interface ReviewTalentProps {
+  job: Job;
+  closeModal?: () => void;
+}
+
+const MAX_COMMENT_LENGTH = 500;
+
+export const ReviewTalent: React.FC<ReviewTalentProps> = ({ job, closeModal }) => {
+  const mutation = useCreateJobReview();
+  const { description, name, _id, owner } = job;
+  const [rating, setRating] = React.useState(0);
+  const [comment, setComment] = React.useState('');
+
+  return (
+    <React.Fragment>
+      <div className="py-6 px-4 bg-primary-gradient text-white font-bold text-2xl">
+        <div className="flex items-center gap-2">
+          <button onClick={closeModal}>
+            <ChevronLeft />
+          </button>
+          <span>Review</span>
+        </div>
+      </div>
+
+      <div className="px-4 flex flex-col gap-6 py-4 h-full">
+        <div className="flex flex-col gap-1">
+          <h3 className="font-medium text-lg">Job Description</h3>
+          <div className="bg-[#C9F0FF] p-3 rounded-xl border border-blue-300 flex flex-col gap-1">
+            <h3 className="text-title text-base font-medium">{name}</h3>
+
+            <p className="text-sm">{description}</p>
+          </div>
+        </div>
+
+        <div>
+          <h3 className="text-lg">How was your experience with</h3>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <AfroProfile score={owner?.score || 0} size="sm">
+                <div className="h-full w-full rounded-full relative">
+                  {owner?.profileImage?.url ? (
+                    <Image src={owner?.profileImage?.url} fill alt="profile" className="rounded-full" />
+                  ) : (
+                    <DefaultAvatar />
+                  )}
+                </div>
+              </AfroProfile>
+
+              <div className="flex flex-col gap-1">
+                <span className="text-title text-base font-medium leading-none">{`${owner?.firstName} ${owner?.lastName}`}</span>
+                <span className="text-sm capitalize leading-none">{owner?.profile.bio.title}</span>
+              </div>
+            </div>
+
+            <div>
+              {/* @ts-ignore */}
+              <Rating
+                initialRating={rating}
+                onChange={(value) => setRating(value)}
+                fullSymbol={<Star fill="#15D28E" color="#15D28E" />}
+                emptySymbol={<Star fill="transparent" color="#15D28E" />}
+              />
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <h3>Comment</h3>
+          <div>
+            <textarea
+              rows={5}
+              value={comment}
+              onChange={(e) => {
+                if (e.target.value.length <= MAX_COMMENT_LENGTH) {
+                  setComment(e.target.value);
+                }
+              }}
+              placeholder="Write your comment..."
+              className="grow focus:outline-none p-2 resize-none rounded-lg w-full bg-gray-50 border border-line placeholder:text-sm"
+            ></textarea>
+            <div className="ml-auto w-fit">
+              <span className="text-sm text-body">{comment.length}</span>
+              <span className="text-sm text-body">/</span>
+              <span className="text-sm text-body">{MAX_COMMENT_LENGTH} characters</span>
+            </div>
+          </div>
+        </div>
+
+        <div className="mt-auto">
+          <Button
+            fullWidth
+            onClick={() => {
+              mutation.mutate(
+                {
+                  rating,
+                  jobId: _id,
+                  review: comment,
+                  recipientId: owner?._id ?? '',
+                },
+                {
+                  onSuccess: () => {},
+                },
+              );
+            }}
+          >
+            {mutation.isLoading ? <Spinner size={20} /> : 'Submit Review'}
+          </Button>
+        </div>
+      </div>
+    </React.Fragment>
+  );
+};
+
+export const ReviewSuccess: React.FC<{ closeModal?: () => void }> = ({ closeModal }) => {
+  return (
+    <div className="h-full px-4 flex items-center justify-center">
+      <div className="flex flex-col gap-32 items-center">
+        <div>
+          <Image src="/images/logo-dark.svg" width={300} height={100} alt="logo" />
+        </div>
+        <div className="flex flex-col text-center items-center">
+          <div className="max-w-[200px] -mb-4">
+            <Lottie animationData={success} loop={false} />
+          </div>
+          <div className="flex flex-col gap-4 text-center items-center">
+            <p className="text-lg text-body">
+              Your review has submitted. Talent will also review and payment will be released after.
+            </p>
+            <div className="max-w-[200px] w-full">
+              <Button fullWidth onClick={closeModal}>
+                Done
+              </Button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
