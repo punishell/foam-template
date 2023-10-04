@@ -348,11 +348,13 @@ export function useCreateJobReview() {
 
 interface ReleaseJobPaymentParams {
   jobId: string;
+  amount?: number;
 }
 
 async function postReleaseJobPayment(params: ReleaseJobPaymentParams): Promise<ApiResponse> {
   const res = await axios.post(`/payment/release`, {
     collection: params.jobId,
+    amount: params.amount,
   });
   return res.data.data;
 }
@@ -604,6 +606,47 @@ export function useDeleteJob() {
     },
     onSuccess: () => {
       toast.success(`Job deleted successfully`);
+    },
+  });
+}
+
+// Request Job Cancellation
+
+interface RequestJobCancellationParams {
+  jobId: string;
+  reason: string;
+  explanation?: string;
+}
+
+async function requestJobCancellation(params: RequestJobCancellationParams): Promise<ApiResponse> {
+  const res = await axios.post(`/collection`, {
+    type: 'cancellation',
+    name: params.reason,
+    parent: params.jobId,
+    description: params.explanation,
+  });
+
+  await axios.patch(`/collection/${params.jobId}`, {
+    status: 'cancel_requested',
+  });
+
+  return res.data.data;
+}
+
+export function useRequestJobCancellation() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: requestJobCancellation,
+    mutationKey: ['request-job-cancellation'],
+    onError: (error: ApiError) => {
+      toast.error(error?.response?.data.message ?? 'Error requesting job cancellation');
+    },
+    onSuccess: () => {
+      toast.success(`Job cancellation requested successfully`);
+    },
+    onMutate: () => {
+      queryClient.invalidateQueries(['get-job-by-id']);
     },
   });
 }
