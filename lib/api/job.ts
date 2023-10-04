@@ -45,7 +45,8 @@ export function useCreateJob() {
       // create feed is isPrivate is false
       if (!isPrivate) {
         await createFeed.mutate({
-          owners: [creator._id],
+          //@ts-ignore
+          owners: [creator],
           title: name,
           description: description,
           data: _id,
@@ -104,7 +105,7 @@ interface GetJobByIdParams {
   jobId: string;
 }
 
-interface GetJobByIdResponse extends Job {}
+interface GetJobByIdResponse extends Job { }
 
 async function getJobById(params: GetJobByIdParams): Promise<GetJobByIdResponse> {
   const res = await axios.get(`/collection/${params.jobId}`);
@@ -199,7 +200,6 @@ export function useAttachDeliverablesToJob() {
 }
 
 // Mark Deliverable as Complete
-
 interface MarkDeliverableAsCompleteParams {
   jobId: string;
   jobCreator: string;
@@ -249,7 +249,6 @@ export function useMarkDeliverableAsComplete() {
 }
 
 // Update Job Progress
-
 interface UpdateJobProgressParams {
   jobId: string;
   progress: number;
@@ -280,7 +279,6 @@ export function useUpdateJobProgress() {
 }
 
 // Mark Job as Complete
-
 interface MarkJobAsCompleteParams {
   jobId: string;
 }
@@ -311,7 +309,6 @@ export function useMarkJobAsComplete() {
 }
 
 // Create Job Review
-
 interface CreateJobReviewParams {
   jobId: string;
   rating: number;
@@ -345,7 +342,6 @@ export function useCreateJobReview() {
 }
 
 // Release Job Payment
-
 interface ReleaseJobPaymentParams {
   jobId: string;
 }
@@ -430,7 +426,6 @@ export function useInviteTalentToJob({ talentId, job }: { talentId: string; job:
 }
 
 // Accept a private job invite
-
 interface AcceptPrivateJobInviteParams {
   inviteId: string;
 }

@@ -33,7 +33,15 @@ const InviteTalent: React.FC<{ talentId: string }> = ({ talentId }) => {
 
   if (jobsData.isLoading) return <PageLoading />;
 
-  return <JobList jobs={jobsData.data.data} talentId={talentId} />;
+  const jobs = jobsData.data.data;
+  const sortedJobs = jobs.sort((a, b) => {
+    return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+  });
+  const unassignedJobs = sortedJobs.filter(
+    (job) => job.status === 'pending' || (job.status === 'ongoing' && job.inviteAccepted === false),
+  );
+
+  return <JobList jobs={unassignedJobs} talentId={talentId} />;
 };
 
 interface JobListProps {
