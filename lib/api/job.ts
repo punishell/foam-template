@@ -105,7 +105,7 @@ interface GetJobByIdParams {
   jobId: string;
 }
 
-interface GetJobByIdResponse extends Job { }
+interface GetJobByIdResponse extends Job {}
 
 async function getJobById(params: GetJobByIdParams): Promise<GetJobByIdResponse> {
   const res = await axios.get(`/collection/${params.jobId}`);
@@ -308,12 +308,12 @@ export function useMarkJobAsComplete() {
       if (talentId) {
         await createFeed.mutate({
           owners: [talentId],
-          title: "Job Completed",
-          description: "Job Completed",
+          title: 'Job Completed',
+          description: 'Job Completed',
           isPublic: false,
           type: FEED_TYPES.JOB_COMPLETION,
           data: jobId,
-        })
+        });
       }
       toast.success('Job marked as completed');
     },
@@ -350,13 +350,13 @@ export function useCreateJobReview() {
     onSuccess: (_, { jobId, recipientId, review }) => {
       queryClient.refetchQueries(['get-job-by-id']);
       createFeed.mutate({
-        title: "Job Review",
+        title: 'Job Review',
         description: review,
         isPublic: false,
         data: jobId,
         owners: [recipientId],
-        type: FEED_TYPES.JOB_REVIEW
-      })
+        type: FEED_TYPES.JOB_REVIEW,
+      });
       toast.success('Your review has been submitted successfully');
     },
   });

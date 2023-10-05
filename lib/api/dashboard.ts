@@ -83,7 +83,7 @@ export function useDismissFeed() {
     mutationFn: dismissFeed,
     mutationKey: ['dismiss-feed-by-id'],
     onSuccess: () => {
-      queryClient.refetchQueries(['get-timeline', "1", {}]);
+      queryClient.refetchQueries(['get-timeline', '1', {}]);
       toast.success('Feed Dismissed successfully');
     },
     onError: (error: ApiError) => {
