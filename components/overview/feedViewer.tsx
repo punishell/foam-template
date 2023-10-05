@@ -73,8 +73,7 @@ export const JobFeedCard: React.FC<JobFeedCardProps> = (props) => {
 
     return (
       <JobFeedWrapper>
-        <ProfileImage imageUrl={inviter.avatar} score={inviter.score} />
-
+        <ProfileImage imageUrl={inviter.avatar} score={inviter.score} size="lg" />
         <div className="flex flex-col gap-4 py-4 w-full">
           <div className="flex justify-between items-center">
             <h3 className="text-title text-xl font-bold">Job Filled</h3>
@@ -249,7 +248,7 @@ export const PublicJobCreatedFeed = ({
 }) => {
   return (
     <JobFeedWrapper>
-      <ProfileImage score={creator.score} imageUrl={creator.avatar} size='lg' />
+      <ProfileImage score={creator.score} imageUrl={creator.avatar} />
       <div className="flex flex-col gap-4 w-full py-4">
         <div className="flex justify-between items-center">
           <h3 className="text-body text-xl font-bold">
@@ -405,18 +404,6 @@ export const JobReviewedFeed = () => {
   );
 };
 
-// export const DeliverableProgressBar = () => {
-//   return (
-//     <div className="flex items-center gap-1">
-//       <div className="bg-primary-gradient rounded-full h-2 w-[60px]"></div>
-//       <div className="bg-primary-gradient rounded-full h-2 w-[60px]"></div>
-//       <div className="bg-primary-gradient rounded-full h-2 w-[60px]"></div>
-//       <div className="bg-line rounded-full h-2 w-[60px]"></div>
-//       <div className="bg-line rounded-full h-2 w-[60px]"></div>
-//     </div>
-//   );
-// };
-
 export const PaymentReleased = () => {
   return (
     <div className="border-[#7DDE86] bg-[#FBFFFA] gap-4 p-4 flex border  z-10 w-full rounded-2xl relative overflow-hidden">
@@ -475,15 +462,23 @@ export const JobCancelled = () => {
     </div>
   );
 };
+interface ReferralSignupFeedProps {
+  id: string
+  name: string
+  userId: string
+  avatar?: string, score?: number
+  bookmarkId: string;
+  bookmarked: boolean;
+  close: (id: string) => void
+};
 
-export const ReferralSignupFeed = ({ id, userId, name, close }: { id: string, name: string, userId: string, close: (id: string) => void }) => {
+export const ReferralSignupFeed = ({ id, userId, avatar, score, name, bookmarked, bookmarkId, close }: ReferralSignupFeedProps) => {
   return (
-    <div className="border-[#CDCFD0] bg-[#F9F9F9] gap-4 p-4 flex border  z-10 w-full rounded-2xl relative overflow-hidden h-[174px]">
-      <ProfileImage imageUrl={''} />
+    <div className="border-[#CDCFD0] bg-[#F9F9F9] gap-4 p-4 flex border z-10 w-full rounded-2xl relative overflow-hidden h-[174px]">
+      <ProfileImage imageUrl={avatar} score={score} />
       <div className="flex flex-col gap-4 w-full">
         <div className="flex justify-between items-center">
           <h3 className="text-title text-xl font-bold">{name} just signed up</h3>
-
           <X size={20} className='cursor-pointer' onClick={() => close(id)} />
         </div>
 
@@ -500,7 +495,7 @@ export const ReferralSignupFeed = ({ id, userId, name, close }: { id: string, na
               </Button>
             </Link>
           </div>
-          <Bookmark size={20} />
+          <RenderBookMark size={20} isBookmarked={bookmarked} type="feed" id={id} bookmarkId={bookmarkId} />
         </div>
       </div>
 

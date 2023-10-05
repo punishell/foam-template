@@ -60,7 +60,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         <div className="flex max-w-full h-screen w-screen">
           <Sidebar />
 
-          <div className="relative grow">
+          <div className="relative w-full">
             <div className="absolute z-[1] inset-0">
               <div className="isolate">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1512 989" fill="none">

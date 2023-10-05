@@ -179,6 +179,7 @@ const JobUpdates: React.FC<JobUpdatesProps> = ({ job }) => {
             <DeliverablesStepper
               jobId={jobId}
               jobCreator={creator._id}
+              talentId={String(owner?._id)}
               readonly
               deliverables={deliverables.map(({ _id, name, progress, updatedAt }) => ({
                 progress,

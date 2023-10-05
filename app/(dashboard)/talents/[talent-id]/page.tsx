@@ -23,7 +23,7 @@ export default function TalentDetails() {
   const reviews = reviewData.data;
 
   return (
-    <div className="flex flex-col gap-6 pt-6 overflow-y-auto">
+    <div className="flex flex-col gap-6 pt-6 overflow-y-auto w-full">
       <ProfileHeader
         _id={talent._id}
         name={`${talent.firstName} ${talent.lastName}`}
@@ -44,22 +44,24 @@ export default function TalentDetails() {
           }))}
         />
       </div>
-      <Reviews
-        reviews={
-          reviews?.data.map((a) => ({
-            title: a.data.name,
-            body: a.review,
-            rating: a.rating,
-            user: {
-              afroScore: a.owner.score,
-              name: `${a.owner.firstName}${a.owner.lastName}`,
-              title: a.owner.profile.bio?.title || "",
-              avatar: a.owner.profileImage?.url ?? "",
-            }
-          })) ?? []
-        }
-        loading={talentData.isLoading}
-      />
+      <div className='flex max-w-full'>
+        <Reviews
+          reviews={
+            reviews?.data.map((a) => ({
+              title: a.data.name,
+              body: a.review,
+              rating: a.rating,
+              user: {
+                afroScore: a.owner.score,
+                name: `${a.owner.firstName}${a.owner.lastName}`,
+                title: a.owner.profile.bio?.title || "",
+                avatar: a.owner.profileImage?.url ?? "",
+              }
+            })) ?? []
+          }
+          loading={talentData.isLoading}
+        />
+      </div>
     </div>
   );
 }

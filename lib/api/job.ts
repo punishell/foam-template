@@ -281,6 +281,7 @@ export function useUpdateJobProgress() {
 // Mark Job as Complete
 interface MarkJobAsCompleteParams {
   jobId: string;
+  talentId?: string;
 }
 
 async function postMarkJobAsComplete(params: MarkJobAsCompleteParams): Promise<ApiResponse> {
@@ -293,6 +294,7 @@ async function postMarkJobAsComplete(params: MarkJobAsCompleteParams): Promise<A
 export function useMarkJobAsComplete() {
   const queryClient = useQueryClient();
   const jobsQuery = useGetJobs({ category: 'assigned' });
+  const createFeed = useCreateFeed();
 
   return useMutation({
     mutationFn: postMarkJobAsComplete,
@@ -300,9 +302,19 @@ export function useMarkJobAsComplete() {
     onError: (error: ApiError) => {
       toast.error(error?.response?.data.message ?? 'Marking job as complete failed');
     },
-    onSuccess: () => {
+    onSuccess: async (_, { jobId, talentId }) => {
       jobsQuery.refetch();
       queryClient.refetchQueries(['get-job-by-id']);
+      if (talentId) {
+        await createFeed.mutate({
+          owners: [talentId],
+          title: "Job Completed",
+          description: "Job Completed",
+          isPublic: false,
+          type: FEED_TYPES.JOB_COMPLETION,
+          data: jobId,
+        })
+      }
       toast.success('Job marked as completed');
     },
   });
@@ -328,14 +340,23 @@ async function postCreateJobReview(params: CreateJobReviewParams): Promise<ApiRe
 
 export function useCreateJobReview() {
   const queryClient = useQueryClient();
+  const createFeed = useCreateFeed();
   return useMutation({
     mutationFn: postCreateJobReview,
     mutationKey: ['create-job-review'],
     onError: (error: ApiError) => {
       toast.error(error?.response?.data.message || 'An error occurred');
     },
-    onSuccess: () => {
+    onSuccess: (_, { jobId, recipientId, review }) => {
       queryClient.refetchQueries(['get-job-by-id']);
+      createFeed.mutate({
+        title: "Job Review",
+        description: review,
+        isPublic: false,
+        data: jobId,
+        owners: [recipientId],
+        type: FEED_TYPES.JOB_REVIEW
+      })
       toast.success('Your review has been submitted successfully');
     },
   });
@@ -449,7 +470,6 @@ export function useAcceptPrivateJobInvite() {
 }
 
 // Decline a private job invite
-
 interface DeclinePrivateJobInviteParams {
   inviteId: string;
 }

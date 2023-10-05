@@ -1,59 +1,50 @@
 'use client';
 import React from 'react';
-import 'blaze-slider/dist/blaze.css';
-import BlazeSlider, { BlazeConfig } from 'blaze-slider';
+import { useKeenSlider } from "keen-slider/react"
+import "keen-slider/keen-slider.min.css"
+import { KeenSliderHooks, KeenSliderInstance } from 'keen-slider';
 
-const useBlazeSlider = (config: BlazeConfig) => {
-  const sliderRef = React.useRef<BlazeSlider>();
-  const elRef = React.useRef<HTMLDivElement>(null);
+interface SliderProps {
+  ref: (node: HTMLElement | null) => void;
+  slider: React.MutableRefObject<KeenSliderInstance<{}, {}, KeenSliderHooks> | null>
+  currentSlide?: number;
+  loaded: boolean;
+}
 
-  React.useEffect(() => {
-    if (!sliderRef.current && elRef.current) {
-      sliderRef.current = new BlazeSlider(elRef.current, config);
-    }
-  }, [config]);
-
-  return elRef;
+export const useCarousel = (newSliderRef?: SliderProps): SliderProps => {
+  const [currentSlide, setCurrentSlide] = React.useState(0)
+  const [loaded, setLoaded] = React.useState(false)
+  const [sliderRef, instanceRef] = useKeenSlider({
+    initial: 0,
+    loop: false,
+    mode: "free",
+    slides: {
+      perView: 2,
+      spacing: 15,
+    },
+    slideChanged(slider) {
+      setCurrentSlide(slider.track.details.rel)
+    },
+    created() {
+      setLoaded(true)
+    },
+  })
+  return newSliderRef ? newSliderRef : { ref: sliderRef, slider: instanceRef, currentSlide, loaded };
 };
 
 interface CarouselProps {
-  config?: BlazeConfig;
+  elRef: SliderProps;
   children: React.ReactNode;
 }
 
-export const Carousel: React.FC<CarouselProps> = ({ config, children }) => {
-  const defaultConfig: BlazeConfig = {
-    all: {
-      loop: false,
-      slidesToShow: 2,
-      slidesToScroll: 2,
-      transitionDuration: 300,
-    },
-    '(max-width: 500px)': {
-      slidesToShow: 1,
-      slidesToScroll: 1,
-    },
-  };
-
-  const elRef = useBlazeSlider(config || defaultConfig);
-
+export const Carousel: React.FC<CarouselProps> = ({ elRef, children }) => {
   return (
-    <div
-      ref={elRef}
-      className="blaze-slider"
-      style={{
-        ['--slides-to-show' as any]: 2,
-      }}
-    >
-      <div className="blaze-container">
-        <div className="blaze-track-container">
-          <div className="blaze-track">
-            {React.Children.map(children, (child, index) => (
-              <div key={index}>{child}</div>
-            ))}
-          </div>
+    <div ref={elRef.ref} className="keen-slider shrink max-w-[40%] border-2 border-black">
+      {React.Children.map(children, (child, index) => (
+        <div className={'keen-slider__slide item_' + index} key={index}>
+          {child}
         </div>
-      </div>
+      ))}
     </div>
   );
 };

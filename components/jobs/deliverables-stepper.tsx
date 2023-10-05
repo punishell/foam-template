@@ -90,6 +90,7 @@ const DeliverableStep: React.FC<DeliverableProps> = ({
 interface DeliverablesStepperProps {
   jobId: string;
   jobCreator: string;
+  talentId: string;
   readonly?: boolean;
   deliverables: Deliverable[];
 }
@@ -98,6 +99,7 @@ export const DeliverablesStepper: React.FC<DeliverablesStepperProps> = ({
   deliverables,
   jobId,
   jobCreator,
+  talentId,
   readonly: isClient,
 }) => {
   const mutation = useMarkJobAsComplete();
@@ -136,6 +138,7 @@ export const DeliverablesStepper: React.FC<DeliverablesStepperProps> = ({
               mutation.mutate(
                 {
                   jobId,
+                  talentId,
                 },
                 {
                   onError: () => {

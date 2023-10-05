@@ -140,7 +140,7 @@ export const ProfileView = () => {
               <div className="flex flex-row justify-center items-center text-body">
                 <MapPin className="mr-2" />
                 <p className="text-base font-thin text-body">
-                  {userData?.location} {userData?.country}
+                  {userData?.location}, {userData?.country}
                 </p>
               </div>
               <div className="flex flex-col mt-4">
