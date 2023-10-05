@@ -92,6 +92,7 @@ interface DeliverablesStepperProps {
   jobCreator: string;
   talentId: string;
   readonly?: boolean;
+  showActionButton?: boolean;
   deliverables: Deliverable[];
 }
 
@@ -101,6 +102,7 @@ export const DeliverablesStepper: React.FC<DeliverablesStepperProps> = ({
   jobCreator,
   talentId,
   readonly: isClient,
+  showActionButton = true,
 }) => {
   const mutation = useMarkJobAsComplete();
   const totalDeliverables = deliverables.length;
@@ -129,7 +131,7 @@ export const DeliverablesStepper: React.FC<DeliverablesStepperProps> = ({
         })}
 
       <div className="mt-auto">
-        {isClient && totalDeliverables === completedDeliverables && (
+        {showActionButton && isClient && totalDeliverables === completedDeliverables && (
           <Button
             className="mt-6"
             size={'sm'}
@@ -152,7 +154,7 @@ export const DeliverablesStepper: React.FC<DeliverablesStepperProps> = ({
           </Button>
         )}
 
-        {!isClient && totalDeliverables === completedDeliverables && (
+        {showActionButton && !isClient && totalDeliverables === completedDeliverables && (
           <div className="bg-primary-gradient p-[2px] rounded-[10px] mt-6">
             <div className="bg-green-50 rounded-lg py-3 px-2">Waiting for Client to approve job as complete.</div>
           </div>

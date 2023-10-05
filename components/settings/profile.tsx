@@ -298,13 +298,9 @@ export const ProfileView = () => {
               </div>
             </div>
             <div className="bg-white rounded-lg p-4 mb-8">
-              <div className="flex flex-row justify-between h-[50px] items-center">
+              <div className="flex flex-row justify-between h-[50px] items-center cursor-pointer" onClick={() => setShowDelete(!showDelete)}>
                 <p className="text-lg text-title font-bold">Delete Account</p>
-                {showDelete ? (
-                  <ChevronUp className="cursor-pointer" onClick={() => setShowDelete(!showDelete)} />
-                ) : (
-                  <ChevronDown className="cursor-pointer" onClick={() => setShowDelete(!showDelete)} />
-                )}
+                {showDelete ? <ChevronUp /> : <ChevronDown />}
               </div>
               {showDelete && (
                 <div className="flex flex-col gap-4 my-4">
