@@ -6,6 +6,7 @@ import { DefaultAvatar } from '@/components/common/default-avatar';
 import type { UserProfile } from '@/lib/types';
 
 interface Props {
+  status?: 'ongoing' | 'cancel_requested';
   createdAt: string;
   deliveryDate: string;
   paymentFee: number;
@@ -17,10 +18,24 @@ interface Props {
   }[];
 }
 
-export const JobUpdateHeader: React.FC<Props> = ({ createdAt, profile, deliveryDate, paymentFee, progress, tags }) => {
+export const JobUpdateHeader: React.FC<Props> = ({
+  createdAt,
+  profile,
+  deliveryDate,
+  paymentFee,
+  progress,
+  tags,
+  status = 'ongoing',
+}) => {
   return (
     <div className="flex flex-col gap-4">
-      <div className="border bg-[#F8FFF4] border-[#7DDE86] p-4 rounded-2xl grid grid-cols-4 divide-x">
+      <div
+        className="border p-4 rounded-2xl grid grid-cols-4 divide-x"
+        style={{
+          borderColor: status === 'cancel_requested' ? '#FFBDBD' : '#7DDE86',
+          backgroundColor: status === 'cancel_requested' ? '#FFF8F8' : '#F8FFF4',
+        }}
+      >
         <div className="pr-4 flex flex-col gap-2">
           <span className="text-body">Date Created</span>
           <span>{format(new Date(createdAt), 'MMM dd, yyyy')}</span>
@@ -36,13 +51,25 @@ export const JobUpdateHeader: React.FC<Props> = ({ createdAt, profile, deliveryD
         </div>
         <div className="pl-4 flex flex-col gap-2">
           <span className="text-body">Status</span>
-          <span className="px-3 py-1 text-sm text-white inline-flex rounded-full bg-[#4CD471] w-fit">
-            {progress === 100 ? 'Completed' : 'In Progress'}
+          <span
+            className="px-3 py-1 text-sm inline-flex rounded-full w-fit text-white"
+            style={{
+              borderColor: status === 'cancel_requested' ? '#FFBDBD' : '#7DDE86',
+              backgroundColor: status === 'cancel_requested' ? '#EE4B2B' : '#7DDE86',
+            }}
+          >
+            {status === 'cancel_requested' ? 'Cancelling' : 'In Progress'}
           </span>
         </div>
       </div>
 
-      <div className="border bg-[#F8FFF4] border-[#7DDE86] p-4 rounded-2xl flex flex-col divide-y">
+      <div
+        className="border p-4 rounded-2xl flex flex-col divide-y"
+        style={{
+          borderColor: status === 'cancel_requested' ? '#FFBDBD' : '#7DDE86',
+          backgroundColor: status === 'cancel_requested' ? '#FFF8F8' : '#F8FFF4',
+        }}
+      >
         <div className="pb-4 flex flex-col gap-2">
           <div className="flex gap-2 items-center">
             <AfroProfile score={profile.score} size="sm">
