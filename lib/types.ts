@@ -95,7 +95,7 @@ export interface UserProfile {
   };
 }
 
-export type JobStatus = 'pending' | 'ongoing' | 'completed' | 'waiting' | 'cancelled' | 'cancel_requested';
+export type JobStatus = 'pending' | 'ongoing' | 'completed' | 'waiting' | 'cancelled';
 
 interface Rating {
   review: string;

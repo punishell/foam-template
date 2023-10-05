@@ -626,10 +626,6 @@ async function requestJobCancellation(params: RequestJobCancellationParams): Pro
     description: params.explanation,
   });
 
-  await axios.patch(`/collection/${params.jobId}`, {
-    status: 'cancel_requested',
-  });
-
   return res.data.data;
 }
 
@@ -643,10 +639,56 @@ export function useRequestJobCancellation() {
       toast.error(error?.response?.data.message ?? 'Error requesting job cancellation');
     },
     onSuccess: () => {
+      queryClient.refetchQueries({ queryKey: ['get-job-by-id'] });
       toast.success(`Job cancellation requested successfully`);
     },
-    onMutate: () => {
-      queryClient.invalidateQueries(['get-job-by-id']);
+  });
+}
+
+// Accept Job Cancellation
+
+interface AcceptJobCancellationParams {
+  jobId: string;
+  amount: number;
+  rating: number;
+  review: string;
+  recipientId: string;
+}
+
+async function acceptJobCancellation(params: AcceptJobCancellationParams): Promise<ApiResponse> {
+  let res;
+
+  res = await axios.post(`/reviews`, {
+    review: params.review,
+    rating: params.rating,
+    collectionId: params.jobId,
+    receiver: params.recipientId,
+  });
+
+  res = await axios.post(`/payment/release`, {
+    collection: params.jobId,
+    amount: params.amount.toString(),
+  });
+
+  res = await axios.patch(`/collection/${params.jobId}`, {
+    status: 'cancelled',
+  });
+
+  return res.data.data;
+}
+
+export function useAcceptJobCancellation() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: acceptJobCancellation,
+    mutationKey: ['accept-job-cancellation'],
+    onError: (error: ApiError) => {
+      toast.error(error?.response?.data.message ?? 'Error accepting job cancellation');
+    },
+    onSuccess: () => {
+      queryClient.refetchQueries({ queryKey: ['get-job-by-id'] });
+      toast.success(`Job cancellation accepted successfully`);
     },
   });
 }
