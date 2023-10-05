@@ -18,6 +18,7 @@ export const JobUpdates: React.FC<JobUpdatesProps> = ({ job, requestJobCancellat
     name,
     tags,
     creator,
+    owner,
     description,
     createdAt,
     deliveryDate,
@@ -125,6 +126,7 @@ export const JobUpdates: React.FC<JobUpdatesProps> = ({ job, requestJobCancellat
             <DeliverablesStepper
               jobId={jobId}
               jobCreator={creator._id}
+              talentId={String(owner?._id)}
               readonly
               deliverables={deliverables.map(({ _id, name, progress, updatedAt }) => ({
                 progress,

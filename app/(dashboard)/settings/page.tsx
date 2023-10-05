@@ -2,7 +2,7 @@
 import React from 'react';
 import { Tabs } from '@/components/common/tabs';
 import { ProfileView } from '@/components/settings/profile';
-import { NotificationView } from '@/components/settings/notification';
+// import { NotificationView } from '@/components/settings/notification';
 import { SecurityView } from '@/components/settings/security';
 
 export default function Settings() {

@@ -1,6 +1,6 @@
 import { ApiError, axios } from '@/lib/axios';
 import { toast } from '@/components/common/toaster';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { QueryClient, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { DataFeedResponse } from '../types';
 
 interface CreatorData {
@@ -78,10 +78,12 @@ export const useGetLeaderBoard = () => {
 };
 
 export function useDismissFeed() {
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: dismissFeed,
     mutationKey: ['dismiss-feed-by-id'],
     onSuccess: () => {
+      queryClient.refetchQueries(['get-timeline', '1', {}]);
       toast.success('Feed Dismissed successfully');
     },
     onError: (error: ApiError) => {

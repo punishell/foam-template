@@ -76,9 +76,9 @@ export const ReviewJobCancellationRequest: React.FC<ReviewJobCancellationRequest
 
         <div className="flex flex-col gap-2">
           <h3 className="font-bold text-lg">Deliverables</h3>
-
           <DeliverablesStepper
             jobId={jobId}
+            talentId={owner?._id}
             jobCreator={creator._id}
             readonly
             showActionButton={false}

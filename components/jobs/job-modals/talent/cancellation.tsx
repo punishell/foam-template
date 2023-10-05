@@ -26,7 +26,7 @@ interface ReviewJobCancellationRequestProps {
 export const ReviewJobCancellationRequest: React.FC<ReviewJobCancellationRequestProps> = ({ job }) => {
   const [acceptCancellation, setAcceptCancellation] = React.useState(false);
 
-  const { creator, createdAt, paymentFee, deliveryDate, name: jobTitle, _id: jobId, progress, tags, collections } = job;
+  const { creator, owner, createdAt, paymentFee, deliveryDate, name: jobTitle, _id: jobId, progress, tags, collections } = job;
 
   const deliverables = collections.filter(isJobDeliverable);
   const jobCancellation = job.collections.find(isJobCancellation);
@@ -67,6 +67,7 @@ export const ReviewJobCancellationRequest: React.FC<ReviewJobCancellationRequest
           <DeliverablesStepper
             jobId={jobId}
             jobCreator={creator._id}
+            talentId={String(owner?._id)}
             readonly
             showActionButton={false}
             deliverables={deliverables.map(({ _id, name, progress, updatedAt }) => ({

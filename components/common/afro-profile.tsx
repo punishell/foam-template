@@ -71,9 +71,10 @@ export const AfroProfile: React.FC<AfroProfileProps> = ({ size, score = 63, chil
             position: 'relative',
             height: '100%',
             width: '100%',
-            borderRadius: '999px',
+            borderRadius: '100%',
             overflow: 'hidden',
             backgroundColor: 'transparent',
+            margin: "auto"
           }}
         >
           {children}

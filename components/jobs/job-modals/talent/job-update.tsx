@@ -13,6 +13,7 @@ interface JobUpdatesProps {
 export const JobUpdates: React.FC<JobUpdatesProps> = ({ job, requestJobCancellation }) => {
   const {
     name,
+    owner,
     creator,
     tags,
     description,
@@ -66,6 +67,7 @@ export const JobUpdates: React.FC<JobUpdatesProps> = ({ job, requestJobCancellat
           <div className="grow h-full">
             <DeliverablesStepper
               jobId={jobId}
+              talentId={String(owner?._id)}
               jobCreator={creator?._id}
               deliverables={deliverables.map(({ _id, name, progress, updatedAt }) => ({
                 jobId: jobId,

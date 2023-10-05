@@ -140,7 +140,7 @@ export const ProfileView = () => {
               <div className="flex flex-row justify-center items-center text-body">
                 <MapPin className="mr-2" />
                 <p className="text-base font-thin text-body">
-                  {userData?.location} {userData?.country}
+                  {userData?.location}, {userData?.country}
                 </p>
               </div>
               <div className="flex flex-col mt-4">
@@ -298,13 +298,9 @@ export const ProfileView = () => {
               </div>
             </div>
             <div className="bg-white rounded-lg p-4 mb-8">
-              <div className="flex flex-row justify-between h-[50px] items-center">
+              <div className="flex flex-row justify-between h-[50px] items-center cursor-pointer" onClick={() => setShowDelete(!showDelete)}>
                 <p className="text-lg text-title font-bold">Delete Account</p>
-                {showDelete ? (
-                  <ChevronUp className="cursor-pointer" onClick={() => setShowDelete(!showDelete)} />
-                ) : (
-                  <ChevronDown className="cursor-pointer" onClick={() => setShowDelete(!showDelete)} />
-                )}
+                {showDelete ? <ChevronUp /> : <ChevronDown />}
               </div>
               {showDelete && (
                 <div className="flex flex-col gap-4 my-4">

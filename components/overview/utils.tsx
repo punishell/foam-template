@@ -20,7 +20,6 @@ import {
   JobUpdateFeed,
 } from './feedViewer';
 import { DataFeedResponse } from '@/lib/types';
-import { useDismissFeed } from '@/lib/api/dashboard';
 
 export const ParseFeedView = (feed: DataFeedResponse, loggedInUser: string, key: number, callback?: () => void, dismissFeed?: (id: string) => void) => {
 
@@ -126,7 +125,15 @@ export const ParseFeedView = (feed: DataFeedResponse, loggedInUser: string, key:
     case FEED_TYPES.JOB_COMPLETION:
       return;
     case FEED_TYPES.REFERRAL_SIGNUP:
-      return <ReferralSignupFeed id={feed?._id} name={`${feed?.creator?.firstName || ''} ${feed?.creator?.lastName || ''}`} userId={feed?.creator?._id} close={DismissByID} />;
+      return <ReferralSignupFeed
+        id={feed?._id} name={`${feed?.creator?.firstName || ''} ${feed?.creator?.lastName || ''}`}
+        avatar={feed?.creator?.profileImage?.url}
+        userId={feed?.creator?._id}
+        score={feed?.creator?.score}
+        close={DismissByID}
+        bookmarked={isBookmarked}
+        bookmarkId={bookmarkId}
+      />;
     case FEED_TYPES.REFERRAL_COLLECTION_COMPLETION:
       return <ReferralJobCompletion />;
     case FEED_TYPES.PAYMENT_RELEASED:

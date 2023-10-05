@@ -155,6 +155,7 @@ export const FEED_TYPES = {
   JOB_INVITATION_DECLINED: 'job_invitation_declined',
   JOB_COMPLETION: 'job_Completion',
   JOB_CANCELLED: 'job_cancelled',
+  JOB_REVIEW: 'job_review',
 };
 
 export function getAvatarColor(paktScore: number) {

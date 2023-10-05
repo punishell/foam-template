@@ -3,6 +3,7 @@ import React from 'react';
 import Image from 'next/image';
 import { useGetAccount } from '@/lib/api/account';
 import { AfroProfile } from '@/components/common/afro-profile';
+import { ProfileImage } from '../overview/ProfileImage';
 
 type Size = 'sm' | 'md' | 'lg' | 'xl';
 
@@ -28,15 +29,16 @@ export const UserProfile = () => {
 
   return (
     <div className="flex flex-col items-center gap-2">
-      <AfroProfile score={account?.score ?? 0} size="xl">
+      {/* <AfroProfile score={account?.score ?? 0} size="xl">
         <div className="h-full w-full rounded-full">
           {account?.profileImage?.url ? (
-            <Image width={SIZE_TO_PX['xl']} height={SIZE_TO_PX["xl"]} src={account?.profileImage.url} alt="profile" className="p-3 rounded-full" />
+            <Image width={SIZE_TO_PX['xl']} height={SIZE_TO_PX["xl"]} src={account?.profileImage.url} alt="profile" className="p-2 rounded-full" />
           ) : (
             <DefaultAvatar />
           )}
         </div>
-      </AfroProfile>
+      </AfroProfile> */}
+      <ProfileImage score={account?.score ?? 0} size="xl" imageUrl={account?.profileImage?.url} />
 
       <div className="flex flex-col gap-0 text-center">
         <span className="text-lg">
