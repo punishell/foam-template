@@ -7,8 +7,8 @@ import { useRouter } from 'next/navigation';
 import { SideModal } from '@/components/common/side-modal';
 import { AfroProfile } from '@/components/common/afro-profile';
 import { DefaultAvatar } from '@/components/common/default-avatar';
-import { ClientJobModal } from '@/components/jobs/job-modals/client-job-modal';
-import { TalentJobModal } from '@/components/jobs/job-modals/talent-job-modal';
+import { ClientJobModal } from '@/components/jobs/job-modals/client';
+import { TalentJobModal } from '@/components/jobs/job-modals/talent';
 import { DeliverableProgressBar } from '@/components/common/deliverable-progress-bar';
 import { ProfileImage } from '@/components/overview/ProfileImage';
 interface ClientJobCardProps {
@@ -41,7 +41,7 @@ export const ClientJobCard: React.FC<ClientJobCardProps> = ({
   return (
     <div className="gap-4 bg-white rounded-3xl border-line w-full flex flex-col grow border p-4">
       <div className="w-full flex gap-4">
-        <ProfileImage score={talent.paktScore} size='md' imageUrl={talent.avatar} />
+        <ProfileImage score={talent.paktScore} size="md" imageUrl={talent.avatar} />
         <div className="flex flex-col gap-2 grow">
           <div className="flex items-center justify-between gap-2">
             {<span className="text-body text-lg font-bold">{talent.name}</span>}

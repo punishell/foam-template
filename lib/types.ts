@@ -127,7 +127,15 @@ export type JobApplicant = {
   creator: UserProfile;
 };
 
-type Collection = JobDeliverable | JobApplicant;
+export type JobCancellation = {
+  name: string;
+  _id: string;
+  description: string;
+  creator: UserProfile;
+  type: 'cancellation';
+};
+
+type Collection = JobDeliverable | JobApplicant | JobCancellation;
 
 export const isJobDeliverable = (collection: Collection): collection is JobDeliverable => {
   return collection.type === 'deliverable';
@@ -135,6 +143,10 @@ export const isJobDeliverable = (collection: Collection): collection is JobDeliv
 
 export const isJobApplicant = (collection: Collection): collection is JobApplicant => {
   return collection.type === 'application';
+};
+
+export const isJobCancellation = (collection: Collection): collection is JobCancellation => {
+  return collection.type === 'cancellation';
 };
 
 export interface ImageUp {
