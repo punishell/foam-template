@@ -1,20 +1,254 @@
 import React from 'react';
-import { Button, Checkbox } from 'pakt-ui';
+import type { Job, UserProfile } from '@/lib/types';
+import { isJobCancellation, isJobDeliverable } from '@/lib/types';
+import { Button, Checkbox, Slider } from 'pakt-ui';
 import { ChevronLeft } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { Spinner } from '@/components/common';
+import { DeliverableProgressBar } from '@/components/common/deliverable-progress-bar';
+import { useAcceptJobCancellation } from '@/lib/api/job';
 import { useRequestJobCancellation } from '@/lib/api/job';
+import { JobUpdateHeader } from '../job-update-header';
+import Rating from 'react-rating';
+import { Star } from 'lucide-react';
+import { DeliverablesStepper } from '@/components/jobs/deliverables-stepper';
+import Image from 'next/image';
+import { AfroProfile } from '@/components/common/afro-profile';
+import { DefaultAvatar } from '@/components/common/default-avatar';
+
+const MAX_REVIEW_LENGTH = 500;
 
 interface ReviewJobCancellationRequestProps {
-  jobId: string;
+  job: Job;
   closeModal: () => void;
 }
 
-export const ReviewJobCancellationRequest: React.FC<ReviewJobCancellationRequestProps> = ({ jobId, closeModal }) => {
-  return <div>TODO</div>;
+export const ReviewJobCancellationRequest: React.FC<ReviewJobCancellationRequestProps> = ({ job, closeModal }) => {
+  const [acceptCancellation, setAcceptCancellation] = React.useState(false);
+
+  const {
+    creator,
+    createdAt,
+    paymentFee,
+    deliveryDate,
+    name: jobTitle,
+    _id: jobId,
+    progress,
+    owner,
+    tags,
+    collections,
+  } = job;
+
+  const deliverables = collections.filter(isJobDeliverable);
+  const jobCancellation = job.collections.find(isJobCancellation);
+
+  if (!owner) return null;
+
+  if (acceptCancellation) {
+    return <AcceptJobCancellation job={job} talent={owner} setAcceptCancellation={setAcceptCancellation} />;
+  }
+
+  return (
+    <React.Fragment>
+      <div className="py-6 px-4 bg-gradient-to-r from-danger via-red-500 to-red-400 text-white font-bold text-3xl flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <span>{jobTitle}</span>
+        </div>
+      </div>
+      <div className="flex py-6 px-4 flex-col gap-6 h-full grow">
+        <JobUpdateHeader
+          status="cancel_requested"
+          createdAt={createdAt}
+          profile={owner}
+          deliveryDate={deliveryDate}
+          paymentFee={paymentFee}
+          progress={progress}
+          tags={tags}
+        />
+
+        <div className="flex flex-col gap-2">
+          <h3 className="font-bold text-lg">Explanation</h3>
+          <div className="bg-[#FEF4E3] p-3 rounded-xl border border-yellow flex flex-col gap-2">
+            <h3 className="font-bold">{jobCancellation?.name}</h3>
+            <p>{jobCancellation?.description}</p>
+          </div>
+        </div>
+
+        <div className="flex flex-col gap-2">
+          <h3 className="font-bold text-lg">Deliverables</h3>
+
+          <DeliverablesStepper
+            jobId={jobId}
+            jobCreator={creator._id}
+            readonly
+            showActionButton={false}
+            deliverables={deliverables.map(({ _id, name, progress, updatedAt }) => ({
+              progress,
+              updatedAt,
+              jobId: jobId,
+              description: name,
+              deliverableId: _id,
+              jobCreator: creator._id,
+            }))}
+          />
+        </div>
+        <div className="mt-auto border border-red-300 rounded-xl">
+          <Button
+            size={'sm'}
+            fullWidth
+            onClick={() => {
+              setAcceptCancellation(true);
+            }}
+            variant={'danger'}
+          >
+            Review And Cancel Job
+          </Button>
+        </div>
+      </div>
+    </React.Fragment>
+  );
 };
 
-const JOB_CANCEL_REASONS = ['Client is not responsive', 'Unforeseeable Circumstances'];
+interface AcceptJobCancellationProps {
+  job: Job;
+  talent?: UserProfile;
+  setAcceptCancellation: (value: boolean) => void;
+}
+
+const AcceptJobCancellation: React.FC<AcceptJobCancellationProps> = ({ setAcceptCancellation, talent, job }) => {
+  const cancelJobMutation = useAcceptJobCancellation();
+
+  const [rating, setRating] = React.useState(0);
+  const [comment, setComment] = React.useState('');
+  const [percentageToPay, setPercentageToPay] = React.useState(10);
+
+  const amountToPay = (percentageToPay / 100) * job.paymentFee;
+
+  const totalDeliverables = job.collections.filter(isJobDeliverable).length;
+
+  return (
+    <React.Fragment>
+      <div className="py-6 px-4 bg-gradient-to-r from-danger via-red-500 to-red-400 text-white font-bold text-3xl flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => {
+              setAcceptCancellation(false);
+            }}
+          >
+            <ChevronLeft />
+          </button>
+          <span>Cancel Job</span>
+        </div>
+      </div>
+
+      <div className="flex py-6 px-4 flex-col gap-10 h-full grow">
+        <DeliverableProgressBar
+          percentageProgress={job.progress}
+          totalDeliverables={totalDeliverables}
+          className="max-w-none text-base"
+        />
+
+        <div className="flex flex-col gap-1">
+          <p className="text-title">Proposed Job Price: ${job.paymentFee}</p>
+
+          <div className="flex flex-col gap-3 p-3 bg-slate-50 rounded-lg border border-gray-200">
+            <p className="text-body flex items-center gap-2">
+              <span>Amount to pay the Talent:</span> <span className="text-green-600 font-bold">${amountToPay}</span>
+              <span className="text-sm">({percentageToPay}%)</span>
+            </p>
+            <div className="my-2">
+              <Slider
+                value={[percentageToPay]}
+                onValueChange={(value) => {
+                  setPercentageToPay(value[0]);
+                }}
+                min={0}
+                max={100}
+              />
+            </div>
+          </div>
+        </div>
+
+        <div className="flex flex-col gap-1">
+          <span className="text-title">How was your experience with {talent?.firstName}?</span>
+          <div className="flex flex-col gap-3 p-3 bg-slate-50 rounded-lg border border-gray-200">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <AfroProfile score={talent?.score || 0} size="sm">
+                  <div className="h-full w-full rounded-full relative">
+                    {talent?.profileImage?.url ? (
+                      <Image src={talent?.profileImage?.url} fill alt="profile" className="rounded-full" />
+                    ) : (
+                      <DefaultAvatar />
+                    )}
+                  </div>
+                </AfroProfile>
+
+                <div className="flex flex-col gap-1">
+                  <span className="text-title text-base font-medium leading-none">{`${talent?.firstName} ${talent?.lastName}`}</span>
+                  <span className="text-sm capitalize leading-none">{talent?.profile.bio.title}</span>
+                </div>
+              </div>
+
+              <div>
+                {/* @ts-ignore */}
+                <Rating
+                  initialRating={rating}
+                  onChange={(value) => setRating(value)}
+                  fullSymbol={<Star fill="#15D28E" color="#15D28E" />}
+                  emptySymbol={<Star fill="transparent" color="#15D28E" />}
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <h3>Comment</h3>
+          <div>
+            <textarea
+              rows={5}
+              value={comment}
+              onChange={(e) => {
+                if (e.target.value.length <= MAX_REVIEW_LENGTH) {
+                  setComment(e.target.value);
+                }
+              }}
+              placeholder="Write your comment..."
+              className="grow focus:outline-none p-2 resize-none rounded-lg w-full bg-gray-50 border border-line placeholder:text-sm"
+            ></textarea>
+            <div className="ml-auto w-fit">
+              <span className="text-sm text-body">{comment.length}</span>
+              <span className="text-sm text-body">/</span>
+              <span className="text-sm text-body">{MAX_REVIEW_LENGTH}</span>
+            </div>
+          </div>
+        </div>
+
+        <div className="mt-auto">
+          <Button
+            fullWidth
+            variant={'primary'}
+            disabled={cancelJobMutation.isLoading || comment.length === 0 || rating === 0}
+            onClick={() => {
+              cancelJobMutation.mutate({
+                rating,
+                jobId: job._id,
+                review: comment,
+                amount: amountToPay,
+                recipientId: talent?._id ?? '',
+              });
+            }}
+          >
+            {cancelJobMutation.isLoading ? <Spinner size={20} /> : 'Accept Cancellation'}
+          </Button>
+        </div>
+      </div>
+    </React.Fragment>
+  );
+};
+
+const JOB_CANCEL_REASONS = ['Talent is not responsive', 'Unforeseeable Circumstances'];
 
 interface RequestJobCancellationProps {
   jobId: string;
@@ -23,7 +257,6 @@ interface RequestJobCancellationProps {
 }
 
 export const RequestJobCancellation: React.FC<RequestJobCancellationProps> = ({
-  closeModal,
   jobId,
   cancelJobCancellationRequest,
 }) => {
@@ -46,7 +279,7 @@ export const RequestJobCancellation: React.FC<RequestJobCancellationProps> = ({
 
       <div className="flex py-6 px-4 flex-col gap-6 h-full grow">
         <div className="bg-[#FEF4E3]  p-4 rounded-2xl border border-yellow-dark">
-          The client will need to accept for the cancellation to be effective. Ensure you have had the conversation with
+          The talent will need to accept for the cancellation to be effective. Ensure you have had the conversation with
           them.
         </div>
 
@@ -99,8 +332,8 @@ export const RequestJobCancellation: React.FC<RequestJobCancellationProps> = ({
 
         <div className="flex flex-col gap-6">
           <div className="bg-[#FEF4E3]  p-4 rounded-2xl border border-yellow-dark">
-            Payment for any deliverable is at the sole discretion of the client. Client will review talent but talent
-            cannot review client.
+            Payment for any deliverable is at the sole discretion of the talent. Talent will review client but Client
+            cannot review talent.
           </div>
 
           <div className="flex flex-col gap-1">
@@ -194,7 +427,7 @@ export const RequestJobCancellationSuccess: React.FC = () => {
             </clipPath>
           </defs>
         </svg>
-        <p className="text-lg text-body">A cancel request has been sent to the client.</p>
+        <p className="text-lg text-body">A cancel request has been sent to the talent.</p>
         <div className="max-w-[200px] w-full">
           <Button fullWidth size="sm" onClick={() => router.push('/overview')}>
             Go To Dashboard

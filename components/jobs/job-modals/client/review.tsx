@@ -95,7 +95,7 @@ export const ReviewTalent: React.FC<ReviewTalentProps> = ({ job, closeModal }) =
             <div className="ml-auto w-fit">
               <span className="text-sm text-body">{comment.length}</span>
               <span className="text-sm text-body">/</span>
-              <span className="text-sm text-body">{MAX_COMMENT_LENGTH} characters</span>
+              <span className="text-sm text-body">{MAX_COMMENT_LENGTH}</span>
             </div>
           </div>
         </div>

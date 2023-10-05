@@ -3,6 +3,8 @@ import { useGetJobById } from '@/lib/api/job';
 import { isJobCancellation } from '@/lib/types';
 import { PageError } from '@/components/common/page-error';
 import { PageLoading } from '@/components/common/page-loading';
+import Lottie from 'lottie-react';
+import warning from '@/lottiefiles/warning.json';
 
 import { JobUpdates } from './job-update';
 import { ReviewClient, ReviewSuccess } from './review';
@@ -40,12 +42,23 @@ export const TalentJobModal: React.FC<TalentJobModalProps> = ({ jobId }) => {
   const talentHasReviewed = job.ratings?.some((review) => review.owner._id === job.owner?._id);
   const clientHasReviewed = job.ratings?.some((review) => review.owner._id === job.creator._id);
 
-  if (job.status === 'cancel_requested' && talentRequestedCancellation) {
+  if (job.status === 'cancelled') {
+    return (
+      <div className="bg-red-50 flex items-center justify-center h-full text-red-500 flex-col">
+        <div className="w-[200px] flex items-center justify-center">
+          <Lottie animationData={warning} loop={false} />
+        </div>
+        <span>This Job has been cancelled</span>
+      </div>
+    );
+  }
+
+  if (talentRequestedCancellation) {
     return <RequestJobCancellationSuccess />;
   }
 
-  if (job.status === 'cancel_requested' && clientRequestedCancellation) {
-    return <ReviewJobCancellationRequest jobId={jobId} closeModal={() => setIsRequestingJobCancellation(false)} />;
+  if (clientRequestedCancellation) {
+    return <ReviewJobCancellationRequest job={job} closeModal={() => setIsRequestingJobCancellation(false)} />;
   }
 
   if (clientHasReviewed && talentHasReviewed) {
