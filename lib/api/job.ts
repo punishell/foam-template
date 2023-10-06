@@ -105,7 +105,7 @@ interface GetJobByIdParams {
   jobId: string;
 }
 
-interface GetJobByIdResponse extends Job { }
+interface GetJobByIdResponse extends Job {}
 
 async function getJobById(params: GetJobByIdParams): Promise<GetJobByIdResponse> {
   const res = await axios.get(`/collection/${params.jobId}`);
@@ -684,6 +684,108 @@ export function useAcceptJobCancellation() {
     onSuccess: () => {
       queryClient.refetchQueries({ queryKey: ['get-job-by-id'] });
       toast.success(`Job cancellation accepted successfully`);
+    },
+  });
+}
+
+// Request Review Change
+
+interface RequestReviewChangeParams {
+  jobId: string;
+  reason: string;
+}
+
+async function requestReviewChange(params: RequestReviewChangeParams): Promise<ApiResponse> {
+  const res = await axios.post(`/collection`, {
+    status: 'pending',
+    parent: params.jobId,
+    description: params.reason,
+    type: 'review_change_request',
+    name: 'Review Change Request',
+  });
+
+  return res.data.data;
+}
+
+export function useRequestReviewChange() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: requestReviewChange,
+    mutationKey: ['request-review-change'],
+    onError: (error: ApiError) => {
+      toast.error(error?.response?.data.message ?? 'Error requesting review change');
+    },
+    onSuccess: () => {
+      queryClient.refetchQueries({ queryKey: ['get-job-by-id'] });
+      toast.success(`Review change requested successfully`);
+    },
+  });
+}
+
+// Accept Review Change: client review is deleted, all deliverables status as 0;
+interface AcceptReviewChangeParams {
+  reviewId: string;
+  deliverableIds: string[];
+}
+
+async function acceptReviewChange(params: AcceptReviewChangeParams): Promise<ApiResponse> {
+  let res;
+
+  res = await axios.delete(`/reviews/${params.reviewId}`);
+
+  res = await axios.patch(`/collection/many`, {
+    collections: params.deliverableIds.map((id) => ({
+      id,
+      progress: 0,
+    })),
+  });
+
+  return res.data.data;
+}
+
+export function useAcceptReviewChange() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: acceptReviewChange,
+    mutationKey: ['accept-review-change'],
+    onError: (error: ApiError) => {
+      toast.error(error?.response?.data.message ?? 'Error accepting review change');
+    },
+    onSuccess: () => {
+      queryClient.refetchQueries({ queryKey: ['get-job-by-id'] });
+      toast.success(`Review change accepted successfully`);
+    },
+  });
+}
+
+// Decline Review Change: review_request status is set to cancelled,
+
+interface DeclineReviewChangeParams {
+  reviewChangeRequestId: string;
+}
+
+async function declineReviewChange(params: DeclineReviewChangeParams): Promise<ApiResponse> {
+  const res = await axios.patch(`/collection/${params.reviewChangeRequestId}`, {
+    status: 'cancelled',
+  });
+
+  return res.data.data;
+}
+
+export function useDeclineReviewChange() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: declineReviewChange,
+    mutationKey: ['decline-review-change'],
+    onError: (error: ApiError) => {
+      toast.error(error?.response?.data.message ?? 'Error declining review change');
+    },
+    onSuccess: () => {
+      queryClient.refetchQueries({ queryKey: ['get-job-by-id'] });
+      toast.success(`Review change declined successfully`);
     },
   });
 }
