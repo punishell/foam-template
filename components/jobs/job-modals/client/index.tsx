@@ -6,8 +6,8 @@ import { PageLoading } from '@/components/common/page-loading';
 import { JobUpdates } from './job-update';
 import Lottie from 'lottie-react';
 import warning from '@/lottiefiles/warning.json';
-import { ReviewSuccess, ReviewTalent } from './review';
-import { RequestJobCancellation, RequestJobCancellationSuccess, ReviewJobCancellationRequest } from './cancellation';
+import { ReviewTalent } from './review';
+import { RequestJobCancellation, RequestJobCancellationSuccess, JobCancellationRequest } from './cancellation';
 
 interface ClientJobModalProps {
   jobId: string;
@@ -54,13 +54,7 @@ export const ClientJobModal: React.FC<ClientJobModalProps> = ({ jobId, closeModa
   }
 
   if (talentRequestedCancellation) {
-    return <ReviewJobCancellationRequest job={job} closeModal={() => setIsRequestingJobCancellation(false)} />;
-  }
-
-  const clientHasReviewed = job.ratings?.some((review) => review.owner._id === job.creator._id);
-
-  if (clientHasReviewed) {
-    return <ReviewSuccess closeModal={closeModal} />;
+    return <JobCancellationRequest job={job} closeModal={() => setIsRequestingJobCancellation(false)} />;
   }
 
   if (job.status === 'completed') {
