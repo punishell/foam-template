@@ -132,7 +132,7 @@ export const Achievements: React.FC<AchievementProps> = ({ achievements = [] }) 
                   key={type}
                   achievement={{
                     minValue: 0,
-                    value: value,
+                    value: Math.floor(value),
                     maxValue: total,
                     type: type as AchievementType,
                   }}

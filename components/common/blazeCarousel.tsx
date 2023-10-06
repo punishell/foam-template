@@ -1,5 +1,5 @@
 'use client';
-import React from 'react';
+import React, { useState } from 'react';
 import 'blaze-slider/dist/blaze.css';
 import BlazeSlider, { BlazeConfig } from 'blaze-slider';
 
@@ -19,6 +19,7 @@ const defaultConfig: BlazeConfig = {
 export const useBlazeSlider = (config?: BlazeConfig) => {
   const sliderRef = React.useRef<BlazeSlider>();
   const elRef = React.useRef<HTMLDivElement>(null);
+  const [currentSlide, setCurrentSlide] = useState(0);
 
   React.useEffect(() => {
     if (!sliderRef.current && elRef.current) {
@@ -26,7 +27,14 @@ export const useBlazeSlider = (config?: BlazeConfig) => {
     }
   }, [config]);
 
-  return { ref: elRef, slider: sliderRef.current };
+  React.useEffect(() => {
+    const unsubscribe = sliderRef.current?.onSlide((pageIndex, firstVisibleSlideIndex, lastVisibleSlideIndex) => {
+      setCurrentSlide(pageIndex);
+    });
+    return () => { unsubscribe };
+  }, [sliderRef])
+
+  return { ref: elRef, slider: sliderRef.current, currentSlide };
 };
 
 interface CarouselProps {

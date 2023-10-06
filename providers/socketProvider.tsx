@@ -24,7 +24,7 @@ export const MessageTypeEnums = {
 export const conversationEnums = {
   USER_CONNECT: "USER_CONNECT",
   GET_ALL_CONVERSATIONS: "GET_ALL_CONVERSATIONS",
-  JOIN_OLD_CONVERSATIIONS: "JOIN_OLD_CONVERSATIIONS",
+  JOIN_OLD_CONVERSATIONS: "JOIN_OLD_CONVERSATIIONS",
   GET_ALL_USERS: "GET_ALL_USERS",
   INITIALIZE_CONVERSATION: "INITIALIZE_CONVERSATION",
   FETCH_CONVERSATION_MESSAGES: "FETCH_CONVERSATION_MESSAGES",
@@ -107,7 +107,7 @@ export const MessagingProvider = ({ children }: { children: React.ReactNode }) =
         });
 
         // Join Old Conversation If any
-        socket?.emit(conversationEnums.JOIN_OLD_CONVERSATIIONS, { userId: loggedInUser }, () => { });
+        socket?.emit(conversationEnums.JOIN_OLD_CONVERSATIONS, { userId: loggedInUser }, () => { });
         socket?.on("disconnect", () => {
           // TODO:: Perform Disconnect Function
         });
