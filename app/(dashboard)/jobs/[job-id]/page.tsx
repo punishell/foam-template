@@ -18,7 +18,7 @@ import { Modal } from '@/components/common/modal';
 import { PageError } from '@/components/common/page-error';
 import { PageLoading } from '@/components/common/page-loading';
 import { JobHeader, JobDescription, JobSkills, JobDeliverables } from '@/components/jobs/job-details';
-
+import { useCancelJobInvite } from '@/lib/api/job';
 import * as z from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm, SubmitHandler } from 'react-hook-form';
@@ -67,6 +67,7 @@ interface ClientJobDetailsProps {
 }
 
 const ClientJobDetails: React.FC<ClientJobDetailsProps> = ({ job }) => {
+  const cancelInvite = useCancelJobInvite();
   const [isDeleteModalOpen, setIsDeleteModalOpen] = React.useState(false);
   const JOB_TYPE: 'private' | 'open' = job.isPrivate ? 'private' : 'open';
 
@@ -98,8 +99,13 @@ const ClientJobDetails: React.FC<ClientJobDetailsProps> = ({ job }) => {
                 <span>Awaiting Talent Response</span>
               </div>
 
-              <button className="bg-red-50 border border-red-500 text-red-500 px-4 py-1 text-sm rounded-lg">
-                Cancel Invite
+              <button
+                className="bg-red-50 border border-red-500 text-red-500 px-4 py-1 text-sm rounded-lg w-[140px] h-[30px]"
+                onClick={() => {
+                  cancelInvite.mutate({ inviteId: '' }, {});
+                }}
+              >
+                {cancelInvite.isLoading ? <Spinner size={16} /> : 'Cancel Invite'}
               </button>
             </div>
           )}
