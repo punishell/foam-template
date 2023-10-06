@@ -49,15 +49,15 @@ const Review: React.FC<ReviewProps> = ({ body, title, rating, user }) => {
 
 export const Reviews = ({ reviews, loading }: { reviews: ReviewProps[]; loading: boolean }) => {
   const sliderInstance = useBlazeSlider();
-  const currentSlide = sliderInstance.slider?.stateIndex || 0;
-  const totalSlides = sliderInstance.slider?.totalSlides;
+  const currentSlide = sliderInstance?.currentSlide || 0;
+  const totalSlides = Number(sliderInstance.slider?.totalSlides || 0) / 2;
   return (
     <div className="bg-primary-gradient p-4 rounded-4 gap-3 w-full rounded-2xl max-w-[100%]">
       <div className='flex flex-row justify-between mb-4'>
         <h3 className="text-white font-medium text-2xl">Reviews</h3>
         <div className='flex flex-row gap-2'>
           <ArrowLeftCircle size={32} className={`cursor-pointer ${currentSlide === 0 ? 'text-body' : 'text-white'}`} onClick={() => sliderInstance.slider?.prev()} />
-          <ArrowRightCircle size={32} className={`cursor-pointer ${currentSlide === totalSlides ? 'text-body' : 'text-white'}`} onClick={() => sliderInstance.slider?.next()} />
+          <ArrowRightCircle size={32} className={`cursor-pointer ${currentSlide === (totalSlides - 1) ? 'text-body' : 'text-white'}`} onClick={() => sliderInstance.slider?.next()} />
         </div>
       </div>
 

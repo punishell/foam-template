@@ -39,7 +39,6 @@ export default function Wallet() {
   })), [walletTx?.data?.data]);
 
   const getChartData = async () => {
-    // const { payload: weekStat } = await fetchWalletStats({ format: "seven-day" });
     const response = await Promise.all([
       fetchWalletStats({ format: "seven-day" }),
       fetchWalletStats({ format: "thirty-day" }),
