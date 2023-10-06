@@ -18,12 +18,12 @@ import { DefaultAvatar } from '@/components/common/default-avatar';
 
 const MAX_REVIEW_LENGTH = 500;
 
-interface ReviewJobCancellationRequestProps {
+interface JobCancellationRequestProps {
   job: Job;
   closeModal: () => void;
 }
 
-export const ReviewJobCancellationRequest: React.FC<ReviewJobCancellationRequestProps> = ({ job, closeModal }) => {
+export const JobCancellationRequest: React.FC<JobCancellationRequestProps> = ({ job, closeModal }) => {
   const [acceptCancellation, setAcceptCancellation] = React.useState(false);
 
   const {

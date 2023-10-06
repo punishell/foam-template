@@ -1,5 +1,5 @@
 import React from 'react';
-import { type Job } from '@/lib/types';
+import { type Job, isReviewChangeRequest, isJobDeliverable } from '@/lib/types';
 import { ChevronLeft } from 'lucide-react';
 import Image from 'next/image';
 import { AfroProfile } from '@/components/common/afro-profile';
@@ -11,7 +11,7 @@ import { useCreateJobReview } from '@/lib/api/job';
 import { Spinner } from '@/components/common';
 import success from '@/lottiefiles/success.json';
 import Lottie from 'lottie-react';
-
+import { useDeclineReviewChange, useAcceptReviewChange } from '@/lib/api/job';
 interface ReviewTalentProps {
   job: Job;
   closeModal?: () => void;
@@ -24,6 +24,19 @@ export const ReviewTalent: React.FC<ReviewTalentProps> = ({ job, closeModal }) =
   const { description, name, _id, owner } = job;
   const [rating, setRating] = React.useState(0);
   const [comment, setComment] = React.useState('');
+
+  const reviewChangeRequest = job.collections.find(isReviewChangeRequest);
+
+  const reviewChangeRequestPending = reviewChangeRequest?.status === 'pending';
+  const clientHasReviewed = job.ratings?.some((review) => review.owner._id === job.creator._id);
+
+  if (reviewChangeRequestPending) {
+    return <ReviewChangeRequested job={job} closeModal={closeModal} />;
+  }
+
+  if (clientHasReviewed) {
+    return <ReviewSuccess closeModal={closeModal} />;
+  }
 
   return (
     <React.Fragment>
@@ -125,7 +138,111 @@ export const ReviewTalent: React.FC<ReviewTalentProps> = ({ job, closeModal }) =
   );
 };
 
-export const ReviewSuccess: React.FC<{ closeModal?: () => void }> = ({ closeModal }) => {
+interface ReviewChangeRequestedProps {
+  job: Job;
+  closeModal?: () => void;
+}
+
+const ReviewChangeRequested: React.FC<ReviewChangeRequestedProps> = ({ closeModal, job }) => {
+  const acceptMutation = useAcceptReviewChange();
+  const declineMutation = useDeclineReviewChange();
+
+  const reviewChangeRequest = job.collections.find(isReviewChangeRequest);
+  const talent = job.owner;
+  const clientReview = job.ratings?.find((review) => review.owner._id === job.creator._id);
+
+  const deliverableIds = job.collections.filter(isJobDeliverable).map((deliverable) => deliverable._id);
+
+  return (
+    <React.Fragment>
+      <div className="py-6 px-4 bg-primary-gradient text-white font-bold text-2xl">
+        <div className="flex items-center gap-2">
+          <button onClick={closeModal}>
+            <ChevronLeft />
+          </button>
+          <span>Request To Improve</span>
+        </div>
+      </div>
+      <div className="px-4 flex flex-col gap-6 py-4 h-full">
+        <div className="flex flex-col gap-1">
+          <h3 className="font-medium text-lg">Job Description</h3>
+          <div className="bg-[#C9F0FF] p-3 rounded-xl border border-blue-300 flex flex-col gap-1">
+            <h3 className="text-title text-sm font-medium">{job.name}</h3>
+            <p className="text-sm">{job.description}</p>
+          </div>
+        </div>
+
+        <div className="flex flex-col gap-1">
+          <h3 className="font-medium text-lg">Talent Comment</h3>
+          <div className="flex flex-col gap-1 bg-[#FEF4E3]  p-3 rounded-xl border border-yellow-dark">
+            <p className="text-lg text-body">{reviewChangeRequest?.description}</p>
+
+            <div className="flex items-center gap-2">
+              <AfroProfile score={talent?.score || 0} size="sm">
+                <div className="h-full w-full rounded-full relative">
+                  {talent?.profileImage?.url ? (
+                    <Image src={talent?.profileImage?.url} fill alt="profile" className="rounded-full" />
+                  ) : (
+                    <DefaultAvatar />
+                  )}
+                </div>
+              </AfroProfile>
+
+              <div className="flex flex-col gap-1">
+                <span className="text-title text-base font-medium leading-none">{`${talent?.firstName} ${talent?.lastName}`}</span>
+                <span className="text-sm capitalize leading-none">{talent?.profile.bio.title}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="flex flex-col gap-3 p-3 bg-slate-50 rounded-xl border border-gray-200">
+          <div className="w-full flex items-center justify-between">
+            <h3 className="text-title text-sm font-medium">Your review</h3>
+
+            {/*  @ts-ignore */}
+            <Rating
+              readonly
+              initialRating={clientReview?.rating || 0}
+              fullSymbol={<Star fill="#15D28E" color="#15D28E" />}
+              emptySymbol={<Star fill="transparent" color="#15D28E" />}
+            />
+          </div>
+          <p className="text-body">{clientReview?.review}</p>
+        </div>
+
+        <div className="mt-auto ml-auto flex max-w-[70%] w-full gap-3 items-center">
+          <Button
+            fullWidth
+            onClick={() => {
+              declineMutation.mutate({
+                reviewChangeRequestId: reviewChangeRequest?._id ?? '',
+              });
+            }}
+            variant={'secondary'}
+          >
+            {declineMutation.isLoading ? <Spinner size={20} /> : 'Decline Request'}
+          </Button>
+          <div className="border border-green-400 rounded-xl w-full">
+            <Button
+              fullWidth
+              onClick={() => {
+                acceptMutation.mutate({
+                  deliverableIds,
+                  reviewId: clientReview?._id ?? '',
+                });
+              }}
+            >
+              {acceptMutation.isLoading ? <Spinner size={20} /> : 'Reopen Job'}
+            </Button>
+          </div>
+        </div>
+      </div>
+    </React.Fragment>
+  );
+};
+
+const ReviewSuccess: React.FC<{ closeModal?: () => void }> = ({ closeModal }) => {
   return (
     <div className="h-full px-4 flex items-center justify-center">
       <div className="flex flex-col gap-32 items-center">
