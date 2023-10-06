@@ -18,13 +18,13 @@ import { Modal } from '@/components/common/modal';
 import { PageError } from '@/components/common/page-error';
 import { PageLoading } from '@/components/common/page-loading';
 import { JobHeader, JobDescription, JobSkills, JobDeliverables } from '@/components/jobs/job-details';
-
+import { useCancelJobInvite } from '@/lib/api/job';
 import * as z from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm, SubmitHandler } from 'react-hook-form';
 
 const jobApplicationSchema = z.object({
-  message: z.string().nonempty("Message is required"),
+  message: z.string().nonempty('Message is required'),
   amount: z.coerce.number().min(100, { message: 'Amount must be at least $100' }).nonnegative(),
 });
 
@@ -67,6 +67,7 @@ interface ClientJobDetailsProps {
 }
 
 const ClientJobDetails: React.FC<ClientJobDetailsProps> = ({ job }) => {
+  const cancelInvite = useCancelJobInvite();
   const [isDeleteModalOpen, setIsDeleteModalOpen] = React.useState(false);
   const JOB_TYPE: 'private' | 'open' = job.isPrivate ? 'private' : 'open';
 
@@ -92,9 +93,20 @@ const ClientJobDetails: React.FC<ClientJobDetailsProps> = ({ job }) => {
         />
         <div className="bg-white flex flex-col w-full p-6 rounded-b-xl grow border-line border-t-0 border">
           {job.invite && (
-            <div className="p-4 bg-blue-50 border border-blue-300 text-blue-500 rounded-lg my-3 flex items-center gap-2 w-full">
-              <Info size={20} />
-              <span>Awaiting Talent Response</span>
+            <div className="p-4 bg-blue-50 justify-between border border-blue-300 text-blue-500 rounded-lg my-3 flex items-center gap-2 w-full">
+              <div className="flex items-center gap-2">
+                <Info size={20} />
+                <span>Awaiting Talent Response</span>
+              </div>
+
+              <button
+                className="bg-red-50 border border-red-500 text-red-500 px-4 py-1 text-sm rounded-lg w-[140px] h-[30px]"
+                onClick={() => {
+                  cancelInvite.mutate({ inviteId: '' }, {});
+                }}
+              >
+                {cancelInvite.isLoading ? <Spinner size={16} /> : 'Cancel Invite'}
+              </button>
             </div>
           )}
 
@@ -110,7 +122,7 @@ const ClientJobDetails: React.FC<ClientJobDetailsProps> = ({ job }) => {
 
       <div className="basis-[300px] h-full gap-7 w-fit flex flex-col items-center">
         <JobDescription description={job.description} />
-        <JobSkills skills={(job.tags || [])} />
+        <JobSkills skills={job.tags || []} />
       </div>
 
       <Modal isOpen={isDeleteModalOpen} onOpenChange={setIsDeleteModalOpen}>
@@ -211,33 +223,37 @@ const DeleteJobModal: React.FC<ClientDeleteJobModalProps> = ({ jobId, title, set
 
   return (
     <div className="border w-full max-w-xl flex flex-col gap-4 bg-white p-6 rounded-2xl">
-      <div className="flex flex-col gap-1 items-center">
-        <h2 className="font-medium text-2xl">Confirm Job Deletion</h2>
-        <span className="text-body text-center">You are about to permanently delete job</span>
-        <span className="text-body font-bold">{title}</span>
+      <div className="flex flex-col gap-4 items-center">
+        <h2 className="font-medium text-2xl">Delete Job</h2>
+        <span className="text-body text-center">
+          This action is irreversible. Once you delete the Job, all of its content and data will be permanently erased.
+        </span>
+        <span className="text-body font-bold">Are you sure you want to proceed with the deletion?</span>
       </div>
       <div className="mt-auto w-full flex flex-row items-center justify-between gap-2">
-        <Button
-          fullWidth
-          variant="primary"
-          onClick={() => {
-            deleteJobMutation.mutate(
-              { id: jobId },
+        <Button fullWidth variant="secondary" onClick={() => setModalOpen(false)}>
+          No, Cancel
+        </Button>
+        <div className="border rounded-xl border-red-400 w-full">
+          <Button
+            fullWidth
+            variant="danger"
+            onClick={() => {
+              deleteJobMutation.mutate(
+                { id: jobId },
 
-              {
-                onSuccess: () => {
-                  router.push('/jobs');
+                {
+                  onSuccess: () => {
+                    router.push('/jobs');
+                  },
                 },
-              },
-            );
-          }}
-          disabled={deleteJobMutation.isLoading}
-        >
-          {deleteJobMutation.isLoading ? <Spinner /> : 'Confirm'}
-        </Button>
-        <Button fullWidth variant="outline" onClick={() => setModalOpen(false)}>
-          Cancel
-        </Button>
+              );
+            }}
+            disabled={deleteJobMutation.isLoading}
+          >
+            {deleteJobMutation.isLoading ? <Spinner /> : 'Yes, Proceed'}
+          </Button>
+        </div>
       </div>
     </div>
   );
@@ -289,7 +305,8 @@ const TalentJobDetails: React.FC<TalentJobDetailsProps> = ({ job, userId }) => {
             deliverables={job.collections.filter(isJobDeliverable).map((collection) => collection.name)}
           />
 
-          <JobCtas jobId={job._id}
+          <JobCtas
+            jobId={job._id}
             inviteId={inviteId}
             hasBeenInvited={hasBeenInvited}
             hasAlreadyApplied={hasAlreadyApplied}
@@ -370,9 +387,18 @@ interface TalentOpenJobCtasProps {
   hasBeenInvited: boolean;
 }
 
-const TalentOpenJobCtas: React.FC<TalentOpenJobCtasProps> = ({ jobId, jobCreator, hasBeenInvited, inviteId, hasAlreadyApplied }) => {
+const TalentOpenJobCtas: React.FC<TalentOpenJobCtasProps> = ({
+  jobId,
+  jobCreator,
+  hasBeenInvited,
+  inviteId,
+  hasAlreadyApplied,
+}) => {
   const [isApplyModalOpen, setIsApplyModalOpen] = React.useState(false);
-  if (hasBeenInvited) return <TalentPrivateJobCtas inviteId={inviteId} hasBeenInvited={hasBeenInvited} jobId={jobId} jobCreator={jobCreator} />;
+  if (hasBeenInvited)
+    return (
+      <TalentPrivateJobCtas inviteId={inviteId} hasBeenInvited={hasBeenInvited} jobId={jobId} jobCreator={jobCreator} />
+    );
 
   return (
     <React.Fragment>

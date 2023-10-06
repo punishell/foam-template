@@ -448,6 +448,30 @@ export function useInviteTalentToJob({ talentId, job }: { talentId: string; job:
   });
 }
 
+// Cancel a job invite
+
+interface CancelJobInviteParams {
+  inviteId: string;
+}
+
+async function postCancelJobInvite(params: CancelJobInviteParams): Promise<ApiResponse> {
+  const res = await axios.delete(`/invite/${params.inviteId}`);
+  return res.data.data;
+}
+
+export function useCancelJobInvite() {
+  return useMutation({
+    mutationFn: postCancelJobInvite,
+    mutationKey: ['cancel-job-invite'],
+    onError: (error: ApiError) => {
+      toast.error(error?.response?.data.message || 'An error occurred');
+    },
+    onSuccess: () => {
+      toast.success('Invite cancelled successfully');
+    },
+  });
+}
+
 // Accept a private job invite
 interface AcceptPrivateJobInviteParams {
   inviteId: string;
