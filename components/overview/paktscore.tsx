@@ -9,8 +9,7 @@ interface Props {
 export const AfroScore = ({ score = 0 }: Props) => {
   return (
     <div className="bg-white flex items-center justify-center flex-col w-full border border-line rounded-2xl">
-      {/* {score > 0 ? <NonZeroAfroScore score={score} /> : <ZeroAfroScore />} */}
-      <ZeroAfroScore />
+      {score > 0 ? <NonZeroAfroScore score={score} /> : <ZeroAfroScore />}
     </div>
   );
 };
