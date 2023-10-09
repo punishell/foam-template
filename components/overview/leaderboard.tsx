@@ -1,8 +1,8 @@
 import React from 'react';
 import Image from 'next/image';
 import { useGetLeaderBoard } from '@/lib/api/dashboard';
+import { AfroProfile } from '../common/afro-profile';
 import { Spinner } from '../common';
-import { ProfileImage } from './ProfileImage';
 import { truncate } from '@/lib/utils';
 
 export const LeaderBoard = () => {
@@ -80,7 +80,7 @@ const FirstPlace: React.FC<LeaderBoardItemProps> = ({ name, score, avatar }) => 
         </defs>
       </svg>
       <div className="absolute inset-0 gap-2 flex items-center p-3 pl-1">
-        <ProfileImage imageUrl={avatar} score={Math.round(score)} size="sm" />
+        <AfroProfile src={avatar} score={Math.round(score)} size="sm" />
         <div className="grow">
           <span className="text-[#ECFCE5] text-base">{truncate(name, 15)}</span>
           <div className="flex gap-2 justify-between items-center">
@@ -141,7 +141,7 @@ const SecondPlace: React.FC<LeaderBoardItemProps> = ({ name, score, avatar }) =>
         </defs>
       </svg>
       <div className="absolute inset-0 gap-2 flex items-center p-3 pl-1">
-        <ProfileImage imageUrl={avatar} score={Math.round(score)} size="sm" />
+        <AfroProfile src={avatar} score={Math.round(score)} size="sm" />
         <div className="grow">
           <span className="text-[#ECFCE5] text-base">{truncate(name, 15)}</span>
           <div className="flex gap-2 justify-between items-center">
@@ -197,7 +197,7 @@ const ThirdPlace: React.FC<LeaderBoardItemProps> = ({ name, score, avatar }) => 
         </defs>
       </svg>
       <div className="absolute inset-0 gap-2 flex items-center p-3 pl-1">
-        <ProfileImage imageUrl={avatar} score={Math.round(score)} size="sm" />
+        <AfroProfile src={avatar} score={Math.round(score)} size="sm" />
         <div className="grow">
           <span className="text-[#ECFCE5] text-base">{truncate(name, 15)}</span>
           <div className="flex gap-2 justify-between items-center">
@@ -220,7 +220,7 @@ const RunnerUp: React.FC<LeaderBoardItemProps> = ({ name, score, avatar, place }
         ></path>
       </svg>
       <div className="absolute inset-0 gap-2 flex items-center p-3 pl-1">
-        <ProfileImage imageUrl={avatar} score={Math.round(score)} size="sm" />
+        <AfroProfile src={avatar} score={Math.round(score)} size="sm" />
         <div className="grow">
           <span className="text-[#ECFCE5] text-base ">{truncate(name, 15)}</span>
           <div className="flex gap-2 justify-between items-center">

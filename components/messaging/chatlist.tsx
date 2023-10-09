@@ -7,13 +7,13 @@ import { usePathname } from 'next/navigation';
 import { UserBalance } from '@/components/common/user-balance';
 import { useMessaging } from '@/providers/socketProvider';
 import { Spinner } from '../common';
-import { ProfileImage } from '../overview/ProfileImage';
+import { AfroProfile } from '../common/afro-profile';
 
-const ChatList = ({ conversations, loading }: { conversations: any[], loading: boolean }) => {
+const ChatList = ({ conversations, loading }: { conversations: any[]; loading: boolean }) => {
   return (
     <div className="grow w-full overflow-y-auto flex flex-col divide-line">
       {loading && <Spinner />}
-      {conversations.map((c: any, i) =>
+      {conversations.map((c: any, i) => (
         <ChatListItem
           key={i}
           chatId={c?.id}
@@ -21,10 +21,10 @@ const ChatList = ({ conversations, loading }: { conversations: any[], loading: b
           avatar={c?.sender?.profileImage?.url}
           score={c?.sender?.score}
           unreadCount={c?.unreadcount}
-          lastMessage={c?.lastMessage ?? ""}
+          lastMessage={c?.lastMessage ?? ''}
           time={c?.lastMessageTime}
         />
-      )}
+      ))}
     </div>
   );
 };
@@ -62,17 +62,20 @@ const ChatListItem: React.FC<ChatListItemProps> = ({ name, avatar, score, unread
   return (
     <Link href={`/messages/${chatId}`} className="border-b">
       <div
-        className={`flex w-full border-l-4 hover:bg-[#ECFCE5] duration-200 px-3 py-3 gap-2 items-center ${isActiveChat ? 'bg-[#ECFCE5] border-primary' : 'bg-white border-transparent'
-          }`}
+        className={`flex w-full border-l-4 hover:bg-[#ECFCE5] duration-200 px-3 py-3 gap-2 items-center ${
+          isActiveChat ? 'bg-[#ECFCE5] border-primary' : 'bg-white border-transparent'
+        }`}
       >
-        <ProfileImage score={score} imageUrl={avatar} size='sm' />
+        <AfroProfile score={score ?? 0} src={avatar} size="sm" />
         <div className="grow flex flex-col">
           <div className="flex justify-between gap-2 items-center">
             <div className="flex gap-2 items-center">
               <div className="text-title text-base font-medium">{name}</div>
-              {unreadCount > 0 && <div className="h-4 w-4 shrink-0 text-white text-opacity-80 rounded-full text-xs bg-primary-gradient flex items-center justify-center">
-                {unreadCount}
-              </div>}
+              {unreadCount > 0 && (
+                <div className="h-4 w-4 shrink-0 text-white text-opacity-80 rounded-full text-xs bg-primary-gradient flex items-center justify-center">
+                  {unreadCount}
+                </div>
+              )}
             </div>
             <div className="text-body text-xs">{time}</div>
           </div>
@@ -85,4 +88,4 @@ const ChatListItem: React.FC<ChatListItemProps> = ({ name, avatar, score, unread
   );
 };
 
-export { ChatList, ChatListSearch }
+export { ChatList, ChatListSearch };

@@ -4,7 +4,7 @@ import React from 'react';
 import Rating from 'react-rating';
 import { ArrowLeftCircle, ArrowRightCircle, Star } from 'lucide-react';
 import { Spinner } from '@/components/common/';
-import { ProfileImage } from '../overview/ProfileImage';
+import { AfroProfile } from '../common/afro-profile';
 import { BlazeCarousel, useBlazeSlider } from '../common/blazeCarousel';
 
 interface ReviewProps {
@@ -22,13 +22,13 @@ interface ReviewProps {
 const Review: React.FC<ReviewProps> = ({ body, title, rating, user }) => {
   return (
     <div className="bg-white min-h-full rounded-2xl p-4 flex flex-col gap-4 w-full select-none cursor-grab basis-0 relative">
-      <div className="text-xl font-medium text-title" > {title}</div>
+      <div className="text-xl font-medium text-title"> {title}</div>
       <div className="text-body min-h-[72px]">{body}</div>
 
       <div className="flex items-center justify-between">
         <div className="grid grid-cols-3 gap-2">
-          <div className='flex relative'>
-            <ProfileImage size="sm" score={user.afroScore} imageUrl={user?.avatar} />
+          <div className="flex relative">
+            <AfroProfile size="sm" score={user.afroScore} src={user?.avatar} />
           </div>
           <div className="flex flex-col col-span-2 my-auto">
             <span className="text-sm text-title font-medium">{user.name}</span>
@@ -38,8 +38,8 @@ const Review: React.FC<ReviewProps> = ({ body, title, rating, user }) => {
         {/* @ts-ignore */}
         <Rating
           initialRating={rating}
-          fullSymbol={< Star fill="#15D28E" color="#15D28E" />}
-          emptySymbol={< Star fill="transparent" color="#15D28E" />}
+          fullSymbol={<Star fill="#15D28E" color="#15D28E" />}
+          emptySymbol={<Star fill="transparent" color="#15D28E" />}
           readonly
         />
       </div>
@@ -53,11 +53,19 @@ export const Reviews = ({ reviews, loading }: { reviews: ReviewProps[]; loading:
   const totalSlides = Number(sliderInstance.slider?.totalSlides || 0) / 2;
   return (
     <div className="bg-primary-gradient p-4 rounded-4 gap-3 w-full rounded-2xl max-w-[100%]">
-      <div className='flex flex-row justify-between mb-4'>
+      <div className="flex flex-row justify-between mb-4">
         <h3 className="text-white font-medium text-2xl">Reviews</h3>
-        <div className='flex flex-row gap-2'>
-          <ArrowLeftCircle size={32} className={`cursor-pointer ${currentSlide === 0 ? 'text-body' : 'text-white'}`} onClick={() => sliderInstance.slider?.prev()} />
-          <ArrowRightCircle size={32} className={`cursor-pointer ${currentSlide === (totalSlides - 1) ? 'text-body' : 'text-white'}`} onClick={() => sliderInstance.slider?.next()} />
+        <div className="flex flex-row gap-2">
+          <ArrowLeftCircle
+            size={32}
+            className={`cursor-pointer ${currentSlide === 0 ? 'text-body' : 'text-white'}`}
+            onClick={() => sliderInstance.slider?.prev()}
+          />
+          <ArrowRightCircle
+            size={32}
+            className={`cursor-pointer ${currentSlide === totalSlides - 1 ? 'text-body' : 'text-white'}`}
+            onClick={() => sliderInstance.slider?.next()}
+          />
         </div>
       </div>
 
@@ -70,13 +78,7 @@ export const Reviews = ({ reviews, loading }: { reviews: ReviewProps[]; loading:
           {reviews &&
             reviews.length > 0 &&
             reviews.map((_review, i) => (
-              <Review
-                key={i}
-                title={_review.title}
-                body={_review.body}
-                rating={_review.rating}
-                user={_review.user}
-              />
+              <Review key={i} title={_review.title} body={_review.body} rating={_review.rating} user={_review.user} />
             ))}
           {!reviews ||
             (reviews.length === 0 && (
