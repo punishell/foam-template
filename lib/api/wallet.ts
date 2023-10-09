@@ -86,6 +86,7 @@ export const useGetWalletDetails = () => {
     queryFn: async () => {
       return await fetchWallet();
     },
+    queryKey: ["wallet-data-fetch"],
     onError: (error) => {
       toast.error(error.response?.data.message || 'An error occurred');
     },
@@ -102,6 +103,7 @@ export const useGetWalletTxs = ({ limit, page }: { limit: number; page: number }
     queryFn: async () => {
       return await fetchWalletTransactions({ limit, page });
     },
+    queryKey: ["wallet-tx-q", limit, page],
     onError: (error) => {
       toast.error(error.response?.data.message || 'An error occurred');
     },
