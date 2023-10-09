@@ -4,29 +4,28 @@
 
 @layer utilities {
   .scrollbar-hide {
-    -ms-overflow-style: none !important; /* IE and Edge */
-    scrollbar-width: none !important; /* Firefox */
+    /* IE and Edge */
+    -ms-overflow-style: none !important;
+    /* Firefox */
+    scrollbar-width: none !important;
   }
 
-  .scrollbar-hide::-webkit-scrollbar {
-    display: 'none' !important; /* Safari and Chrome */
+  .scrollbar-hide *::-webkit-scrollbar {
+    /* Safari and Chrome */
+    width: 0 !important;
+    display: none;
   }
 
   .scrollbar-default {
-    -ms-overflow-style: 'auto'; /* IE and Edge */
-    scrollbar-width: 'auto'; /* Firefox */
+    /* IE and Edge */
+    -ms-overflow-style: 'auto';
+    /* Firefox */
+    scrollbar-width: 'auto';
   }
 
-  /* Safari and Chrome */
-  .scrollbar-default::-webkit-scrollbar {
-    display: 'block'; /* Safari and Chrome */
+  .scrollbar-default *::-webkit-scrollbar {
+    /* Safari and Chrome */
+    display: 'block';
+    width: 'auto';
   }
-}
-
-* {
-  -ms-overflow-style: none; /* Internet Explorer 10+ */
-  scrollbar-width: none; /* Firefox */
-}
-*::-webkit-scrollbar {
-  display: none; /* Safari and Chrome */
 }
