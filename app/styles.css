@@ -10,10 +10,10 @@
     scrollbar-width: none !important;
   }
 
-  .scrollbar-hide *::-webkit-scrollbar {
+  .scrollbar-hide::-webkit-scrollbar {
     /* Safari and Chrome */
-    width: 0 !important;
     display: none;
+    width: 0 !important;
   }
 
   .scrollbar-default {
@@ -23,7 +23,7 @@
     scrollbar-width: 'auto';
   }
 
-  .scrollbar-default *::-webkit-scrollbar {
+  .scrollbar-default::-webkit-scrollbar {
     /* Safari and Chrome */
     display: 'block';
     width: 'auto';
