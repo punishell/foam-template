@@ -152,7 +152,8 @@ const AcceptJobCancellation: React.FC<AcceptJobCancellationProps> = ({ setAccept
 
           <div className="flex flex-col gap-3 p-3 bg-slate-50 rounded-lg border border-gray-200">
             <p className="text-body flex items-center gap-2">
-              <span>Amount to pay the Talent:</span> <span className="text-green-600 font-bold">${amountToPay}</span>
+              <span>Amount you&apos;d like to receive:</span>{' '}
+              <span className="text-green-600 font-bold">${amountToPay}</span>
               <span className="text-sm">({percentageToPay}%)</span>
             </p>
             <div className="my-2">
