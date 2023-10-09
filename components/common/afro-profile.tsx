@@ -1,5 +1,7 @@
 import React from 'react';
 import { arc } from 'd3-shape';
+import Image from 'next/image';
+import { DefaultAvatar } from '@/components/common/default-avatar';
 
 type Size = 'sm' | 'md' | 'lg' | 'xl';
 
@@ -62,22 +64,24 @@ export const AfroScore: React.FC<AfroScoreProps> = ({ size, score = 63, children
       <div
         style={{
           inset: knobRadius,
-          borderRadius: 999,
+          borderRadius: '50%',
           position: 'absolute',
         }}
       >
-        <div
-          style={{
-            position: 'relative',
-            height: '100%',
-            width: '100%',
-            borderRadius: '100%',
-            overflow: 'hidden',
-            backgroundColor: 'transparent',
-            margin: 'auto',
-          }}
-        >
-          {children}
+        <div className="position absolute inset-1 overflow-hidden rounded-full">
+          <div
+            style={{
+              position: 'relative',
+              height: '100%',
+              width: '100%',
+              borderRadius: '9999px',
+              overflow: 'hidden',
+              backgroundColor: 'transparent',
+              margin: 'auto',
+            }}
+          >
+            {children}
+          </div>
         </div>
       </div>
       <svg
@@ -161,5 +165,23 @@ export const AfroScore: React.FC<AfroScoreProps> = ({ size, score = 63, children
         </text>
       </svg>
     </div>
+  );
+};
+
+type AfroProfileProps = Omit<AfroScoreProps, 'children'> & {
+  src?: string;
+};
+
+export const AfroProfile: React.FC<AfroProfileProps> = ({ size, score, src }) => {
+  return (
+    <AfroScore score={score} size={size}>
+      <div className="flex items-center h-full w-full overflow-hidden rounded-full">
+        {src ? (
+          <Image src={src} alt="profile" fill className="rounded-full overflow-hidden" style={{ objectFit: 'cover' }} />
+        ) : (
+          <DefaultAvatar />
+        )}
+      </div>
+    </AfroScore>
   );
 };

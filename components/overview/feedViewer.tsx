@@ -3,18 +3,17 @@ import { Button } from 'pakt-ui';
 import { useRouter } from 'next/navigation';
 import { X, Bookmark, Briefcase, Clock4, Gavel } from 'lucide-react';
 import Lottie from 'lottie-react';
-import { AfroScore } from '../common/afro-profile';
 import win from '@/lottiefiles/win.json';
 import alert from '@/lottiefiles/alert.json';
 import gavel from '@/lottiefiles/gavel.json';
 import failed from '@/lottiefiles/failed.json';
 import warning from '@/lottiefiles/warning.json';
-import { ProfileImage } from './ProfileImage';
-import { RenderBookMark } from '../jobs/job-cards/render-bookmark';
+import { RenderBookMark } from '@/components/jobs/job-cards/render-bookmark';
 import Link from 'next/link';
-import { DeliverableProgressBar } from '../common/deliverable-progress-bar';
-import { progress } from 'framer-motion';
-
+import { DeliverableProgressBar } from '@/components/common/deliverable-progress-bar';
+import { AfroProfile } from '@/components/common/afro-profile';
+import { ClientJobModal } from '@/components/jobs/job-modals/client';
+import { SideModal } from '@/components/common/side-modal';
 interface JobInvitePendingProps {
   id: string;
   jobId: string;
@@ -73,7 +72,7 @@ export const JobFeedCard: React.FC<JobFeedCardProps> = (props) => {
 
     return (
       <JobFeedWrapper>
-        <ProfileImage imageUrl={inviter.avatar} score={inviter.score} size="lg" />
+        <AfroProfile src={inviter.avatar} score={inviter.score} size="lg" />
         <div className="flex flex-col gap-4 py-4 w-full">
           <div className="flex justify-between items-center">
             <h3 className="text-title text-xl font-bold">Job Filled</h3>
@@ -104,7 +103,7 @@ export const JobFeedCard: React.FC<JobFeedCardProps> = (props) => {
 
     return (
       <JobFeedWrapper>
-        <ProfileImage imageUrl={inviter.avatar} score={inviter.score} size="lg" />
+        <AfroProfile src={inviter.avatar} score={inviter.score} size="lg" />
         <div className="flex flex-col gap-4 w-full py-4">
           <div className="flex justify-between items-center">
             <span className="text-body text-xl font-bold">
@@ -144,7 +143,7 @@ export const JobFeedCard: React.FC<JobFeedCardProps> = (props) => {
 
     return (
       <JobFeedWrapper>
-        <ProfileImage imageUrl={inviter.avatar} score={inviter.score} />
+        <AfroProfile src={inviter.avatar} score={inviter.score} size="lg" />
 
         <div className="flex flex-col gap-4 py-4 w-full">
           <div className="flex justify-between items-center">
@@ -190,7 +189,7 @@ export const JobApplicationCard: React.FC<JobApplicationCardProps> = (props) => 
 
   return (
     <JobFeedWrapper>
-      <ProfileImage imageUrl={applicant.avatar} score={applicant.score} />
+      <AfroProfile src={applicant.avatar} score={applicant.score} size="lg" />
       <div className="flex flex-col gap-4 py-4 w-full">
         <div className="flex justify-between items-center">
           <h3 className="text-title text-xl font-bold">New Job Application</h3>
@@ -248,7 +247,7 @@ export const PublicJobCreatedFeed = ({
 }) => {
   return (
     <JobFeedWrapper>
-      <ProfileImage score={creator.score} imageUrl={creator.avatar} />
+      <AfroProfile score={creator.score} src={creator.avatar} size="lg" />
       <div className="flex flex-col gap-4 w-full py-4">
         <div className="flex justify-between items-center">
           <h3 className="text-body text-xl font-bold">
@@ -308,6 +307,7 @@ interface TalentJobUpdateProps {
 
 export const JobUpdateFeed: React.FC<TalentJobUpdateProps> = ({
   id,
+  jobId,
   talent,
   creator,
   title,
@@ -317,9 +317,11 @@ export const JobUpdateFeed: React.FC<TalentJobUpdateProps> = ({
   isCreator,
   close,
 }) => {
+  const [isModalOpen, setIsModalOpen] = React.useState(false);
+
   return (
     <div className="border-[#CDCFD0] bg-[#F9F9F9] gap-4 pl-2 px-4  flex border z-10 w-full rounded-2xl relative overflow-hidden">
-      <ProfileImage imageUrl={talent.avatar} score={talent.score} />
+      <AfroProfile src={talent.avatar} score={talent.score} size="lg" />
       <div className="flex flex-col gap-4 py-4 w-full">
         <div className="flex justify-between items-center">
           <h3 className="text-title text-xl font-bold">
@@ -329,16 +331,28 @@ export const JobUpdateFeed: React.FC<TalentJobUpdateProps> = ({
         </div>
         <p className="text-body">{!isCreator ? description : `✅ ${title}`}</p>
         <div className="justify-between items-center flex mt-auto">
-          <div className="flex items-center gap-2">
-            {/* <Button size="xs" variant="secondary">
-              Update
-            </Button> */}
+          <div className="flex items-center gap-2 w-full">
+            {progress.progress === 100 && (
+              <Button
+                size="xs"
+                variant="secondary"
+                onClick={() => {
+                  setIsModalOpen(true);
+                }}
+              >
+                See Update
+              </Button>
+            )}
             <Link href={`/messages?userId=${isCreator ? talent._id : creator._id}`}>
               <Button size="xs" variant="outline">
                 Message
               </Button>
             </Link>
-            <DeliverableProgressBar percentageProgress={progress.progress} totalDeliverables={progress.total} />
+            <DeliverableProgressBar
+              percentageProgress={progress.progress}
+              totalDeliverables={progress.total}
+              className="w-full"
+            />
           </div>
           <RenderBookMark size={20} isBookmarked={bookmarked} type="feed" id={id} bookmarkId={id} />
         </div>
@@ -347,6 +361,17 @@ export const JobUpdateFeed: React.FC<TalentJobUpdateProps> = ({
       <div className="absolute right-0 -z-[1] translate-x-1/3 top-16">
         <Briefcase size={200} color="#F2F4F5" />
       </div>
+
+      {isCreator && (
+        <SideModal isOpen={isModalOpen} onOpenChange={setIsModalOpen}>
+          <ClientJobModal
+            jobId={jobId}
+            closeModal={() => {
+              setIsModalOpen(false);
+            }}
+          />
+        </SideModal>
+      )}
     </div>
   );
 };
@@ -354,7 +379,7 @@ export const JobUpdateFeed: React.FC<TalentJobUpdateProps> = ({
 export const JobCompletionFeed = () => {
   return (
     <div className="border-[#CDCFD0] bg-[#F9F9F9] gap-4 pl-2 px-4  flex border z-10 w-full rounded-2xl relative overflow-hidden">
-      <AfroScore score={0} size="lg" />
+      <AfroProfile score={0} size="lg" />
       <div className="flex flex-col gap-4 w-full py-4">
         <div className="flex justify-between items-center">
           <h3 className="text-body text-xl font-bold">Joon completed a job</h3>
@@ -384,7 +409,7 @@ export const JobCompletionFeed = () => {
 export const JobReviewedFeed = () => {
   return (
     <div className="border-[#CDCFD0] bg-[#F9F9F9] gap-4 pl-2 px-4  flex border  z-10 w-full rounded-2xl relative overflow-hidden">
-      <AfroScore score={0} size="lg" />
+      <AfroProfile score={0} size="lg" />
       <div className="flex flex-col gap-4 py-4">
         <div className="flex justify-between items-center">
           <h3 className="text-title text-xl font-bold">Theresa has reviewed your work</h3>
@@ -446,7 +471,7 @@ export const PaymentReleased = () => {
 export const JobCancelled = () => {
   return (
     <div className="border-[#FF9898] gap-4 pl-2 px-4 flex border bg-[#FFF4F4] z-10 w-full rounded-2xl relative overflow-hidden">
-      <AfroScore score={0} size="lg" />
+      <AfroProfile score={0} size="lg" />
       <div className="flex flex-col gap-4 w-full py-4">
         <div className="flex justify-between items-center">
           <h3 className="text-title text-xl font-bold">Theresa Cancelled the Job</h3>
@@ -495,7 +520,7 @@ export const ReferralSignupFeed = ({
 }: ReferralSignupFeedProps) => {
   return (
     <div className="border-[#CDCFD0] bg-[#F9F9F9] gap-4 p-4 flex border z-10 w-full rounded-2xl relative overflow-hidden h-[174px]">
-      <ProfileImage imageUrl={avatar} score={score} />
+      <AfroProfile src={avatar} score={score ?? 0} size="lg" />
       <div className="flex flex-col gap-4 w-full">
         <div className="flex justify-between items-center">
           <h3 className="text-title text-xl font-bold">{name} just signed up</h3>
@@ -529,7 +554,7 @@ export const ReferralSignupFeed = ({
 export const ReferralJobCompletion = () => {
   return (
     <div className="border-[#CDCFD0] bg-[#F9F9F9] gap-4 p-4 flex border  z-10 w-full rounded-2xl relative overflow-hidden">
-      <ProfileImage imageUrl={''} />
+      <AfroProfile score={0} size="lg" />
       <div className="flex flex-col gap-4 w-full">
         <div className="flex justify-between items-center">
           <h3 className="text-title text-xl font-bold">Shola completed a job</h3>
