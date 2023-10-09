@@ -80,7 +80,7 @@ const ClientJobDetails: React.FC<ClientJobDetailsProps> = ({ job }) => {
 
   return (
     <div className="flex gap-6 h-full">
-      <div className="grow overflow-y-auto h-full flex flex-col pb-20">
+      <div className="grow overflow-y-auto scrollbar-hide h-full flex flex-col pb-20">
         <JobHeader
           title={job.name}
           price={job.paymentFee}
@@ -92,6 +92,9 @@ const ClientJobDetails: React.FC<ClientJobDetailsProps> = ({ job }) => {
           }}
         />
         <div className="bg-white flex flex-col w-full p-6 rounded-b-xl grow border-line border-t-0 border">
+          <JobSkills skills={job.tags || []} />
+          <JobDescription description={job.description} />
+
           {job.invite && (
             <div className="p-4 bg-blue-50 justify-between border border-blue-300 text-blue-500 rounded-lg my-3 flex items-center gap-2 w-full">
               <div className="flex items-center gap-2">
@@ -120,11 +123,7 @@ const ClientJobDetails: React.FC<ClientJobDetailsProps> = ({ job }) => {
         </div>
       </div>
 
-      <div className="basis-[300px] h-full gap-7 w-fit flex flex-col items-center">
-        <JobDescription description={job.description} />
-        <JobSkills skills={job.tags || []} />
-      </div>
-
+      <div className="basis-[270px]  h-full gap-7 w-fit flex flex-col items-center"></div>
       <Modal isOpen={isDeleteModalOpen} onOpenChange={setIsDeleteModalOpen}>
         <DeleteJobModal jobId={job._id} title={job.name} setModalOpen={setIsDeleteModalOpen} />
       </Modal>
@@ -283,7 +282,7 @@ const TalentJobDetails: React.FC<TalentJobDetailsProps> = ({ job, userId }) => {
 
   return (
     <div className="flex gap-6 h-full">
-      <div className="grow overflow-y-auto h-full flex flex-col pb-20">
+      <div className="grow overflow-y-auto scrollbar-hide h-full flex flex-col pb-20">
         <JobHeader
           title={job.name}
           price={job.paymentFee}
@@ -294,7 +293,11 @@ const TalentJobDetails: React.FC<TalentJobDetailsProps> = ({ job, userId }) => {
             name: `${job.creator.firstName} ${job.creator.lastName}`,
           }}
         />
+
         <div className="bg-white flex flex-col w-full p-6 rounded-b-xl grow border-line border-t-0 border">
+          <JobSkills skills={job.tags || []} />
+          <JobDescription description={job.description} />
+
           {hasAlreadyApplied && (
             <div className="p-4 bg-blue-50 border border-blue-300 text-blue-500 rounded-lg my-3 flex items-center gap-2 w-full">
               <Info size={20} />
@@ -315,10 +318,7 @@ const TalentJobDetails: React.FC<TalentJobDetailsProps> = ({ job, userId }) => {
         </div>
       </div>
 
-      <div className="basis-[300px] h-full gap-7 w-fit flex flex-col items-center">
-        <JobDescription description={job.description} />
-        <JobSkills skills={job.tags || []} />
-      </div>
+      <div className="basis-[270px]  h-full gap-7 w-fit flex flex-col items-center"></div>
     </div>
   );
 };
