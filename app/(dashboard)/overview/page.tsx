@@ -18,24 +18,25 @@ export default function Overview() {
   const account = useGetAccount();
 
   return (
-    <div className="h-full gap-8">
+    <div className="h-[95vh] gap-6 flex flex-col overflow-hidden">
       <Header />
 
-      <div className="flex gap-6 h-[92%] mt-6 justify-start pb-4 overflow-y-auto">
-        <div className="w-full h-full gap-7">
+      <div className="flex gap-6 h-full justify-start w-full">
+        <div className="w-full flex flex-col grow h-full gap-7">
           <JobHeader />
-          <Tabs
-            className="h-[79%] my-4"
-            tabs={[
-              { label: 'Your Feed', value: 'feed', content: <Feeds /> },
-              { label: 'Active Jobs', value: 'active', content: <ActiveJobs /> },
-              { label: 'Invites', value: 'invites', content: <Invites /> },
-              { label: 'Bookmarks', value: 'bookmarks', content: <FeedsBookmark /> },
-            ]}
-          />
+          <div className="overflow-y-auto basis-0 flex flex-1">
+            <Tabs
+              tabs={[
+                { label: 'Your Feed', value: 'feed', content: <Feeds /> },
+                { label: 'Active Jobs', value: 'active', content: <ActiveJobs /> },
+                { label: 'Invites', value: 'invites', content: <Invites /> },
+                { label: 'Bookmarks', value: 'bookmarks', content: <FeedsBookmark /> },
+              ]}
+            />
+          </div>
         </div>
 
-        <div className="flex flex-col basis-[270px] shrink-0 h-full gap-7 w-fit items-center">
+        <div className="flex flex-col basis-[270px] shrink-0 h-fit gap-7 w-fit items-center">
           <AfroScore score={account.data?.score} />
           <LeaderBoard />
         </div>
@@ -51,7 +52,7 @@ const JobHeader = () => {
   const profileCompleted = value > 70;
   if (!profileCompleted) {
     return (
-      <div className={`flex h-[200px] gap-2 rounded-2xl border p-6 bg-white`}>
+      <div className={`flex w-full h-[200px] gap-2 rounded-2xl border p-6 bg-white`}>
         <div className={`flex flex-[8] items-center`}>
           <div className="flex flex-[2] flex-col">
             <h3 className="text-[80px] font-bold leading-[104px]">{value}%</h3>
