@@ -109,7 +109,7 @@ export const WithdrawalModal = ({ isOpen, onChange, wallets }: { isOpen: boolean
           </div>
 
           <div className="relative">
-            <Input type="text" label="Password"  {...form.register('password')} />
+            <Input type="password" label="Password"  {...form.register('password')} />
             <InputErrorMessage message={form.formState.errors.password?.message} />
           </div>
 
