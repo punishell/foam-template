@@ -8,13 +8,13 @@ import { PageLoading } from '@/components/common/page-loading';
 export const Invites = () => {
   const query = useGetInvites({ filter: { status: 'pending' } });
 
-  if (query.isLoading) return <PageLoading className="rounded-xl border border-line h-[80%]" />;
+  if (query.isLoading) return <PageLoading className="h-[85vh] rounded-2xl border border-line" />;
 
-  if (query.isError) return <PageError className="rounded-xl border border-red-100 h-[80%]" />;
+  if (query.isError) return <PageError className="rounded-2xl border border-red-200 h-[85vh]" />;
 
   const invites = query.data.data;
 
-  if (invites.length === 0) return <PageEmpty className="h-[80%]" />;
+  if (invites.length === 0) return <PageEmpty className="h-[85vh] rounded-2xl border border-line" />;
 
   return (
     <div className="flex flex-col gap-5 mt-4 border border-line bg-white rounded-2xl p-4 w-full">
@@ -34,7 +34,7 @@ export const Invites = () => {
               avatar: creator.profileImage?.url,
               name: `${creator.firstName} ${creator.lastName}`,
             }}
-            close={() => { }}
+            close={() => {}}
           />
         );
       })}

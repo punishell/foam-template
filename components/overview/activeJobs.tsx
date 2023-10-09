@@ -147,9 +147,10 @@ export const ActiveJobs = () => {
       }),
     [jobData],
   );
-  if ((!isFetched || !assignedFetched) && (isFetching || assignedFetching)) return <PageLoading className="h-[80%]" />;
-  if (isError || assignedError) return <PageError className="rounded-xl border border-red-100 h-[80%]" />;
-  if (activeJobs.length === 0) return <PageEmpty className="h-[80%]" />;
+  if ((!isFetched || !assignedFetched) && (isFetching || assignedFetching))
+    return <PageLoading className="h-[85vh] rounded-2xl border border-line" />;
+  if (isError || assignedError) return <PageError className="rounded-2xl border border-red-200 h-[85vh]" />;
+  if (activeJobs.length === 0) return <PageEmpty className="h-[85vh] rounded-2xl border border-line" />;
 
   return (
     <div className="flex flex-col gap-5 mt-4 border border-line bg-white rounded-2xl p-4 w-full">{activeJobs}</div>

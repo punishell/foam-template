@@ -9,13 +9,18 @@ import { PageLoading } from '../common/page-loading';
 import { PageError } from '../common/page-error';
 
 export const Feeds = () => {
-  const { _id: loggedInUser } = useUserState()
-  const { data: timelineData, refetch: feedRefetch, isFetching, isFetched, isError } = useGetTimeline({ page: 1, limit: 100, filter: { isOwner: true, isPublic: true } });
+  const { _id: loggedInUser } = useUserState();
+  const {
+    data: timelineData,
+    refetch: feedRefetch,
+    isLoading,
+    isFetching,
+    isFetched,
+    isError,
+  } = useGetTimeline({ page: 1, limit: 100, filter: { isOwner: true, isPublic: true } });
 
   const callback = async () => {
-    await Promise.all([
-      feedRefetch(),
-    ]);
+    await Promise.all([feedRefetch()]);
   };
   const dismissFeed = useDismissFeed();
 
@@ -24,21 +29,24 @@ export const Feeds = () => {
       onSuccess: () => {
         // refetch feeds
         callback && callback();
-      }
+      },
     });
-  }
+  };
 
-  const timelineFeeds = useMemo(() => (timelineData?.data || []).map((feed, i) => ParseFeedView(feed, loggedInUser, i, callback, dismissByID)), [timelineData?.data])
-  if (!isFetched && isFetching) return <PageLoading className="h-[80%]" />;
-  if (isError) return <PageError className="rounded-xl border border-red-100 h-[80%]" />;
-  if (timelineFeeds.length === 0) return <PageEmpty className="h-[80%]" />;
-
-  if (isFetching && !isFetched) return <div className="flex flex-col gap-5 mt-4 rounded-2xl p-4 w-full"><Spinner /></div>
-  if (timelineFeeds.length === 0) return <div className='flex flex-col gap-5 mt-4 w-full p-4'><p className='text-center'>No Feeds Received</p></div>
+  const timelineFeeds = useMemo(
+    () => (timelineData?.data || []).map((feed, i) => ParseFeedView(feed, loggedInUser, i, callback, dismissByID)),
+    [timelineData?.data],
+  );
+  if (isLoading) return <PageLoading className="h-[85vh] rounded-2xl border border-line" />;
+  if (isError) return <PageError className="h-[85vh] rounded-2xl border border-line" />;
+  if (timelineFeeds.length === 0) return <PageEmpty className="h-[85vh] rounded-2xl border border-line" />;
 
   return (
-    <div className="flex flex-col gap-5 border border-line bg-white rounded-2xl p-4 w-full">
-      {timelineFeeds}
+    <div className="relative h-full">
+      <div className="h-full overflow-y-auto scrollbar-hide [&>*]:mb-5 border border-line bg-white rounded-2xl p-4 w-full">
+        {timelineFeeds}
+      </div>
+      <div className="absolute left-0 right-0 -bottom-[0px] h-10 z-50 bg-gradient-to-b from-transparent via-transparent to-green-50 rounded-2xl"></div>
     </div>
   );
 };
