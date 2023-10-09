@@ -13,7 +13,7 @@ import Rating from 'react-rating';
 import { Star } from 'lucide-react';
 import { DeliverablesStepper } from '@/components/jobs/deliverables-stepper';
 import Image from 'next/image';
-import { AfroProfile } from '@/components/common/afro-profile';
+import { AfroScore } from '@/components/common/afro-profile';
 import { DefaultAvatar } from '@/components/common/default-avatar';
 
 const MAX_REVIEW_LENGTH = 500;
@@ -26,7 +26,18 @@ interface ReviewJobCancellationRequestProps {
 export const ReviewJobCancellationRequest: React.FC<ReviewJobCancellationRequestProps> = ({ job }) => {
   const [acceptCancellation, setAcceptCancellation] = React.useState(false);
 
-  const { creator, owner, createdAt, paymentFee, deliveryDate, name: jobTitle, _id: jobId, progress, tags, collections } = job;
+  const {
+    creator,
+    owner,
+    createdAt,
+    paymentFee,
+    deliveryDate,
+    name: jobTitle,
+    _id: jobId,
+    progress,
+    tags,
+    collections,
+  } = job;
 
   const deliverables = collections.filter(isJobDeliverable);
   const jobCancellation = job.collections.find(isJobCancellation);
@@ -162,7 +173,7 @@ const AcceptJobCancellation: React.FC<AcceptJobCancellationProps> = ({ setAccept
           <div className="flex flex-col gap-3 p-3 bg-slate-50 rounded-lg border border-gray-200">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <AfroProfile score={client.score || 0} size="sm">
+                <AfroScore score={client.score || 0} size="sm">
                   <div className="h-full w-full rounded-full relative">
                     {client.profileImage?.url ? (
                       <Image src={client.profileImage?.url} fill alt="profile" className="rounded-full" />
@@ -170,7 +181,7 @@ const AcceptJobCancellation: React.FC<AcceptJobCancellationProps> = ({ setAccept
                       <DefaultAvatar />
                     )}
                   </div>
-                </AfroProfile>
+                </AfroScore>
 
                 <div className="flex flex-col gap-1">
                   <span className="text-title text-base font-medium leading-none">{`${client.firstName} ${client.lastName}`}</span>

@@ -222,3 +222,7 @@ export const spChars = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/;
 export const paginate = <T>(array: T[], itemsPerPage: number, currentPage: number): T[] => {
   return array.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 };
+
+export const truncate = (str: string, n: number) => {
+  return str.length > n ? str.slice(0, n - 1) + '...' : str;
+};

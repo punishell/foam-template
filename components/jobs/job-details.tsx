@@ -1,7 +1,7 @@
 import Image from 'next/image';
 import { format } from 'date-fns';
 import { Calendar, Tag } from 'lucide-react';
-import { AfroProfile } from '@/components/common/afro-profile';
+import { AfroScore } from '@/components/common/afro-profile';
 import { DefaultAvatar } from '@/components/common/default-avatar';
 interface JobHeaderProps {
   title: string;
@@ -33,7 +33,7 @@ export const JobHeader: React.FC<JobHeaderProps> = ({ title, price, dueDate, cre
       </div>
       {creator && (
         <div className="flex flex-col text-center gap-0 items-center">
-          <AfroProfile score={creator.score} size="md">
+          <AfroScore score={creator.score} size="md">
             <div className="h-full w-full rounded-full">
               {creator.avatar ? (
                 <Image src={creator.avatar} fill alt="profile" className="rounded-full" />
@@ -41,7 +41,7 @@ export const JobHeader: React.FC<JobHeaderProps> = ({ title, price, dueDate, cre
                 <DefaultAvatar />
               )}
             </div>
-          </AfroProfile>
+          </AfroScore>
           <span className="text-white text-xl font-bold">{creator.name}</span>
         </div>
       )}
@@ -63,7 +63,7 @@ export const JobDescription: React.FC<JobDescriptionProps> = ({ description }) =
 };
 
 interface JobSkillsProps {
-  skills: { name: string, color: string }[];
+  skills: { name: string; color: string }[];
 }
 
 export const JobSkills: React.FC<JobSkillsProps> = ({ skills }) => {
@@ -72,7 +72,11 @@ export const JobSkills: React.FC<JobSkillsProps> = ({ skills }) => {
       <h3 className="text-title text-lg font-bold">Preferred Skills</h3>
       <div className="flex flex-wrap gap-2">
         {skills.map((skill, index) => (
-          <span key={index} className="bg-[#F7F9FA] grow whitespace-nowrap text-[#090A0A] rounded-full px-4 py-2" style={{ background: skill.color }}>
+          <span
+            key={index}
+            className="bg-[#F7F9FA] grow whitespace-nowrap text-[#090A0A] rounded-full px-4 py-2"
+            style={{ background: skill.color }}
+          >
             {skill.name}
           </span>
         ))}

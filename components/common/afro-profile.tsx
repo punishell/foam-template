@@ -10,7 +10,7 @@ const SIZE_TO_PX: Record<Size, number> = {
   xl: 180,
 };
 
-interface AfroProfileProps {
+interface AfroScoreProps {
   size: Size;
   score: number;
   children?: React.ReactNode;
@@ -28,7 +28,7 @@ const progressToColor = (progress: number) => {
   }
 };
 
-export const AfroProfile: React.FC<AfroProfileProps> = ({ size, score = 63, children }) => {
+export const AfroScore: React.FC<AfroScoreProps> = ({ size, score = 63, children }) => {
   const id = React.useId();
   const sizeInPx = SIZE_TO_PX[size];
   const thickness = sizeInPx / 11;
@@ -74,7 +74,7 @@ export const AfroProfile: React.FC<AfroProfileProps> = ({ size, score = 63, chil
             borderRadius: '100%',
             overflow: 'hidden',
             backgroundColor: 'transparent',
-            margin: "auto"
+            margin: 'auto',
           }}
         >
           {children}

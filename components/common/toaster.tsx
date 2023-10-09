@@ -3,7 +3,7 @@ import Image from 'next/image';
 import toastPrimitive from 'react-hot-toast';
 import { CheckCircle2, XCircle } from 'lucide-react';
 import { UserAvatar } from './user-avatar';
-import { AfroProfile } from './afro-profile';
+import { AfroScore } from './afro-profile';
 import { DefaultAvatar } from './default-avatar';
 
 export const toast = {
@@ -57,7 +57,7 @@ export const toast = {
         <div className="flex-1 w-0 p-4">
           <div className="flex items-center">
             <div className="flex-shrink-0">
-              <AfroProfile size="sm" score={0}>
+              <AfroScore size="sm" score={0}>
                 {image ? (
                   <div className="relative w-[50%] h-[50%] translate-y-1/2 mx-auto">
                     <Image src={image || ''} alt="logo" layout="fill" />
@@ -65,7 +65,7 @@ export const toast = {
                 ) : (
                   <DefaultAvatar />
                 )}
-              </AfroProfile>
+              </AfroScore>
             </div>
             <div className="flex flex-col ml-3">
               <h2 className="text-sm font-bold leading-5 text-green-700">{title}</h2>

@@ -2,26 +2,30 @@
 @tailwind components;
 @tailwind utilities;
 
-.scrollbar-hide {
-  /* IE and Edge */
-  -ms-overflow-style: 'none';
-  /* Firefox */
-  scrollbar-width: 'none';
-}
+@layer utilities {
+  .scrollbar-hide {
+    /* IE and Edge */
+    -ms-overflow-style: none !important;
+    /* Firefox */
+    scrollbar-width: none !important;
+  }
 
-/* Safari and Chrome */
-.scrollbar-hide::-webkit-scrollbar {
-  display: 'none';
-}
+  .scrollbar-hide::-webkit-scrollbar {
+    /* Safari and Chrome */
+    display: none;
+    width: 0 !important;
+  }
 
-.scrollbar-default {
-  /* IE and Edge */
-  -ms-overflow-style: 'auto';
-  /* Firefox */
-  scrollbar-width: 'auto';
-}
+  .scrollbar-default {
+    /* IE and Edge */
+    -ms-overflow-style: 'auto';
+    /* Firefox */
+    scrollbar-width: 'auto';
+  }
 
-/* Safari and Chrome */
-.scrollbar-default::-webkit-scrollbar {
-  display: 'block';
+  .scrollbar-default::-webkit-scrollbar {
+    /* Safari and Chrome */
+    display: 'block';
+    width: 'auto';
+  }
 }

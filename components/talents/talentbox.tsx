@@ -2,7 +2,7 @@ import React from 'react';
 import Link from 'next/link';
 import { ChevronUp } from 'lucide-react';
 import { Badge } from '@/components/common';
-import { AfroProfile } from '@/components/common/afro-profile';
+import { AfroScore } from '@/components/common/afro-profile';
 import { colorFromScore, emptyAchievement, getAchievementData, limitString } from '@/lib/utils';
 import Image from 'next/image';
 import { DefaultAvatar } from '../common/default-avatar';
@@ -33,7 +33,7 @@ export const TalentBox: React.FC<{
 
         <div className="flex relative top-0 mx-auto w-full justify-center p-10 pb-0">
           <Link href={`/talents/${id}`}>
-            <AfroProfile size="xl" score={Math.round(Number(score))}>
+            <AfroScore size="xl" score={Math.round(Number(score))}>
               <div className="h-full w-full rounded-full">
                 {imageUrl ? (
                   <Image src={imageUrl} alt="profile" layout="fill" className="rounded-full" />
@@ -41,7 +41,7 @@ export const TalentBox: React.FC<{
                   <DefaultAvatar />
                 )}
               </div>
-            </AfroProfile>
+            </AfroScore>
           </Link>
         </div>
 
