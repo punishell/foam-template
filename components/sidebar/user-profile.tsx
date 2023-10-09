@@ -2,7 +2,7 @@
 import React from 'react';
 import Image from 'next/image';
 import { useGetAccount } from '@/lib/api/account';
-import { AfroProfile } from '@/components/common/afro-profile';
+import { AfroScore } from '@/components/common/afro-profile';
 import { ProfileImage } from '../overview/ProfileImage';
 
 type Size = 'sm' | 'md' | 'lg' | 'xl';

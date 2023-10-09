@@ -3,7 +3,7 @@ import { Button } from 'pakt-ui';
 import { useRouter } from 'next/navigation';
 import { X, Bookmark, Briefcase, Clock4, Gavel } from 'lucide-react';
 import Lottie from 'lottie-react';
-import { AfroProfile } from '../common/afro-profile';
+import { AfroScore } from '../common/afro-profile';
 import win from '@/lottiefiles/win.json';
 import alert from '@/lottiefiles/alert.json';
 import gavel from '@/lottiefiles/gavel.json';
@@ -78,7 +78,7 @@ export const JobFeedCard: React.FC<JobFeedCardProps> = (props) => {
           <div className="flex justify-between items-center">
             <h3 className="text-title text-xl font-bold">Job Filled</h3>
 
-            {close && <X size={20} className='cursor-pointer' onClick={() => close(id)} />}
+            {close && <X size={20} className="cursor-pointer" onClick={() => close(id)} />}
           </div>
 
           <p className="text-body">
@@ -119,7 +119,7 @@ export const JobFeedCard: React.FC<JobFeedCardProps> = (props) => {
                   <span>Time left: 1:48:00</span>
                 </div>
               )}
-              {close && <X size={20} className='cursor-pointer' onClick={() => close(id)} />}
+              {close && <X size={20} className="cursor-pointer" onClick={() => close(id)} />}
             </div>
           </div>
 
@@ -148,14 +148,14 @@ export const JobFeedCard: React.FC<JobFeedCardProps> = (props) => {
 
         <div className="flex flex-col gap-4 py-4 w-full">
           <div className="flex justify-between items-center">
-            <h3 className="text-title text-xl font-bold">Job Invitation  {accepted ? "Accepted" : "Declined"}</h3>
+            <h3 className="text-title text-xl font-bold">Job Invitation {accepted ? 'Accepted' : 'Declined'}</h3>
 
-            {close && <X size={20} className='cursor-pointer' onClick={() => close(id)} />}
+            {close && <X size={20} className="cursor-pointer" onClick={() => close(id)} />}
           </div>
 
           <p className="text-body">
-            The <span className="text-title text-bold">&quot;{title}&quot;</span> Job has been filled.
-            You can check job progress here
+            The <span className="text-title text-bold">&quot;{title}&quot;</span> Job has been filled. You can check job
+            progress here
           </p>
 
           <div className="justify-between items-center flex mt-auto">
@@ -170,7 +170,6 @@ export const JobFeedCard: React.FC<JobFeedCardProps> = (props) => {
       </JobFeedWrapper>
     );
   }
-
 };
 
 type JobApplicationCardProps = {
@@ -184,7 +183,7 @@ type JobApplicationCardProps = {
   bookmarked: boolean;
   jobId: string;
   close: (id: string) => void;
-}
+};
 
 export const JobApplicationCard: React.FC<JobApplicationCardProps> = (props) => {
   const { id, title, jobId, bookmarked, applicant, close } = props;
@@ -195,11 +194,12 @@ export const JobApplicationCard: React.FC<JobApplicationCardProps> = (props) => 
       <div className="flex flex-col gap-4 py-4 w-full">
         <div className="flex justify-between items-center">
           <h3 className="text-title text-xl font-bold">New Job Application</h3>
-          {close && <X size={20} className='cursor-pointer' onClick={() => close(id)} />}
+          {close && <X size={20} className="cursor-pointer" onClick={() => close(id)} />}
         </div>
 
         <p className="text-body">
-          You Have Received a new job application for <span className="text-title text-bold">&quot;{title}&quot;</span> from {applicant.name}
+          You Have Received a new job application for <span className="text-title text-bold">&quot;{title}&quot;</span>{' '}
+          from {applicant.name}
         </p>
 
         <div className="justify-between items-center flex mt-auto">
@@ -256,7 +256,7 @@ export const PublicJobCreatedFeed = ({
             <span className="px-2 text-lg text-title inline-flex rounded-full bg-green-300">${amount ?? 0}</span> public
             job
           </h3>
-          <X size={20} className='cursor-pointer' onClick={() => close(_id)} />
+          <X size={20} className="cursor-pointer" onClick={() => close(_id)} />
         </div>
         <h3 className="text-title text-2xl font-normal">{title}</h3>
         <div className="justify-between items-center flex mt-auto">
@@ -300,24 +300,34 @@ interface TalentJobUpdateProps {
   };
   isCreator: boolean;
   progress: {
-    total: number,
-    progress: number
-  }
+    total: number;
+    progress: number;
+  };
   close: (id: string) => void;
 }
 
-export const JobUpdateFeed: React.FC<TalentJobUpdateProps> = ({ id, talent, creator, title, description, progress, bookmarked, isCreator, close }) => {
+export const JobUpdateFeed: React.FC<TalentJobUpdateProps> = ({
+  id,
+  talent,
+  creator,
+  title,
+  description,
+  progress,
+  bookmarked,
+  isCreator,
+  close,
+}) => {
   return (
     <div className="border-[#CDCFD0] bg-[#F9F9F9] gap-4 pl-2 px-4  flex border z-10 w-full rounded-2xl relative overflow-hidden">
       <ProfileImage imageUrl={talent.avatar} score={talent.score} />
       <div className="flex flex-col gap-4 py-4 w-full">
         <div className="flex justify-between items-center">
-          <h3 className="text-title text-xl font-bold">{!isCreator ? title : `${talent.name} completed a deliverable`}</h3>
-          {close && <X size={20} className='cursor-pointer' onClick={() => close(id)} />}
+          <h3 className="text-title text-xl font-bold">
+            {!isCreator ? title : `${talent.name} completed a deliverable`}
+          </h3>
+          {close && <X size={20} className="cursor-pointer" onClick={() => close(id)} />}
         </div>
-        <p className="text-body">
-          {!isCreator ? description : `✅ ${title}`}
-        </p>
+        <p className="text-body">{!isCreator ? description : `✅ ${title}`}</p>
         <div className="justify-between items-center flex mt-auto">
           <div className="flex items-center gap-2">
             {/* <Button size="xs" variant="secondary">
@@ -344,7 +354,7 @@ export const JobUpdateFeed: React.FC<TalentJobUpdateProps> = ({ id, talent, crea
 export const JobCompletionFeed = () => {
   return (
     <div className="border-[#CDCFD0] bg-[#F9F9F9] gap-4 pl-2 px-4  flex border z-10 w-full rounded-2xl relative overflow-hidden">
-      <AfroProfile score={0} size="lg" />
+      <AfroScore score={0} size="lg" />
       <div className="flex flex-col gap-4 w-full py-4">
         <div className="flex justify-between items-center">
           <h3 className="text-body text-xl font-bold">Joon completed a job</h3>
@@ -374,7 +384,7 @@ export const JobCompletionFeed = () => {
 export const JobReviewedFeed = () => {
   return (
     <div className="border-[#CDCFD0] bg-[#F9F9F9] gap-4 pl-2 px-4  flex border  z-10 w-full rounded-2xl relative overflow-hidden">
-      <AfroProfile score={0} size="lg" />
+      <AfroScore score={0} size="lg" />
       <div className="flex flex-col gap-4 py-4">
         <div className="flex justify-between items-center">
           <h3 className="text-title text-xl font-bold">Theresa has reviewed your work</h3>
@@ -436,7 +446,7 @@ export const PaymentReleased = () => {
 export const JobCancelled = () => {
   return (
     <div className="border-[#FF9898] gap-4 pl-2 px-4 flex border bg-[#FFF4F4] z-10 w-full rounded-2xl relative overflow-hidden">
-      <AfroProfile score={0} size="lg" />
+      <AfroScore score={0} size="lg" />
       <div className="flex flex-col gap-4 w-full py-4">
         <div className="flex justify-between items-center">
           <h3 className="text-title text-xl font-bold">Theresa Cancelled the Job</h3>
@@ -463,23 +473,33 @@ export const JobCancelled = () => {
   );
 };
 interface ReferralSignupFeedProps {
-  id: string
-  name: string
-  userId: string
-  avatar?: string, score?: number
+  id: string;
+  name: string;
+  userId: string;
+  avatar?: string;
+  score?: number;
   bookmarkId: string;
   bookmarked: boolean;
-  close: (id: string) => void
-};
+  close: (id: string) => void;
+}
 
-export const ReferralSignupFeed = ({ id, userId, avatar, score, name, bookmarked, bookmarkId, close }: ReferralSignupFeedProps) => {
+export const ReferralSignupFeed = ({
+  id,
+  userId,
+  avatar,
+  score,
+  name,
+  bookmarked,
+  bookmarkId,
+  close,
+}: ReferralSignupFeedProps) => {
   return (
     <div className="border-[#CDCFD0] bg-[#F9F9F9] gap-4 p-4 flex border z-10 w-full rounded-2xl relative overflow-hidden h-[174px]">
       <ProfileImage imageUrl={avatar} score={score} />
       <div className="flex flex-col gap-4 w-full">
         <div className="flex justify-between items-center">
           <h3 className="text-title text-xl font-bold">{name} just signed up</h3>
-          <X size={20} className='cursor-pointer' onClick={() => close(id)} />
+          <X size={20} className="cursor-pointer" onClick={() => close(id)} />
         </div>
 
         <p className="text-body">

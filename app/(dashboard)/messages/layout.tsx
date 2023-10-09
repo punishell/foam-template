@@ -5,7 +5,7 @@ import { Button, Slider } from 'pakt-ui';
 import { Modal } from '@/components/common';
 import { Spinner } from '@/components/common';
 import { TagInput } from '@/components/common/tag-input';
-import { AfroProfile } from '@/components/common/afro-profile';
+import { AfroScore } from '@/components/common/afro-profile';
 import { useGetConnectionPreference, useUpdateConnectionPreference } from '@/lib/api/connection';
 import { XCircle, Settings } from 'lucide-react';
 import { UserBalance } from '@/components/common/user-balance';
@@ -42,9 +42,11 @@ export default function MessagesLayout({ children }: Props) {
       <div className="flex grow w-full h-[90%]">
         <div className="bg-white basis-[370px] grow-0 border h-full shrink-0 flex flex-col rounded-lg rounded-r-none border-line">
           <ChatListSearch />
-          <div className='flex relative items-center gap-2 px-4 pb-6'>
-            <Button variant={'outline'} className='!px-4 !py-2' onClick={() => setSettingsModalOpen(true)}>
-              <span className='flex flex-row text-sm font-bold items-center'>Set Connection Preference <Settings className='ml-2' size={16} /></span>
+          <div className="flex relative items-center gap-2 px-4 pb-6">
+            <Button variant={'outline'} className="!px-4 !py-2" onClick={() => setSettingsModalOpen(true)}>
+              <span className="flex flex-row text-sm font-bold items-center">
+                Set Connection Preference <Settings className="ml-2" size={16} />
+              </span>
             </Button>
           </div>
           <ChatList conversations={conversations} loading={loadingChats} />
@@ -102,7 +104,7 @@ const SettingsModal = () => {
           />
         </div>
         <div>
-          <AfroProfile size="sm" score={minimumScore} />
+          <AfroScore size="sm" score={minimumScore} />
         </div>
       </div>
 

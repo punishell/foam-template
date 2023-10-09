@@ -3,7 +3,7 @@ import Image from 'next/image';
 import { type Job, isReviewChangeRequest } from '@/lib/types';
 import Lottie from 'lottie-react';
 import success from '@/lottiefiles/success.json';
-import { AfroProfile } from '@/components/common/afro-profile';
+import { AfroScore } from '@/components/common/afro-profile';
 import { DefaultAvatar } from '@/components/common/default-avatar';
 import { Spinner } from '@/components/common';
 import { Button } from 'pakt-ui';
@@ -88,7 +88,7 @@ export const ReviewClient: React.FC<ReviewClientProps> = ({ job, closeModal }) =
           <h3 className="text-lg">How was your experience with</h3>
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <AfroProfile score={creator?.score || 0} size="sm">
+              <AfroScore score={creator?.score || 0} size="sm">
                 <div className="h-full w-full rounded-full relative">
                   {creator?.profileImage?.url ? (
                     <Image src={creator?.profileImage?.url} fill alt="profile" className="rounded-full" />
@@ -96,7 +96,7 @@ export const ReviewClient: React.FC<ReviewClientProps> = ({ job, closeModal }) =
                     <DefaultAvatar />
                   )}
                 </div>
-              </AfroProfile>
+              </AfroScore>
 
               <div className="flex flex-col gap-1">
                 <span className="text-title text-base font-medium leading-none">{`${creator?.firstName} ${creator?.lastName}`}</span>

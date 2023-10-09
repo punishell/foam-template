@@ -5,7 +5,7 @@ import { Button } from 'pakt-ui';
 import { JobStatus } from '@/lib/types';
 import { useRouter } from 'next/navigation';
 import { SideModal } from '@/components/common/side-modal';
-import { AfroProfile } from '@/components/common/afro-profile';
+import { AfroScore } from '@/components/common/afro-profile';
 import { DefaultAvatar } from '@/components/common/default-avatar';
 import { ClientJobModal } from '@/components/jobs/job-modals/client';
 import { TalentJobModal } from '@/components/jobs/job-modals/talent';

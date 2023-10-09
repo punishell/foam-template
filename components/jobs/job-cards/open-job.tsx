@@ -2,7 +2,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { Bookmark, X } from 'lucide-react';
-import { AfroProfile } from '@/components/common/afro-profile';
+import { AfroScore } from '@/components/common/afro-profile';
 import { RenderBookMark } from './render-bookmark';
 import { UserAvatar } from '@/components/common/user-avatar';
 import { ProfileImage } from '@/components/overview/ProfileImage';
@@ -26,11 +26,20 @@ interface OpenJobProps {
   onRefresh?: () => void;
 }
 
-export const OpenJobCard: React.FC<OpenJobProps> = ({ creator, price, skills, title, id, isBookmarked, bookmarkId, onRefresh }) => {
+export const OpenJobCard: React.FC<OpenJobProps> = ({
+  creator,
+  price,
+  skills,
+  title,
+  id,
+  isBookmarked,
+  bookmarkId,
+  onRefresh,
+}) => {
   return (
     <div className="gap-4 bg-white rounded-3xl border-line w-full flex flex-col grow border p-4">
       <Link href={`/jobs/${id}`} className="w-full flex gap-4">
-        <ProfileImage imageUrl={creator.avatar} score={creator.paktScore} size='md' />
+        <ProfileImage imageUrl={creator.avatar} score={creator.paktScore} size="md" />
 
         <div className="flex flex-col gap-2 grow">
           <div className="flex items-center justify-between gap-2">
@@ -45,12 +54,23 @@ export const OpenJobCard: React.FC<OpenJobProps> = ({ creator, price, skills, ti
       <div className="flex items-center gap-2 justify-between mt-auto">
         <div className="flex items-center gap-2">
           {skills.slice(0, 3).map((skill) => (
-            <span key={skill.name} className={`px-4 capitalize rounded-full py-0.5 bg-slate-100`} style={{ background: skill.color }}>
+            <span
+              key={skill.name}
+              className={`px-4 capitalize rounded-full py-0.5 bg-slate-100`}
+              style={{ background: skill.color }}
+            >
               {skill.name}
             </span>
           ))}
         </div>
-        <RenderBookMark id={id} size={20} type='collection' isBookmarked={isBookmarked} bookmarkId={bookmarkId} callback={onRefresh} />
+        <RenderBookMark
+          id={id}
+          size={20}
+          type="collection"
+          isBookmarked={isBookmarked}
+          bookmarkId={bookmarkId}
+          callback={onRefresh}
+        />
       </div>
     </div>
   );

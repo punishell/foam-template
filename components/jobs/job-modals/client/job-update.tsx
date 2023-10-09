@@ -3,7 +3,7 @@ import { MoreVertical } from 'lucide-react';
 import { isJobDeliverable, type Job } from '@/lib/types';
 import { format } from 'date-fns';
 import Image from 'next/image';
-import { AfroProfile } from '@/components/common/afro-profile';
+import { AfroScore } from '@/components/common/afro-profile';
 import { DefaultAvatar } from '@/components/common/default-avatar';
 import { DeliverablesStepper } from '@/components/jobs/deliverables-stepper';
 import { Popover, PopoverTrigger, PopoverContent } from '@/components/common/popover';
@@ -74,7 +74,7 @@ export const JobUpdates: React.FC<JobUpdatesProps> = ({ job, requestJobCancellat
           <div className="border bg-[#F8FFF4] border-[#7DDE86] p-4 rounded-2xl flex flex-col divide-y">
             <div className="pb-4 flex flex-col gap-2">
               <div className="flex gap-2 items-center">
-                <AfroProfile score={creator.score} size="sm">
+                <AfroScore score={creator.score} size="sm">
                   <div className="h-full w-full rounded-full">
                     {creator.profileImage?.url ? (
                       <Image src={creator.profileImage?.url} fill alt="profile" className="rounded-full" />
@@ -82,7 +82,7 @@ export const JobUpdates: React.FC<JobUpdatesProps> = ({ job, requestJobCancellat
                       <DefaultAvatar />
                     )}
                   </div>
-                </AfroProfile>
+                </AfroScore>
                 <div className="flex flex-col">
                   <span className="text-title text-base font-bold">{`
                     ${creator.firstName} ${creator.lastName}

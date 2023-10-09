@@ -2,7 +2,7 @@ import React from 'react';
 import { type Job, isReviewChangeRequest, isJobDeliverable } from '@/lib/types';
 import { ChevronLeft } from 'lucide-react';
 import Image from 'next/image';
-import { AfroProfile } from '@/components/common/afro-profile';
+import { AfroScore } from '@/components/common/afro-profile';
 import { DefaultAvatar } from '@/components/common/default-avatar';
 import { Button } from 'pakt-ui';
 import Rating from 'react-rating';
@@ -63,7 +63,7 @@ export const ReviewTalent: React.FC<ReviewTalentProps> = ({ job, closeModal }) =
           <h3 className="text-lg">How was your experience with</h3>
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <AfroProfile score={owner?.score || 0} size="sm">
+              <AfroScore score={owner?.score || 0} size="sm">
                 <div className="h-full w-full rounded-full relative">
                   {owner?.profileImage?.url ? (
                     <Image src={owner?.profileImage?.url} fill alt="profile" className="rounded-full" />
@@ -71,7 +71,7 @@ export const ReviewTalent: React.FC<ReviewTalentProps> = ({ job, closeModal }) =
                     <DefaultAvatar />
                   )}
                 </div>
-              </AfroProfile>
+              </AfroScore>
 
               <div className="flex flex-col gap-1">
                 <span className="text-title text-base font-medium leading-none">{`${owner?.firstName} ${owner?.lastName}`}</span>
@@ -178,7 +178,7 @@ const ReviewChangeRequested: React.FC<ReviewChangeRequestedProps> = ({ closeModa
             <p className="text-lg text-body">{reviewChangeRequest?.description}</p>
 
             <div className="flex items-center gap-2">
-              <AfroProfile score={talent?.score || 0} size="sm">
+              <AfroScore score={talent?.score || 0} size="sm">
                 <div className="h-full w-full rounded-full relative">
                   {talent?.profileImage?.url ? (
                     <Image src={talent?.profileImage?.url} fill alt="profile" className="rounded-full" />
@@ -186,7 +186,7 @@ const ReviewChangeRequested: React.FC<ReviewChangeRequestedProps> = ({ closeModa
                     <DefaultAvatar />
                   )}
                 </div>
-              </AfroProfile>
+              </AfroScore>
 
               <div className="flex flex-col gap-1">
                 <span className="text-title text-base font-medium leading-none">{`${talent?.firstName} ${talent?.lastName}`}</span>

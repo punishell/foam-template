@@ -14,7 +14,7 @@ import { PageError } from '@/components/common/page-error';
 import { PageEmpty } from '@/components/common/page-empty';
 import { Pagination } from '@/components/common/pagination';
 import { PageLoading } from '@/components/common/page-loading';
-import { AfroProfile } from '@/components/common/afro-profile';
+import { AfroScore } from '@/components/common/afro-profile';
 import { DefaultAvatar } from '@/components/common/default-avatar';
 interface Props {
   params: {
@@ -193,7 +193,7 @@ const ApplicantCard: React.FC<ApplicantCardProps> = ({ bid, talent, message }) =
     <div className="w-full bg-white p-4 rounded-2xl border border-line flex flex-col gap-3">
       <div className="w-full flex gap-4">
         {
-          <AfroProfile score={score} size="md">
+          <AfroScore score={score} size="md">
             <div className="h-full w-full rounded-full relative">
               {profileImage?.url ? (
                 <Image src={profileImage.url} alt="profile" layout="fill" className="rounded-full" />
@@ -201,7 +201,7 @@ const ApplicantCard: React.FC<ApplicantCardProps> = ({ bid, talent, message }) =
                 <DefaultAvatar />
               )}
             </div>
-          </AfroProfile>
+          </AfroScore>
         }
         <div className="flex flex-col gap-2 grow">
           <div className="flex items-center justify-between gap-2">
@@ -215,11 +215,17 @@ const ApplicantCard: React.FC<ApplicantCardProps> = ({ bid, talent, message }) =
 
       <div className="flex items-center justify-between">
         <div className="flex flex-wrap gap-2">
-          {(profile.talent.tagsIds && profile.talent.tagsIds.length > 0) && profile.talent.tagsIds.slice(0, 3).map((s, index) => (
-            <span key={index} style={{ background: s.color }} className={`bg-green-100 grow whitespace-nowrap text-[#090A0A] rounded-full px-4 py-0.5`}>
-              {s.name}
-            </span>
-          ))}
+          {profile.talent.tagsIds &&
+            profile.talent.tagsIds.length > 0 &&
+            profile.talent.tagsIds.slice(0, 3).map((s, index) => (
+              <span
+                key={index}
+                style={{ background: s.color }}
+                className={`bg-green-100 grow whitespace-nowrap text-[#090A0A] rounded-full px-4 py-0.5`}
+              >
+                {s.name}
+              </span>
+            ))}
         </div>
         <div className="gap-2 flex items-center">
           <Button size="xs" variant="secondary" onClick={() => router.push(`/messages?userId=${talent._id}`)}>
