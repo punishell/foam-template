@@ -50,15 +50,14 @@ export const WithdrawalModal = ({ isOpen, onChange, wallets }: { isOpen: boolean
     }
     withdraw.mutate(payload, {
       onSuccess: (data) => {
-        console.log(data);
-        form.reset({})
+        form.reset({});
+        onChange(false);
       },
     });
   }
 
   const renderOption = (coin: string, balance: string) => (<div className="flex flex-row text-lg"><Image width={25} height={25} className="w-[25px] h-[25px] mr-4" src={coin == "avax" ? avax : usdc} alt={`logo for currency`} />{coin.toUpperCase()} (${balance})</div>)
 
-  console.log(form.formState.errors)
   return (
     <SideModal isOpen={isOpen} onOpenChange={onChange} className="gap-6">
 
@@ -109,7 +108,7 @@ export const WithdrawalModal = ({ isOpen, onChange, wallets }: { isOpen: boolean
           </div>
 
           <div className="relative">
-            <Input type="text" label="Password"  {...form.register('password')} />
+            <Input type="password" label="Password"  {...form.register('password')} />
             <InputErrorMessage message={form.formState.errors.password?.message} />
           </div>
 

@@ -19,6 +19,10 @@ export function useWithdraw() {
   return useMutation({
     mutationFn: postWithdrawalRequest,
     mutationKey: ['withdraw_referral_invite'],
+    onSuccess: (data) => {
+      toast.success('Withdrawal Successful');
+      return data;
+    },
     onError: (error: ApiError) => {
       toast.error(error?.response?.data.message || 'An error occurred');
     },
