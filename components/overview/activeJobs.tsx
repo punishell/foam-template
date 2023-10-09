@@ -9,7 +9,6 @@ import { PageEmpty } from '../common/page-empty';
 import { PageLoading } from '../common/page-loading';
 import { PageError } from '../common/page-error';
 import { useGetJobs } from '@/lib/api/job';
-import { ProfileImage } from './ProfileImage';
 import Link from 'next/link';
 import { Button } from 'pakt-ui';
 import { DeliverableProgressBar } from '../common/deliverable-progress-bar';
@@ -17,7 +16,7 @@ import { Briefcase } from 'lucide-react';
 import { SideModal } from '../common/side-modal';
 import { TalentJobModal } from '../jobs/job-modals/talent';
 import { ClientJobModal } from '../jobs/job-modals/client';
-
+import { AfroProfile } from '../common/afro-profile';
 interface ActiveJobCardProps {
   id: string;
   title: string;
@@ -56,7 +55,7 @@ const ActiveJobCard: React.FC<ActiveJobCardProps> = ({
   const [isUpdateModalOpen, setIsUpdateModalOpen] = React.useState(false);
   return (
     <div className="border-[#CDCFD0] bg-[#F9F9F9] gap-4 pl-2 px-4  flex border z-10 w-full rounded-2xl relative overflow-hidden">
-      <ProfileImage imageUrl={talent.avatar} score={talent.score} />
+      <AfroProfile src={talent.avatar} score={talent.score} size="md" />
       <div className="flex flex-col gap-4 py-4 w-full">
         <div className="flex justify-between items-center">
           <h3 className="text-title text-xl font-bold">{title}</h3>
