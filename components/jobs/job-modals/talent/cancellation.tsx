@@ -119,7 +119,7 @@ const AcceptJobCancellation: React.FC<AcceptJobCancellationProps> = ({ setAccept
 
   const [rating, setRating] = React.useState(0);
   const [comment, setComment] = React.useState('');
-  const [percentageToPay, setPercentageToPay] = React.useState(10);
+  const [percentageToPay, setPercentageToPay] = React.useState(job.progress);
 
   const amountToPay = (percentageToPay / 100) * job.paymentFee;
 
