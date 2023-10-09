@@ -25,7 +25,7 @@ export default function Overview() {
         <div className="w-full h-full gap-7">
           <JobHeader />
           <Tabs
-            className='h-[79%] my-4'
+            className="h-[79%] my-4"
             tabs={[
               { label: 'Your Feed', value: 'feed', content: <Feeds /> },
               { label: 'Active Jobs', value: 'active', content: <ActiveJobs /> },
@@ -35,7 +35,7 @@ export default function Overview() {
           />
         </div>
 
-        <div className="flex flex-col basis-[300px] shrink-0 h-full gap-7 w-fit items-center">
+        <div className="flex flex-col basis-[270px] shrink-0 h-full gap-7 w-fit items-center">
           <AfroScore score={account.data?.score} />
           <LeaderBoard />
         </div>
