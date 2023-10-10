@@ -7,6 +7,7 @@ import { useUserState } from '@/lib/store/account';
 import { PageEmpty } from '../common/page-empty';
 import { PageLoading } from '../common/page-loading';
 import { PageError } from '../common/page-error';
+import { FEED_TYPES } from '@/lib/utils';
 
 export const Feeds = () => {
   const { _id: loggedInUser } = useUserState();
@@ -17,8 +18,8 @@ export const Feeds = () => {
     isFetching,
     isFetched,
     isError,
-  } = useGetTimeline({ page: 1, limit: 10, filter: { isOwner: true, isPublic: true } });
-
+  } = useGetTimeline({ page: 1, limit: 10, filter: { isOwner: true, type: `${FEED_TYPES.JOB_DELIVERABLE_UPDATE},${FEED_TYPES.JOB_APPLICATION_SUBMITTED},${FEED_TYPES.JOB_CANCELLED},${FEED_TYPES.JOB_COMPLETION},${FEED_TYPES.JOB_INVITATION_ACCEPTED},${FEED_TYPES.JOB_INVITATION_DECLINED},${FEED_TYPES.JOB_INVITATION_RECEIVED},${FEED_TYPES.PUBLIC_JOB_CREATED},${FEED_TYPES.PUBLIC_JOB_FILLED}`, isPublic: true } });
+  console.log("timeline=--->", timelineData);
   const callback = async () => {
     await Promise.all([feedRefetch()]);
   };

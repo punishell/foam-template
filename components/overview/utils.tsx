@@ -48,9 +48,9 @@ export const ParseFeedView = (feed: DataFeedResponse, loggedInUser: string, key:
     total: deliverableTotal,
     progress: currentProgress,
   }
-
   switch (feed.type) {
-    case FEED_TYPES.COLLECTION_CREATED || FEED_TYPES.PUBLIC_JOB_CREATED:
+    case FEED_TYPES.COLLECTION_CREATED:
+    case FEED_TYPES.PUBLIC_JOB_CREATED:
       return <PublicJobCreatedFeed
         key={key}
         creator={inviter}
@@ -127,6 +127,8 @@ export const ParseFeedView = (feed: DataFeedResponse, loggedInUser: string, key:
     case FEED_TYPES.REFERRAL_SIGNUP:
       return <ReferralSignupFeed
         id={feed?._id} name={`${feed?.creator?.firstName || ''} ${feed?.creator?.lastName || ''}`}
+        title={feed?.title}
+        description={feed?.description}
         avatar={feed?.creator?.profileImage?.url}
         userId={feed?.creator?._id}
         score={feed?.creator?.score}

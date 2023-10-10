@@ -64,7 +64,7 @@ export const DeliverablesInput: React.FC<DeliverablesProps> = ({ deliverables, s
         })}
       </div>
 
-      <button
+      {deliverables.length < MAX_DELIVERABLES && <button
         type="button"
         onClick={addDeliverable}
         disabled={deliverables.length === MAX_DELIVERABLES}
@@ -74,7 +74,7 @@ export const DeliverablesInput: React.FC<DeliverablesProps> = ({ deliverables, s
           <Plus size={18} strokeWidth={2} />
           <span>Add New Deliverable</span>
         </div>
-      </button>
+      </button>}
     </div>
   );
 };

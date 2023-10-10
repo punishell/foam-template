@@ -501,6 +501,8 @@ interface ReferralSignupFeedProps {
   id: string;
   name: string;
   userId: string;
+  title?: string;
+  description?: String;
   avatar?: string;
   score?: number;
   bookmarkId: string;
@@ -510,6 +512,8 @@ interface ReferralSignupFeedProps {
 
 export const ReferralSignupFeed = ({
   id,
+  title,
+  description,
   userId,
   avatar,
   score,
@@ -523,13 +527,13 @@ export const ReferralSignupFeed = ({
       <AfroProfile src={avatar} score={score ?? 0} size="lg" />
       <div className="flex flex-col gap-4 w-full">
         <div className="flex justify-between items-center">
-          <h3 className="text-title text-xl font-bold">{name} just signed up</h3>
+          <h3 className="text-title text-xl font-bold">{title ? title : `${name} just signed up`}</h3>
           <X size={20} className="cursor-pointer" onClick={() => close(id)} />
         </div>
 
         <p className="text-body">
-          Your referred user just signed up! Thanks for spreading the word and helping us grow. We appreciate your
-          support! 🙌
+          {description ? description : `Your referred user just signed up! Thanks for spreading the word and helping us grow. We appreciate your
+          support! 🙌`}
         </p>
 
         <div className="justify-between items-center flex mt-auto">
