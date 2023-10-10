@@ -3,13 +3,15 @@ import { arc } from 'd3-shape';
 import Image from 'next/image';
 import { DefaultAvatar } from '@/components/common/default-avatar';
 
-type Size = 'sm' | 'md' | 'lg' | 'xl';
+type Size = 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '3xl';
 
 const SIZE_TO_PX: Record<Size, number> = {
   sm: 60,
   md: 110,
   lg: 150,
   xl: 180,
+  '2xl': 200,
+  '3xl': 220,
 };
 
 interface AfroScoreProps {

@@ -40,7 +40,7 @@ export default function TalentDetails() {
             type,
             title: type,
             total: Number(total),
-            value: Number(value),
+            value: parseInt(value),
           }))}
         />
       </div>

@@ -7,7 +7,7 @@ export const Badge = ({ title, value, total, textColor, bgColor }: any) => {
         <p className={`border-b`} style={{ borderColor: textColor }}>{value}</p>
         <p>{total}</p>
       </div>
-      <p>{title}</p>
+      <p className="text-sm">{title}</p>
     </div>
   )
 }
