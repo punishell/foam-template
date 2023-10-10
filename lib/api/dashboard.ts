@@ -12,7 +12,11 @@ interface CreatorData {
 }
 
 interface GetFeedsResponse {
-  data: DataFeedResponse[];
+  data: DataFeedResponse[] | [];
+  limit: number;
+  page: number;
+  pages: number;
+  total: number;
 }
 
 interface GetTimelineResponse {

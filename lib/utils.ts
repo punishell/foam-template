@@ -134,7 +134,6 @@ export const FEED_TYPES = {
   COLLECTION_INVITE: 'collection_invite',
   REFERRAL_SIGNUP: 'referral_signup',
   REFERRAL_COLLECTION_COMPLETION: 'referral_job_completion',
-  PAYMENT_RELEASED: 'payment_released',
   COLLECTION_UPDATE: 'collection_update',
   COLLECTION_DELIVERED: 'collection_delivered',
   COLLECTION_COMPLETED: 'collection_completed',
@@ -156,6 +155,7 @@ export const FEED_TYPES = {
   JOB_COMPLETION: 'job_Completion',
   JOB_CANCELLED: 'job_cancelled',
   JOB_REVIEW: 'job_review',
+  JOB_PAYMENT_RELEASED: 'a_payment_released',
 };
 
 export function getAvatarColor(paktScore: number) {

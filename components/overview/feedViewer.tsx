@@ -406,21 +406,49 @@ export const JobCompletionFeed = () => {
   );
 };
 
-export const JobReviewedFeed = () => {
+interface ReviewJobProps {
+  id: string;
+  title: string;
+  description: string;
+  talent: {
+    _id: string;
+    name: string;
+    avatar: string;
+    score: number;
+  };
+  bookmarked: boolean;
+  bookmarkId: string;
+  jobId: string;
+  creator: {
+    _id: string;
+    name: string;
+    avatar: string;
+    score: number;
+  };
+  isCreator: boolean;
+  close: (id: string) => void;
+}
+export const JobReviewedFeed: React.FC<ReviewJobProps> = ({
+  id,
+  jobId,
+  talent,
+  creator,
+  title,
+  description,
+  bookmarked,
+  isCreator,
+  close,
+}) => {
   return (
-    <div className="border-[#CDCFD0] bg-[#F9F9F9] gap-4 pl-2 px-4  flex border  z-10 w-full rounded-2xl relative overflow-hidden">
-      <AfroProfile score={0} size="lg" />
-      <div className="flex flex-col gap-4 py-4">
+    <div className="border-[#CDCFD0] bg-[#F9F9F9] gap-4 pl-2 px-4 flex border z-10 w-full rounded-2xl relative overflow-hidden">
+      <AfroProfile src={isCreator ? talent.avatar : creator.avatar} score={0} size="lg" />
+      <div className="flex flex-col gap-4 py-4 w-full">
         <div className="flex justify-between items-center">
-          <h3 className="text-title text-xl font-bold">Theresa has reviewed your work</h3>
-
-          <X size={20} />
+          <h3 className="text-title text-xl font-bold">{isCreator ? talent.name : creator.name} has reviewed your work</h3>
+          {close && <X size={20} className="cursor-pointer" onClick={() => close(id)} />}
         </div>
 
-        <p className="text-body">
-          Aliqua id fugiat nostrud irure ex duis ea quis id quis ad et. Sunt qui esse pariatur duis deserunt mollit
-          dolore cillum minim tempor enim...
-        </p>
+        <p className="text-body">{description}</p>
 
         <div className="justify-between items-center flex mt-auto">
           <div className="flex items-center gap-2">
@@ -428,7 +456,7 @@ export const JobReviewedFeed = () => {
               Write Review
             </Button>
           </div>
-          <Bookmark size={20} />
+          <RenderBookMark size={20} isBookmarked={bookmarked} type="feed" id={id} bookmarkId={id} />
         </div>
       </div>
 

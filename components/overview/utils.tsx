@@ -62,9 +62,11 @@ export const ParseFeedView = (feed: DataFeedResponse, loggedInUser: string, key:
         callback={callback}
         close={(id: string) => DismissByID(id)}
       />;
-    case FEED_TYPES.COLLECTION_INVITE || FEED_TYPES.JOB_INVITATION_RECEIVED:
+    case FEED_TYPES.COLLECTION_INVITE:
+    case FEED_TYPES.JOB_INVITATION_RECEIVED:
       return (
         <JobFeedCard
+          key={key}
           id={feed._id}
           title={feed?.title}
           type="job-invite-pending"
@@ -78,6 +80,7 @@ export const ParseFeedView = (feed: DataFeedResponse, loggedInUser: string, key:
       );
     case FEED_TYPES.JOB_APPLICATION_SUBMITTED:
       return <JobApplicationCard
+        key={key}
         id={feed?._id}
         title={feed?.data?.parent?.name || ""}
         applicant={{
@@ -89,17 +92,9 @@ export const ParseFeedView = (feed: DataFeedResponse, loggedInUser: string, key:
         jobId={feed?.data?.parent?._id || ""}
         close={DismissByID}
       />;
-    case FEED_TYPES.JOB_INVITATION_RECEIVED:
-      return <JobFeedCard
-        title={feed?.data?.name}
-        type="job-invite-filled"
-        inviter={inviter}
-        id={feed?._id}
-        bookmarked={isBookmarked}
-        close={DismissByID}
-      />;
     case FEED_TYPES.JOB_INVITATION_ACCEPTED || FEED_TYPES.JOB_INVITATION_DECLINED:
       return <JobFeedCard
+        key={key}
         title={feed?.data?.name}
         type="job-invite-response"
         accepted={!!FEED_TYPES.JOB_INVITATION_ACCEPTED}
@@ -110,6 +105,7 @@ export const ParseFeedView = (feed: DataFeedResponse, loggedInUser: string, key:
       />;
     case FEED_TYPES.JOB_DELIVERABLE_UPDATE || FEED_TYPES.COLLECTION_UPDATE:
       return <JobUpdateFeed
+        key={key}
         talent={talent}
         creator={inviter}
         id={feed?._id}
@@ -126,6 +122,7 @@ export const ParseFeedView = (feed: DataFeedResponse, loggedInUser: string, key:
       return;
     case FEED_TYPES.REFERRAL_SIGNUP:
       return <ReferralSignupFeed
+        key={key}
         id={feed?._id} name={`${feed?.creator?.firstName || ''} ${feed?.creator?.lastName || ''}`}
         title={feed?.title}
         description={feed?.description}
@@ -136,12 +133,24 @@ export const ParseFeedView = (feed: DataFeedResponse, loggedInUser: string, key:
         bookmarked={isBookmarked}
         bookmarkId={bookmarkId}
       />;
+    case FEED_TYPES.JOB_REVIEW:
+      return <JobReviewedFeed
+        key={key}
+        id={feed?._id}
+        talent={talent}
+        creator={inviter}
+        jobId={feed?.data?._id}
+        isCreator={feed?.data?.creator?._id === loggedInUser}
+        title={feed?.title}
+        description={feed?.description}
+        close={DismissByID}
+        bookmarked={isBookmarked}
+        bookmarkId={bookmarkId}
+      />;
     case FEED_TYPES.REFERRAL_COLLECTION_COMPLETION:
       return <ReferralJobCompletion />;
-    case FEED_TYPES.PAYMENT_RELEASED:
+    case FEED_TYPES.JOB_PAYMENT_RELEASED:
       return <PaymentReleased />;
-    case FEED_TYPES.COLLECTION_REVIEWED:
-      return <JobReviewedFeed />;
     case FEED_TYPES.COLLECTION_COMPLETED:
       return <JobCompletionFeed />;
     case FEED_TYPES.COLLECTION_CANCELLED:
@@ -160,6 +169,7 @@ export const ParseFeedView = (feed: DataFeedResponse, loggedInUser: string, key:
     default:
       return (
         <JobFeedCard
+          key={key}
           title="Mobile UX Design for Afrofund"
           type="job-invite-filled"
           inviter={inviter}
