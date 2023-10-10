@@ -17,7 +17,7 @@ export const Feeds = () => {
     isFetching,
     isFetched,
     isError,
-  } = useGetTimeline({ page: 1, limit: 100, filter: { isOwner: true, isPublic: true } });
+  } = useGetTimeline({ page: 1, limit: 10, filter: { isOwner: true, isPublic: true } });
 
   const callback = async () => {
     await Promise.all([feedRefetch()]);

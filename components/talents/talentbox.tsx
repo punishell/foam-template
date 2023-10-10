@@ -23,17 +23,17 @@ export const TalentBox: React.FC<{
     <div key={id} className="m-0 h-[365px] overflow-hidden rounded-3xl p-0" style={{ background: colorCodes.bgColor }}>
       <div className="relative z-0 h-full rounded-2xl">
         <div
-          className="top absolute rounded-full left-[-20%] top-[-20%] w-[200px] h-[200px]"
+          className="top absolute rounded-full left-[-20%] top-[-20%] w-[150px] h-[150px]"
           style={{ background: colorCodes.circleColor }}
         />
         <div
-          className="bottom absolute right-[-20%] top-[40%] rounded-full w-[200px] h-[200px]"
+          className="bottom absolute right-[-20%] top-[42%] rounded-full w-[150px] h-[150px]"
           style={{ background: colorCodes.circleColor }}
         />
 
-        <div className="flex relative top-0 mx-auto w-full justify-center p-10 pb-0">
+        <div className="flex relative top-0 mx-auto w-full justify-center p-1 pb-0">
           <Link href={`/talents/${id}`}>
-            <AfroScore size="xl" score={Math.round(Number(score))}>
+            <AfroScore size="3xl" score={Math.round(Number(score))}>
               <div className="h-full w-full rounded-full">
                 {imageUrl ? (
                   <Image src={imageUrl} alt="profile" layout="fill" className="rounded-full" />
