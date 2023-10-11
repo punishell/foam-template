@@ -76,7 +76,7 @@ const ActiveJobCard: React.FC<ActiveJobCardProps> = ({
             <DeliverableProgressBar
               percentageProgress={progress.progress}
               totalDeliverables={progress.total}
-              className="max-w-none w-full"
+              className="max-w-[300px] w-full"
             />
           </div>
         </div>

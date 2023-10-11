@@ -7,7 +7,7 @@ import { Checkbox, Button } from 'pakt-ui';
 import { useDropzone } from 'react-dropzone';
 import { Spinner } from '@/components/common';
 import { endOfYesterday, format } from 'date-fns';
-import { DollarSign } from 'lucide-react';
+import { DollarIcon } from '@/components/common/icons';
 import { DatePicker } from '@/components/common/date-picker';
 import { NumericInput } from '@/components/common/numeric-input';
 import { DeliverablesInput } from '@/components/jobs/deliverables-input';
@@ -61,7 +61,7 @@ export default function CreateJob() {
   const [files, setFiles] = React.useState<File[]>([]);
   const [uploadProgress, setUploadProgress] = React.useState(0);
 
-  const onDrop = React.useCallback(async (acceptedFiles: File[]) => { }, []);
+  const onDrop = React.useCallback(async (acceptedFiles: File[]) => {}, []);
 
   const { getRootProps, getInputProps } = useDropzone({
     onDrop,
@@ -101,7 +101,6 @@ export default function CreateJob() {
       },
       {
         onSuccess: ({ _id }) => {
-          form.reset();
           router.push(`/jobs/${_id}`);
         },
       },
@@ -132,7 +131,7 @@ export default function CreateJob() {
   };
 
   return (
-    <div className="flex gap-6 overflow-y-auto pb-10">
+    <div className="flex gap-6 overflow-y-auto pb-10 h-full">
       <form
         onSubmit={form.handleSubmit(onSubmit)}
         onKeyDown={(e) => {
@@ -140,19 +139,20 @@ export default function CreateJob() {
             e.preventDefault();
           }
         }}
-        className="border grow bg-white rounded-2xl flex flex-col h-fit"
+        className="border grow bg-white rounded-2xl flex flex-col h-full"
       >
         <div className="bg-primary-gradient p-6 pb-8 rounded-t-2xl flex flex-col gap-10">
           <div className="relative">
             <input
               type="text"
+              autoFocus
               {...form.register('title')}
               placeholder="Enter Job Title"
               className="text-3xl w-full placeholder:text-white placeholder:text-opacity-60 bg-transparent focus:outline-none text-white caret-white"
             />
             <span className="absolute -bottom-5 flex w-full">
               {form.formState.errors.title?.message && (
-                <span className="text-sm text-red-500">{form.formState.errors.title?.message}</span>
+                <span className="text-sm text-red-200">{form.formState.errors.title?.message}!</span>
               )}
             </span>
           </div>
@@ -160,7 +160,7 @@ export default function CreateJob() {
           <div className="flex gap-4 max-w-lg">
             <div className="relative">
               <div className="bg-[#C9F0FF] text-[#0065D0CC] flex items-center p-2 rounded-lg h-[45px]">
-                <DollarSign />
+                <DollarIcon />
                 <NumericInput
                   type="text"
                   {...form.register('budget')}
@@ -196,7 +196,7 @@ export default function CreateJob() {
             </div>
           </div>
         </div>
-        <div className="p-6 flex flex-col gap-10">
+        <div className="p-6 flex flex-col gap-10 grow">
           <div className="flex flex-col gap-2">
             <h3 className="text-black text-lg font-medium">
               Preferred Skills<span className="ml-4 text-body text-sm font-thin">You can add up to three</span>
@@ -233,10 +233,14 @@ export default function CreateJob() {
             <div className="relative">
               <textarea
                 id="description"
+                maxLength={400}
                 {...form.register('description')}
                 className="bg-[#C9F0FF] rounded-lg w-full p-4 focus:outline-none border border-blue-300"
                 placeholder="Enter Job Description"
               />
+              <div className="text-sm ml-auto w-fit text-body -mt-1">
+                {form.watch('description')?.length} / 400 characters
+              </div>
               <span className="absolute -bottom-4 flex w-full">
                 {form.formState.errors.description?.message && (
                   <span className="text-sm text-red-500">{form.formState.errors.description?.message}</span>
@@ -368,7 +372,7 @@ export default function CreateJob() {
               </div>
             </div>
           </div>
-          <div className="ml-auto max-w-[250px] w-full">
+          <div className="ml-auto max-w-[250px] w-full border border-gray-300 rounded-xl mt-auto">
             <Button disabled={createJob.isLoading || !form.formState.isValid} fullWidth>
               {createJob.isLoading ? <Spinner /> : form.watch('visibility') == 'private' ? 'Create Job' : 'Post Job'}
             </Button>
@@ -418,24 +422,3 @@ const SkillInput = React.forwardRef<HTMLInputElement, SkillInputProps>(({ ...pro
 });
 
 SkillInput.displayName = 'SkillInput';
-
-// interface StepIndicatorProps {
-//   isComplete?: boolean;
-//   children: React.ReactNode;
-// }
-
-// export const StepIndicator: React.FC<StepIndicatorProps> = ({ children, isComplete }) => {
-//   return (
-//     <label
-//       className={cn(
-//         'flex items-center gap-4 border rounded-lg py-3 px-3  duration-200 cursor-pointer border-gray-300 bg-gray-50 border-opacity-50 hover:bg-primary hover:bg-opacity-10',
-//         {
-//           'border-primary border-opacity-40 bg-green-300 bg-opacity-10 hover:bg-opacity-20 duration-200': isComplete,
-//         },
-//       )}
-//     >
-//       <Checkbox checked={isComplete} />
-//       <span>{children}</span>
-//     </label>
-//   );
-// };

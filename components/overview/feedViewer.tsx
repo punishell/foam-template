@@ -353,7 +353,7 @@ export const JobUpdateFeed: React.FC<TalentJobUpdateProps> = ({
             <DeliverableProgressBar
               percentageProgress={progress.progress}
               totalDeliverables={progress.total}
-              className="w-full max-w-none"
+              className="w-full max-w-[300px]"
             />
           </div>
           <RenderBookMark size={20} isBookmarked={bookmarked} type="feed" id={id} bookmarkId={id} />

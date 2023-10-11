@@ -44,14 +44,20 @@ export const DeliverablesInput: React.FC<DeliverablesProps> = ({ deliverables, s
         {deliverables.map((deliverable, index) => {
           return (
             <div key={index} className="flex gap-2">
-              <input
-                key={index}
-                value={deliverable}
-                onKeyDown={handleKeyDown}
-                onChange={(e) => editDeliverable(index, e.target.value)}
-                type="text"
-                className="w-full resize-none border border-line rounded-lg outline-none px-4 py-2 focus-within:border-secondary hover:border-secondary hover:duration-200"
-              />
+              <div className="w-full border-line rounded-lg pr-16 border hover:border-secondary hover:duration-200 relative">
+                <input
+                  key={index}
+                  value={deliverable}
+                  onKeyDown={handleKeyDown}
+                  onChange={(e) => editDeliverable(index, e.target.value)}
+                  type="text"
+                  maxLength={120}
+                  className="w-full resize-none rounded-lg outline-none px-4 py-2 focus-within:border-secondary"
+                />
+                <div className="absolute right-0 top-0 bottom-0 rounded-lg flex items-center justify-center text-sm text-body w-[64px]">
+                  {deliverable.length}/120
+                </div>
+              </div>
               <button
                 type="button"
                 onClick={() => deleteDeliverable(index)}
@@ -64,17 +70,19 @@ export const DeliverablesInput: React.FC<DeliverablesProps> = ({ deliverables, s
         })}
       </div>
 
-      {deliverables.length < MAX_DELIVERABLES && <button
-        type="button"
-        onClick={addDeliverable}
-        disabled={deliverables.length === MAX_DELIVERABLES}
-        className="text-base px-2 py-2 border border-primary border-opacity-30 text-primary text-center flex items-center justify-center rounded-lg bg-success bg-opacity-10 hover:bg-opacity-20 duration-200 disabled:opacity-50"
-      >
-        <div className="flex gap-2 items-center">
-          <Plus size={18} strokeWidth={2} />
-          <span>Add New Deliverable</span>
-        </div>
-      </button>}
+      {deliverables.length < MAX_DELIVERABLES && (
+        <button
+          type="button"
+          onClick={addDeliverable}
+          disabled={deliverables.length === MAX_DELIVERABLES}
+          className="text-base px-2 py-2 border border-primary border-opacity-30 text-primary text-center flex items-center justify-center rounded-lg bg-success bg-opacity-10 hover:bg-opacity-20 duration-200 disabled:opacity-50"
+        >
+          <div className="flex gap-2 items-center">
+            <Plus size={18} strokeWidth={2} />
+            <span>Add New Deliverable</span>
+          </div>
+        </button>
+      )}
     </div>
   );
 };
