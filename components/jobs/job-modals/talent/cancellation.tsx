@@ -257,15 +257,18 @@ interface RequestJobCancellationProps {
 }
 
 export const RequestJobCancellation: React.FC<RequestJobCancellationProps> = ({
-  closeModal,
   jobId,
   cancelJobCancellationRequest,
 }) => {
   const requestJobCancellationMutation = useRequestJobCancellation();
-
+  const [isSuccess, setIsSuccess] = React.useState(false);
   const [reason, setReason] = React.useState('');
   const [reasonNotInOptions, setReasonNotInOptions] = React.useState(false);
   const [explanation, setExplanation] = React.useState('');
+
+  if (isSuccess) {
+    return <JobCancellationRequested />;
+  }
 
   return (
     <React.Fragment>
@@ -358,11 +361,18 @@ export const RequestJobCancellation: React.FC<RequestJobCancellationProps> = ({
             fullWidth
             disabled={requestJobCancellationMutation.isLoading || reason.length === 0 || explanation.length === 0}
             onClick={() => {
-              requestJobCancellationMutation.mutate({
-                jobId,
-                reason,
-                explanation,
-              });
+              requestJobCancellationMutation.mutate(
+                {
+                  jobId,
+                  reason,
+                  explanation,
+                },
+                {
+                  onSuccess: () => {
+                    setIsSuccess(true);
+                  },
+                },
+              );
             }}
           >
             {requestJobCancellationMutation.isLoading ? <Spinner size={20} /> : 'Request Cancellation'}
@@ -373,7 +383,7 @@ export const RequestJobCancellation: React.FC<RequestJobCancellationProps> = ({
   );
 };
 
-export const RequestJobCancellationSuccess: React.FC = () => {
+export const JobCancellationRequested: React.FC = () => {
   const router = useRouter();
   return (
     <div className="h-full px-4 flex items-center justify-center">
