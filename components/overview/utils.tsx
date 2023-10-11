@@ -117,6 +117,7 @@ export const ParseFeedView = (feed: DataFeedResponse, loggedInUser: string, key:
         jobId={feed?.data?._id}
         progress={deliverableCountPercentage}
         isCreator={feed?.data?.creator?._id === loggedInUser}
+        jobTitle={feed.data.name}
       />;
     case FEED_TYPES.JOB_COMPLETION:
       return;
@@ -141,7 +142,7 @@ export const ParseFeedView = (feed: DataFeedResponse, loggedInUser: string, key:
         creator={inviter}
         jobId={feed?.data?._id}
         isCreator={feed?.data?.creator?._id === loggedInUser}
-        title={feed?.title}
+        title={feed?.data?.name}
         description={feed?.description}
         close={DismissByID}
         bookmarked={isBookmarked}

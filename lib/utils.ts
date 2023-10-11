@@ -154,7 +154,12 @@ export const FEED_TYPES = {
   JOB_INVITATION_DECLINED: 'job_invitation_declined',
   JOB_COMPLETION: 'job_Completion',
   JOB_CANCELLED: 'job_cancelled',
+  JOB_CANCELLED_REQUEST: 'job_cancelled_request',
+  JOB_CANCELLED_ACCEPTED: 'job_cancelled_accepted',
   JOB_REVIEW: 'job_review',
+  JOB_REVIEW_CHANGE: 'job_review_change',
+  JOB_REVIEW_CHANGE_ACCEPTED: 'job_review_change_accepted',
+  JOB_REVIEW_CHANGE_DECLINED: 'job_review_change_declined',
   JOB_PAYMENT_RELEASED: 'a_payment_released',
 };
 

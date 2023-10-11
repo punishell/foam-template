@@ -80,7 +80,7 @@ export const ClientJobCard: React.FC<ClientJobCardProps> = ({
           onOpenChange={() => setIsUpdateModalOpen(false)}
           className="flex flex-col"
         >
-          <ClientJobModal jobId={jobId} closeModal={() => setIsUpdateModalOpen(false)} />
+          <ClientJobModal jobId={jobId} talentId={talent.id} closeModal={() => setIsUpdateModalOpen(false)} />
         </SideModal>
       </div>
     </div>
@@ -157,7 +157,7 @@ export const TalentJobCard: React.FC<TalentJobCardProps> = ({
           onOpenChange={() => setIsUpdateModalOpen(false)}
           className="flex flex-col"
         >
-          <TalentJobModal jobId={jobId} closeModal={() => setIsUpdateModalOpen(false)} />
+          <TalentJobModal talentId={client.id} jobId={jobId} closeModal={() => setIsUpdateModalOpen(false)} />
         </SideModal>
       </div>
     </div>

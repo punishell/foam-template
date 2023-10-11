@@ -254,13 +254,15 @@ interface RequestJobCancellationProps {
   jobId: string;
   closeModal: () => void;
   cancelJobCancellationRequest: () => void;
+  talentId: string;
 }
 
 export const RequestJobCancellation: React.FC<RequestJobCancellationProps> = ({
   jobId,
   cancelJobCancellationRequest,
+  talentId,
 }) => {
-  const requestJobCancellationMutation = useRequestJobCancellation();
+  const requestJobCancellationMutation = useRequestJobCancellation({ talentId });
   const [isSuccess, setIsSuccess] = React.useState(false);
   const [reason, setReason] = React.useState('');
   const [reasonNotInOptions, setReasonNotInOptions] = React.useState(false);

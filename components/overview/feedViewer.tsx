@@ -302,6 +302,7 @@ interface TalentJobUpdateProps {
     total: number;
     progress: number;
   };
+  jobTitle?: string;
   close: (id: string) => void;
 }
 
@@ -315,6 +316,7 @@ export const JobUpdateFeed: React.FC<TalentJobUpdateProps> = ({
   progress,
   bookmarked,
   isCreator,
+  jobTitle,
   close,
 }) => {
   const [isModalOpen, setIsModalOpen] = React.useState(false);
@@ -325,7 +327,7 @@ export const JobUpdateFeed: React.FC<TalentJobUpdateProps> = ({
       <div className="flex flex-col gap-4 py-4 w-full">
         <div className="flex justify-between items-center">
           <h3 className="text-title text-xl font-bold">
-            {!isCreator ? title : `${talent.name} completed a deliverable`}
+            {!isCreator ? title : `${talent.name} completed a deliverable on ${jobTitle}`}
           </h3>
           {close && <X size={20} className="cursor-pointer" onClick={() => close(id)} />}
         </div>
@@ -366,6 +368,7 @@ export const JobUpdateFeed: React.FC<TalentJobUpdateProps> = ({
         <SideModal isOpen={isModalOpen} onOpenChange={setIsModalOpen}>
           <ClientJobModal
             jobId={jobId}
+            talentId={talent._id}
             closeModal={() => {
               setIsModalOpen(false);
             }}
@@ -444,9 +447,7 @@ export const JobReviewedFeed: React.FC<ReviewJobProps> = ({
       <AfroProfile src={isCreator ? talent.avatar : creator.avatar} score={0} size="lg" />
       <div className="flex flex-col gap-4 py-4 w-full">
         <div className="flex justify-between items-center">
-          <h3 className="text-title text-xl font-bold">
-            {isCreator ? talent.name : creator.name} has reviewed your work
-          </h3>
+          <h3 className="text-title text-xl font-bold">{isCreator ? talent.name : creator.name} has reviewed your work on {title}</h3>
           {close && <X size={20} className="cursor-pointer" onClick={() => close(id)} />}
         </div>
 
