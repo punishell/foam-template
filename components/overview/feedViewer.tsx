@@ -1,8 +1,10 @@
 import React from 'react';
 import { Button } from 'pakt-ui';
 import { useRouter } from 'next/navigation';
-import { X, Bookmark, Briefcase, Clock4, Gavel } from 'lucide-react';
+import { X, Bookmark, Briefcase, Clock4, Gavel, Star } from 'lucide-react';
+import Rating from 'react-rating';
 import Lottie from 'lottie-react';
+
 import win from '@/lottiefiles/win.json';
 import alert from '@/lottiefiles/alert.json';
 import gavel from '@/lottiefiles/gavel.json';
@@ -14,6 +16,19 @@ import { DeliverableProgressBar } from '@/components/common/deliverable-progress
 import { AfroProfile } from '@/components/common/afro-profile';
 import { ClientJobModal } from '@/components/jobs/job-modals/client';
 import { SideModal } from '@/components/common/side-modal';
+
+export const JobFeedWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  return (
+    <div className="border-blue-lighter gap-4 px-4 pl-2 flex border bg-[#F1FBFF] z-10 w-full rounded-2xl relative overflow-hidden h-[174px]">
+      {children}
+
+      <div className="absolute right-0 -z-[1] translate-x-1/3 top-16">
+        <Briefcase size={200} color="#C9F0FF" />
+      </div>
+    </div>
+  );
+};
+
 interface JobInvitePendingProps {
   id: string;
   jobId: string;
@@ -183,7 +198,6 @@ type JobApplicationCardProps = {
   jobId: string;
   close: (id: string) => void;
 };
-
 export const JobApplicationCard: React.FC<JobApplicationCardProps> = (props) => {
   const { id, title, jobId, bookmarked, applicant, close } = props;
 
@@ -214,18 +228,6 @@ export const JobApplicationCard: React.FC<JobApplicationCardProps> = (props) => 
   );
 };
 
-export const JobFeedWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  return (
-    <div className="border-blue-lighter gap-4 px-4 pl-2 flex border bg-[#F1FBFF] z-10 w-full rounded-2xl relative overflow-hidden h-[174px]">
-      {children}
-
-      <div className="absolute right-0 -z-[1] translate-x-1/3 top-16">
-        <Briefcase size={200} color="#C9F0FF" />
-      </div>
-    </div>
-  );
-};
-
 export const PublicJobCreatedFeed = ({
   creator,
   title,
@@ -246,7 +248,7 @@ export const PublicJobCreatedFeed = ({
   close: (id: string) => void;
 }) => {
   return (
-    <JobFeedWrapper>
+    <div className="border-[#CDCFD0] bg-[#F9F9F9] gap-4 pl-2 px-4 flex border z-10 w-full rounded-2xl relative overflow-hidden">
       <AfroProfile score={creator.score} src={creator.avatar} size="lg" />
       <div className="flex flex-col gap-4 w-full py-4">
         <div className="flex justify-between items-center">
@@ -260,7 +262,7 @@ export const PublicJobCreatedFeed = ({
         <h3 className="text-title text-2xl font-normal">{title}</h3>
         <div className="justify-between items-center flex mt-auto">
           <Link href={`/jobs/${jobId}`} className="flex items-center gap-2">
-            <Button size="xs" variant="outline">
+            <Button size="xs" variant="secondary">
               See Details
             </Button>
           </Link>
@@ -274,7 +276,7 @@ export const PublicJobCreatedFeed = ({
           />
         </div>
       </div>
-    </JobFeedWrapper>
+    </div>
   );
 };
 
@@ -305,7 +307,6 @@ interface TalentJobUpdateProps {
   jobTitle?: string;
   close: (id: string) => void;
 }
-
 export const JobUpdateFeed: React.FC<TalentJobUpdateProps> = ({
   id,
   jobId,
@@ -322,7 +323,7 @@ export const JobUpdateFeed: React.FC<TalentJobUpdateProps> = ({
   const [isModalOpen, setIsModalOpen] = React.useState(false);
 
   return (
-    <div className="border-[#CDCFD0] bg-[#F9F9F9] gap-4 pl-2 px-4  flex border z-10 w-full rounded-2xl relative overflow-hidden">
+    <div className="border-[#9BDCFD] bg-[#F1FBFF] gap-4 pl-2 px-4  flex border z-10 w-full rounded-2xl relative overflow-hidden">
       <AfroProfile src={talent.avatar} score={talent.score} size="lg" />
       <div className="flex flex-col gap-4 py-4 w-full">
         <div className="flex justify-between items-center">
@@ -379,29 +380,57 @@ export const JobUpdateFeed: React.FC<TalentJobUpdateProps> = ({
   );
 };
 
-export const JobCompletionFeed = () => {
+interface JobCompletedProps {
+  id: string;
+  title: string;
+  talent: {
+    _id: string;
+    name: string;
+    avatar: string;
+    score: number;
+  };
+  bookmarked: boolean;
+  bookmarkId: string;
+  jobId: string;
+  creator: {
+    _id: string;
+    name: string;
+    avatar: string;
+    score: number;
+  };
+  isCreator: boolean;
+  close: (id: string) => void;
+}
+export const JobCompletionFeed: React.FC<JobCompletedProps> = ({
+  id,
+  jobId,
+  talent,
+  creator,
+  title,
+  bookmarked,
+  isCreator,
+  close,
+}) => {
   return (
-    <div className="border-[#CDCFD0] bg-[#F9F9F9] gap-4 pl-2 px-4  flex border z-10 w-full rounded-2xl relative overflow-hidden">
-      <AfroProfile score={0} size="lg" />
+    <div className="border-[#9BDCFD] bg-[#F1FBFF] gap-4 pl-2 px-4  flex border z-10 w-full rounded-2xl relative overflow-hidden">
+      <AfroProfile src={isCreator ? talent.avatar : creator.avatar} score={isCreator ? talent.score : creator.score} size="lg" />
       <div className="flex flex-col gap-4 w-full py-4">
         <div className="flex justify-between items-center">
-          <h3 className="text-body text-xl font-bold">Joon completed a job</h3>
-
-          <X size={20} />
+          <h3 className="text-body text-xl font-bold">{talent.name} completed all deliverables</h3>
+          {close && <X size={20} className="cursor-pointer" onClick={() => close(id)} />}
         </div>
-
-        <p className="text-title text-3xl">Landing Page Design for Snowforte</p>
-
+        <p className="text-title text-3xl">{title}</p>
         <div className="justify-between items-center flex mt-auto">
           <div className="flex items-center gap-2">
-            <Button size="xs" variant="outline">
-              Message
-            </Button>
+            <Link href={`/messages?user_id=${talent._id}`}>
+              <Button size="xs" variant="outline">
+                Message
+              </Button>
+            </Link>
           </div>
-          <Bookmark size={20} />
+          <RenderBookMark size={20} isBookmarked={bookmarked} type="feed" id={id} bookmarkId={id} />
         </div>
       </div>
-
       <div className="absolute right-0 -z-[1] translate-x-1/3 top-16">
         <Briefcase size={200} color="#F2F4F5" />
       </div>
@@ -443,7 +472,7 @@ export const JobReviewedFeed: React.FC<ReviewJobProps> = ({
   close,
 }) => {
   return (
-    <div className="border-[#CDCFD0] bg-[#F9F9F9] gap-4 pl-2 px-4 flex border z-10 w-full rounded-2xl relative overflow-hidden">
+    <div className="border-[#9BDCFD] bg-[#F1FBFF] gap-4 pl-2 px-4 flex border z-10 w-full rounded-2xl relative overflow-hidden">
       <AfroProfile src={isCreator ? talent.avatar : creator.avatar} score={isCreator ? talent.score : creator.score} size="lg" />
       <div className="flex flex-col gap-4 py-4 w-full">
         <div className="flex justify-between items-center">
@@ -470,25 +499,62 @@ export const JobReviewedFeed: React.FC<ReviewJobProps> = ({
   );
 };
 
-export const PaymentReleased = () => {
+interface PaymentReleasedProps {
+  id: string;
+  amount: string;
+  title: string;
+  description: string;
+  talent: {
+    _id: string;
+    name: string;
+    avatar: string;
+    score: number;
+  };
+  bookmarked: boolean;
+  bookmarkId: string;
+  jobId: string;
+  creator: {
+    _id: string;
+    name: string;
+    avatar: string;
+    score: number;
+  };
+  isCreator: boolean;
+  close: (id: string) => void;
+}
+export const PaymentReleased: React.FC<PaymentReleasedProps> = ({
+  id,
+  jobId,
+  talent,
+  creator,
+  title,
+  amount,
+  description,
+  bookmarked,
+  isCreator,
+  close,
+}) => {
   return (
     <div className="border-[#7DDE86] bg-[#FBFFFA] gap-4 p-4 flex border  z-10 w-full rounded-2xl relative overflow-hidden">
+      <AfroProfile src={isCreator ? talent.avatar : creator.avatar} score={isCreator ? talent.score : creator.score} size="lg" />
       <div className="flex flex-col gap-4 w-full">
         <div className="flex justify-between items-center w-full">
-          <h3 className="text-body text-xl font-bold">Payment Released</h3>
-
-          <X size={20} />
+          <h3 className="text-body text-xl font-bold">{isCreator ? "Job Completed" : "Payment Released"}</h3>
+          {close && <X size={20} className="cursor-pointer" onClick={() => close(id)} />}
         </div>
 
-        <p className="text-title text-3xl">$4000 has been added to Your Wallet! 💰</p>
+
+        <p className="text-title text-3xl">{isCreator ? `${title}` : `$${amount} has been added to Your Wallet! 💰`}</p>
 
         <div className="justify-between items-center flex mt-auto">
           <div className="flex items-center gap-2">
-            <Button size="xs" variant="secondary">
-              View Wallet
-            </Button>
+            <Link href="/wallet">
+              <Button size="xs" variant="secondary">
+                View Wallet
+              </Button>
+            </Link>
           </div>
-          <Bookmark size={20} />
+          <RenderBookMark size={20} isBookmarked={bookmarked} type="feed" id={id} bookmarkId={id} />
         </div>
       </div>
 
@@ -499,26 +565,55 @@ export const PaymentReleased = () => {
   );
 };
 
-export const JobCancelled = () => {
+interface JobCancelledProps {
+  id: string;
+  title: string;
+  talent: {
+    _id: string;
+    name: string;
+    avatar: string;
+    score: number;
+  };
+  bookmarked: boolean;
+  bookmarkId: string;
+  jobId: string;
+  creator: {
+    _id: string;
+    name: string;
+    avatar: string;
+    score: number;
+  };
+  isCreator: boolean;
+  close: (id: string) => void;
+}
+export const JobCancelled: React.FC<JobCancelledProps> = ({
+  id,
+  jobId,
+  talent,
+  creator,
+  title,
+  bookmarked,
+  isCreator,
+  close,
+}) => {
   return (
     <div className="border-[#FF9898] gap-4 pl-2 px-4 flex border bg-[#FFF4F4] z-10 w-full rounded-2xl relative overflow-hidden">
-      <AfroProfile score={0} size="lg" />
+      <AfroProfile src={isCreator ? talent.avatar : creator.avatar} score={isCreator ? talent.score : creator.score} size="lg" />
       <div className="flex flex-col gap-4 w-full py-4">
         <div className="flex justify-between items-center">
-          <h3 className="text-title text-xl font-bold">Theresa Cancelled the Job</h3>
-
-          <X size={20} />
+          <h3 className="text-title text-xl font-bold">{creator.name} Cancelled the Job</h3>
+          {close && <X size={20} className="cursor-pointer" onClick={() => close(id)} />}
         </div>
-
-        <p className="text-body text-3xl">Landing Page Design for Snowforte</p>
-
+        <p className="text-body text-3xl">{title}</p>
         <div className="justify-between items-center flex mt-auto">
           <div className="flex items-center gap-2">
-            <Button size="xs" variant="primary">
-              See Details
-            </Button>
+            <Link href={`/job/${jobId}`}>
+              <Button size="xs" variant="primary">
+                See Details
+              </Button>
+            </Link>
           </div>
-          <Bookmark size={20} />
+          <RenderBookMark size={20} isBookmarked={bookmarked} type="feed" id={id} bookmarkId={id} />
         </div>
       </div>
 
@@ -528,6 +623,7 @@ export const JobCancelled = () => {
     </div>
   );
 };
+
 interface ReferralSignupFeedProps {
   id: string;
   name: string;
@@ -540,8 +636,7 @@ interface ReferralSignupFeedProps {
   bookmarked: boolean;
   close: (id: string) => void;
 }
-
-export const ReferralSignupFeed = ({
+export const ReferralSignupFeed: React.FC<ReferralSignupFeedProps> = ({
   id,
   title,
   description,
@@ -552,10 +647,10 @@ export const ReferralSignupFeed = ({
   bookmarked,
   bookmarkId,
   close,
-}: ReferralSignupFeedProps) => {
+}) => {
   return (
     <div className="border-[#CDCFD0] bg-[#F9F9F9] gap-4 p-4 flex border z-10 w-full rounded-2xl relative overflow-hidden h-[174px]">
-      <AfroProfile src={avatar} score={score ?? 0} size="lg" />
+      <AfroProfile src={avatar} score={Number(score)} size="lg" />
       <div className="flex flex-col gap-4 w-full">
         <div className="flex justify-between items-center">
           <h3 className="text-title text-xl font-bold">{title ? title : `${name} just signed up`}</h3>
@@ -588,18 +683,47 @@ export const ReferralSignupFeed = ({
   );
 };
 
-export const ReferralJobCompletion = () => {
+interface ReferralJobCompletionProps {
+  id: string;
+  title: string;
+  talent: {
+    _id: string;
+    name: string;
+    avatar: string;
+    score: number;
+  };
+  bookmarked: boolean;
+  bookmarkId: string;
+  rating: number;
+  jobId: string;
+  close: (id: string) => void;
+}
+export const ReferralJobCompletion: React.FC<ReferralJobCompletionProps> = ({
+  id,
+  jobId,
+  talent,
+  title,
+  bookmarked,
+  rating,
+  close,
+}) => {
   return (
     <div className="border-[#CDCFD0] bg-[#F9F9F9] gap-4 p-4 flex border  z-10 w-full rounded-2xl relative overflow-hidden">
-      <AfroProfile score={0} size="lg" />
+      <AfroProfile src={talent.avatar} score={talent.score} size="lg" />
       <div className="flex flex-col gap-4 w-full">
         <div className="flex justify-between items-center">
-          <h3 className="text-title text-xl font-bold">Shola completed a job</h3>
-
-          <X size={20} />
+          <h3 className="text-title text-xl font-bold">{talent.name} a {
+            // @ts-ignore
+            <Rating
+              readonly
+              initialRating={rating || 0}
+              fullSymbol={<Star fill="#15D28E" color="#15D28E" />}
+              emptySymbol={<Star fill="transparent" color="#15D28E" />}
+            />
+          } completed a job</h3>
+          {close && <X size={20} className="cursor-pointer" onClick={() => close(id)} />}
         </div>
-
-        <p className="text-body text-3xl">Dashboard Design for Lala land</p>
+        <p className="text-body text-3xl">{title}</p>
 
         <div className="justify-between items-center flex mt-auto">
           <div className="flex items-center gap-2">
@@ -607,7 +731,7 @@ export const ReferralJobCompletion = () => {
               See Review
             </Button>
           </div>
-          <Bookmark size={20} />
+          <RenderBookMark size={20} isBookmarked={bookmarked} type="feed" id={id} bookmarkId={id} />
         </div>
       </div>
 
@@ -618,6 +742,72 @@ export const ReferralJobCompletion = () => {
   );
 };
 
+// review cards
+interface ReviewChangeProps {
+  id: string;
+  title: string;
+  description: string;
+  talent: {
+    _id: string;
+    name: string;
+    avatar: string;
+    score: number;
+  };
+  creator: {
+    _id: string;
+    name: string;
+    avatar: string;
+    score: number;
+  };
+  bookmarked: boolean;
+  bookmarkId: string;
+  jobId: string;
+  isCreator: boolean;
+  close: (id: string) => void;
+}
+export const ReviewChangeCard: React.FC<ReviewChangeProps> = ({
+  id,
+  title,
+  description,
+  creator,
+  talent,
+  bookmarked,
+  bookmarkId,
+  isCreator,
+  close,
+}) => {
+  return (
+    <div className="border-[#FF5247] bg-[#FFF4F4] gap-4 p-4 flex border z-10 w-full rounded-2xl relative overflow-hidden h-[174px]">
+      <AfroProfile src={isCreator ? talent.avatar : creator.avatar} score={isCreator ? talent.score : creator.score} size="lg" />
+      <div className="flex flex-col gap-4 w-full">
+        <div className="flex justify-between items-center">
+          <h3 className="text-title text-xl font-bold">{title}</h3>
+          <X size={20} className="cursor-pointer" onClick={() => close(id)} />
+        </div>
+
+        <p className="text-body">{description}</p>
+
+        <div className="justify-between items-center flex mt-auto">
+          <div className="flex items-center gap-2">
+            <Button size="xs" variant="outline">
+              View Request
+            </Button>
+          </div>
+          <RenderBookMark size={20} isBookmarked={bookmarked} type="feed" id={id} bookmarkId={bookmarkId} />
+        </div>
+      </div>
+
+      <div className="absolute right-0 -z-[1] translate-x-1/3 top-16">
+        <Briefcase size={200} color="#F2F4F5" />
+      </div>
+    </div>
+  );
+};
+
+
+
+
+// Issue Resolution coming soon
 export const IssueResolutionRaiseFeed = () => {
   return (
     <div className="border-[#FF9898] gap-4 p-4 flex border bg-[#FFF4F4] z-10 w-full rounded-2xl relative overflow-hidden">

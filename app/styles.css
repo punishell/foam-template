@@ -28,4 +28,7 @@
     display: 'block';
     width: 'auto';
   }
+  .blazer-extras {
+    --slide-width: calc((90% - (var(--slides-to-show) - 1) * var(--slide-gap)) / var(--slides-to-show)) !important;
+  }
 }

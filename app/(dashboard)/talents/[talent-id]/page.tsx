@@ -44,7 +44,7 @@ export default function TalentDetails() {
           }))}
         />
       </div>
-      <div className='flex max-w-full'>
+      <div className='w-full'>
         <Reviews
           reviews={
             reviews?.data.map((a) => ({

@@ -54,7 +54,7 @@ const ActiveJobCard: React.FC<ActiveJobCardProps> = ({
 }) => {
   const [isUpdateModalOpen, setIsUpdateModalOpen] = React.useState(false);
   return (
-    <div className="border-[#CDCFD0] bg-[#F9F9F9] gap-4 pl-2 px-4  flex border z-10 w-full rounded-2xl relative overflow-hidden">
+    <div className="border-[#9BDCFD] bg-[#F1FBFF] gap-4 pl-2 px-4  flex border z-10 w-full rounded-2xl relative overflow-hidden">
       <AfroProfile src={talent.avatar} score={talent.score} size="md" />
       <div className="flex flex-col gap-4 py-4 w-full">
         <div className="flex justify-between items-center">

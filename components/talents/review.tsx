@@ -6,6 +6,7 @@ import { ArrowLeftCircle, ArrowRightCircle, Star } from 'lucide-react';
 import { Spinner } from '@/components/common/';
 import { AfroProfile } from '../common/afro-profile';
 import { BlazeCarousel, useBlazeSlider } from '../common/blazeCarousel';
+import Slider from "react-slick";
 
 interface ReviewProps {
   body: string;
@@ -21,9 +22,9 @@ interface ReviewProps {
 
 const Review: React.FC<ReviewProps> = ({ body, title, rating, user }) => {
   return (
-    <div className="bg-white min-h-full rounded-2xl p-4 flex flex-col gap-4 w-full select-none cursor-grab basis-0 relative">
-      <div className="text-xl font-medium text-title"> {title}</div>
-      <div className="text-body min-h-[72px]">{body}</div>
+    <div className="bg-white min-h-full rounded-2xl p-4 flex flex-col gap-4 w-full select-none cursor-grab">
+      <h3 className="text-xl font-medium text-title">{title}</h3>
+      <p className="text-body min-h-[72px]">{body}</p>
 
       <div className="flex items-center justify-between">
         <div className="grid grid-cols-3 gap-2">
@@ -48,13 +49,21 @@ const Review: React.FC<ReviewProps> = ({ body, title, rating, user }) => {
 };
 
 export const Reviews = ({ reviews, loading }: { reviews: ReviewProps[]; loading: boolean }) => {
+  // const sliderRef = React.useRef<Slider | null>();
+  // const settings = {
+  //   dots: false,
+  //   infinite: false,
+  //   speed: 500,
+  //   slidesToShow: 2,
+  //   slidesToScroll: 1,
+  // };
   const sliderInstance = useBlazeSlider();
   const currentSlide = sliderInstance?.currentSlide || 0;
   const totalSlides = Number(sliderInstance.slider?.totalSlides || 0) / 2;
 
   return (
-    <div className="bg-primary-gradient p-4 rounded-4 gap-3 w-full rounded-2xl max-w-[100%]">
-      <div className="flex flex-row justify-between mb-4">
+    <div className="bg-primary-gradient p-4 rounded-4 gap-1 w-full rounded-2xl basis-0">
+      <div className="flex flex-row justify-between mb-4 w-full">
         <h3 className="text-white font-medium text-2xl">Reviews</h3>
         <div className="flex flex-row gap-2">
           <ArrowLeftCircle
@@ -75,7 +84,7 @@ export const Reviews = ({ reviews, loading }: { reviews: ReviewProps[]; loading:
           <Spinner />
         </div>
       ) : (
-        <>
+        <div className='basis-0 relative h-full min-h-[250px]'>
           {/* @ts-ignore */}
           <BlazeCarousel elRef={sliderInstance?.ref}>
             {reviews &&
@@ -83,14 +92,15 @@ export const Reviews = ({ reviews, loading }: { reviews: ReviewProps[]; loading:
               reviews.map((_review, i) => (
                 <Review key={i} title={_review.title} body={_review.body} rating={_review.rating} user={_review.user} />
               ))}
-            {!reviews ||
-              (reviews.length === 0 && (
-                <div className="flex w-full text-white min-h-[307px] my-auto items-center">
-                  <p>No Reviews</p>
-                </div>
-              ))}
           </BlazeCarousel>
-        </>
+
+          {!reviews ||
+            (reviews.length === 0 && (
+              <div className="flex w-full text-white min-h-[307px] my-auto items-center">
+                <p>No Reviews</p>
+              </div>
+            ))}
+        </div>
       )}
     </div>
   );
