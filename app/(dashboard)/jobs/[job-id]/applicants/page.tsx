@@ -91,7 +91,7 @@ export default function JobApplications({ params }: Props) {
     <div className="h-full flex flex-col gap-6">
       <div className="bg-primary-gradient rounded-xl justify-between flex p-4 py-6 gap-4">
         <div className="grow max-w-3xl flex flex-col gap-3">
-          <h2 className="text-3xl font-bold text-white max-w-[560px]">{job.name}</h2>
+          <h2 className="text-3xl font-bold text-white max-w-[750px]">{job.name}</h2>
           <p className="text-white max-w-[750px]">{job.description}</p>
           <div className="flex gap-4 items-center mt-auto">
             <span className="bg-[#C9F0FF] text-[#0065D0] gap-2 flex items-center px-3 rounded-full py-1">
