@@ -63,7 +63,7 @@ export const ReviewClient: React.FC<ReviewClientProps> = ({ job, closeModal }) =
       </div>
 
       <div className="px-4 flex flex-col gap-6 py-4 h-full">
-        {clientReview && (
+        {clientReview && clientReview.rating < 5 && (
           <div className="p-3 border border-line rounded-xl flex flex-col gap-3">
             <div className="flex justify-between items-center">
               <span>
