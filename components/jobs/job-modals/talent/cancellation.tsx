@@ -119,9 +119,9 @@ const AcceptJobCancellation: React.FC<AcceptJobCancellationProps> = ({ setAccept
 
   const [rating, setRating] = React.useState(0);
   const [comment, setComment] = React.useState('');
-  const [percentageToPay, setPercentageToPay] = React.useState(10);
+  const [percentageToPay, setPercentageToPay] = React.useState(job.progress);
 
-  const amountToPay = (percentageToPay / 100) * job.paymentFee;
+  const amountToReceive = (percentageToPay / 100) * job.paymentFee;
 
   const totalDeliverables = job.collections.filter(isJobDeliverable).length;
 
@@ -152,7 +152,8 @@ const AcceptJobCancellation: React.FC<AcceptJobCancellationProps> = ({ setAccept
 
           <div className="flex flex-col gap-3 p-3 bg-slate-50 rounded-lg border border-gray-200">
             <p className="text-body flex items-center gap-2">
-              <span>Amount to pay the Talent:</span> <span className="text-green-600 font-bold">${amountToPay}</span>
+              <span>Amount you&apos;d like to receive:</span>{' '}
+              <span className="text-green-600 font-bold">${amountToReceive}</span>
               <span className="text-sm">({percentageToPay}%)</span>
             </p>
             <div className="my-2">
@@ -234,7 +235,7 @@ const AcceptJobCancellation: React.FC<AcceptJobCancellationProps> = ({ setAccept
                 rating,
                 jobId: job._id,
                 review: comment,
-                amount: amountToPay,
+                amount: amountToReceive,
                 recipientId: client._id,
               });
             }}
@@ -256,15 +257,18 @@ interface RequestJobCancellationProps {
 }
 
 export const RequestJobCancellation: React.FC<RequestJobCancellationProps> = ({
-  closeModal,
   jobId,
   cancelJobCancellationRequest,
 }) => {
   const requestJobCancellationMutation = useRequestJobCancellation();
-
+  const [isSuccess, setIsSuccess] = React.useState(false);
   const [reason, setReason] = React.useState('');
   const [reasonNotInOptions, setReasonNotInOptions] = React.useState(false);
   const [explanation, setExplanation] = React.useState('');
+
+  if (isSuccess) {
+    return <JobCancellationRequested />;
+  }
 
   return (
     <React.Fragment>
@@ -357,11 +361,18 @@ export const RequestJobCancellation: React.FC<RequestJobCancellationProps> = ({
             fullWidth
             disabled={requestJobCancellationMutation.isLoading || reason.length === 0 || explanation.length === 0}
             onClick={() => {
-              requestJobCancellationMutation.mutate({
-                jobId,
-                reason,
-                explanation,
-              });
+              requestJobCancellationMutation.mutate(
+                {
+                  jobId,
+                  reason,
+                  explanation,
+                },
+                {
+                  onSuccess: () => {
+                    setIsSuccess(true);
+                  },
+                },
+              );
             }}
           >
             {requestJobCancellationMutation.isLoading ? <Spinner size={20} /> : 'Request Cancellation'}
@@ -372,7 +383,7 @@ export const RequestJobCancellation: React.FC<RequestJobCancellationProps> = ({
   );
 };
 
-export const RequestJobCancellationSuccess: React.FC = () => {
+export const JobCancellationRequested: React.FC = () => {
   const router = useRouter();
   return (
     <div className="h-full px-4 flex items-center justify-center">

@@ -32,12 +32,14 @@ const progressToColor = (progress: number) => {
   }
 };
 
-export const AfroScore: React.FC<AfroScoreProps> = ({ size, score = 63, children }) => {
+export const AfroScore: React.FC<AfroScoreProps> = ({ size, score: initialScore = 63, children }) => {
   const id = React.useId();
+  const svgRef = React.useRef<SVGSVGElement>(null);
   const sizeInPx = SIZE_TO_PX[size];
   const thickness = sizeInPx / 11;
   const knobRadius = thickness * 1.2;
   const radius = (sizeInPx - thickness) / 2;
+  const [score, setScore] = React.useState(initialScore);
   const progressAngle = (score / 100) * 2 * Math.PI;
 
   const bgArcGenerator = arc()
@@ -61,32 +63,41 @@ export const AfroScore: React.FC<AfroScoreProps> = ({ size, score = 63, children
   // Add a knob to the progress arc
   const knobX = (radius - thickness / 2) * Math.cos(progressAngle - Math.PI / 2);
   const knobY = (radius - thickness / 2) * Math.sin(progressAngle - Math.PI / 2);
+
+  const [knobPosition, setKnobPosition] = React.useState({ x: knobX, y: knobY });
+
+  const onDrag = (event: MouseEvent) => {
+    if (!svgRef.current) return;
+    const svgRect = svgRef.current.getBoundingClientRect();
+
+    const newKnobPosition = {
+      x: event.clientX - svgRect.left - radius,
+      y: event.clientY - svgRect.top - radius,
+    };
+
+    setKnobPosition(newKnobPosition);
+
+    // Calculate the new score based on the knob position
+    const angle = Math.atan2(newKnobPosition.y, newKnobPosition.x);
+    let newScore = (((angle + Math.PI) % (2 * Math.PI)) / (2 * Math.PI)) * 100;
+    setScore(newScore);
+  };
+
   return (
-    <div className="relative flex items-center justify-center ">
+    <div className="relative flex items-center justify-center">
       <div
         style={{
-          inset: knobRadius,
-          borderRadius: '50%',
+          height: radius * 2,
+          width: radius * 2,
+          borderRadius: '666',
+          overflow: 'hidden',
           position: 'absolute',
         }}
       >
-        <div className="position absolute inset-1 overflow-hidden rounded-full">
-          <div
-            style={{
-              position: 'relative',
-              height: '100%',
-              width: '100%',
-              borderRadius: '9999px',
-              overflow: 'hidden',
-              backgroundColor: 'transparent',
-              margin: 'auto',
-            }}
-          >
-            {children}
-          </div>
-        </div>
+        {children}
       </div>
       <svg
+        ref={svgRef}
         width={sizeInPx + knobRadius}
         height={sizeInPx + knobRadius}
         viewBox={`0 0 ${sizeInPx + knobRadius} ${sizeInPx + knobRadius}`}
@@ -111,6 +122,7 @@ export const AfroScore: React.FC<AfroScoreProps> = ({ size, score = 63, children
                 #04a82a
               );
             }
+
           `}
         </style>
 
@@ -139,32 +151,47 @@ export const AfroScore: React.FC<AfroScoreProps> = ({ size, score = 63, children
             }}
           />
         </foreignObject>
-        <circle
-          style={{
-            display: score === 0 ? 'none' : 'block',
-          }}
-          cx={knobX}
-          cy={knobY}
-          r={knobRadius}
-          fill={progressToColor(score)}
-          transform={`translate(${(sizeInPx + knobRadius) / 2}, ${(sizeInPx + knobRadius) / 2})`}
-        ></circle>
 
-        <text
-          style={{
-            display: score === 0 ? 'none' : 'block',
-          }}
-          x={knobX + (sizeInPx + knobRadius) / 2}
-          y={knobY + (sizeInPx + knobRadius) / 2}
-          dy=".3em"
-          textAnchor="middle"
-          fill="white"
-          fontWeight={700}
-          transform={`rotate(180, ${knobX + (sizeInPx + knobRadius) / 2}, ${knobY + (sizeInPx + knobRadius) / 2})`}
-          fontSize={Math.round(sizeInPx / 10)}
-        >
-          {`${Math.round(score)}`}
-        </text>
+        {/* KNOB */}
+        <g className="cursor-grab">
+          <circle
+            style={{
+              display: score === 0 ? 'none' : 'block',
+            }}
+            // onMouseDown={(e) => {
+            //   e.preventDefault();
+            //   console.log('mouse down');
+            //   window.addEventListener('mousemove', onDrag);
+            //   window.addEventListener('mouseup', () => {
+            //     window.removeEventListener('mousemove', onDrag);
+            //   });
+            // }}
+            cx={knobPosition.x}
+            cy={knobPosition.y}
+            r={knobRadius}
+            fill={progressToColor(score)}
+            transform={`translate(${(sizeInPx + knobRadius) / 2}, ${(sizeInPx + knobRadius) / 2})`}
+          ></circle>
+
+          <text
+            className="select-none"
+            style={{
+              display: score === 0 ? 'none' : 'block',
+            }}
+            x={knobPosition.x + (sizeInPx + knobRadius) / 2}
+            y={knobPosition.y + (sizeInPx + knobRadius) / 2}
+            dy=".3em"
+            textAnchor="middle"
+            fill="white"
+            fontWeight={700}
+            transform={`rotate(180, ${knobPosition.x + (sizeInPx + knobRadius) / 2}, ${
+              knobPosition.y + (sizeInPx + knobRadius) / 2
+            })`}
+            fontSize={Math.round(sizeInPx / 10)}
+          >
+            {`${Math.round(score)}`}
+          </text>
+        </g>
       </svg>
     </div>
   );
@@ -177,13 +204,13 @@ type AfroProfileProps = Omit<AfroScoreProps, 'children'> & {
 export const AfroProfile: React.FC<AfroProfileProps> = ({ size, score, src }) => {
   return (
     <AfroScore score={score} size={size}>
-      <div className="flex items-center h-full w-full overflow-hidden rounded-full">
-        {src ? (
-          <Image src={src} alt="profile" fill className="rounded-full overflow-hidden" style={{ objectFit: 'cover' }} />
-        ) : (
+      {src ? (
+        <Image src={src} alt="profile" fill className="scale-95 rounded-full" style={{ objectFit: 'cover' }} />
+      ) : (
+        <div className="h-full w-full rounded-full scale-95">
           <DefaultAvatar />
-        )}
-      </div>
+        </div>
+      )}
     </AfroScore>
   );
 };

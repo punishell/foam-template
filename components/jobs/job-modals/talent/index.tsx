@@ -8,7 +8,7 @@ import warning from '@/lottiefiles/warning.json';
 
 import { JobUpdates } from './job-update';
 import { ReviewClient, ReviewSuccess } from './review';
-import { RequestJobCancellation, RequestJobCancellationSuccess, ReviewJobCancellationRequest } from './cancellation';
+import { RequestJobCancellation, ReviewJobCancellationRequest, JobCancellationRequested } from './cancellation';
 
 interface TalentJobModalProps {
   jobId: string;
@@ -42,6 +42,10 @@ export const TalentJobModal: React.FC<TalentJobModalProps> = ({ jobId }) => {
   const talentHasReviewed = job.ratings?.some((review) => review.owner._id === job.owner?._id);
   const clientHasReviewed = job.ratings?.some((review) => review.owner._id === job.creator._id);
 
+  if (clientRequestedCancellation) {
+    return <ReviewJobCancellationRequest job={job} closeModal={() => setIsRequestingJobCancellation(false)} />;
+  }
+
   if (job.status === 'cancelled') {
     return (
       <div className="bg-red-50 flex items-center justify-center h-full text-red-500 flex-col">
@@ -54,11 +58,7 @@ export const TalentJobModal: React.FC<TalentJobModalProps> = ({ jobId }) => {
   }
 
   if (talentRequestedCancellation) {
-    return <RequestJobCancellationSuccess />;
-  }
-
-  if (clientRequestedCancellation) {
-    return <ReviewJobCancellationRequest job={job} closeModal={() => setIsRequestingJobCancellation(false)} />;
+    return <JobCancellationRequested />;
   }
 
   if (clientHasReviewed && talentHasReviewed) {
