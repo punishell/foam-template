@@ -226,3 +226,9 @@ export const paginate = <T>(array: T[], itemsPerPage: number, currentPage: numbe
 export const truncate = (str: string, n: number) => {
   return str.length > n ? str.slice(0, n - 1) + '...' : str;
 };
+
+export function filterEmptyStrings(arr: string[]): string[] {
+  return arr.filter((value) => {
+    return value !== '';
+  });
+}
