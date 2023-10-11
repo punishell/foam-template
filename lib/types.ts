@@ -57,13 +57,13 @@ export interface Job {
   tagsData: string[];
   invites: any[]; // TODO: add type
   invite:
-    | undefined
-    | {
-        _id: string;
-        sender: string;
-        receiver: string;
-        status: string;
-      };
+  | undefined
+  | {
+    _id: string;
+    sender: string;
+    receiver: string;
+    status: string;
+  };
   status: JobStatus;
   bookmarkId?: string;
   isBookmarked?: boolean;
@@ -190,6 +190,7 @@ export interface DataFeedResponse {
   owners?: User[];
   title: string;
   type: string;
+  meta?: Record<string, any>;
   _id: string;
 }
 

@@ -7,9 +7,9 @@ const defaultConfig: BlazeConfig = {
   all: {
     loop: false,
     slidesToShow: 2,
-    slidesToScroll: 2,
+    slidesToScroll: 1,
     transitionDuration: 300,
-    slideGap: '10px',
+    slideGap: '20px',
   },
   '(max-width: 500px)': {
     slidesToShow: 1,
@@ -46,20 +46,16 @@ interface CarouselProps {
 
 export const BlazeCarousel: React.FC<CarouselProps> = ({ elRef, children }) => {
   return (
-    <div className='relative w-full'>
+    <div className='relative w-full px-2'>
       <div
         ref={elRef}
         className="blaze-slider"
-        style={{
-          ['--slides-to-show' as any]: 2,
-        }}
+        style={{ ['--slides-to-show' as any]: 2 }}
       >
         <div className="blaze-container">
-          <div className="blaze-track-container">
-            <div className="blaze-track">
-              {React.Children.map(children, (child, index) => (
-                <div key={index}>{child}</div>
-              ))}
+          <div className="blaze-track-container absolute">
+            <div className="blaze-track blazer-extras">
+              {React.Children.map(children, (Child, index) => Child)}
             </div>
           </div>
         </div>
