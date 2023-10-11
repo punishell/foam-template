@@ -105,7 +105,7 @@ interface GetJobByIdParams {
   jobId: string;
 }
 
-interface GetJobByIdResponse extends Job {}
+interface GetJobByIdResponse extends Job { }
 
 async function getJobById(params: GetJobByIdParams): Promise<GetJobByIdResponse> {
   const res = await axios.get(`/collection/${params.jobId}`);
@@ -366,6 +366,7 @@ export function useCreateJobReview() {
 interface ReleaseJobPaymentParams {
   jobId: string;
   amount?: number;
+  owner?: string;
 }
 
 async function postReleaseJobPayment(params: ReleaseJobPaymentParams): Promise<ApiResponse> {
@@ -379,6 +380,7 @@ async function postReleaseJobPayment(params: ReleaseJobPaymentParams): Promise<A
 export function useReleaseJobPayment() {
   const queryClient = useQueryClient();
   const jobsQuery = useGetJobs({ category: 'assigned' });
+  const createFeed = useCreateFeed();
 
   return useMutation({
     mutationFn: postReleaseJobPayment,
@@ -386,9 +388,19 @@ export function useReleaseJobPayment() {
     onError: (error: ApiError) => {
       toast.error(error?.response?.data.message || 'An error occurred');
     },
-    onSuccess: () => {
+    onSuccess: (_, { jobId, owner }) => {
       jobsQuery.refetch();
       queryClient.refetchQueries(['get-job-by-id']);
+      if (owner) {
+        createFeed.mutate({
+          title: 'Job Payment',
+          description: 'Job Payment Released',
+          isPublic: false,
+          data: jobId,
+          owners: [owner],
+          type: FEED_TYPES.JOB_PAYMENT_RELEASED,
+        });
+      }
       toast.success('Payment released successfully');
     },
   });
@@ -417,15 +429,6 @@ export function useInviteTalentToJob({ talentId, job }: { talentId: string; job:
       toast.error(error?.response?.data.message || 'An error occurred inviting talent');
     },
     onSuccess: () => {
-      // create job invitation feed if job is public create feed for applicants
-      createFeed.mutate({
-        title: 'New Job Invitation',
-        description: 'New Job Invitation',
-        owners: [talentId],
-        data: job._id,
-        type: FEED_TYPES.JOB_INVITATION_RECEIVED,
-        isPublic: false,
-      });
       if (!job.isPrivate) {
         // create job filled notification for public job applicants
         const applicants = job.collections
@@ -668,8 +671,9 @@ async function requestJobCancellation(params: RequestJobCancellationParams): Pro
   return res.data.data;
 }
 
-export function useRequestJobCancellation() {
+export function useRequestJobCancellation({ talentId }: { talentId: string }) {
   const queryClient = useQueryClient();
+  const createFeed = useCreateFeed();
 
   return useMutation({
     mutationFn: requestJobCancellation,
@@ -677,8 +681,16 @@ export function useRequestJobCancellation() {
     onError: (error: ApiError) => {
       toast.error(error?.response?.data.message ?? 'Error requesting job cancellation');
     },
-    onSuccess: () => {
+    onSuccess: (_, { jobId }) => {
       queryClient.refetchQueries({ queryKey: ['get-job-by-id'] });
+      createFeed.mutate({
+        title: 'Job Cancel Request',
+        description: 'Job Cancel Request',
+        owners: [talentId],
+        data: jobId,
+        type: FEED_TYPES.JOB_CANCELLED_REQUEST,
+        isPublic: false,
+      });
       toast.success(`Job cancellation requested successfully`);
     },
   });
@@ -718,6 +730,7 @@ async function acceptJobCancellation(params: AcceptJobCancellationParams): Promi
 
 export function useAcceptJobCancellation() {
   const queryClient = useQueryClient();
+  const createFeed = useCreateFeed();
 
   return useMutation({
     mutationFn: acceptJobCancellation,
@@ -725,8 +738,17 @@ export function useAcceptJobCancellation() {
     onError: (error: ApiError) => {
       toast.error(error?.response?.data.message ?? 'Error accepting job cancellation');
     },
-    onSuccess: () => {
+    onSuccess: (_, { jobId, recipientId }) => {
       queryClient.refetchQueries({ queryKey: ['get-job-by-id'] });
+      // create feeds
+      createFeed.mutate({
+        title: 'Job Cancel Accepted',
+        description: 'Job Cancel Accepted',
+        owners: [recipientId],
+        data: jobId,
+        type: FEED_TYPES.JOB_CANCELLED_ACCEPTED,
+        isPublic: false,
+      });
       toast.success(`Job cancellation accepted successfully`);
     },
   });
@@ -751,8 +773,9 @@ async function requestReviewChange(params: RequestReviewChangeParams): Promise<A
   return res.data.data;
 }
 
-export function useRequestReviewChange() {
+export function useRequestReviewChange({ recipientId }: { recipientId: string }) {
   const queryClient = useQueryClient();
+  const createFeed = useCreateFeed();
 
   return useMutation({
     mutationFn: requestReviewChange,
@@ -760,8 +783,17 @@ export function useRequestReviewChange() {
     onError: (error: ApiError) => {
       toast.error(error?.response?.data.message ?? 'Error requesting review change');
     },
-    onSuccess: () => {
+    onSuccess: (_, { jobId }) => {
       queryClient.refetchQueries({ queryKey: ['get-job-by-id'] });
+      // create feeds
+      createFeed.mutate({
+        title: 'Request Review Change',
+        description: 'New Review Change Request',
+        owners: [recipientId],
+        data: jobId,
+        type: FEED_TYPES.JOB_REVIEW_CHANGE,
+        isPublic: false,
+      });
       toast.success(`Review change requested successfully`);
     },
   });
@@ -788,8 +820,9 @@ async function acceptReviewChange(params: AcceptReviewChangeParams): Promise<Api
   return res.data.data;
 }
 
-export function useAcceptReviewChange() {
+export function useAcceptReviewChange({ jobId, recipientId }: { jobId: string, recipientId: string }) {
   const queryClient = useQueryClient();
+  const createFeed = useCreateFeed();
 
   return useMutation({
     mutationFn: acceptReviewChange,
@@ -799,6 +832,15 @@ export function useAcceptReviewChange() {
     },
     onSuccess: () => {
       queryClient.refetchQueries({ queryKey: ['get-job-by-id'] });
+      // create feeds
+      createFeed.mutate({
+        title: 'Review Change Accepted',
+        description: 'New Review Change Request Accepted',
+        owners: [recipientId],
+        data: jobId,
+        type: FEED_TYPES.JOB_REVIEW_CHANGE_ACCEPTED,
+        isPublic: false,
+      });
       toast.success(`Review change accepted successfully`);
     },
   });
@@ -818,8 +860,9 @@ async function declineReviewChange(params: DeclineReviewChangeParams): Promise<A
   return res.data.data;
 }
 
-export function useDeclineReviewChange() {
+export function useDeclineReviewChange({ jobId, recipientId }: { jobId: string, recipientId: string }) {
   const queryClient = useQueryClient();
+  const createFeed = useCreateFeed();
 
   return useMutation({
     mutationFn: declineReviewChange,
@@ -829,6 +872,15 @@ export function useDeclineReviewChange() {
     },
     onSuccess: () => {
       queryClient.refetchQueries({ queryKey: ['get-job-by-id'] });
+      // create feeds
+      createFeed.mutate({
+        title: 'Review Change Accepted',
+        description: 'New Review Change Request Accepted',
+        owners: [recipientId],
+        data: jobId,
+        type: FEED_TYPES.JOB_REVIEW_CHANGE_ACCEPTED,
+        isPublic: false,
+      });
       toast.success(`Review change declined successfully`);
     },
   });

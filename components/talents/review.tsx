@@ -51,6 +51,7 @@ export const Reviews = ({ reviews, loading }: { reviews: ReviewProps[]; loading:
   const sliderInstance = useBlazeSlider();
   const currentSlide = sliderInstance?.currentSlide || 0;
   const totalSlides = Number(sliderInstance.slider?.totalSlides || 0) / 2;
+
   return (
     <div className="bg-primary-gradient p-4 rounded-4 gap-3 w-full rounded-2xl max-w-[100%]">
       <div className="flex flex-row justify-between mb-4">
@@ -74,19 +75,22 @@ export const Reviews = ({ reviews, loading }: { reviews: ReviewProps[]; loading:
           <Spinner />
         </div>
       ) : (
-        <BlazeCarousel elRef={sliderInstance.ref}>
-          {reviews &&
-            reviews.length > 0 &&
-            reviews.map((_review, i) => (
-              <Review key={i} title={_review.title} body={_review.body} rating={_review.rating} user={_review.user} />
-            ))}
-          {!reviews ||
-            (reviews.length === 0 && (
-              <div className="flex w-full text-white min-h-[307px] my-auto items-center">
-                <p>No Reviews</p>
-              </div>
-            ))}
-        </BlazeCarousel>
+        <>
+          {/* @ts-ignore */}
+          <BlazeCarousel elRef={sliderInstance?.ref}>
+            {reviews &&
+              reviews.length > 0 &&
+              reviews.map((_review, i) => (
+                <Review key={i} title={_review.title} body={_review.body} rating={_review.rating} user={_review.user} />
+              ))}
+            {!reviews ||
+              (reviews.length === 0 && (
+                <div className="flex w-full text-white min-h-[307px] my-auto items-center">
+                  <p>No Reviews</p>
+                </div>
+              ))}
+          </BlazeCarousel>
+        </>
       )}
     </div>
   );

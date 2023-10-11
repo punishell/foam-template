@@ -125,7 +125,7 @@ export const ReviewTalent: React.FC<ReviewTalentProps> = ({ job, closeModal }) =
                   recipientId: owner?._id ?? '',
                 },
                 {
-                  onSuccess: () => {},
+                  onSuccess: () => { },
                 },
               );
             }}
@@ -144,8 +144,8 @@ interface ReviewChangeRequestedProps {
 }
 
 const ReviewChangeRequested: React.FC<ReviewChangeRequestedProps> = ({ closeModal, job }) => {
-  const acceptMutation = useAcceptReviewChange();
-  const declineMutation = useDeclineReviewChange();
+  const acceptMutation = useAcceptReviewChange({ jobId: job._id, recipientId: String(job.owner?._id) });
+  const declineMutation = useDeclineReviewChange({ jobId: job._id, recipientId: String(job.owner?._id) });
 
   const reviewChangeRequest = job.collections.find(isReviewChangeRequest);
   const talent = job.owner;

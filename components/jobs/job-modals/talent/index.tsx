@@ -12,10 +12,11 @@ import { RequestJobCancellation, ReviewJobCancellationRequest, JobCancellationRe
 
 interface TalentJobModalProps {
   jobId: string;
+  talentId: string;
   closeModal?: () => void;
 }
 
-export const TalentJobModal: React.FC<TalentJobModalProps> = ({ jobId }) => {
+export const TalentJobModal: React.FC<TalentJobModalProps> = ({ jobId, talentId }) => {
   const query = useGetJobById({ jobId });
   const [isRequestingJobCancellation, setIsRequestingJobCancellation] = React.useState(false);
 
@@ -23,6 +24,7 @@ export const TalentJobModal: React.FC<TalentJobModalProps> = ({ jobId }) => {
     return (
       <RequestJobCancellation
         jobId={jobId}
+        talentId={talentId}
         closeModal={() => setIsRequestingJobCancellation(false)}
         cancelJobCancellationRequest={() => setIsRequestingJobCancellation(false)}
       />

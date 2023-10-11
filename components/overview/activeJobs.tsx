@@ -81,9 +81,9 @@ const ActiveJobCard: React.FC<ActiveJobCardProps> = ({
       </div>
       <SideModal isOpen={isUpdateModalOpen} onOpenChange={() => setIsUpdateModalOpen(false)} className="flex flex-col">
         {!isCreator ? (
-          <TalentJobModal jobId={id} closeModal={() => setIsUpdateModalOpen(false)} />
+          <TalentJobModal jobId={id} talentId={creator._id} closeModal={() => setIsUpdateModalOpen(false)} />
         ) : (
-          <ClientJobModal jobId={id} closeModal={() => setIsUpdateModalOpen(false)} />
+          <ClientJobModal jobId={id} talentId={talent._id} closeModal={() => setIsUpdateModalOpen(false)} />
         )}
       </SideModal>
     </div>

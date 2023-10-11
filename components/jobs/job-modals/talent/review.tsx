@@ -26,7 +26,7 @@ export const ReviewClient: React.FC<ReviewClientProps> = ({ job, closeModal }) =
 
   const mutation = useCreateJobReview();
   const releasePaymentMutation = useReleaseJobPayment();
-  const { _id: jobId, creator } = job;
+  const { _id: jobId, creator, owner } = job;
   const [rating, setRating] = React.useState(0);
   const [comment, setComment] = React.useState('');
 
@@ -47,6 +47,7 @@ export const ReviewClient: React.FC<ReviewClientProps> = ({ job, closeModal }) =
         setRequestReviewChange={setRequestReviewChange}
         setReviewChangeRequestPending={setReviewChangeRequestPending}
         jobId={jobId}
+        recipientId={String(owner?._id)}
       />
     );
   }
@@ -154,6 +155,7 @@ export const ReviewClient: React.FC<ReviewClientProps> = ({ job, closeModal }) =
                   onSuccess: () => {
                     releasePaymentMutation.mutate({
                       jobId: jobId,
+                      owner: owner?._id
                     });
                   },
                 },
@@ -170,16 +172,18 @@ export const ReviewClient: React.FC<ReviewClientProps> = ({ job, closeModal }) =
 
 interface RequestReviewChangeProps {
   jobId: string;
+  recipientId: string;
   setRequestReviewChange: (value: boolean) => void;
   setReviewChangeRequestPending: (value: boolean) => void;
 }
 
 const RequestReviewChange: React.FC<RequestReviewChangeProps> = ({
   jobId,
+  recipientId,
   setRequestReviewChange,
   setReviewChangeRequestPending,
 }) => {
-  const mutation = useRequestReviewChange();
+  const mutation = useRequestReviewChange({ recipientId });
   const [reason, setReason] = React.useState('');
 
   return (

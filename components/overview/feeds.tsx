@@ -71,10 +71,12 @@ export const Feeds = () => {
           next={fetchMore}
           hasMore={currentPage < totalPage}
           loader={<></>}
-          className='[&>*]:mb-5'
+          className='mb-0'
         >
-          {timelineFeeds}
-          {isLoading && <div className='flex flex-row justify-center items-center py-4 w-full mx-auto text-center'><Loader size={25} className='text-black animate-spin text-center' /></div>}
+          <div className='[&>*]:mb-5'>
+            {timelineFeeds}
+          </div>
+          {isLoading && <div className='flex flex-row justify-center items-center w-full mx-auto text-center'><Loader size={25} className='text-black animate-spin text-center' /></div>}
         </InfiniteScroll>
       </div>
       <div className="absolute left-0 right-0 -bottom-[0px] h-10 z-50 bg-gradient-to-b from-transparent via-transparent to-green-50 rounded-2xl"></div>

@@ -9,6 +9,7 @@ const defaultConfig: BlazeConfig = {
     slidesToShow: 2,
     slidesToScroll: 2,
     transitionDuration: 300,
+    slideGap: '10px',
   },
   '(max-width: 500px)': {
     slidesToShow: 1,
@@ -17,24 +18,25 @@ const defaultConfig: BlazeConfig = {
 };
 
 export const useBlazeSlider = (config?: BlazeConfig) => {
-  const sliderRef = React.useRef<BlazeSlider>();
-  const elRef = React.useRef<HTMLDivElement>(null);
+  const sliderRefIn = React.useRef<BlazeSlider>();
+  const elRef = React.useRef<HTMLDivElement>();
   const [currentSlide, setCurrentSlide] = useState(0);
-
+  const [sliderRef, setSliderRef] = useState<BlazeSlider>();
   React.useEffect(() => {
-    if (!sliderRef.current && elRef.current) {
-      sliderRef.current = new BlazeSlider(elRef.current, config || defaultConfig);
+    if (!sliderRefIn.current && elRef.current) {
+      sliderRefIn.current = new BlazeSlider(elRef.current, config || defaultConfig);
+      setSliderRef(sliderRefIn.current);
     }
   }, [config]);
 
   React.useEffect(() => {
-    const unsubscribe = sliderRef.current?.onSlide((pageIndex, firstVisibleSlideIndex, lastVisibleSlideIndex) => {
+    const unsubscribe = sliderRef?.onSlide((pageIndex) => {
       setCurrentSlide(pageIndex);
     });
     return () => { unsubscribe };
   }, [sliderRef])
 
-  return { ref: elRef, slider: sliderRef.current, currentSlide };
+  return { ref: elRef, slider: sliderRef, currentSlide };
 };
 
 interface CarouselProps {
@@ -44,19 +46,21 @@ interface CarouselProps {
 
 export const BlazeCarousel: React.FC<CarouselProps> = ({ elRef, children }) => {
   return (
-    <div
-      ref={elRef}
-      className="blaze-slider"
-      style={{
-        ['--slides-to-show' as any]: 2,
-      }}
-    >
-      <div className="blaze-container">
-        <div className="blaze-track-container">
-          <div className="blaze-track">
-            {React.Children.map(children, (child, index) => (
-              <div key={index}>{child}</div>
-            ))}
+    <div className='relative w-full'>
+      <div
+        ref={elRef}
+        className="blaze-slider"
+        style={{
+          ['--slides-to-show' as any]: 2,
+        }}
+      >
+        <div className="blaze-container">
+          <div className="blaze-track-container">
+            <div className="blaze-track">
+              {React.Children.map(children, (child, index) => (
+                <div key={index}>{child}</div>
+              ))}
+            </div>
           </div>
         </div>
       </div>
