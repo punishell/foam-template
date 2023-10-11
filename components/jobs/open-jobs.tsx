@@ -11,10 +11,10 @@ import { PageLoading } from '@/components/common/page-loading';
 import { useGetBookmarks } from '@/lib/api/bookmark';
 import { Pagination } from '@/components/common/pagination';
 
-interface Props {}
+interface Props { }
 
 export const OpenJobs: React.FC<Props> = () => {
-  const jobsData = useGetJobs({ category: 'open' });
+  const jobsData = useGetJobs({ category: 'open', status: "pending" });
   const bookmarkData = useGetBookmarks({ page: 1, limit: 5, filter: { type: 'collection' } });
 
   if (jobsData.isError || bookmarkData.isError)

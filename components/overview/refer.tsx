@@ -71,11 +71,11 @@ export function ReferralSideModal({ isOpen, onOpenChange }: ReferralModalProps) 
   return (
     <SideModal isOpen={isOpen} onOpenChange={onOpenChange} className="flex flex-col">
       <div className="flex flex-row p-6 bg-primary-gradient text-white font-bold text-2xl gap-4">
-        <ChevronLeft
+        {/* <ChevronLeft
           size={32}
           className="cursor-pointer"
           onClick={() => (isSentEmail ? setIsSentEmail(false) : onOpenChange(false))}
-        />{' '}
+        />{' '} */}
         Refer User
       </div>
       {!isSentEmail ? (

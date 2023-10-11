@@ -41,7 +41,11 @@ export const Table = <T extends object>({
   });
 
   const setCurrentPage = (page: number) => {
-    setPagination((prev) => ({ ...prev, pageIndex: page }));
+    console.log(page)
+    setPagination((prev) => {
+      console.log({ ...prev, pageIndex: page });
+      return ({ ...prev, pageIndex: page })
+    });
   };
 
   if (loading) {

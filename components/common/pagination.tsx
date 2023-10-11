@@ -25,7 +25,7 @@ export const Pagination: React.FC<PaginationProps> = ({ currentPage, setCurrentP
   return (
     <div className="flex items-center justify-between gap-2 text-sm">
       <div>
-        Page {currentPage} of {totalPages}
+        {/* Page {currentPage} of {totalPages} */}
       </div>
 
       <div className="flex items-center gap-2">
@@ -54,9 +54,8 @@ export const Pagination: React.FC<PaginationProps> = ({ currentPage, setCurrentP
           rightPages.map((page) => (
             <button
               key={page}
-              className={`text-primary rounded-lg p-1  px-3 text-sm hover:bg-[#007C5B1A] ${
-                currentPage === page ? 'bg-[#007C5B1A]' : 'bg-white'
-              }`}
+              className={`text-primary rounded-lg p-1  px-3 text-sm hover:bg-[#007C5B1A] ${currentPage === page ? 'bg-[#007C5B1A]' : 'bg-white'
+                }`}
               onClick={() => setCurrentPage(page)}
             >
               {page}

@@ -26,7 +26,7 @@ export default function Wallet() {
   });
   const [statData, setStatData] = React.useState<chartDataProps>({ weekly: [], monthly: [], yearly: [] });
   const { totalWalletBalance, wallets } = useWalletState();
-  const { data: walletTx, refetch: fetchWalletTx, isFetched: walletFetched, isFetching: walletIsFetching } = useGetWalletTxs({ limit: pageSize, page: pageIndex });
+  const { data: walletTx, refetch: fetchWalletTx, isLoading, isFetched: walletFetched, isFetching: walletIsFetching } = useGetWalletTxs({ limit: pageSize, page: pageIndex });
 
   const walletTransactions = useMemo(() => (walletTx?.data?.data.transactions ?? []).map((tx: any) => ({
     date: dayjs(tx.createdAt).format(dateFormat),
@@ -84,6 +84,10 @@ export default function Wallet() {
   useEffect(() => {
     loadPage();
   }, []);
+
+  useEffect(() => {
+    fetchWalletTx();
+  }, [pageIndex, pageSize])
 
 
   return (
