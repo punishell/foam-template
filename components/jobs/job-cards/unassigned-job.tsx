@@ -9,6 +9,7 @@ interface UnAssignedJobCardProps {
   createdAt: string;
   skills?: string;
   hasInvite: boolean;
+  isPrivate?: boolean;
 }
 
 export const UnAssignedJobCard: React.FC<UnAssignedJobCardProps> = ({
@@ -18,6 +19,7 @@ export const UnAssignedJobCard: React.FC<UnAssignedJobCardProps> = ({
   id,
   skills,
   hasInvite,
+  isPrivate,
 }) => {
   const router = useRouter();
 
@@ -42,7 +44,7 @@ export const UnAssignedJobCard: React.FC<UnAssignedJobCardProps> = ({
       </div>
       <div className="flex items-center gap-2 justify-between mt-auto">
         <div className="gap-2 flex items-center">
-          {!hasInvite && (
+          {!hasInvite && isPrivate && (
             <Button
               size="xs"
               variant="secondary"
@@ -51,6 +53,18 @@ export const UnAssignedJobCard: React.FC<UnAssignedJobCardProps> = ({
               }}
             >
               Find Talent
+            </Button>
+          )}
+
+          {!hasInvite && !isPrivate && (
+            <Button
+              size="xs"
+              variant="secondary"
+              onClick={() => {
+                router.push(`/jobs/${id}/applicants`);
+              }}
+            >
+              View Applicants
             </Button>
           )}
 
