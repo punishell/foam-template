@@ -444,7 +444,7 @@ export const JobReviewedFeed: React.FC<ReviewJobProps> = ({
 }) => {
   return (
     <div className="border-[#CDCFD0] bg-[#F9F9F9] gap-4 pl-2 px-4 flex border z-10 w-full rounded-2xl relative overflow-hidden">
-      <AfroProfile src={isCreator ? talent.avatar : creator.avatar} score={0} size="lg" />
+      <AfroProfile src={isCreator ? talent.avatar : creator.avatar} score={isCreator ? talent.score : creator.score} size="lg" />
       <div className="flex flex-col gap-4 py-4 w-full">
         <div className="flex justify-between items-center">
           <h3 className="text-title text-xl font-bold">{isCreator ? talent.name : creator.name} has reviewed your work on {title}</h3>
