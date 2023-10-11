@@ -9,9 +9,9 @@ const SIZE_TO_PX: Record<Size, number> = {
   sm: 60,
   md: 110,
   lg: 150,
-  xl: 200,
-  '2xl': 250,
-  '3xl': 300,
+  xl: 180,
+  '2xl': 200,
+  '3xl': 220,
 };
 
 interface AfroScoreProps {
