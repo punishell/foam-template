@@ -3,36 +3,15 @@ import React from 'react';
 type Props = React.ComponentProps<'input'> & {};
 
 export const NumericInput = React.forwardRef<HTMLInputElement, Props>(
-  ({ className, onChange: setValue, value, ...props }, forwardedRef) => {
-    const [inputValue, setInputValue] = React.useState(value?.toString() || '');
-
-    const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-      const newValue = event.target.value;
-      if (/^\d*$/.test(newValue)) {
-        setInputValue(newValue);
+  ({ className, onChange, ...props }, forwardedRef) => {
+    const handleInput = (event: React.ChangeEvent<HTMLInputElement>) => {
+      const numericValue = event.currentTarget.value.replace(/[^0-9]/g, '');
+      event.currentTarget.value = numericValue;
+      if (onChange) {
+        onChange(event);
       }
     };
-
-    const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
-      if (event.key === 'Backspace') {
-        const newValue = inputValue.slice(0, -1);
-        if (/^\d*$/.test(newValue)) {
-          setInputValue(newValue);
-        }
-      }
-    };
-
-    return (
-      <input
-        type="text"
-        ref={forwardedRef}
-        value={inputValue}
-        onChange={handleInputChange}
-        onKeyDown={handleKeyDown}
-        className={className}
-        {...props}
-      />
-    );
+    return <input type="text" ref={forwardedRef} className={className} onInput={handleInput} {...props} />;
   },
 );
 
