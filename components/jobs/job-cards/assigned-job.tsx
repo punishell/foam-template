@@ -49,7 +49,7 @@ export const ClientJobCard: React.FC<ClientJobCardProps> = ({
           <div className="grow text-title text-2xl">{title}</div>
         </div>
       </div>
-      <div className="flex items-center gap-2 justify-between mt-auto">
+      <div className="flex items-center gap-4 justify-between mt-auto w-full">
         <div className="gap-2 flex items-center">
           {
             <Button size="xs" variant="secondary" onClick={() => setIsUpdateModalOpen(true)}>
@@ -67,7 +67,13 @@ export const ClientJobCard: React.FC<ClientJobCardProps> = ({
           </Button>
         </div>
 
-        {<DeliverableProgressBar percentageProgress={progress} totalDeliverables={totalDeliverables} />}
+        {
+          <DeliverableProgressBar
+            percentageProgress={progress}
+            totalDeliverables={totalDeliverables}
+            className="w-full max-w-none"
+          />
+        }
 
         <SideModal
           isOpen={isUpdateModalOpen}
@@ -121,7 +127,7 @@ export const TalentJobCard: React.FC<TalentJobCardProps> = ({
           <div className="grow text-title text-2xl">{title}</div>
         </div>
       </div>
-      <div className="flex items-center gap-2 justify-between mt-auto">
+      <div className="flex items-center gap-4 justify-between mt-auto w-full">
         <div className="gap-2 flex items-center">
           <Button size="xs" variant="secondary" onClick={() => setIsUpdateModalOpen(true)}>
             {status === 'completed' ? 'Review' : 'Update'}
@@ -138,7 +144,13 @@ export const TalentJobCard: React.FC<TalentJobCardProps> = ({
           </Button>
         </div>
 
-        {<DeliverableProgressBar percentageProgress={progress} totalDeliverables={totalDeliverables} />}
+        {
+          <DeliverableProgressBar
+            percentageProgress={progress}
+            totalDeliverables={totalDeliverables}
+            className="w-full max-w-none"
+          />
+        }
 
         <SideModal
           isOpen={isUpdateModalOpen}

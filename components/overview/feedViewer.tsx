@@ -351,7 +351,7 @@ export const JobUpdateFeed: React.FC<TalentJobUpdateProps> = ({
             <DeliverableProgressBar
               percentageProgress={progress.progress}
               totalDeliverables={progress.total}
-              className="w-full"
+              className="w-full max-w-none"
             />
           </div>
           <RenderBookMark size={20} isBookmarked={bookmarked} type="feed" id={id} bookmarkId={id} />
@@ -444,7 +444,9 @@ export const JobReviewedFeed: React.FC<ReviewJobProps> = ({
       <AfroProfile src={isCreator ? talent.avatar : creator.avatar} score={0} size="lg" />
       <div className="flex flex-col gap-4 py-4 w-full">
         <div className="flex justify-between items-center">
-          <h3 className="text-title text-xl font-bold">{isCreator ? talent.name : creator.name} has reviewed your work</h3>
+          <h3 className="text-title text-xl font-bold">
+            {isCreator ? talent.name : creator.name} has reviewed your work
+          </h3>
           {close && <X size={20} className="cursor-pointer" onClick={() => close(id)} />}
         </div>
 
@@ -560,7 +562,9 @@ export const ReferralSignupFeed = ({
         </div>
 
         <p className="text-body">
-          {description ? description : `Your referred user just signed up! Thanks for spreading the word and helping us grow. We appreciate your
+          {description
+            ? description
+            : `Your referred user just signed up! Thanks for spreading the word and helping us grow. We appreciate your
           support! 🙌`}
         </p>
 
