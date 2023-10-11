@@ -233,10 +233,14 @@ export default function CreateJob() {
             <div className="relative">
               <textarea
                 id="description"
+                maxLength={400}
                 {...form.register('description')}
                 className="bg-[#C9F0FF] rounded-lg w-full p-4 focus:outline-none border border-blue-300"
                 placeholder="Enter Job Description"
               />
+              <div className="text-sm ml-auto w-fit text-body -mt-1">
+                {form.watch('description').length} / 400 characters
+              </div>
               <span className="absolute -bottom-4 flex w-full">
                 {form.formState.errors.description?.message && (
                   <span className="text-sm text-red-500">{form.formState.errors.description?.message}</span>
