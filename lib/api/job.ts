@@ -105,7 +105,7 @@ interface GetJobByIdParams {
   jobId: string;
 }
 
-interface GetJobByIdResponse extends Job { }
+interface GetJobByIdResponse extends Job {}
 
 async function getJobById(params: GetJobByIdParams): Promise<GetJobByIdResponse> {
   const res = await axios.get(`/collection/${params.jobId}`);
@@ -820,7 +820,7 @@ async function acceptReviewChange(params: AcceptReviewChangeParams): Promise<Api
   return res.data.data;
 }
 
-export function useAcceptReviewChange({ jobId, recipientId }: { jobId: string, recipientId: string }) {
+export function useAcceptReviewChange({ jobId, recipientId }: { jobId: string; recipientId: string }) {
   const queryClient = useQueryClient();
   const createFeed = useCreateFeed();
 
@@ -860,7 +860,7 @@ async function declineReviewChange(params: DeclineReviewChangeParams): Promise<A
   return res.data.data;
 }
 
-export function useDeclineReviewChange({ jobId, recipientId }: { jobId: string, recipientId: string }) {
+export function useDeclineReviewChange({ jobId, recipientId }: { jobId: string; recipientId: string }) {
   const queryClient = useQueryClient();
   const createFeed = useCreateFeed();
 

@@ -353,7 +353,7 @@ export const JobUpdateFeed: React.FC<TalentJobUpdateProps> = ({
             <DeliverableProgressBar
               percentageProgress={progress.progress}
               totalDeliverables={progress.total}
-              className="w-full"
+              className="w-full max-w-none"
             />
           </div>
           <RenderBookMark size={20} isBookmarked={bookmarked} type="feed" id={id} bookmarkId={id} />
@@ -563,7 +563,9 @@ export const ReferralSignupFeed = ({
         </div>
 
         <p className="text-body">
-          {description ? description : `Your referred user just signed up! Thanks for spreading the word and helping us grow. We appreciate your
+          {description
+            ? description
+            : `Your referred user just signed up! Thanks for spreading the word and helping us grow. We appreciate your
           support! 🙌`}
         </p>
 

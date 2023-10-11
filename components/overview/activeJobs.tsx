@@ -62,16 +62,22 @@ const ActiveJobCard: React.FC<ActiveJobCardProps> = ({
         </div>
         <p className="text-body">{description}</p>
         <div className="justify-between items-center flex mt-auto">
-          <div className="flex items-center gap-2">
-            <Button size="xs" variant="secondary" onClick={() => setIsUpdateModalOpen(true)}>
-              {isCreator ? 'View Updates' : 'Update'}
-            </Button>
-            <Link href={`/messages?userId=${isCreator ? talent._id : creator._id}`}>
-              <Button size="xs" variant="outline">
-                Message
+          <div className="flex items-center gap-4 w-full">
+            <div className="flex items-center gap-2">
+              <Button size="xs" variant="secondary" onClick={() => setIsUpdateModalOpen(true)}>
+                {isCreator ? 'View Updates' : 'Update'}
               </Button>
-            </Link>
-            <DeliverableProgressBar percentageProgress={progress.progress} totalDeliverables={progress.total} />
+              <Link href={`/messages?userId=${isCreator ? talent._id : creator._id}`}>
+                <Button size="xs" variant="outline">
+                  Message
+                </Button>
+              </Link>
+            </div>
+            <DeliverableProgressBar
+              percentageProgress={progress.progress}
+              totalDeliverables={progress.total}
+              className="max-w-none w-full"
+            />
           </div>
         </div>
       </div>
