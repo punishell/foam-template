@@ -12,7 +12,7 @@ import { PageEmpty } from '@/components/common/page-empty';
 import { PageError } from '@/components/common/page-error';
 import { PageLoading } from '@/components/common/page-loading';
 
-interface Props { }
+interface Props {}
 
 export const CreatedJobs: React.FC<Props> = () => {
   const jobsData = useGetJobs({ category: 'created' });
@@ -124,7 +124,7 @@ const CompletedJobs: React.FC<CompletedJobsProps> = ({ jobs }) => {
 
   return (
     <div className="grid grid-cols-2 gap-4 overflow-y-auto pb-20">
-      {jobs.map(({ _id, paymentFee, name, creator, collections, progress, status }) => {
+      {jobs.map(({ _id, paymentFee, name, collections, progress, status, owner }) => {
         return (
           <ClientJobCard
             jobId={_id}
@@ -135,10 +135,10 @@ const CompletedJobs: React.FC<CompletedJobsProps> = ({ jobs }) => {
             price={paymentFee}
             title={name}
             talent={{
-              id: creator._id,
-              paktScore: creator.score,
-              avatar: creator.profileImage?.url,
-              name: `${creator.firstName} ${creator.lastName}`,
+              id: owner?._id ?? '',
+              paktScore: owner?.score ?? 0,
+              avatar: owner?.profileImage?.url,
+              name: `${owner?.firstName} ${owner?.lastName}`,
             }}
           />
         );
