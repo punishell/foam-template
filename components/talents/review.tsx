@@ -6,7 +6,6 @@ import { ArrowLeftCircle, ArrowRightCircle, Star } from 'lucide-react';
 import { Spinner } from '@/components/common/';
 import { AfroProfile } from '../common/afro-profile';
 import { BlazeCarousel, useBlazeSlider } from '../common/blazeCarousel';
-import Slider from "react-slick";
 
 interface ReviewProps {
   body: string;
@@ -49,14 +48,6 @@ const Review: React.FC<ReviewProps> = ({ body, title, rating, user }) => {
 };
 
 export const Reviews = ({ reviews, loading }: { reviews: ReviewProps[]; loading: boolean }) => {
-  // const sliderRef = React.useRef<Slider | null>();
-  // const settings = {
-  //   dots: false,
-  //   infinite: false,
-  //   speed: 500,
-  //   slidesToShow: 2,
-  //   slidesToScroll: 1,
-  // };
   const sliderInstance = useBlazeSlider();
   const currentSlide = sliderInstance?.currentSlide || 0;
   const totalSlides = Number(sliderInstance.slider?.totalSlides || 0) / 2;
@@ -84,7 +75,7 @@ export const Reviews = ({ reviews, loading }: { reviews: ReviewProps[]; loading:
           <Spinner />
         </div>
       ) : (
-        <div className='basis-0 relative h-full min-h-[250px]'>
+        <div className='basis-0 relative h-full min-h-[250px] overflow-hidden'>
           {/* @ts-ignore */}
           <BlazeCarousel elRef={sliderInstance?.ref}>
             {reviews &&
