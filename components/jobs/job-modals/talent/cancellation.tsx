@@ -121,7 +121,7 @@ const AcceptJobCancellation: React.FC<AcceptJobCancellationProps> = ({ setAccept
   const [comment, setComment] = React.useState('');
   const [percentageToPay, setPercentageToPay] = React.useState(job.progress);
 
-  const amountToPay = (percentageToPay / 100) * job.paymentFee;
+  const amountToReceive = (percentageToPay / 100) * job.paymentFee;
 
   const totalDeliverables = job.collections.filter(isJobDeliverable).length;
 
@@ -153,7 +153,7 @@ const AcceptJobCancellation: React.FC<AcceptJobCancellationProps> = ({ setAccept
           <div className="flex flex-col gap-3 p-3 bg-slate-50 rounded-lg border border-gray-200">
             <p className="text-body flex items-center gap-2">
               <span>Amount you&apos;d like to receive:</span>{' '}
-              <span className="text-green-600 font-bold">${amountToPay}</span>
+              <span className="text-green-600 font-bold">${amountToReceive}</span>
               <span className="text-sm">({percentageToPay}%)</span>
             </p>
             <div className="my-2">
@@ -235,7 +235,7 @@ const AcceptJobCancellation: React.FC<AcceptJobCancellationProps> = ({ setAccept
                 rating,
                 jobId: job._id,
                 review: comment,
-                amount: amountToPay,
+                amount: amountToReceive,
                 recipientId: client._id,
               });
             }}
