@@ -294,7 +294,7 @@ const JobEditForm: React.FC<JobEditFormProps> = ({ job }) => {
                 placeholder="Enter Job Description"
               />
               <div className="text-sm ml-auto w-fit text-body -mt-1">
-                {form.watch('description').length} / 400 characters
+                {form.watch('description')?.length} / 400 characters
               </div>
               <span className="absolute -bottom-4 flex w-full">
                 {form.formState.errors.description?.message && (
