@@ -14,9 +14,9 @@ import { endOfYesterday, format } from 'date-fns';
 import { NumericInput } from '@/components/common/numeric-input';
 import { DatePicker } from '@/components/common/date-picker';
 import { DeliverablesInput } from '@/components/jobs/deliverables-input';
-import { DollarSign } from 'lucide-react';
+import { DollarIcon } from '@/components/common/icons';
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@/components/common/select';
-
+import { filterEmptyStrings } from '@/lib/utils';
 interface Props {
   params: {
     'job-id': string;
@@ -37,7 +37,6 @@ import { Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { StepIndicator } from '@/components/jobs/step-indicator';
-import { is } from 'date-fns/locale';
 
 const schema = z.object({
   due: z.date({
@@ -145,7 +144,7 @@ const JobEditForm: React.FC<JobEditFormProps> = ({ job }) => {
       {
         id: job._id,
         name: title,
-        tags: filterDuplicates([firstSkill, secondSkill, thirdSkill]),
+        tags: filterEmptyStrings([firstSkill, secondSkill, thirdSkill]),
         category,
         description,
         deliverables,
@@ -189,7 +188,7 @@ const JobEditForm: React.FC<JobEditFormProps> = ({ job }) => {
   };
 
   return (
-    <div className="flex gap-6 overflow-y-auto pb-10">
+    <div className="flex gap-6 overflow-y-auto pb-10 h-full">
       <form
         onSubmit={form.handleSubmit(onSubmit)}
         onKeyDown={(e) => {
@@ -197,12 +196,13 @@ const JobEditForm: React.FC<JobEditFormProps> = ({ job }) => {
             e.preventDefault();
           }
         }}
-        className="border grow bg-white rounded-2xl flex flex-col h-fit"
+        className="border grow bg-white rounded-2xl flex flex-col h-full"
       >
         <div className="bg-primary-gradient p-6 pb-8 rounded-t-2xl flex flex-col gap-10">
           <div className="relative">
             <input
               type="text"
+              autoFocus
               {...form.register('title')}
               placeholder="Enter Job Title"
               className="text-3xl w-full placeholder:text-white placeholder:text-opacity-60 bg-transparent focus:outline-none text-white caret-white"
@@ -217,7 +217,7 @@ const JobEditForm: React.FC<JobEditFormProps> = ({ job }) => {
           <div className="flex gap-4 max-w-lg">
             <div className="relative">
               <div className="bg-[#C9F0FF] text-[#0065D0CC] flex items-center p-2 rounded-lg h-[45px]">
-                <DollarSign />
+                <DollarIcon />
                 <NumericInput
                   type="text"
                   {...form.register('budget')}
@@ -253,7 +253,7 @@ const JobEditForm: React.FC<JobEditFormProps> = ({ job }) => {
             </div>
           </div>
         </div>
-        <div className="p-6 flex flex-col gap-10">
+        <div className="p-6 flex flex-col gap-10 grow">
           <div className="flex flex-col gap-2">
             <h3 className="text-black text-lg font-medium">Preferred Skills</h3>
             <div className="flex gap-2 items-center justify-start">
@@ -420,7 +420,7 @@ const JobEditForm: React.FC<JobEditFormProps> = ({ job }) => {
               </div>
             </div>
           </div>
-          <div className="flex gap-4 items-center w-full justify-end">
+          <div className="flex gap-4 items-center w-full justify-end mt-auto">
             {!talentId && (
               <div className=" max-w-[250px] w-full">
                 <Button onClick={form.handleSubmit(onSubmit)} fullWidth>
@@ -431,13 +431,7 @@ const JobEditForm: React.FC<JobEditFormProps> = ({ job }) => {
 
             {talentId && (
               <div className="max-w-[250px] w-full">
-                <Button
-                  onClick={form.handleSubmit(onSubmit)}
-                  fullWidth
-                  // onClick={() => {
-                  //   router.push(`/jobs/${job._id}/make-deposit/?talent-id=${talentId}`);
-                  // }}
-                >
+                <Button onClick={form.handleSubmit(onSubmit)} fullWidth>
                   {'Make Deposit'}
                 </Button>
               </div>
@@ -472,9 +466,3 @@ const JobEditForm: React.FC<JobEditFormProps> = ({ job }) => {
     </div>
   );
 };
-
-function filterDuplicates(arr: string[]): string[] {
-  return arr.filter((value, index, self) => {
-    return self.indexOf(value) === index;
-  });
-}
