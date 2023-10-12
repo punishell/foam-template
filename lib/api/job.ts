@@ -105,7 +105,7 @@ interface GetJobByIdParams {
   jobId: string;
 }
 
-interface GetJobByIdResponse extends Job {}
+interface GetJobByIdResponse extends Job { }
 
 async function getJobById(params: GetJobByIdParams): Promise<GetJobByIdResponse> {
   const res = await axios.get(`/collection/${params.jobId}`);
@@ -216,7 +216,7 @@ async function postMarkDeliverableAsComplete(params: MarkDeliverableAsCompletePa
   return res.data;
 }
 
-export function useMarkDeliverableAsComplete() {
+export function useMarkDeliverableAsComplete({ description }: { description: string }) {
   const updateJobProgress = useUpdateJobProgress();
   const createFeed = useCreateFeed();
 
@@ -238,10 +238,13 @@ export function useMarkDeliverableAsComplete() {
       createFeed.mutate({
         type: FEED_TYPES.JOB_DELIVERABLE_UPDATE,
         owners: [jobCreator],
-        title: 'Job Deliverable Update',
-        description: 'Job Deliverable Update',
+        title: 'New Job Deliverable Update',
+        description: description,
         data: jobId,
         isPublic: false,
+        meta: {
+          value: Math.floor(progressPercentage(isComplete))
+        }
       });
       toast.success(`Deliverable marked as ${isComplete ? 'complete' : 'incomplete'} successfully`);
     },

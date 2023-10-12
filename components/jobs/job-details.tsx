@@ -23,18 +23,18 @@ export const JobHeader: React.FC<JobHeaderProps> = ({ title, price, dueDate, cre
           <h2 className="text-3xl font-medium text-white">{title}</h2>
         </div>
         <div className="flex gap-4 items-center mt-auto">
-          <span className="bg-[#C9F0FF] text-[#0065D0] gap-2 flex items-center px-3 rounded-full py-1">
+          <span className="bg-[#ECFCE5] text-[#198155] gap-2 flex items-center px-3 rounded-full py-1">
             <Tag size={20} />
             <span>$ {price}</span>
           </span>
 
-          <span className="bg-[#ECFCE5] text-[#198155] gap-2 flex items-center px-3 rounded-full py-1">
+          <span className="bg-[#C9F0FF] text-[#0065D0] gap-2 flex items-center px-3 rounded-full py-1">
             <Calendar size={20} />
             <span>Due {format(new Date(dueDate), 'MMM dd, yyyy')}</span>
           </span>
         </div>
       </div>
-      {creator && (
+      {creator && creator._id && (
         <div className="flex flex-col text-center gap-0 items-end">
           <AfroProfile src={creator.avatar} size="md" score={creator.score} url={`/talents/${creator._id}`} />
 

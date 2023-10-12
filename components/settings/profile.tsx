@@ -62,6 +62,8 @@ export const ProfileView = () => {
 
   const updateAccountFunc = (values: EditProfileFormValues) => {
     const payload = {
+      firstName: values.firstName,
+      lastName: values.lastName,
       profile: {
         contact: {
           state: values.location,
@@ -125,7 +127,7 @@ export const ProfileView = () => {
                 </span>
               </div>
               <div className="flex justify-center item-center mx-auto text-center">
-                <UserAvatar2 image={userData?.avatar} useUpload={true} onUploadComplete={onUploadComplete} />
+                <UserAvatar2 size='lg' image={userData?.avatar} useUpload={true} onUploadComplete={onUploadComplete} />
               </div>
               <div className="flex flex-row justify-center items-center">
                 <p className="text-lg font-bold text-title">

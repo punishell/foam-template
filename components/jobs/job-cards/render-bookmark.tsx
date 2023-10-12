@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { Bookmark } from 'lucide-react';
+import { Bookmark, CheckCircle, CheckCircle2 } from 'lucide-react';
 import { useRemoveFromBookmark, useSaveToBookmark } from '@/lib/api/bookmark';
+import { CheckMark } from '@/components/common/icons';
 
 interface bookmarkType {
   id: string;
@@ -9,8 +10,9 @@ interface bookmarkType {
   isBookmarked?: boolean;
   bookmarkId: string;
   callback?: () => void;
+  useCheck?: boolean;
 }
-export const RenderBookMark = ({ size = 20, isBookmarked, id, bookmarkId, type = 'collection', callback }: bookmarkType) => {
+export const RenderBookMark = ({ size = 20, isBookmarked, id, bookmarkId, type = 'collection', callback, useCheck }: bookmarkType) => {
   const [bookmarked, setBookmarked] = useState(isBookmarked);
   const addBookmark = useSaveToBookmark(callback);
   const removeBookmark = useRemoveFromBookmark(callback);
@@ -42,6 +44,17 @@ export const RenderBookMark = ({ size = 20, isBookmarked, id, bookmarkId, type =
       },
     );
   };
+  if (useCheck) {
+    return (
+      <div className='flex gap-2 items-center w-[100px]' onClick={CallFuc}>
+        <CheckMark
+          fill={bookmarked ? '#7DDE86' : undefined}
+          className={`cursor-pointer`}
+          size={24}
+        /> <span className=''>{bookmarked ? "Saved" : "Save"}</span>
+      </div>
+    )
+  }
   return (
     <Bookmark
       fill={bookmarked ? '#404446' : '#FFFFFF'}

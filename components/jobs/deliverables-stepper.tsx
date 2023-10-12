@@ -33,7 +33,7 @@ const DeliverableStep: React.FC<DeliverableProps> = ({
   totalDeliverables,
   completedDeliverables,
 }) => {
-  const mutation = useMarkDeliverableAsComplete();
+  const mutation = useMarkDeliverableAsComplete({ description });
   const [isComplete, setIsComplete] = React.useState(progress === 100);
 
   return (
