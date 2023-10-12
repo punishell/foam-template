@@ -17,6 +17,7 @@ const ChatList = ({ conversations, loading }: { conversations: any[]; loading: b
         <ChatListItem
           key={i}
           chatId={c?.id}
+          _id={c.sender?._id}
           name={`${c?.sender?.firstName} ${c?.sender?.lastName}`}
           avatar={c?.sender?.profileImage?.url}
           score={c?.sender?.score}
@@ -45,6 +46,7 @@ const ChatListSearch = () => {
 };
 
 interface ChatListItemProps {
+  _id: string;
   name: string;
   avatar?: string;
   score?: number;
@@ -54,7 +56,7 @@ interface ChatListItemProps {
   unreadCount: number;
 }
 
-const ChatListItem: React.FC<ChatListItemProps> = ({ name, avatar, score, unreadCount, lastMessage, time, chatId }) => {
+const ChatListItem: React.FC<ChatListItemProps> = ({ _id, name, avatar, score, unreadCount, lastMessage, time, chatId }) => {
   const pathname = usePathname();
   const urlChatId = pathname.split('/')[2];
   const isActiveChat = urlChatId === chatId;
@@ -62,11 +64,10 @@ const ChatListItem: React.FC<ChatListItemProps> = ({ name, avatar, score, unread
   return (
     <Link href={`/messages/${chatId}`} className="border-b">
       <div
-        className={`flex w-full border-l-4 hover:bg-[#ECFCE5] duration-200 px-3 py-3 gap-2 items-center ${
-          isActiveChat ? 'bg-[#ECFCE5] border-primary' : 'bg-white border-transparent'
-        }`}
+        className={`flex w-full border-l-4 hover:bg-[#ECFCE5] duration-200 px-3 py-3 gap-2 items-center ${isActiveChat ? 'bg-[#ECFCE5] border-primary' : 'bg-white border-transparent'
+          }`}
       >
-        <AfroProfile score={score ?? 0} src={avatar} size="sm" />
+        <AfroProfile score={score ?? 0} src={avatar} size="sm" url={`talents/${_id}`} />
         <div className="grow flex flex-col">
           <div className="flex justify-between gap-2 items-center">
             <div className="flex gap-2 items-center">

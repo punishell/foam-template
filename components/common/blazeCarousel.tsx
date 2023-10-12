@@ -7,7 +7,7 @@ const defaultConfig: BlazeConfig = {
   all: {
     loop: false,
     slidesToShow: 2,
-    slidesToScroll: 1,
+    slidesToScroll: 2,
     transitionDuration: 300,
     slideGap: '20px',
   },
@@ -53,8 +53,8 @@ export const BlazeCarousel: React.FC<CarouselProps> = ({ elRef, children }) => {
         style={{ ['--slides-to-show' as any]: 2 }}
       >
         <div className="blaze-container">
-          <div className="blaze-track-container absolute">
-            <div className="blaze-track blazer-extras">
+          <div className="blaze-track-container">
+            <div className="blaze-track">
               {React.Children.map(children, (Child, index) => Child)}
             </div>
           </div>

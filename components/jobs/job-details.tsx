@@ -8,6 +8,7 @@ interface JobHeaderProps {
   price: number;
   dueDate: string;
   creator?: {
+    _id: string;
     name: string;
     score: number;
     avatar?: string;
@@ -35,7 +36,7 @@ export const JobHeader: React.FC<JobHeaderProps> = ({ title, price, dueDate, cre
       </div>
       {creator && (
         <div className="flex flex-col text-center gap-0 items-end">
-          <AfroProfile src={creator.avatar} size="md" score={creator.score} />
+          <AfroProfile src={creator.avatar} size="md" score={creator.score} url={`/talents/${creator._id}`} />
 
           <span className="text-white text-xl whitespace-nowrap font-bold">{creator.name}</span>
         </div>

@@ -86,6 +86,7 @@ const ClientJobDetails: React.FC<ClientJobDetailsProps> = ({ job }) => {
           price={job.paymentFee}
           dueDate={job.deliveryDate}
           creator={{
+            _id: job.creator._id,
             score: job.creator.score,
             avatar: job.creator.profileImage?.url,
             name: `${job.creator.firstName} ${job.creator.lastName}`,
@@ -288,6 +289,7 @@ const TalentJobDetails: React.FC<TalentJobDetailsProps> = ({ job, userId }) => {
           price={job.paymentFee}
           dueDate={job.deliveryDate}
           creator={{
+            _id: job.creator._id,
             score: job.creator.score,
             avatar: job.creator.profileImage?.url,
             name: `${job.creator.firstName} ${job.creator.lastName}`,

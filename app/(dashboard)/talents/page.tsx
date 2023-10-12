@@ -14,7 +14,7 @@ export default function Talents() {
   const pathname = usePathname();
   const queryParams = new URLSearchParams(searchParams as any);
   const router = useRouter();
-  const Limit = queryParams.get("limit") || "12";
+  const Limit = queryParams.get("limit") || "6";
   const page = queryParams.get("page") || '1';
   const searchQ = queryParams.get('search') || "";
   const skillQ = queryParams.get('skills') || "";

@@ -25,6 +25,7 @@ interface GetInviteResponse {
       description: string;
       paymentFee: number;
       creator: {
+        _id: string;
         firstName: string;
         lastName: string;
         score: number;
@@ -126,8 +127,8 @@ export function useDeclineInvite({ jobCreator, jobId }: { jobCreator: string; jo
       // create feed for decline invite
       createFeed.mutate({
         owners: [jobCreator],
-        title: 'Invite Accepted',
-        description: 'Invite Accepted',
+        title: 'Invite Declined',
+        description: 'Invite Declined',
         data: jobId,
         type: FEED_TYPES.JOB_INVITATION_DECLINED,
         isPublic: false,

@@ -98,7 +98,7 @@ const TRANSACTION_DATA: WalletTransactions[] = [
 
 export const WalletTransactions = ({ data, page, limit, pageSize, loading, onPageChange }: { data: WalletTransactions[], page: number, limit: number, pageSize: number, loading: boolean, onPageChange: React.Dispatch<React.SetStateAction<PaginationState>> }) => {
   return (
-    <div className="border-line flex flex-col gap-4 rounded-lg border bg-white px-6 py-6 w-full max-w-full h-full">
+    <div className="border-line flex flex-col gap-4 rounded-lg border bg-white px-6 py-6 w-full max-w-full h-[450px]">
       <h3 className="text-base font-semibold">Wallet Transactions</h3>
       <Table
         data={data}
@@ -117,8 +117,8 @@ type TransactionStatusColors = { [key in TransactionStatus]: { bgColor: string; 
 const TRANSACTION_STATUS_COLORS: TransactionStatusColors = {
   failed: { bgColor: 'bg-danger', textColor: 'text-danger' },
   completed: { bgColor: 'bg-success', textColor: 'text-success' },
-  pending: { bgColor: 'bg-yellow-500', textColor: 'text-yellow-700' },
-  processing: { bgColor: 'bg-yellow-500', textColor: 'text-yellow-700' },
+  pending: { bgColor: 'bg-yellow-dark', textColor: 'text-yellow' },
+  processing: { bgColor: 'bg-yellow-dark', textColor: 'text-yellow' },
 };
 
 const TransactionStatus = ({ status }: { status: TransactionStatus }) => (
@@ -137,11 +137,11 @@ const TransactionType = ({ type }: { type: TransactionType }) => {
   switch (type) {
     case 'deposit':
       color = 'success';
-      Icon = ArrowUpRight;
+      Icon = ArrowDownLeft;
       break;
     case 'withdrawal':
       color = 'danger';
-      Icon = ArrowDownLeft;
+      Icon = ArrowUpRight;
       break;
     default:
       color = 'gray-300';

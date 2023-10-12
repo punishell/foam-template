@@ -8,6 +8,7 @@ import { truncate } from '@/lib/utils';
 export const LeaderBoard = () => {
   const { data: leaderboardData, isFetched, isFetching } = useGetLeaderBoard();
   const leaderboard = (leaderboardData?.data || []).map((leader, i) => ({
+    _id: leader?._id,
     name: `${leader?.firstName} ${leader?.lastName}`,
     image: leader?.profileImage?.url,
     score: leader?.score,
@@ -20,10 +21,10 @@ export const LeaderBoard = () => {
       <div className=" text-white px-3 flex flex-col  relative gap-2 overflow-y-auto scrollbar-hide">
         {!isFetched && isFetching && <Spinner />}
         {leaderboard.map((l, i) => {
-          if (l.position == 1) return <FirstPlace key={i} name={l.name} score={l.score} avatar={l.image} />;
-          if (l.position == 2) return <SecondPlace key={i} name={l.name} score={l.score} avatar={l.image} />;
-          if (l.position == 3) return <ThirdPlace key={i} name={l.name} score={l.score} avatar={l.image} />;
-          return <RunnerUp key={i} name={l.name} score={l.score} place={`${l.position}th`} avatar={l.image} />;
+          if (l.position == 1) return <FirstPlace key={i} _id={l._id} name={l.name} score={l.score} avatar={l.image} />;
+          if (l.position == 2) return <SecondPlace key={i} _id={l._id} name={l.name} score={l.score} avatar={l.image} />;
+          if (l.position == 3) return <ThirdPlace key={i} _id={l._id} name={l.name} score={l.score} avatar={l.image} />;
+          return <RunnerUp key={i} _id={l._id} name={l.name} score={l.score} place={`${l.position}th`} avatar={l.image} />;
         })}
       </div>
     </div>
@@ -31,13 +32,14 @@ export const LeaderBoard = () => {
 };
 
 interface LeaderBoardItemProps {
+  _id: string;
   name: string;
   score: number;
   avatar?: string;
   place?: string;
 }
 
-const FirstPlace: React.FC<LeaderBoardItemProps> = ({ name, score, avatar }) => {
+const FirstPlace: React.FC<LeaderBoardItemProps> = ({ _id, name, score, avatar }) => {
   return (
     <div className="relative">
       <svg fill="none" preserveAspectRatio="xMaxYMid meet" viewBox="0 0 247 68">
@@ -80,7 +82,7 @@ const FirstPlace: React.FC<LeaderBoardItemProps> = ({ name, score, avatar }) => 
         </defs>
       </svg>
       <div className="absolute inset-0 gap-2 flex items-center p-3 pl-1">
-        <AfroProfile src={avatar} score={Math.round(score)} size="sm" />
+        <AfroProfile src={avatar} score={Math.round(score)} size="sm" url={`talents/${_id}`} />
         <div className="grow">
           <span className="text-[#ECFCE5] text-base">{truncate(name, 15)}</span>
           <div className="flex gap-2 justify-between items-center">
@@ -93,7 +95,7 @@ const FirstPlace: React.FC<LeaderBoardItemProps> = ({ name, score, avatar }) => 
   );
 };
 
-const SecondPlace: React.FC<LeaderBoardItemProps> = ({ name, score, avatar }) => {
+const SecondPlace: React.FC<LeaderBoardItemProps> = ({ _id, name, score, avatar }) => {
   return (
     <div className="relative">
       <svg preserveAspectRatio="xMaxYMid meet" viewBox="0 0 247 67" fill="none">
@@ -141,7 +143,7 @@ const SecondPlace: React.FC<LeaderBoardItemProps> = ({ name, score, avatar }) =>
         </defs>
       </svg>
       <div className="absolute inset-0 gap-2 flex items-center p-3 pl-1">
-        <AfroProfile src={avatar} score={Math.round(score)} size="sm" />
+        <AfroProfile src={avatar} score={Math.round(score)} size="sm" url={`talents/${_id}`} />
         <div className="grow">
           <span className="text-[#ECFCE5] text-base">{truncate(name, 15)}</span>
           <div className="flex gap-2 justify-between items-center">
@@ -154,7 +156,7 @@ const SecondPlace: React.FC<LeaderBoardItemProps> = ({ name, score, avatar }) =>
   );
 };
 
-const ThirdPlace: React.FC<LeaderBoardItemProps> = ({ name, score, avatar }) => {
+const ThirdPlace: React.FC<LeaderBoardItemProps> = ({ _id, name, score, avatar }) => {
   return (
     <div className="relative">
       <svg fill="none" preserveAspectRatio="xMaxYMid meet" viewBox="0 0 247 67">
@@ -197,7 +199,7 @@ const ThirdPlace: React.FC<LeaderBoardItemProps> = ({ name, score, avatar }) => 
         </defs>
       </svg>
       <div className="absolute inset-0 gap-2 flex items-center p-3 pl-1">
-        <AfroProfile src={avatar} score={Math.round(score)} size="sm" />
+        <AfroProfile src={avatar} score={Math.round(score)} size="sm" url={`talents/${_id}`} />
         <div className="grow">
           <span className="text-[#ECFCE5] text-base">{truncate(name, 15)}</span>
           <div className="flex gap-2 justify-between items-center">
@@ -210,7 +212,7 @@ const ThirdPlace: React.FC<LeaderBoardItemProps> = ({ name, score, avatar }) => 
   );
 };
 
-const RunnerUp: React.FC<LeaderBoardItemProps> = ({ name, score, avatar, place }) => {
+const RunnerUp: React.FC<LeaderBoardItemProps> = ({ _id, name, score, avatar, place }) => {
   return (
     <div className="relative">
       <svg fill="none" preserveAspectRatio="xMaxYMid meet" viewBox="0 0 247 62">
@@ -220,7 +222,7 @@ const RunnerUp: React.FC<LeaderBoardItemProps> = ({ name, score, avatar, place }
         ></path>
       </svg>
       <div className="absolute inset-0 gap-2 flex items-center p-3 pl-1">
-        <AfroProfile src={avatar} score={Math.round(score)} size="sm" />
+        <AfroProfile src={avatar} score={Math.round(score)} size="sm" url={`talents/${_id}`} />
         <div className="grow">
           <span className="text-[#ECFCE5] text-base ">{truncate(name, 15)}</span>
           <div className="flex gap-2 justify-between items-center">

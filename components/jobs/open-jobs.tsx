@@ -28,6 +28,13 @@ export const OpenJobs: React.FC<Props> = () => {
     return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
   });
 
+  const onRefresh = async () => {
+    await Promise.all([
+      jobsData.refetch(),
+      bookmarkData.refetch()
+    ])
+  }
+
   return (
     <div className="flex flex-col gap-6 h-full">
       <JobSearchBar />
@@ -38,7 +45,7 @@ export const OpenJobs: React.FC<Props> = () => {
             {
               label: 'All',
               value: 'all',
-              content: <AllJobs jobs={sortedJobs} onRefresh={jobsData.refetch} />,
+              content: <AllJobs jobs={sortedJobs} onRefresh={onRefresh} />,
             },
             {
               label: 'Saved',
@@ -48,7 +55,7 @@ export const OpenJobs: React.FC<Props> = () => {
                   jobs={bookmarkData.data?.data ?? []}
                   isError={bookmarkData.isError}
                   isLoading={bookmarkData.isLoading}
-                  onRefresh={bookmarkData.refetch}
+                  onRefresh={onRefresh}
                 />
               ),
             },
@@ -84,6 +91,7 @@ const AllJobs: React.FC<AllJobsProps> = ({ jobs, onRefresh }) => {
               title={name}
               skills={tags}
               creator={{
+                _id: creator._id,
                 paktScore: creator.score,
                 avatar: creator.profileImage?.url,
                 name: `${creator.firstName} ${creator.lastName}`,
@@ -128,6 +136,7 @@ const SavedJobs: React.FC<SavedJobsProps> = ({ jobs, isError, isLoading, onRefre
             title={name}
             skills={tags}
             creator={{
+              _id: creator._id,
               paktScore: creator.score,
               avatar: creator.profileImage?.url,
               name: `${creator.firstName} ${creator.lastName}`,

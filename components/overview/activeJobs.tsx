@@ -55,7 +55,7 @@ const ActiveJobCard: React.FC<ActiveJobCardProps> = ({
   const [isUpdateModalOpen, setIsUpdateModalOpen] = React.useState(false);
   return (
     <div className="border-[#9BDCFD] bg-[#F1FBFF] gap-4 pl-2 px-4  flex border z-10 w-full rounded-2xl relative overflow-hidden">
-      <AfroProfile src={talent.avatar} score={talent.score} size="md" />
+      <AfroProfile src={talent.avatar} score={talent.score} size="lg" url={`/talents/${talent._id}`} />
       <div className="flex flex-col gap-4 py-4 w-full">
         <div className="flex justify-between items-center">
           <h3 className="text-title text-xl font-bold">{title}</h3>
@@ -158,6 +158,6 @@ export const ActiveJobs = () => {
   if (activeJobs.length === 0) return <PageEmpty className="h-[85vh] rounded-2xl border border-line" />;
 
   return (
-    <div className="flex flex-col gap-5 mt-4 border border-line bg-white rounded-2xl p-4 w-full">{activeJobs}</div>
+    <div className="flex flex-col gap-5 border border-line bg-white rounded-2xl p-4 w-full">{activeJobs}</div>
   );
 };

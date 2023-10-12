@@ -45,9 +45,8 @@ export default function Profile() {
     [user],
   );
   const reviews = talentReviews?.data || [];
-
   return (
-    <div className="flex flex-col gap-6 pt-6 overflow-y-auto">
+    <div className="flex flex-col gap-6 pt-6 overflow-y-auto w-full">
       <ProfileHeader
         _id={talent.id}
         name={talent.name}
@@ -60,22 +59,33 @@ export default function Profile() {
 
       <div className="flex gap-6 w-full">
         <Bio body={talent.bio} />
-        <Achievements achievements={talent.achievements} />
+        {/* <Achievements achievements={talent.achievements} /> */}
+        <Achievements
+          achievements={talent.achievements?.map(({ total, type, value }) => ({
+            type,
+            title: type,
+            total: Number(total),
+            value: parseInt(String(value)),
+          }))}
+        />
       </div>
-      <Reviews
-        reviews={
-          reviews?.map((a) => ({
-            title: a.data.name,
-            body: a.review,
-            rating: a.rating,
-            user: {
-              afroScore: a.owner.score,
-              name: `${a.owner.firstName}${a.owner.lastName}`,
-              title: a.owner.profile.bio?.title || "",
-              avatar: a.owner.profileImage?.url ?? "",
-            }
-          })) ?? []
-        } loading={!isFetched && isFetching} />
+      <div className='w-full'>
+        <Reviews
+          reviews={
+            reviews?.map((a) => ({
+              title: a.data.name,
+              body: a.review,
+              rating: a.rating,
+              user: {
+                _id: a._id,
+                afroScore: a.owner.score,
+                name: `${a.owner.firstName}${a.owner.lastName}`,
+                title: a.owner.profile.bio?.title || "",
+                avatar: a.owner.profileImage?.url ?? "",
+              }
+            }))
+          } loading={!isFetched && isFetching} />
+      </div>
     </div>
   );
 }
