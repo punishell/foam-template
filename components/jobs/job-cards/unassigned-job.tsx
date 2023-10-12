@@ -1,43 +1,41 @@
 'use client';
+import Image from 'next/image';
 import { Button } from 'pakt-ui';
+import { format } from 'date-fns';
+import { type Job } from '@/lib/types';
 import { useRouter } from 'next/navigation';
+import { isJobApplicant } from '@/lib/types';
 
 interface UnAssignedJobCardProps {
-  id: string;
-  title: string;
-  price: number;
-  createdAt: string;
-  skills?: string;
-  hasInvite: boolean;
-  isPrivate?: boolean;
+  job: Job;
 }
 
-export const UnAssignedJobCard: React.FC<UnAssignedJobCardProps> = ({
-  createdAt,
-  price,
-  title,
-  id,
-  skills,
-  hasInvite,
-  isPrivate,
-}) => {
+export const UnAssignedJobCard: React.FC<UnAssignedJobCardProps> = ({ job }) => {
   const router = useRouter();
+
+  const { createdAt, _id, collections, tagsData, name, paymentFee, invite, isPrivate } = job;
+
+  console.log('invite', invite);
+
+  const id = _id;
+  const title = name;
+  const skills = tagsData.join(',');
+  const hasInvite = invite !== undefined;
+  const applicants = collections.filter(isJobApplicant);
+  const creationDate = format(new Date(createdAt), 'dd MMM yyyy');
+
+  console.log('name, is private?', name, isPrivate);
 
   return (
     <div className="gap-4 bg-white rounded-3xl border-line w-full flex flex-col grow border p-4">
       <div className="w-full flex gap-4">
         <div className="flex flex-col gap-2 grow">
           <div className="flex items-center justify-between gap-2">
-            <div className="flex items-center gap-2">
-              {<span className="text-body text-lg">{createdAt}</span>}
-              {hasInvite && (
-                <span className="px-3 text-blue-500 inline-flex rounded-full bg-blue-50 text-sm border border-blue-200">
-                  Awaiting Talent Response
-                </span>
-              )}
-            </div>
+            <div className="flex items-center gap-2">{<span className="text-body text-lg">{creationDate}</span>}</div>
 
-            <span className="px-3 text-base text-title inline-flex rounded-full bg-[#B2E9AA66]">${price}</span>
+            <span className="px-3 text-lg border border-green-200 text-title inline-flex rounded-full bg-[#B2E9AA66]">
+              ${paymentFee}
+            </span>
           </div>
           <div className="grow text-title text-2xl min-h-[58px]">{title}</div>
         </div>
@@ -77,6 +75,42 @@ export const UnAssignedJobCard: React.FC<UnAssignedJobCardProps> = ({
           >
             Job Details
           </Button>
+        </div>
+
+        <div>
+          {!isPrivate && !hasInvite && (
+            <div className="inline-flex items-center flex-row-reverse w-fit">
+              {applicants.length > 5 && (
+                <div className="text-sm flex items-center justify-center overflow-hidden h-[30px] w-[30px] bg-[#D9D9D9] border-2 border-white rounded-full -ml-3 last:ml-0">
+                  <span className="-ml-1.5">+{applicants.length - 5}</span>
+                </div>
+              )}
+
+              {applicants.slice(0, 5).map((applicant, index) => {
+                return (
+                  <div
+                    key={index}
+                    className="h-[30px] w-[30px] overflow-hidden bg-green-100 border-2 border-white rounded-full -ml-3 last:ml-0"
+                  >
+                    {applicant.creator.profileImage && (
+                      <Image src={applicant.creator.profileImage?.url ?? ''} alt="" width={30} height={30} />
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          )}
+
+          {hasInvite && (
+            <div className="px-1 pr-3 py-0.5 text-[#0065D0] text-sm inline-flex items-center gap-1 rounded-full bg-[#C9F0FF] border border-[#48A7F8]">
+              <div className="h-[27px] w-[27px] bg-white border border-white rounded-full">
+                {/* {applicant.creator.profileImage && (
+                      <Image src={applicant.creator.profileImage?.url ?? ''} alt="" width={30} height={30} />
+                    )} */}
+              </div>
+              <span>Awaiting Talent Response</span>
+            </div>
+          )}
         </div>
       </div>
     </div>

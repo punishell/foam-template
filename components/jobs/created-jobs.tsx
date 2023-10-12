@@ -67,19 +67,8 @@ const UnassignedJobs: React.FC<UnassignedJobsProps> = ({ jobs }) => {
   return (
     <div className="flex flex-col h-full min-h-[80vh]">
       <div className="grid grid-cols-2 gap-4 overflow-y-auto pb-20">
-        {paginatedJobs.map(({ _id, paymentFee, name, tagsData, createdAt, invite, isPrivate }) => {
-          return (
-            <UnAssignedJobCard
-              id={_id}
-              key={_id}
-              isPrivate={isPrivate}
-              price={paymentFee}
-              title={name}
-              hasInvite={invite !== undefined}
-              createdAt={format(new Date(createdAt), 'dd MMM yyyy')}
-              skills={tagsData.join(',')}
-            />
-          );
+        {paginatedJobs.map((job) => {
+          return <UnAssignedJobCard job={job} key={job._id} />;
         })}
       </div>
       <div className="mt-auto pt-4">
