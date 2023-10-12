@@ -15,16 +15,12 @@ export const UnAssignedJobCard: React.FC<UnAssignedJobCardProps> = ({ job }) => 
 
   const { createdAt, _id, collections, tagsData, name, paymentFee, invite, isPrivate } = job;
 
-  console.log('invite', invite);
-
   const id = _id;
   const title = name;
   const skills = tagsData.join(',');
-  const hasInvite = invite !== undefined;
   const applicants = collections.filter(isJobApplicant);
+  const hasInvite = invite !== undefined && invite !== null;
   const creationDate = format(new Date(createdAt), 'dd MMM yyyy');
-
-  console.log('name, is private?', name, isPrivate);
 
   return (
     <div className="gap-4 bg-white rounded-3xl border-line w-full flex flex-col grow border p-4">
@@ -103,10 +99,10 @@ export const UnAssignedJobCard: React.FC<UnAssignedJobCardProps> = ({ job }) => 
 
           {hasInvite && (
             <div className="px-1 pr-3 py-0.5 text-[#0065D0] text-sm inline-flex items-center gap-1 rounded-full bg-[#C9F0FF] border border-[#48A7F8]">
-              <div className="h-[27px] w-[27px] bg-white border border-white rounded-full">
-                {/* {applicant.creator.profileImage && (
-                      <Image src={applicant.creator.profileImage?.url ?? ''} alt="" width={30} height={30} />
-                    )} */}
+              <div className="h-[27px] w-[27px] bg-white border border-white rounded-full overflow-hidden">
+                {invite?.receiver.profileImage && (
+                  <Image src={invite.receiver.profileImage?.url ?? ''} alt="" width={30} height={30} />
+                )}
               </div>
               <span>Awaiting Talent Response</span>
             </div>
