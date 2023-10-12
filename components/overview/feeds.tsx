@@ -19,8 +19,6 @@ export const Feeds = () => {
     data: timelineData,
     refetch: feedRefetch,
     isLoading,
-    isFetching,
-    isFetched,
     isError,
   } = useGetTimeline({ page: currentPage, limit: 10, filter: { isOwner: true, type: `${FEED_TYPES.JOB_DELIVERABLE_UPDATE},${FEED_TYPES.JOB_APPLICATION_SUBMITTED},${FEED_TYPES.JOB_CANCELLED},${FEED_TYPES.JOB_COMPLETION},${FEED_TYPES.JOB_INVITATION_ACCEPTED},${FEED_TYPES.JOB_INVITATION_DECLINED},${FEED_TYPES.JOB_INVITATION_RECEIVED},${FEED_TYPES.PUBLIC_JOB_CREATED},${FEED_TYPES.PUBLIC_JOB_FILLED}`, isPublic: true } });
   const totalPage = timelineData?.pages || 1;

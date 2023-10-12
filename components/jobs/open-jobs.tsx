@@ -38,7 +38,7 @@ export const OpenJobs: React.FC<Props> = () => {
   return (
     <div className="flex flex-col gap-6 h-full">
       <JobSearchBar />
-      <div className="h-ful grow">
+      <div className="flex h-full grow">
         <Tabs
           urlKey="open-jobs"
           tabs={[
@@ -82,7 +82,7 @@ const AllJobs: React.FC<AllJobsProps> = ({ jobs, onRefresh }) => {
   return (
     <div className="flex flex-col gap-2 pb-2 xh-full min-h-[70vh]">
       <div className="grid grid-cols-2 gap-4 overflow-y-auto ">
-        {paginatedJobs.map(({ _id, paymentFee, name, tags, creator, isBookmarked }) => {
+        {paginatedJobs.map(({ _id, paymentFee, name, tags, creator, isBookmarked, bookmarkId }) => {
           return (
             <OpenJobCard
               id={_id}
@@ -97,7 +97,7 @@ const AllJobs: React.FC<AllJobsProps> = ({ jobs, onRefresh }) => {
                 name: `${creator.firstName} ${creator.lastName}`,
               }}
               isBookmarked={isBookmarked}
-              bookmarkId={_id}
+              bookmarkId={bookmarkId ?? ''}
               onRefresh={onRefresh}
             />
           );

@@ -38,7 +38,8 @@ interface GetAccountResponse {
   isPrivate?: boolean;
 }
 interface UpdateAccountParams {
-  username?: string;
+  firstName?: string;
+  lastName?: string;
   profile?: {
     contact?: {
       state?: string;

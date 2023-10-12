@@ -91,8 +91,8 @@ export const Reviews = ({ reviews, loading }: { reviews: ReviewProps[]; loading:
 
           {!reviews ||
             (reviews.length === 0 && (
-              <div className="flex w-full text-white min-h-[307px] my-auto items-center">
-                <p>No Reviews</p>
+              <div className="flex w-full text-white min-h-[207px] m-auto items-center">
+                <p className='mx-auto'>No Reviews</p>
               </div>
             ))}
         </div>

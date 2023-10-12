@@ -48,7 +48,7 @@ export const ParseFeedView = (feed: DataFeedResponse, loggedInUser: string, key:
     score: feed?.data?.owner?.score || 0,
   };
   const deliverableTotal = feed?.data?.collections.filter(f => f.type == "deliverable").length;
-  const deliverableTotalCompleted = feed?.data?.collections.filter(f => (f.type == "deliverable" && f.progress == 100)).length;
+  const deliverableTotalCompleted = feed?.meta?.value || feed?.data?.collections.filter(f => (f.type == "deliverable" && f.progress == 100)).length;
   const currentProgress = parseInt(String(deliverableTotalCompleted * 100 / deliverableTotal));
   const deliverableCountPercentage = {
     total: deliverableTotal,
@@ -117,14 +117,15 @@ export const ParseFeedView = (feed: DataFeedResponse, loggedInUser: string, key:
         jobId={feed?.data?.parent?._id || ""}
         close={dismissFeed}
       />;
-    case FEED_TYPES.JOB_DELIVERABLE_UPDATE || FEED_TYPES.COLLECTION_UPDATE:
+    case FEED_TYPES.JOB_DELIVERABLE_UPDATE:
+    case FEED_TYPES.COLLECTION_UPDATE:
       return <JobUpdateFeed
         key={key}
         talent={talent}
         creator={inviter}
         id={feed?._id}
         title={feed?.title}
-        description={feed?.data?.description}
+        description={feed?.description}
         bookmarked={isBookmarked}
         bookmarkId={bookmarkId}
         close={dismissFeed}
