@@ -51,7 +51,7 @@ const Review: React.FC<ReviewProps> = ({ body, title, rating, user }) => {
 export const Reviews = ({ reviews, loading }: { reviews: ReviewProps[]; loading: boolean }) => {
   const sliderInstance = useBlazeSlider();
   const currentSlide = sliderInstance?.currentSlide || 0;
-  const totalSlides = Number(sliderInstance.slider?.totalSlides || 0);
+  const totalSlides = parseInt(String(Number(sliderInstance.slider?.totalSlides || 0) / 2));
   console.log(totalSlides, currentSlide, sliderInstance)
 
   return (
@@ -66,7 +66,7 @@ export const Reviews = ({ reviews, loading }: { reviews: ReviewProps[]; loading:
           />
           <ArrowRightCircle
             size={32}
-            className={`cursor-pointer ${currentSlide === totalSlides - 1 ? 'text-body' : 'text-white'}`}
+            className={`cursor-pointer ${currentSlide === totalSlides ? 'text-body' : 'text-white'}`}
             onClick={() => sliderInstance.slider?.next()}
           />
         </div>
