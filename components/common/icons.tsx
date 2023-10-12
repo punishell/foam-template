@@ -2,6 +2,8 @@ interface IconProps {
   size?: number;
   className?: string;
   style?: React.CSSProperties;
+  fill?: string;
+  onClick?: () => void;
 }
 
 export const DollarIcon: React.FC<IconProps> = ({ size = 24, className, style }) => {
@@ -19,3 +21,38 @@ export const DollarIcon: React.FC<IconProps> = ({ size = 24, className, style })
     </svg>
   );
 };
+
+export const CheckMark: React.FC<IconProps> = ({ size = 24, className, style, fill, onClick }) => {
+  console.log(fill)
+  if (fill) {
+    return (
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width={size}
+        height={size}
+        className={className}
+        fill={fill}
+        viewBox={`0 0 ${size} ${size}`}
+        style={{ msFilter: '', ...style }}
+        onClick={onClick}
+      >
+        <path
+          fill="rgba(33,173,33,1)"
+          d="M12 22C6.477 22 2 17.523 2 12S6.477 2 12 2s10 4.477 10 10-4.477 10-10 10zm-.997-6l7.07-7.071-1.413-1.414-5.657 5.657-2.829-2.829-1.414 1.414L11.003 16z"
+        ></path>
+      </svg>
+    )
+  }
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width={size}
+      height={size}
+      className={className}
+      viewBox={`0 0 ${size} ${size}`}
+      style={{ msFilter: '', ...style }}
+    >
+      <path d="M12 22C6.477 22 2 17.523 2 12S6.477 2 12 2s10 4.477 10 10-4.477 10-10 10zm0-2a8 8 0 100-16 8 8 0 000 16zm-.997-4L6.76 11.757l1.414-1.414 2.829 2.829 5.657-5.657 1.414 1.414L11.003 16z"></path>
+    </svg>
+  );
+}

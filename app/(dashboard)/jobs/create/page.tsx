@@ -61,7 +61,7 @@ export default function CreateJob() {
   const [files, setFiles] = React.useState<File[]>([]);
   const [uploadProgress, setUploadProgress] = React.useState(0);
 
-  const onDrop = React.useCallback(async (acceptedFiles: File[]) => {}, []);
+  const onDrop = React.useCallback(async (acceptedFiles: File[]) => { }, []);
 
   const { getRootProps, getInputProps } = useDropzone({
     onDrop,
@@ -139,7 +139,7 @@ export default function CreateJob() {
             e.preventDefault();
           }
         }}
-        className="border grow bg-white rounded-2xl flex flex-col h-full"
+        className="border grow bg-white rounded-2xl flex flex-col h-fit"
       >
         <div className="bg-primary-gradient p-6 pb-8 rounded-t-2xl flex flex-col gap-10">
           <div className="relative">
@@ -159,7 +159,7 @@ export default function CreateJob() {
 
           <div className="flex gap-4 max-w-lg">
             <div className="relative">
-              <div className="bg-[#C9F0FF] text-[#0065D0CC] flex items-center p-2 rounded-lg h-[45px]">
+              <div className="bg-[#ECFCE5] border-[#198155] text-primary flex items-center p-2 rounded-lg h-[45px]">
                 <DollarIcon />
                 <NumericInput
                   type="text"
@@ -180,7 +180,7 @@ export default function CreateJob() {
                 control={form.control}
                 render={({ field: { onChange, value } }) => (
                   <DatePicker
-                    className="bg-[#ECFCE5] border-[#198155] text-primary h-[45px] w-[250px]"
+                    className="bg-[#C9F0FF] border-[#0065D0CC] text-[#0065D0CC] h-[45px] w-[250px]"
                     placeholder="Select Due Date"
                     selected={value}
                     onSelect={(date) => onChange(date)}
@@ -196,7 +196,7 @@ export default function CreateJob() {
             </div>
           </div>
         </div>
-        <div className="p-6 flex flex-col gap-10 grow">
+        <div className="p-6 flex flex-col gap-6 grow">
           <div className="flex flex-col gap-2">
             <h3 className="text-black text-lg font-medium">
               Preferred Skills<span className="ml-4 text-body text-sm font-thin">You can add up to three</span>
@@ -237,6 +237,7 @@ export default function CreateJob() {
                 {...form.register('description')}
                 className="bg-[#C9F0FF] rounded-lg w-full p-4 focus:outline-none border border-blue-300"
                 placeholder="Enter Job Description"
+                rows={3}
               />
               <div className="text-sm ml-auto w-fit text-body -mt-1">
                 {form.watch('description')?.length} / 400 characters
@@ -353,9 +354,9 @@ export default function CreateJob() {
                             <SelectItem value="freelance" className="hover:bg-[#ECFCE5] rounded py-2">
                               Freelance
                             </SelectItem>
-                            <SelectItem value="project" className="hover:bg-[#ECFCE5] rounded py-2">
+                            {/* <SelectItem value="project" className="hover:bg-[#ECFCE5] rounded py-2">
                               Project
-                            </SelectItem>
+                            </SelectItem> */}
                           </SelectContent>
                         </Select>
                       );
@@ -379,8 +380,8 @@ export default function CreateJob() {
           </div>
         </div>
       </form>
-      <div className="basis-[300px] shrink-0 grow-0 flex flex-col gap-6 h-fit">
-        <div className="bg-white p-6 rounded-xl min-h-[300px] border border-line flex flex-col gap-3 h-fit">
+      <div className="basis-[300px] shrink-0 grow-0 flex flex-col gap-6">
+        <div className="bg-white p-6 rounded-xl h-fit border border-line flex flex-col gap-3">
           <h3 className="font-bold">Steps</h3>
           <StepIndicator isComplete={jobSteps.details}>Job Details</StepIndicator>
           <StepIndicator isComplete={jobSteps.skills}>Skills</StepIndicator>
@@ -388,7 +389,7 @@ export default function CreateJob() {
           <StepIndicator isComplete={jobSteps.deliverables}>Deliverables</StepIndicator>
           <StepIndicator isComplete={jobSteps.classification}>Classification</StepIndicator>
         </div>
-        <div className="bg-white p-6 rounded-xl min-h-[250px] border border-line flex flex-col gap-4">
+        {/* <div className="bg-white p-6 rounded-xl min-h-[250px] border border-line flex flex-col gap-4">
           <div className="flex items-center gap-2">
             <span className="text-lg font-bold">Attachments</span>{' '}
             <span className="text-body text-sm font-normal">(optional)</span>
@@ -401,7 +402,7 @@ export default function CreateJob() {
             <input {...getInputProps()} />
             <span className="flex text-body">Click to browse or drag and drop your files</span>
           </div>
-        </div>
+        </div> */}
       </div>
     </div>
   );

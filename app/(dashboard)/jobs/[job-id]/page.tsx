@@ -22,6 +22,8 @@ import { useCancelJobInvite } from '@/lib/api/job';
 import * as z from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm, SubmitHandler } from 'react-hook-form';
+import { DollarIcon } from '@/components/common/icons';
+import { NumericInput } from '@/components/common/numeric-input';
 
 const jobApplicationSchema = z.object({
   message: z.string().nonempty('Message is required'),
@@ -86,10 +88,10 @@ const ClientJobDetails: React.FC<ClientJobDetailsProps> = ({ job }) => {
           price={job.paymentFee}
           dueDate={job.deliveryDate}
           creator={{
-            _id: job.creator._id,
-            score: job.creator.score,
-            avatar: job.creator.profileImage?.url,
-            name: `${job.creator.firstName} ${job.creator.lastName}`,
+            _id: job?.owner?._id || "",
+            score: job?.owner?.score || 0,
+            avatar: job?.owner?.profileImage?.url,
+            name: `${job?.owner?.firstName} ${job?.owner?.lastName}`,
           }}
         />
         <div className="bg-white flex flex-col w-full p-6 rounded-b-xl grow border-line border-t-0 border">
@@ -289,16 +291,19 @@ const TalentJobDetails: React.FC<TalentJobDetailsProps> = ({ job, userId }) => {
           price={job.paymentFee}
           dueDate={job.deliveryDate}
           creator={{
-            _id: job.creator._id,
-            score: job.creator.score,
-            avatar: job.creator.profileImage?.url,
-            name: `${job.creator.firstName} ${job.creator.lastName}`,
+            _id: job?.creator?._id || '',
+            score: job?.creator?.score || 0,
+            avatar: job?.creator?.profileImage?.url,
+            name: `${job?.creator?.firstName} ${job?.creator?.lastName}`,
           }}
         />
 
         <div className="bg-white flex flex-col w-full p-6 rounded-b-xl grow border-line border-t-0 border">
           <JobSkills skills={job.tags || []} />
           <JobDescription description={job.description} />
+          <JobDeliverables
+            deliverables={job.collections.filter(isJobDeliverable).map((collection) => collection.name)}
+          />
 
           {hasAlreadyApplied && (
             <div className="p-4 bg-blue-50 border border-blue-300 text-blue-500 rounded-lg my-3 flex items-center gap-2 w-full">
@@ -306,9 +311,6 @@ const TalentJobDetails: React.FC<TalentJobDetailsProps> = ({ job, userId }) => {
               <span className="text-body text-center">You have already applied to this job</span>
             </div>
           )}
-          <JobDeliverables
-            deliverables={job.collections.filter(isJobDeliverable).map((collection) => collection.name)}
-          />
 
           <JobCtas
             jobId={job._id}
@@ -478,13 +480,23 @@ const TalentJobApplyModal: React.FC<TalentJobApplyModalProps> = ({ jobId, jobCre
           <label htmlFor="due" className="text-title">
             Enter Bid
           </label>
-          <input
+          {/* <input
             type="text"
             id="due"
             {...form.register('amount')}
             placeholder="Enter Bid (e.g $100)"
             className="w-full border bg-[#FCFCFD] border-line rounded-lg outline-none px-4 py-3 focus-within:border-secondary hover:border-secondary hover:duration-200"
-          />
+          /> */}
+          <div className="flex items-center border bg-[#FCFCFD] border-line rounded-lg outline-none px-4 py-3 focus-within:border-secondary hover:border-secondary hover:duration-200h-[45px] gap-2">
+            {/* <DollarIcon /> */}
+            <span className='text-body '>$</span>
+            <NumericInput
+              type="text"
+              {...form.register('amount')}
+              placeholder="Enter Bid (e.g $100)"
+              className="bg-transparent  h-full text-sm text-body focus:outline-none"
+            />
+          </div>
 
           {form.formState.errors.amount && (
             <span className="text-red-500 text-sm">{form.formState.errors.amount.message}</span>
@@ -497,12 +509,15 @@ const TalentJobApplyModal: React.FC<TalentJobApplyModalProps> = ({ jobId, jobCre
           </label>
           <textarea
             rows={3}
-            maxLength={400}
+            maxLength={150}
             id="due"
             {...form.register('message')}
             placeholder="Enter your message here"
             className="w-full resize-none bg-[#FCFCFD] border border-line rounded-lg outline-none px-4 py-3 focus-within:border-secondary hover:border-secondary hover:duration-200"
           />
+          <div className="text-sm ml-auto w-fit text-body -mt-1">
+            {form.watch('message')?.length} / 150 characters
+          </div>
 
           {form.formState.errors.message && (
             <span className="text-red-500 text-sm">{form.formState.errors.message.message}</span>
@@ -510,7 +525,7 @@ const TalentJobApplyModal: React.FC<TalentJobApplyModalProps> = ({ jobId, jobCre
         </div>
 
         <Button fullWidth>{applyToOpenJob.isLoading ? <Spinner /> : 'Send Application'}</Button>
-      </form>
-    </div>
+      </form >
+    </div >
   );
 };

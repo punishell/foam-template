@@ -23,8 +23,10 @@ interface ReviewProps {
 const Review: React.FC<ReviewProps> = ({ body, title, rating, user }) => {
   return (
     <div className="bg-white min-h-full rounded-2xl p-4 flex flex-col gap-4 w-full min-w-1/2 select-none cursor-grab">
-      <h3 className="text-xl font-medium text-title">{title}</h3>
-      <p className="text-body min-h-[72px]">{body}</p>
+      <div className='flex flex-col flex-1 max-w-full gap-4'>
+        <h3 className="text-xl font-medium text-title max-w-[400px] break-all">{title}</h3>
+        <p className="text-base font-thin text-body max-w-[400px] break-all">{body}</p>
+      </div>
 
       <div className="flex items-center justify-between">
         <div className="grid grid-cols-3 gap-2">
@@ -51,8 +53,8 @@ const Review: React.FC<ReviewProps> = ({ body, title, rating, user }) => {
 export const Reviews = ({ reviews, loading }: { reviews: ReviewProps[]; loading: boolean }) => {
   const sliderInstance = useBlazeSlider();
   const currentSlide = sliderInstance?.currentSlide || 0;
-  const totalSlides = Number(sliderInstance.slider?.totalSlides || 0);
-  console.log(totalSlides, currentSlide, sliderInstance)
+  const totalSlideCount = parseInt(String(Number(sliderInstance.slider?.totalSlides || 0) / 2));
+  const totalSlides = totalSlideCount % 2 == 1 ? totalSlideCount - 1 : totalSlideCount;
 
   return (
     <div className="bg-primary-gradient p-4 rounded-4 gap-1 w-full rounded-2xl basis-0">
@@ -66,7 +68,7 @@ export const Reviews = ({ reviews, loading }: { reviews: ReviewProps[]; loading:
           />
           <ArrowRightCircle
             size={32}
-            className={`cursor-pointer ${currentSlide === totalSlides - 1 ? 'text-body' : 'text-white'}`}
+            className={`cursor-pointer ${currentSlide === totalSlides ? 'text-body' : 'text-white'}`}
             onClick={() => sliderInstance.slider?.next()}
           />
         </div>
@@ -77,7 +79,7 @@ export const Reviews = ({ reviews, loading }: { reviews: ReviewProps[]; loading:
           <Spinner />
         </div>
       ) : (
-        <div className='basis-0 relative h-full min-h-[250px] overflow-hidden'>
+        <div className='basis-0 relative h-full overflow-hidden'>
           {/* @ts-ignore */}
           <BlazeCarousel elRef={sliderInstance?.ref}>
             {reviews &&
@@ -89,8 +91,8 @@ export const Reviews = ({ reviews, loading }: { reviews: ReviewProps[]; loading:
 
           {!reviews ||
             (reviews.length === 0 && (
-              <div className="flex w-full text-white min-h-[307px] my-auto items-center">
-                <p>No Reviews</p>
+              <div className="flex w-full text-white min-h-[207px] m-auto items-center">
+                <p className='mx-auto'>No Reviews</p>
               </div>
             ))}
         </div>

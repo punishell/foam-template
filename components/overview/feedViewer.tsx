@@ -331,13 +331,13 @@ export const JobUpdateFeed: React.FC<TalentJobUpdateProps> = ({
     <div className="border-[#9BDCFD] bg-[#F1FBFF] gap-4 pl-2 px-4  flex border z-10 w-full rounded-2xl relative overflow-hidden">
       <AfroProfile src={talent.avatar} score={talent.score} size="lg" url={`/talents/${talent._id}`} />
       <div className="flex flex-col gap-4 py-4 w-full">
-        <div className="flex justify-between items-center">
-          <h3 className="text-title text-xl font-bold">
-            {!isCreator ? title : `${talent.name} completed a deliverable on ${jobTitle}`}
+        <div className="flex justify-between">
+          <h3 className="text-title text-xl items-center w-[90%]">
+            {!isCreator ? title : `${talent.name} completed a deliverable on `} <span className='font-bold'>{jobTitle}</span>
           </h3>
           {close && <X size={20} className="cursor-pointer" onClick={() => close(id)} />}
         </div>
-        <p className="text-body">{!isCreator ? description : `✅ ${title}`}</p>
+        <p className="text-body">{!isCreator ? description : `✅ ${description}`}</p>
         <div className="justify-between items-center flex mt-auto">
           <div className="flex items-center gap-2 w-full">
             {progress.progress === 100 && (
@@ -480,8 +480,8 @@ export const JobReviewedFeed: React.FC<ReviewJobProps> = ({
     <div className="border-[#9BDCFD] bg-[#F1FBFF] gap-4 pl-2 px-4 flex border z-10 w-full rounded-2xl relative overflow-hidden">
       <AfroProfile src={isCreator ? talent.avatar : creator.avatar} score={isCreator ? talent.score : creator.score} size="lg" url={`/talents/${isCreator ? talent._id : creator._id}`} />
       <div className="flex flex-col gap-4 py-4 w-full">
-        <div className="flex justify-between items-center">
-          <h3 className="text-title text-xl font-bold">{isCreator ? talent.name : creator.name} has reviewed your work on {title}</h3>
+        <div className="flex justify-between">
+          <h3 className="text-title text-xl w-[90%] items-center">{isCreator ? talent.name : creator.name} has reviewed your work on <span className='font-bold'>{title}</span></h3>
           {close && <X size={20} className="cursor-pointer" onClick={() => close(id)} />}
         </div>
 

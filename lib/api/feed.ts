@@ -9,10 +9,11 @@ interface createFeedPayload {
   type: string;
   data: string;
   isPublic: boolean;
+  meta?: Record<string, any>;
 }
 
-async function postFeed({ owners, title, description, type, data, isPublic }: createFeedPayload): Promise<any> {
-  const res = await axios.post(`/feeds`, { owners, title, description, type, data, isPublic });
+async function postFeed({ owners, title, description, type, data, isPublic, meta }: createFeedPayload): Promise<any> {
+  const res = await axios.post(`/feeds`, { owners, title, description, type, data, isPublic, meta });
   return res.data.data;
 }
 
