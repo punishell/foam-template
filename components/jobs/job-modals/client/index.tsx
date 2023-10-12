@@ -12,7 +12,7 @@ import { RequestJobCancellation, JobCancellationRequest, JobCancellationSuccessR
 interface ClientJobModalProps {
   jobId: string;
   talentId: string;
-  closeModal?: () => void;
+  closeModal: () => void;
 }
 
 export const ClientJobModal: React.FC<ClientJobModalProps> = ({ jobId, talentId, closeModal }) => {
@@ -56,7 +56,7 @@ export const ClientJobModal: React.FC<ClientJobModalProps> = ({ jobId, talentId,
   }
 
   if (job.status === 'completed') {
-    return <ReviewTalent job={job} />;
+    return <ReviewTalent job={job} closeModal={closeModal} />;
   }
 
   if (clientRequestedCancellation) {

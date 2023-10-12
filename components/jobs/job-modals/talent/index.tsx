@@ -13,7 +13,7 @@ import { RequestJobCancellation, ReviewJobCancellationRequest, JobCancellationRe
 interface TalentJobModalProps {
   jobId: string;
   talentId: string;
-  closeModal?: () => void;
+  closeModal: () => void;
 }
 
 export const TalentJobModal: React.FC<TalentJobModalProps> = ({ jobId, talentId }) => {
