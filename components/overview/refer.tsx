@@ -45,6 +45,7 @@ export function ReferralSideModal({ isOpen, onOpenChange }: ReferralModalProps) 
   const recentReferrals = useMemo(
     () =>
       (data?.referrals?.data || []).map((u) => ({
+        _id: u?.referral?._id || '',
         name: `${u?.referral?.firstName} ${u?.referral?.lastName}` || '',
         title: u?.referral?.profile?.bio?.title || '',
         score: u?.referral?.score,
@@ -146,7 +147,7 @@ export function ReferralSideModal({ isOpen, onOpenChange }: ReferralModalProps) 
                     className="bg-refer-bg flex flex-row justify-between w-full py-2 px-4 rounded-2xl border border-refer-border"
                   >
                     <div className="flex flex-row gap-2">
-                      <AfroProfile score={r.score} src={r.image} size="sm" />
+                      <AfroProfile score={r.score} src={r.image} size="sm" url={`talents/${r._id}`} />
                       <span className="items-center my-auto">
                         <h3 className="text-lg text-title">{r.name}</h3>
                         <p className="text-title text-sm">{r.title}</p>

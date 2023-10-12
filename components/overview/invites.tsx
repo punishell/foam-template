@@ -17,7 +17,7 @@ export const Invites = () => {
   if (invites.length === 0) return <PageEmpty className="h-[85vh] rounded-2xl border border-line" />;
 
   return (
-    <div className="flex flex-col gap-5 mt-4 border border-line bg-white rounded-2xl p-4 w-full">
+    <div className="flex flex-col gap-5 border border-line bg-white rounded-2xl p-4 w-full">
       {invites.map(({ _id: inviteId, data }) => {
         const { creator, name, _id: jobId, paymentFee } = data;
         return (
@@ -30,11 +30,13 @@ export const Invites = () => {
             inviteId={inviteId}
             amount={paymentFee.toString()}
             inviter={{
+              _id: creator._id,
               score: creator.score,
               avatar: creator.profileImage?.url,
               name: `${creator.firstName} ${creator.lastName}`,
             }}
-            close={() => {}}
+            bookmarkId=''
+            close={() => { }}
           />
         );
       })}

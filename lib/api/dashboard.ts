@@ -58,7 +58,7 @@ async function dismissAllFeed(): Promise<any> {
 export const useGetTimeline = ({ page, limit, filter }: timelineFetchParams) => {
   return useQuery({
     queryFn: async () => await getTimelineFeeds({ page, limit, filter }),
-    queryKey: ['get-timeline', page, filter],
+    queryKey: ['get-timeline'],
     onError: (error: ApiError) => {
       toast.error(error?.response?.data.message || 'An error occurred');
     },

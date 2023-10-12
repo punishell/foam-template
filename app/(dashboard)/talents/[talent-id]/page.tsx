@@ -52,6 +52,7 @@ export default function TalentDetails() {
               body: a.review,
               rating: a.rating,
               user: {
+                _id: a.owner._id,
                 afroScore: a.owner.score,
                 name: `${a.owner.firstName}${a.owner.lastName}`,
                 title: a.owner.profile.bio?.title || "",
@@ -68,7 +69,7 @@ export default function TalentDetails() {
 
 const Bio = ({ body }: { body: string }) => {
   return (
-    <div className="flex flex-col grow-0 w-full bg-[#FFEFD7] p-4 rounded-4 gap-3 border border-yellow-dark rounded-2xl">
+    <div className="flex flex-col grow-0 w-[60%] bg-[#FFEFD7] p-4 rounded-4 gap-3 border border-yellow-dark rounded-2xl">
       <h3 className="text-left text-title text-lg font-medium">Bio</h3>
       <div>{body}</div>
     </div>

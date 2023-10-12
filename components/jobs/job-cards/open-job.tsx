@@ -10,6 +10,7 @@ interface OpenJobProps {
   title: string;
   price: number;
   creator: {
+    _id: string;
     name: string;
     avatar?: string;
     paktScore: number;
@@ -37,7 +38,7 @@ export const OpenJobCard: React.FC<OpenJobProps> = ({
   return (
     <div className="gap-4 bg-white rounded-3xl border-line w-full flex flex-col grow border p-4">
       <Link href={`/jobs/${id}`} className="w-full flex gap-4">
-        <AfroProfile src={creator.avatar} score={creator.paktScore} size="md" />
+        <AfroProfile src={creator.avatar} score={creator.paktScore} size="md" url={`talents/${creator._id}`} />
 
         <div className="flex flex-col gap-2 grow">
           <div className="flex items-center justify-between gap-2">

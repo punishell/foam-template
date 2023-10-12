@@ -15,14 +15,14 @@ import { WithdrawalModal } from '@/components/wallet/withdrawalModal';
 import { PaginationState } from '@tanstack/react-table';
 
 const dateFormat = "DD/MM/YYYY";
-const MAX = 10;
+const MAX = 20;
 
 export default function Wallet() {
   const [isOpen, setIsOpen] = React.useState(false);
   const [limit, _setLimit] = React.useState(10);
   const [{ pageIndex, pageSize }, setPagination] = React.useState<PaginationState>({
     pageIndex: 1,
-    pageSize: 10,
+    pageSize: 6,
   });
   const [statData, setStatData] = React.useState<chartDataProps>({ weekly: [], monthly: [], yearly: [] });
   const { totalWalletBalance, wallets } = useWalletState();
@@ -47,21 +47,21 @@ export default function Wallet() {
 
     const weeklyStats = response[0].map((c: any) => {
       return {
-        date: String(dayjs(c.date).format(dateFormat)),
+        date: String(dayjs(c.date).format("ddd")),
         amt: c.amount,
       };
     });
 
     const monthlyStats = response[1].map((c: any) => {
       return {
-        date: String(dayjs(c.date).format(dateFormat)),
+        date: String(dayjs(c.date).format("MMM")),
         amt: c.amount,
       };
     });
 
     const yearlyStats = response[2].map((c: any) => {
       return {
-        date: String(dayjs(c.date).format(dateFormat)),
+        date: String(dayjs(c.date).format("YYYY")),
         amt: c.amount,
       };
     });
@@ -103,7 +103,7 @@ export default function Wallet() {
         </div>
       </div>
 
-      <div className="gap-6 flex flex-col">
+      <div className="gap-6 flex flex-col h-full">
         <div className="grid grid-cols-2 gap-6">
           <div className=" gap-6 items-center grid grid-rows-2">
             <div className="bg-[#ECFCE5] text-primary items-center w-full border border-primary rounded-lg px-6 py-8 flex gap-2 justify-between">
@@ -134,7 +134,7 @@ export default function Wallet() {
           </div>
           <WalletBalanceChart data={statData} />
         </div>
-        <div className='grow'>
+        <div className='grow h-full'>
           <WalletTransactions
             data={walletTransactions}
             page={parseInt(walletTx?.data.data.page || "1")}

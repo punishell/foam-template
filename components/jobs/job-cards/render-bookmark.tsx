@@ -12,8 +12,8 @@ interface bookmarkType {
 }
 export const RenderBookMark = ({ size = 20, isBookmarked, id, bookmarkId, type = 'collection', callback }: bookmarkType) => {
   const [bookmarked, setBookmarked] = useState(isBookmarked);
-  const addBookmark = useSaveToBookmark();
-  const removeBookmark = useRemoveFromBookmark();
+  const addBookmark = useSaveToBookmark(callback);
+  const removeBookmark = useRemoveFromBookmark(callback);
   const CallFuc = () => {
     if (bookmarked) {
       setBookmarked(false);

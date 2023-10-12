@@ -12,7 +12,7 @@ export const UserProfile = () => {
 
   return (
     <div className="flex flex-col items-center gap-2">
-      <AfroProfile score={account?.score ?? 0} size="2xl" src={account?.profileImage?.url} />
+      <AfroProfile score={account?.score ?? 0} size="2xl" src={account?.profileImage?.url} url={`/profile`} />
 
       <div className="flex flex-col gap-0 text-center">
         <span className="text-lg">

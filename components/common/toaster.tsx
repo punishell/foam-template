@@ -3,7 +3,7 @@ import Image from 'next/image';
 import toastPrimitive from 'react-hot-toast';
 import { CheckCircle2, XCircle } from 'lucide-react';
 import { UserAvatar } from './user-avatar';
-import { AfroScore } from './afro-profile';
+import { AfroProfile, AfroScore } from './afro-profile';
 import { DefaultAvatar } from './default-avatar';
 
 export const toast = {
@@ -11,9 +11,8 @@ export const toast = {
     toastPrimitive.custom((t) => {
       return (
         <div
-          className={`${
-            t.visible ? 'animate-enter' : 'animate-leave'
-          } max-w-md w-full bg-red-100 rounded-lg pointer-events-auto flex ring-1 ring-red-800 ring-opacity-50`}
+          className={`${t.visible ? 'animate-enter' : 'animate-leave'
+            } max-w-md w-full bg-red-100 rounded-lg pointer-events-auto flex ring-1 ring-red-800 ring-opacity-50`}
         >
           <div className="flex-1 w-0 p-4">
             <div className="flex items-center">
@@ -31,9 +30,8 @@ export const toast = {
   success: (message: string) =>
     toastPrimitive.custom((t) => (
       <div
-        className={`${
-          t.visible ? 'animate-enter' : 'animate-leave'
-        } max-w-md w-full bg-green-100 rounded-lg pointer-events-auto flex ring-1 ring-green-800 ring-opacity-50`}
+        className={`${t.visible ? 'animate-enter' : 'animate-leave'
+          } max-w-md w-full bg-green-100 rounded-lg pointer-events-auto flex ring-1 ring-green-800 ring-opacity-50`}
       >
         <div className="flex-1 w-0 p-4">
           <div className="flex items-center">
@@ -47,26 +45,12 @@ export const toast = {
         </div>
       </div>
     )),
-  message: (title: string, message: string, image?: string) =>
+  message: (title: string, message: string, userId: string, image?: string, score?: number) =>
     toastPrimitive.custom((t) => (
-      <div
-        className={`${
-          t.visible ? 'animate-enter' : 'animate-leave'
-        } max-w-md w-full bg-green-100 rounded-lg pointer-events-auto flex ring-1 ring-green-800 ring-opacity-50`}
-      >
-        <div className="flex-1 w-0 p-4">
-          <div className="flex items-center">
-            <div className="flex-shrink-0">
-              <AfroScore size="sm" score={0}>
-                {image ? (
-                  <div className="relative w-[50%] h-[50%] translate-y-1/2 mx-auto">
-                    <Image src={image || ''} alt="logo" layout="fill" />
-                  </div>
-                ) : (
-                  <DefaultAvatar />
-                )}
-              </AfroScore>
-            </div>
+      <div className={`${t.visible ? 'animate-enter' : 'animate-leave'} max-w-md w-full bg-green-100 rounded-lg pointer-events-auto flex ring-1 ring-green-800 ring-opacity-50`}>
+        <div className="flex-1 p-1">
+          <div className="flex flex-row items-center">
+            <AfroProfile src={image} size='sm' score={score ?? 0} url={`/talents/${userId}`} />
             <div className="flex flex-col ml-3">
               <h2 className="text-sm font-bold leading-5 text-green-700">{title}</h2>
               <p className="text-sm leading-5 text-green-700">{message}</p>

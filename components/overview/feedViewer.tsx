@@ -36,6 +36,7 @@ interface JobInvitePendingProps {
   inviteId: string;
   amount: string;
   inviter: {
+    _id: string;
     name: string;
     avatar?: string;
     score: number;
@@ -43,6 +44,7 @@ interface JobInvitePendingProps {
   imageUrl?: string;
   invitationExpiry?: string;
   bookmarked?: boolean;
+  bookmarkId: string;
   type: 'job-invite-pending';
   close?: (id: string) => void;
 }
@@ -51,29 +53,34 @@ interface JobFilledProps {
   id: string;
   title: string;
   inviter: {
+    _id: string;
     name: string;
     avatar: string;
     score: number;
   };
   bookmarked: boolean;
+  bookmarkId: string;
   type: 'job-invite-filled';
   imageUrl?: string;
-  close: (id: string) => void;
+  close?: (id: string) => void;
 }
 
 interface JobResponseProps {
   id: string;
   title: string;
-  inviter: {
+  jobId: string;
+  talent: {
+    _id: string;
     name: string;
     avatar: string;
     score: number;
   };
+  bookmarkId: string;
   bookmarked: boolean;
   accepted: boolean;
   type: 'job-invite-response';
   imageUrl?: string;
-  close: (id: string) => void;
+  close?: (id: string) => void;
 }
 
 type JobFeedCardProps = JobInvitePendingProps | JobFilledProps | JobResponseProps;
@@ -87,7 +94,7 @@ export const JobFeedCard: React.FC<JobFeedCardProps> = (props) => {
 
     return (
       <JobFeedWrapper>
-        <AfroProfile src={inviter.avatar} score={inviter.score} size="lg" />
+        <AfroProfile src={inviter.avatar} score={inviter.score} size="lg" url={`/talents/${inviter._id}`} />
         <div className="flex flex-col gap-4 py-4 w-full">
           <div className="flex justify-between items-center">
             <h3 className="text-title text-xl font-bold">Job Filled</h3>
@@ -114,11 +121,10 @@ export const JobFeedCard: React.FC<JobFeedCardProps> = (props) => {
   }
 
   if (type === 'job-invite-pending') {
-    const { id, title, amount, inviter, bookmarked, invitationExpiry, inviteId, jobId, close } = props;
-
+    const { id, title, amount, inviter, bookmarked, invitationExpiry, inviteId, jobId, bookmarkId, close } = props;
     return (
       <JobFeedWrapper>
-        <AfroProfile src={inviter.avatar} score={inviter.score} size="lg" />
+        <AfroProfile src={inviter.avatar} score={inviter.score} size="lg" url={`/talents/${inviter._id}`} />
         <div className="flex flex-col gap-4 w-full py-4">
           <div className="flex justify-between items-center">
             <span className="text-body text-xl font-bold">
@@ -146,7 +152,7 @@ export const JobFeedCard: React.FC<JobFeedCardProps> = (props) => {
               </Button>
             </Link>
 
-            <RenderBookMark size={20} isBookmarked={bookmarked} id={inviteId} type="feed" bookmarkId={inviteId} />
+            <RenderBookMark size={20} isBookmarked={bookmarked} id={id} type="feed" bookmarkId={String(bookmarkId)} />
           </div>
         </div>
       </JobFeedWrapper>
@@ -154,11 +160,10 @@ export const JobFeedCard: React.FC<JobFeedCardProps> = (props) => {
   }
 
   if (type === 'job-invite-response') {
-    const { id, title, bookmarked, inviter, close, accepted } = props;
-
+    const { id, title, bookmarked, talent, jobId, close, accepted } = props;
     return (
       <JobFeedWrapper>
-        <AfroProfile src={inviter.avatar} score={inviter.score} size="lg" />
+        <AfroProfile src={talent.avatar} score={talent.score} size="lg" url={`/talents/${talent._id}`} />
 
         <div className="flex flex-col gap-4 py-4 w-full">
           <div className="flex justify-between items-center">
@@ -168,12 +173,11 @@ export const JobFeedCard: React.FC<JobFeedCardProps> = (props) => {
           </div>
 
           <p className="text-body">
-            The <span className="text-title text-bold">&quot;{title}&quot;</span> Job has been filled. You can check job
-            progress here
+            {talent.name} has {accepted ? 'Accepted' : 'Declined'} <span className="text-title text-bold">&quot;{title}&quot;</span> Job. You can check job here
           </p>
 
           <div className="justify-between items-center flex mt-auto">
-            <Link href={`/jobs`}>
+            <Link href={`/jobs/${jobId}`}>
               <Button size="xs" variant="secondary">
                 See Update
               </Button>
@@ -190,20 +194,21 @@ type JobApplicationCardProps = {
   id: string;
   title: string;
   applicant: {
+    _id: string;
     name: string;
     avatar: string;
     score: number;
   };
   bookmarked: boolean;
   jobId: string;
-  close: (id: string) => void;
+  close?: (id: string) => void;
 };
 export const JobApplicationCard: React.FC<JobApplicationCardProps> = (props) => {
   const { id, title, jobId, bookmarked, applicant, close } = props;
 
   return (
     <JobFeedWrapper>
-      <AfroProfile src={applicant.avatar} score={applicant.score} size="lg" />
+      <AfroProfile src={applicant.avatar} score={applicant.score} size="lg" url={`/talents/${applicant._id}`} />
       <div className="flex flex-col gap-4 py-4 w-full">
         <div className="flex justify-between items-center">
           <h3 className="text-title text-xl font-bold">New Job Application</h3>
@@ -238,18 +243,18 @@ export const PublicJobCreatedFeed = ({
   callback,
   close,
 }: {
-  creator: { name: string; avatar: string; score: number };
+  creator: { _id: string, name: string; avatar: string; score: number };
   title: string;
   amount: string;
   jobId: string;
   _id: string;
   bookmark: { active: boolean; id: string };
   callback?: () => void;
-  close: (id: string) => void;
+  close?: (id: string) => void;
 }) => {
   return (
     <div className="border-[#CDCFD0] bg-[#F9F9F9] gap-4 pl-2 px-4 flex border z-10 w-full rounded-2xl relative overflow-hidden">
-      <AfroProfile score={creator.score} src={creator.avatar} size="lg" />
+      <AfroProfile score={creator.score} src={creator.avatar} size="lg" url={`/talents/${creator._id}`} />
       <div className="flex flex-col gap-4 w-full py-4">
         <div className="flex justify-between items-center">
           <h3 className="text-body text-xl font-bold">
@@ -257,7 +262,7 @@ export const PublicJobCreatedFeed = ({
             <span className="px-2 text-lg text-title inline-flex rounded-full bg-green-300">${amount ?? 0}</span> public
             job
           </h3>
-          <X size={20} className="cursor-pointer" onClick={() => close(_id)} />
+          {close && <X size={20} className="cursor-pointer" onClick={() => close(_id)} />}
         </div>
         <h3 className="text-title text-2xl font-normal">{title}</h3>
         <div className="justify-between items-center flex mt-auto">
@@ -305,7 +310,7 @@ interface TalentJobUpdateProps {
     progress: number;
   };
   jobTitle?: string;
-  close: (id: string) => void;
+  close?: (id: string) => void;
 }
 export const JobUpdateFeed: React.FC<TalentJobUpdateProps> = ({
   id,
@@ -324,7 +329,7 @@ export const JobUpdateFeed: React.FC<TalentJobUpdateProps> = ({
 
   return (
     <div className="border-[#9BDCFD] bg-[#F1FBFF] gap-4 pl-2 px-4  flex border z-10 w-full rounded-2xl relative overflow-hidden">
-      <AfroProfile src={talent.avatar} score={talent.score} size="lg" />
+      <AfroProfile src={talent.avatar} score={talent.score} size="lg" url={`/talents/${talent._id}`} />
       <div className="flex flex-col gap-4 py-4 w-full">
         <div className="flex justify-between items-center">
           <h3 className="text-title text-xl font-bold">
@@ -399,7 +404,7 @@ interface JobCompletedProps {
     score: number;
   };
   isCreator: boolean;
-  close: (id: string) => void;
+  close?: (id: string) => void;
 }
 export const JobCompletionFeed: React.FC<JobCompletedProps> = ({
   id,
@@ -413,7 +418,7 @@ export const JobCompletionFeed: React.FC<JobCompletedProps> = ({
 }) => {
   return (
     <div className="border-[#9BDCFD] bg-[#F1FBFF] gap-4 pl-2 px-4  flex border z-10 w-full rounded-2xl relative overflow-hidden">
-      <AfroProfile src={isCreator ? talent.avatar : creator.avatar} score={isCreator ? talent.score : creator.score} size="lg" />
+      <AfroProfile src={isCreator ? talent.avatar : creator.avatar} score={isCreator ? talent.score : creator.score} size="lg" url={`/talents/${isCreator ? talent._id : creator._id}`} />
       <div className="flex flex-col gap-4 w-full py-4">
         <div className="flex justify-between items-center">
           <h3 className="text-body text-xl font-bold">{talent.name} completed all deliverables</h3>
@@ -458,7 +463,7 @@ interface ReviewJobProps {
     score: number;
   };
   isCreator: boolean;
-  close: (id: string) => void;
+  close?: (id: string) => void;
 }
 export const JobReviewedFeed: React.FC<ReviewJobProps> = ({
   id,
@@ -473,7 +478,7 @@ export const JobReviewedFeed: React.FC<ReviewJobProps> = ({
 }) => {
   return (
     <div className="border-[#9BDCFD] bg-[#F1FBFF] gap-4 pl-2 px-4 flex border z-10 w-full rounded-2xl relative overflow-hidden">
-      <AfroProfile src={isCreator ? talent.avatar : creator.avatar} score={isCreator ? talent.score : creator.score} size="lg" />
+      <AfroProfile src={isCreator ? talent.avatar : creator.avatar} score={isCreator ? talent.score : creator.score} size="lg" url={`/talents/${isCreator ? talent._id : creator._id}`} />
       <div className="flex flex-col gap-4 py-4 w-full">
         <div className="flex justify-between items-center">
           <h3 className="text-title text-xl font-bold">{isCreator ? talent.name : creator.name} has reviewed your work on {title}</h3>
@@ -520,7 +525,7 @@ interface PaymentReleasedProps {
     score: number;
   };
   isCreator: boolean;
-  close: (id: string) => void;
+  close?: (id: string) => void;
 }
 export const PaymentReleased: React.FC<PaymentReleasedProps> = ({
   id,
@@ -536,7 +541,7 @@ export const PaymentReleased: React.FC<PaymentReleasedProps> = ({
 }) => {
   return (
     <div className="border-[#7DDE86] bg-[#FBFFFA] gap-4 p-4 flex border  z-10 w-full rounded-2xl relative overflow-hidden">
-      <AfroProfile src={isCreator ? talent.avatar : creator.avatar} score={isCreator ? talent.score : creator.score} size="lg" />
+      <AfroProfile src={isCreator ? talent.avatar : creator.avatar} score={isCreator ? talent.score : creator.score} size="lg" url={`/talents/${isCreator ? talent._id : creator._id}`} />
       <div className="flex flex-col gap-4 w-full">
         <div className="flex justify-between items-center w-full">
           <h3 className="text-body text-xl font-bold">{isCreator ? "Job Completed" : "Payment Released"}</h3>
@@ -584,7 +589,7 @@ interface JobCancelledProps {
     score: number;
   };
   isCreator: boolean;
-  close: (id: string) => void;
+  close?: (id: string) => void;
 }
 export const JobCancelled: React.FC<JobCancelledProps> = ({
   id,
@@ -598,7 +603,7 @@ export const JobCancelled: React.FC<JobCancelledProps> = ({
 }) => {
   return (
     <div className="border-[#FF9898] gap-4 pl-2 px-4 flex border bg-[#FFF4F4] z-10 w-full rounded-2xl relative overflow-hidden">
-      <AfroProfile src={isCreator ? talent.avatar : creator.avatar} score={isCreator ? talent.score : creator.score} size="lg" />
+      <AfroProfile src={isCreator ? talent.avatar : creator.avatar} score={isCreator ? talent.score : creator.score} size="lg" url={`/talents/${isCreator ? talent._id : creator._id}`} />
       <div className="flex flex-col gap-4 w-full py-4">
         <div className="flex justify-between items-center">
           <h3 className="text-title text-xl font-bold">{creator.name} Cancelled the Job</h3>
@@ -634,7 +639,7 @@ interface ReferralSignupFeedProps {
   score?: number;
   bookmarkId: string;
   bookmarked: boolean;
-  close: (id: string) => void;
+  close?: (id: string) => void;
 }
 export const ReferralSignupFeed: React.FC<ReferralSignupFeedProps> = ({
   id,
@@ -650,11 +655,11 @@ export const ReferralSignupFeed: React.FC<ReferralSignupFeedProps> = ({
 }) => {
   return (
     <div className="border-[#CDCFD0] bg-[#F9F9F9] gap-4 p-4 flex border z-10 w-full rounded-2xl relative overflow-hidden h-[174px]">
-      <AfroProfile src={avatar} score={Number(score)} size="lg" />
+      <AfroProfile src={avatar} score={Number(score)} size="lg" url={`/talents/${userId}`} />
       <div className="flex flex-col gap-4 w-full">
         <div className="flex justify-between items-center">
           <h3 className="text-title text-xl font-bold">{title ? title : `${name} just signed up`}</h3>
-          <X size={20} className="cursor-pointer" onClick={() => close(id)} />
+          {close && <X size={20} className="cursor-pointer" onClick={() => close(id)} />}
         </div>
 
         <p className="text-body">
@@ -696,7 +701,7 @@ interface ReferralJobCompletionProps {
   bookmarkId: string;
   rating: number;
   jobId: string;
-  close: (id: string) => void;
+  close?: (id: string) => void;
 }
 export const ReferralJobCompletion: React.FC<ReferralJobCompletionProps> = ({
   id,
@@ -709,7 +714,7 @@ export const ReferralJobCompletion: React.FC<ReferralJobCompletionProps> = ({
 }) => {
   return (
     <div className="border-[#CDCFD0] bg-[#F9F9F9] gap-4 p-4 flex border  z-10 w-full rounded-2xl relative overflow-hidden">
-      <AfroProfile src={talent.avatar} score={talent.score} size="lg" />
+      <AfroProfile src={talent.avatar} score={talent.score} size="lg" url={`/talents/${talent._id}`} />
       <div className="flex flex-col gap-4 w-full">
         <div className="flex justify-between items-center">
           <h3 className="text-title text-xl font-bold">{talent.name} a {
@@ -763,7 +768,7 @@ interface ReviewChangeProps {
   bookmarkId: string;
   jobId: string;
   isCreator: boolean;
-  close: (id: string) => void;
+  close?: (id: string) => void;
 }
 export const ReviewChangeCard: React.FC<ReviewChangeProps> = ({
   id,
@@ -778,11 +783,11 @@ export const ReviewChangeCard: React.FC<ReviewChangeProps> = ({
 }) => {
   return (
     <div className="border-[#FF5247] bg-[#FFF4F4] gap-4 p-4 flex border z-10 w-full rounded-2xl relative overflow-hidden h-[174px]">
-      <AfroProfile src={isCreator ? talent.avatar : creator.avatar} score={isCreator ? talent.score : creator.score} size="lg" />
+      <AfroProfile src={isCreator ? talent.avatar : creator.avatar} score={isCreator ? talent.score : creator.score} size="lg" url={`/talents/${isCreator ? talent._id : creator._id}`} />
       <div className="flex flex-col gap-4 w-full">
         <div className="flex justify-between items-center">
           <h3 className="text-title text-xl font-bold">{title}</h3>
-          <X size={20} className="cursor-pointer" onClick={() => close(id)} />
+          {close && <X size={20} className="cursor-pointer" onClick={() => close(id)} />}
         </div>
 
         <p className="text-body">{description}</p>

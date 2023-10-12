@@ -2,6 +2,7 @@ import React from 'react';
 import { arc } from 'd3-shape';
 import Image from 'next/image';
 import { DefaultAvatar } from '@/components/common/default-avatar';
+import Link from 'next/link';
 
 type Size = 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '3xl';
 
@@ -184,9 +185,8 @@ export const AfroScore: React.FC<AfroScoreProps> = ({ size, score: initialScore 
             textAnchor="middle"
             fill="white"
             fontWeight={700}
-            transform={`rotate(180, ${knobPosition.x + (sizeInPx + knobRadius) / 2}, ${
-              knobPosition.y + (sizeInPx + knobRadius) / 2
-            })`}
+            transform={`rotate(180, ${knobPosition.x + (sizeInPx + knobRadius) / 2}, ${knobPosition.y + (sizeInPx + knobRadius) / 2
+              })`}
             fontSize={Math.round(sizeInPx / 10)}
           >
             {`${Math.round(score)}`}
@@ -199,18 +199,21 @@ export const AfroScore: React.FC<AfroScoreProps> = ({ size, score: initialScore 
 
 type AfroProfileProps = Omit<AfroScoreProps, 'children'> & {
   src?: string;
+  url?: string;
 };
 
-export const AfroProfile: React.FC<AfroProfileProps> = ({ size, score, src }) => {
+export const AfroProfile: React.FC<AfroProfileProps> = ({ size, score, src, url }) => {
   return (
-    <AfroScore score={score} size={size}>
-      {src ? (
-        <Image src={src} alt="profile" fill className="scale-95 rounded-full" style={{ objectFit: 'cover' }} />
-      ) : (
-        <div className="h-full w-full rounded-full scale-95">
-          <DefaultAvatar />
-        </div>
-      )}
-    </AfroScore>
+    <Link href={url || ""}>
+      <AfroScore score={score} size={size}>
+        {src ? (
+          <Image src={src} alt="profile" fill className="scale-95 rounded-full" style={{ objectFit: 'cover' }} />
+        ) : (
+          <div className="h-full w-full rounded-full scale-95">
+            <DefaultAvatar />
+          </div>
+        )}
+      </AfroScore>
+    </Link>
   );
 };

@@ -11,11 +11,11 @@ import {
   JobCompletionFeed,
   JobReviewedFeed,
   JobCancelled,
-  IssueResolutionRaiseFeed,
-  IssueResolutionResolveFeed,
-  IssueResolutionRejectFeed,
-  SecondIssueResolutionRejectFeed,
-  JuryInvitationFeed,
+  // IssueResolutionRaiseFeed,
+  // IssueResolutionResolveFeed,
+  // IssueResolutionRejectFeed,
+  // SecondIssueResolutionRejectFeed,
+  // JuryInvitationFeed,
   JobApplicationCard,
   JobUpdateFeed,
   ReviewChangeCard,
@@ -23,11 +23,16 @@ import {
 import { DataFeedResponse } from '@/lib/types';
 
 export const ParseFeedView = (feed: DataFeedResponse, loggedInUser: string, key: number, callback?: () => void, dismissFeed?: (id: string) => void) => {
-
   const amount = String(feed?.data?.paymentFee);
   const isBookmarked = feed.isBookmarked || false;
   const bookmarkId = feed.bookmarkId || feed._id;
-  const DismissByID = (id: string) => dismissFeed && dismissFeed(id);
+
+  const feedCreator = {
+    _id: feed?.creator?._id || '',
+    avatar: feed?.creator?.profileImage?.url || '',
+    name: `${feed?.creator?.firstName || ''} ${feed?.creator?.lastName || ''}`,
+    score: feed?.creator?.score || 0,
+  };
 
   const inviter = {
     _id: feed?.data?.creator?._id || '',
@@ -49,6 +54,7 @@ export const ParseFeedView = (feed: DataFeedResponse, loggedInUser: string, key:
     total: deliverableTotal,
     progress: currentProgress,
   }
+
   switch (feed.type) {
     case FEED_TYPES.COLLECTION_CREATED:
     case FEED_TYPES.PUBLIC_JOB_CREATED:
@@ -61,7 +67,7 @@ export const ParseFeedView = (feed: DataFeedResponse, loggedInUser: string, key:
         _id={feed?._id}
         bookmark={{ active: isBookmarked, id: bookmarkId }}
         callback={callback}
-        close={(id: string) => DismissByID(id)}
+        close={dismissFeed}
       />;
     case FEED_TYPES.COLLECTION_INVITE:
     case FEED_TYPES.JOB_INVITATION_RECEIVED:
@@ -76,7 +82,24 @@ export const ParseFeedView = (feed: DataFeedResponse, loggedInUser: string, key:
           inviter={inviter}
           jobId={feed?.data?._id}
           bookmarked={isBookmarked}
-          close={DismissByID}
+          bookmarkId={bookmarkId}
+          close={dismissFeed}
+        />
+      );
+    case FEED_TYPES.JOB_INVITATION_ACCEPTED:
+    case FEED_TYPES.JOB_INVITATION_DECLINED:
+      return (
+        <JobFeedCard
+          key={key}
+          id={feed._id}
+          title={feed?.data?.name}
+          type="job-invite-response"
+          accepted={feed?.type === FEED_TYPES.JOB_INVITATION_ACCEPTED}
+          bookmarked={isBookmarked}
+          jobId={feed?.data?._id}
+          bookmarkId={bookmarkId}
+          talent={feedCreator}
+          close={dismissFeed}
         />
       );
     case FEED_TYPES.JOB_APPLICATION_SUBMITTED:
@@ -85,24 +108,14 @@ export const ParseFeedView = (feed: DataFeedResponse, loggedInUser: string, key:
         id={feed?._id}
         title={feed?.data?.parent?.name || ""}
         applicant={{
+          _id: feed?.data?.creator?._id || "",
           name: `${feed?.data?.creator.firstName} ${feed?.data?.creator?.lastName}`,
           avatar: feed?.data?.creator?.profileImage?.url || "",
           score: feed?.data?.creator?.score,
         }}
         bookmarked={isBookmarked}
         jobId={feed?.data?.parent?._id || ""}
-        close={DismissByID}
-      />;
-    case FEED_TYPES.JOB_INVITATION_ACCEPTED || FEED_TYPES.JOB_INVITATION_DECLINED:
-      return <JobFeedCard
-        key={key}
-        title={feed?.data?.name}
-        type="job-invite-response"
-        accepted={!!FEED_TYPES.JOB_INVITATION_ACCEPTED}
-        inviter={inviter}
-        id={feed?._id}
-        bookmarked={isBookmarked}
-        close={DismissByID}
+        close={dismissFeed}
       />;
     case FEED_TYPES.JOB_DELIVERABLE_UPDATE || FEED_TYPES.COLLECTION_UPDATE:
       return <JobUpdateFeed
@@ -114,7 +127,7 @@ export const ParseFeedView = (feed: DataFeedResponse, loggedInUser: string, key:
         description={feed?.data?.description}
         bookmarked={isBookmarked}
         bookmarkId={bookmarkId}
-        close={DismissByID}
+        close={dismissFeed}
         jobId={feed?.data?._id}
         progress={deliverableCountPercentage}
         isCreator={feed?.data?.creator?._id === loggedInUser}
@@ -131,7 +144,7 @@ export const ParseFeedView = (feed: DataFeedResponse, loggedInUser: string, key:
         avatar={feed?.creator?.profileImage?.url}
         userId={feed?.creator?._id}
         score={feed?.creator?.score}
-        close={DismissByID}
+        close={dismissFeed}
         bookmarked={isBookmarked}
         bookmarkId={bookmarkId}
       />;
@@ -145,7 +158,7 @@ export const ParseFeedView = (feed: DataFeedResponse, loggedInUser: string, key:
         isCreator={feed?.data?.creator?._id === loggedInUser}
         title={feed?.data?.name}
         description={feed?.description}
-        close={DismissByID}
+        close={dismissFeed}
         bookmarked={isBookmarked}
         bookmarkId={bookmarkId}
       />;
@@ -155,7 +168,7 @@ export const ParseFeedView = (feed: DataFeedResponse, loggedInUser: string, key:
         id={feed?._id}
         talent={talent}
         jobId={feed?.data?._id}
-        close={DismissByID}
+        close={dismissFeed}
         bookmarked={isBookmarked}
         bookmarkId={bookmarkId}
         title={feed?.data?.name}
@@ -171,7 +184,7 @@ export const ParseFeedView = (feed: DataFeedResponse, loggedInUser: string, key:
         isCreator={feed?.data?.creator?._id === loggedInUser}
         amount={String(feed?.data?.paymentFee)}
         description={feed?.description}
-        close={DismissByID}
+        close={dismissFeed}
         bookmarked={isBookmarked}
         bookmarkId={bookmarkId}
         title={feed?.title}
@@ -185,7 +198,7 @@ export const ParseFeedView = (feed: DataFeedResponse, loggedInUser: string, key:
         creator={inviter}
         jobId={feed?.data?._id}
         isCreator={feed?.data?.creator?._id === loggedInUser}
-        close={DismissByID}
+        close={dismissFeed}
         bookmarked={isBookmarked}
         bookmarkId={bookmarkId}
         title={feed?.title}
@@ -199,7 +212,7 @@ export const ParseFeedView = (feed: DataFeedResponse, loggedInUser: string, key:
         creator={inviter}
         jobId={feed?.data?._id}
         isCreator={feed?.data?.creator?._id === loggedInUser}
-        close={DismissByID}
+        close={dismissFeed}
         bookmarked={isBookmarked}
         bookmarkId={bookmarkId}
         title={feed?.title}
@@ -213,7 +226,7 @@ export const ParseFeedView = (feed: DataFeedResponse, loggedInUser: string, key:
         creator={inviter}
         jobId={feed?.data?._id}
         isCreator={feed?.data?.creator?._id === loggedInUser}
-        close={DismissByID}
+        close={dismissFeed}
         bookmarked={isBookmarked}
         bookmarkId={bookmarkId}
         title={`${talent.name} requested to cancel a job`}
@@ -227,7 +240,7 @@ export const ParseFeedView = (feed: DataFeedResponse, loggedInUser: string, key:
         creator={inviter}
         jobId={feed?.data?._id}
         isCreator={feed?.data?.creator?._id === loggedInUser}
-        close={DismissByID}
+        close={dismissFeed}
         bookmarked={isBookmarked}
         bookmarkId={bookmarkId}
         title={`${talent.name} submitted a redo request`}
@@ -248,7 +261,7 @@ export const ParseFeedView = (feed: DataFeedResponse, loggedInUser: string, key:
       return (
         <JobFeedCard
           key={key}
-          title="Mobile UX Design for Afrofund"
+          title="Not known yet"
           type="job-invite-filled"
           inviter={inviter}
           id={feed?._id}
@@ -256,7 +269,8 @@ export const ParseFeedView = (feed: DataFeedResponse, loggedInUser: string, key:
           // inviteId={feed?.data?.invite}
           // jobId={feed?.data?._id}
           bookmarked={isBookmarked}
-          close={DismissByID}
+          bookmarkId={bookmarkId}
+          close={dismissFeed}
         />
       );
   }

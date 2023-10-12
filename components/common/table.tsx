@@ -50,7 +50,7 @@ export const Table = <T extends object>({
 
   if (loading) {
     return (
-      <div className='flex min-h-[450px] items-center justify-center'>
+      <div className='flex min-h-[450px] items-center justify-center h-full'>
         <Spinner />
       </div>
     )
@@ -72,8 +72,8 @@ export const Table = <T extends object>({
   }
 
   return (
-    <div className="flex flex-col gap-8">
-      <div className="mt-4 flow-root">
+    <div className="flex flex-col gap-8 h-full">
+      <div className="mt-4 flow-root h-full">
         <div className="-mx-4 -my-4 overflow-x-auto sm:-mx-6 lg:-mx-8">
           <div className="inline-block min-w-full align-middle sm:px-6 lg:px-8">
             <div className="border-line h-full max-h-[450px] min-w-full overflow-y-auto overflow-x-hidden border sm:rounded-lg">

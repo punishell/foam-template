@@ -12,6 +12,7 @@ interface ReviewProps {
   title: string;
   rating: number;
   user: {
+    _id: string;
     name: string;
     title: string;
     afroScore: number;
@@ -21,14 +22,14 @@ interface ReviewProps {
 
 const Review: React.FC<ReviewProps> = ({ body, title, rating, user }) => {
   return (
-    <div className="bg-white min-h-full rounded-2xl p-4 flex flex-col gap-4 w-full select-none cursor-grab">
+    <div className="bg-white min-h-full rounded-2xl p-4 flex flex-col gap-4 w-full min-w-1/2 select-none cursor-grab">
       <h3 className="text-xl font-medium text-title">{title}</h3>
       <p className="text-body min-h-[72px]">{body}</p>
 
       <div className="flex items-center justify-between">
         <div className="grid grid-cols-3 gap-2">
           <div className="flex relative">
-            <AfroProfile size="sm" score={user.afroScore} src={user?.avatar} />
+            <AfroProfile size="sm" score={user.afroScore} src={user?.avatar} url={`talents/${user?._id}`} />
           </div>
           <div className="flex flex-col col-span-2 my-auto">
             <span className="text-sm text-title font-medium">{user.name}</span>
@@ -50,7 +51,8 @@ const Review: React.FC<ReviewProps> = ({ body, title, rating, user }) => {
 export const Reviews = ({ reviews, loading }: { reviews: ReviewProps[]; loading: boolean }) => {
   const sliderInstance = useBlazeSlider();
   const currentSlide = sliderInstance?.currentSlide || 0;
-  const totalSlides = Number(sliderInstance.slider?.totalSlides || 0) / 2;
+  const totalSlides = Number(sliderInstance.slider?.totalSlides || 0);
+  console.log(totalSlides, currentSlide, sliderInstance)
 
   return (
     <div className="bg-primary-gradient p-4 rounded-4 gap-1 w-full rounded-2xl basis-0">

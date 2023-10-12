@@ -180,9 +180,7 @@ const ChatBoxHeader = ({
     <div className="flex gap-2 justify-between items-center border-b pb-3 border-line mb-3">
       <div className="flex gap-2 items-center">
         {/* <div className="h-[50px] flex w-[50px] bg-black rounded-full"></div> */}
-        <Link href={`/talents/${_id}`}>
-          <AfroProfile score={score} src={avatar} size="sm" />
-        </Link>
+        <AfroProfile score={score} src={avatar} size="sm" url={`/talents/${_id}`} />
         <div className="flex flex-col gap-1">
           <div className="text-title text-lg leading-none font-medium">{title}</div>
           <div className="text-body text-sm leading-none">{description}</div>

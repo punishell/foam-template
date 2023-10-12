@@ -1,6 +1,6 @@
 import { ApiError, axios } from '@/lib/axios';
 import { toast } from '@/components/common/toaster';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Bookmark } from '../types';
 
 interface GetBookMarkResponse {
@@ -39,7 +39,7 @@ async function removeFromBookmark({ id }: { id: string }): Promise<any> {
 export const useGetBookmarks = ({ page, limit, filter }: timelineFetchParams) => {
   return useQuery({
     queryFn: async () => await getBookmarks({ page, limit, filter }),
-    queryKey: [`get-bookmark_req_${page}+${limit}`, filter],
+    queryKey: [`get-bookmark_req_${page}+${limit}`],
     onError: (error: ApiError) => {
       toast.error(error?.response?.data.message || 'An error occurred');
     },
@@ -49,11 +49,15 @@ export const useGetBookmarks = ({ page, limit, filter }: timelineFetchParams) =>
   });
 };
 
-export function useSaveToBookmark() {
+export function useSaveToBookmark(callBack?: () => void) {
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: addToBookmark,
     mutationKey: ['save-bookmark'],
-    onSuccess: () => {
+    onSuccess: async () => {
+      queryClient.refetchQueries([`get-bookmark_req`]);
+      queryClient.refetchQueries(['get-timeline']);
+      callBack && (await callBack());
       toast.success('Saved to bookmark successfully');
     },
     onError: (error: ApiError) => {
@@ -62,11 +66,15 @@ export function useSaveToBookmark() {
   });
 }
 
-export function useRemoveFromBookmark() {
+export function useRemoveFromBookmark(callBack?: () => void) {
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: removeFromBookmark,
     mutationKey: ['removeFromBookmark'],
-    onSuccess: () => {
+    onSuccess: async () => {
+      queryClient.refetchQueries([`get-bookmark_req`]);
+      queryClient.refetchQueries(['get-timeline']);
+      callBack && (await callBack());
       toast.success('Removed From bookmark successfully');
     },
     onError: (error: ApiError) => {
