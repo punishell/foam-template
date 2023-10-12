@@ -106,7 +106,7 @@ const ClientJobDetails: React.FC<ClientJobDetailsProps> = ({ job }) => {
               <button
                 className="bg-red-50 border border-red-500 text-red-500 px-4 py-1 text-sm rounded-lg w-[140px] h-[30px]"
                 onClick={() => {
-                  cancelInvite.mutate({ inviteId: '' }, {});
+                  cancelInvite.mutate({ inviteId: job.invite?._id ?? '' }, {});
                 }}
               >
                 {cancelInvite.isLoading ? <Spinner size={16} /> : 'Cancel Invite'}
