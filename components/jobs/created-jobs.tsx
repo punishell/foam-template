@@ -165,6 +165,7 @@ const CompletedJobs: React.FC<CompletedJobsProps> = ({ jobs }) => {
               jobId={_id}
               status={status}
               progress={progress}
+              isCancelled={status === 'cancelled'}
               isCompleted={(talentHasReviewed && clientHasReviewed) || status === 'cancelled'}
               totalDeliverables={collections.filter((collection) => collection.type === 'deliverable').length}
               key={_id}
