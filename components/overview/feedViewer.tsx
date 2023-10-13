@@ -16,6 +16,7 @@ import { DeliverableProgressBar } from '@/components/common/deliverable-progress
 import { AfroProfile } from '@/components/common/afro-profile';
 import { ClientJobModal } from '@/components/jobs/job-modals/client';
 import { SideModal } from '@/components/common/side-modal';
+import { TalentJobModal } from '../jobs/job-modals/talent';
 
 export const JobFeedWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   return (
@@ -373,17 +374,25 @@ export const JobUpdateFeed: React.FC<TalentJobUpdateProps> = ({
         <Briefcase size={200} color="#F2F4F5" />
       </div>
 
-      {isCreator && (
-        <SideModal isOpen={isModalOpen} onOpenChange={setIsModalOpen}>
+
+      <SideModal isOpen={isModalOpen} onOpenChange={setIsModalOpen}>
+        {isCreator ?
           <ClientJobModal
             jobId={jobId}
             talentId={talent._id}
             closeModal={() => {
               setIsModalOpen(false);
             }}
+          /> :
+          <TalentJobModal
+            jobId={jobId}
+            talentId={talent._id}
+            closeModal={() => {
+              setIsModalOpen(false);
+            }}
           />
-        </SideModal>
-      )}
+        }
+      </SideModal>
     </div>
   );
 };
@@ -481,6 +490,7 @@ export const JobReviewedFeed: React.FC<ReviewJobProps> = ({
   isCreator,
   close,
 }) => {
+  const [isModalOpen, setIsModalOpen] = React.useState(false);
   return (
     <div className="border-[#9BDCFD] bg-[#F1FBFF] gap-4 pl-2 px-4 flex border z-10 w-full rounded-2xl relative overflow-hidden">
       <AfroProfile src={isCreator ? talent.avatar : creator.avatar} score={isCreator ? talent.score : creator.score} size="lg" url={`/talents/${isCreator ? talent._id : creator._id}`} />
@@ -494,7 +504,9 @@ export const JobReviewedFeed: React.FC<ReviewJobProps> = ({
 
         <div className="justify-between items-center flex mt-auto">
           <div className="flex items-center gap-2">
-            <Button size="xs" variant="secondary">
+            <Button size="xs" variant="secondary" onClick={() => {
+              setIsModalOpen(true);
+            }}>
               Write Review
             </Button>
           </div>
@@ -505,6 +517,24 @@ export const JobReviewedFeed: React.FC<ReviewJobProps> = ({
       <div className="absolute right-0 -z-[1] translate-x-1/3 top-16">
         <Briefcase size={200} color="#F2F4F5" />
       </div>
+      <SideModal isOpen={isModalOpen} onOpenChange={setIsModalOpen}>
+        {isCreator ?
+          <ClientJobModal
+            jobId={jobId}
+            talentId={talent._id}
+            closeModal={() => {
+              setIsModalOpen(false);
+            }}
+          /> :
+          <TalentJobModal
+            jobId={jobId}
+            talentId={talent._id}
+            closeModal={() => {
+              setIsModalOpen(false);
+            }}
+          />
+        }
+      </SideModal>
     </div>
   );
 };
@@ -781,6 +811,7 @@ interface ReviewChangeProps {
 export const ReviewChangeCard: React.FC<ReviewChangeProps> = ({
   id,
   title,
+  jobId,
   description,
   creator,
   talent,
@@ -789,6 +820,7 @@ export const ReviewChangeCard: React.FC<ReviewChangeProps> = ({
   isCreator,
   close,
 }) => {
+  const [isModalOpen, setIsModalOpen] = React.useState(false);
   return (
     <div className="border-[#FF5247] bg-[#FFF4F4] gap-4 p-4 flex border z-10 w-full rounded-2xl relative overflow-hidden h-[174px]">
       <AfroProfile src={isCreator ? talent.avatar : creator.avatar} score={isCreator ? talent.score : creator.score} size="lg" url={`/talents/${isCreator ? talent._id : creator._id}`} />
@@ -802,7 +834,7 @@ export const ReviewChangeCard: React.FC<ReviewChangeProps> = ({
 
         <div className="justify-between items-center flex mt-auto">
           <div className="flex items-center gap-2">
-            <Button size="xs" variant="outline">
+            <Button size="xs" variant="outline" onClick={() => setIsModalOpen(true)}>
               View Request
             </Button>
           </div>
@@ -813,6 +845,25 @@ export const ReviewChangeCard: React.FC<ReviewChangeProps> = ({
       <div className="absolute right-0 -z-[1] translate-x-1/3 top-16">
         <Briefcase size={200} color="#F2F4F5" />
       </div>
+
+      <SideModal isOpen={isModalOpen} onOpenChange={setIsModalOpen}>
+        {isCreator ?
+          <ClientJobModal
+            jobId={jobId}
+            talentId={talent._id}
+            closeModal={() => {
+              setIsModalOpen(false);
+            }}
+          /> :
+          <TalentJobModal
+            jobId={jobId}
+            talentId={talent._id}
+            closeModal={() => {
+              setIsModalOpen(false);
+            }}
+          />
+        }
+      </SideModal>
     </div>
   );
 };

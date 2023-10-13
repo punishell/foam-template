@@ -8,6 +8,7 @@ import { useParams } from 'next/navigation';
 import { Achievements } from '@/components/talents/achievement';
 import { Reviews } from '@/components/talents/review';
 import { ProfileHeader } from '@/components/talents/header';
+import { Bio } from '@/components/talents/bio';
 
 export default function TalentDetails() {
   const params = useParams();
@@ -66,12 +67,3 @@ export default function TalentDetails() {
     </div>
   );
 }
-
-const Bio = ({ body }: { body: string }) => {
-  return (
-    <div className="flex flex-col w-[60%] bg-[#FFEFD7] p-4 rounded-4 gap-3 border border-yellow-dark rounded-2xl">
-      <h3 className="text-left text-title text-lg font-medium">Bio</h3>
-      <div>{body}</div>
-    </div>
-  );
-};
