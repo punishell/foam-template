@@ -83,7 +83,7 @@ export const useGetTalentById = (id: string, enabled: boolean = false) => {
 };
 
 export const useGetTalentReviewById = (id: string, page: string, limit: string, enabled = false) => {
-  const getQueryIdReview = ['talent_review' + id];
+  const getQueryIdReview = ['talent_review_' + id];
   // const options: UseQueryOptions<reviewResponse, > =
   return useQuery({
     queryFn: async () => {
