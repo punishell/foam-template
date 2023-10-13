@@ -22,7 +22,7 @@ export default function TalentDetails() {
 
   const talent = talentData.data.talent;
   const reviews = reviewData.data;
-  console.log(reviews);
+
   return (
     <div className="flex flex-col gap-6 pt-6 overflow-y-auto w-full">
       <ProfileHeader

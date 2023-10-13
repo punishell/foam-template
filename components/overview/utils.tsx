@@ -221,8 +221,8 @@ export const ParseFeedView = (feed: DataFeedResponse, loggedInUser: string, key:
         bookmarkId={bookmarkId}
         title={feed?.title}
       />;
-
     case FEED_TYPES.JOB_CANCELLED_REQUEST:
+    case FEED_TYPES.JOB_CANCELLED_ACCEPTED:
       return <ReviewChangeCard
         key={key}
         id={feed?._id}
@@ -233,7 +233,7 @@ export const ParseFeedView = (feed: DataFeedResponse, loggedInUser: string, key:
         close={dismissFeed}
         bookmarked={isBookmarked}
         bookmarkId={bookmarkId}
-        title={`${talent.name} requested to cancel a job`}
+        title={feed?.type == FEED_TYPES.JOB_CANCELLED_ACCEPTED ? `${inviter.name} accepted to cancel Cancel Job` : `${talent.name} requested to cancel a job`}
         description={feed?.description}
       />;
     case FEED_TYPES.JOB_REVIEW_CHANGE:
@@ -262,20 +262,21 @@ export const ParseFeedView = (feed: DataFeedResponse, loggedInUser: string, key:
     // case FEED_TYPES.JURY_INVITATION:
     //   return <JuryInvitationFeed />;
     default:
-      return (
-        <JobFeedCard
-          key={key}
-          title="Not known yet"
-          type="job-invite-filled"
-          inviter={inviter}
-          id={feed?._id}
-          // amount={amount}
-          // inviteId={feed?.data?.invite}
-          // jobId={feed?.data?._id}
-          bookmarked={isBookmarked}
-          bookmarkId={bookmarkId}
-          close={dismissFeed}
-        />
-      );
+      return;
+    // return (
+    //   <JobFeedCard
+    //     key={key}
+    //     title="Not known yet"
+    //     type="job-invite-filled"
+    //     inviter={inviter}
+    //     id={feed?._id}
+    //     // amount={amount}
+    //     // inviteId={feed?.data?.invite}
+    //     // jobId={feed?.data?._id}
+    //     bookmarked={isBookmarked}
+    //     bookmarkId={bookmarkId}
+    //     close={dismissFeed}
+    //   />
+    // );
   }
 };
