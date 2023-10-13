@@ -88,7 +88,7 @@ const ClientJobDetails: React.FC<ClientJobDetailsProps> = ({ job }) => {
           price={job.paymentFee}
           dueDate={job.deliveryDate}
           creator={{
-            _id: job?.owner?._id || "",
+            _id: job?.owner?._id || '',
             score: job?.owner?.score || 0,
             avatar: job?.owner?.profileImage?.url,
             name: `${job?.owner?.firstName} ${job?.owner?.lastName}`,
@@ -275,7 +275,7 @@ const TalentJobDetails: React.FC<TalentJobDetailsProps> = ({ job, userId }) => {
   const jobApplicants = job.collections.filter(isJobApplicant);
 
   const hasAlreadyApplied = jobApplicants.some((applicant) => applicant.creator._id === userId);
-  const hasBeenInvited = Boolean(String(job?.invite?.receiver) == String(userId));
+  const hasBeenInvited = Boolean(String(job?.invite?.receiver._id) == String(userId));
   const CTAS = {
     open: TalentOpenJobCtas,
     private: TalentPrivateJobCtas,
@@ -312,17 +312,26 @@ const TalentJobDetails: React.FC<TalentJobDetailsProps> = ({ job, userId }) => {
             </div>
           )}
 
-          <JobCtas
-            jobId={job._id}
-            inviteId={inviteId}
-            hasBeenInvited={hasBeenInvited}
-            hasAlreadyApplied={hasAlreadyApplied}
-            jobCreator={job.creator._id}
-          />
+          {!job.inviteAccepted && (
+            <JobCtas
+              jobId={job._id}
+              inviteId={inviteId}
+              hasBeenInvited={hasBeenInvited}
+              hasAlreadyApplied={hasAlreadyApplied}
+              jobCreator={job.creator._id}
+            />
+          )}
+
+          {job.inviteAccepted && (
+            <div className="p-4 bg-green-50 border border-green-300 text-green-500 rounded-lg my-3 flex items-center gap-2 w-full">
+              <Info size={20} />
+              <span className="text-green-500 text-center">You have already accepted this Job invite.</span>
+            </div>
+          )}
         </div>
       </div>
 
-      <div className="basis-[270px]  h-full gap-7 w-fit flex flex-col items-center"></div>
+      <div className="basis-[270px] h-full gap-7 w-fit flex flex-col items-center"></div>
     </div>
   );
 };
@@ -489,7 +498,7 @@ const TalentJobApplyModal: React.FC<TalentJobApplyModalProps> = ({ jobId, jobCre
           /> */}
           <div className="flex items-center border bg-[#FCFCFD] border-line rounded-lg outline-none px-4 py-3 focus-within:border-secondary hover:border-secondary hover:duration-200h-[45px] gap-2">
             {/* <DollarIcon /> */}
-            <span className='text-body '>$</span>
+            <span className="text-body ">$</span>
             <NumericInput
               type="text"
               {...form.register('amount')}
@@ -515,9 +524,7 @@ const TalentJobApplyModal: React.FC<TalentJobApplyModalProps> = ({ jobId, jobCre
             placeholder="Enter your message here"
             className="w-full resize-none bg-[#FCFCFD] border border-line rounded-lg outline-none px-4 py-3 focus-within:border-secondary hover:border-secondary hover:duration-200"
           />
-          <div className="text-sm ml-auto w-fit text-body -mt-1">
-            {form.watch('message')?.length} / 150 characters
-          </div>
+          <div className="text-sm ml-auto w-fit text-body -mt-1">{form.watch('message')?.length} / 150 characters</div>
 
           {form.formState.errors.message && (
             <span className="text-red-500 text-sm">{form.formState.errors.message.message}</span>
@@ -525,7 +532,7 @@ const TalentJobApplyModal: React.FC<TalentJobApplyModalProps> = ({ jobId, jobCre
         </div>
 
         <Button fullWidth>{applyToOpenJob.isLoading ? <Spinner /> : 'Send Application'}</Button>
-      </form >
-    </div >
+      </form>
+    </div>
   );
 };
