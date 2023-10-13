@@ -78,6 +78,7 @@ interface JobResponseProps {
   bookmarkId: string;
   bookmarked: boolean;
   accepted: boolean;
+  cancelled: boolean;
   type: 'job-invite-response';
   imageUrl?: string;
   close?: (id: string) => void;
@@ -160,20 +161,20 @@ export const JobFeedCard: React.FC<JobFeedCardProps> = (props) => {
   }
 
   if (type === 'job-invite-response') {
-    const { id, title, bookmarked, talent, jobId, close, accepted } = props;
+    const { id, title, bookmarked, talent, jobId, close, accepted, cancelled } = props;
     return (
       <JobFeedWrapper>
         <AfroProfile src={talent.avatar} score={talent.score} size="lg" url={`/talents/${talent._id}`} />
 
         <div className="flex flex-col gap-4 py-4 w-full">
           <div className="flex justify-between items-center">
-            <h3 className="text-title text-xl font-bold">Job Invitation {accepted ? 'Accepted' : 'Declined'}</h3>
+            <h3 className="text-title text-xl font-bold">Job Invitation {cancelled ? "cancelled" : accepted ? 'Accepted' : 'Declined'}</h3>
 
             {close && <X size={20} className="cursor-pointer" onClick={() => close(id)} />}
           </div>
 
           <p className="text-body">
-            {talent.name} has {accepted ? 'Accepted' : 'Declined'} <span className="text-title text-bold">&quot;{title}&quot;</span> Job. You can check job here
+            {talent.name} has {cancelled ? "cancelled" : accepted ? 'Accepted' : 'Declined'} <span className="text-title text-bold">&quot;{title}&quot;</span> Job. You can check job here
           </p>
 
           <div className="justify-between items-center flex mt-auto">

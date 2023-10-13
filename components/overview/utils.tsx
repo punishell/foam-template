@@ -88,13 +88,17 @@ export const ParseFeedView = (feed: DataFeedResponse, loggedInUser: string, key:
       );
     case FEED_TYPES.JOB_INVITATION_ACCEPTED:
     case FEED_TYPES.JOB_INVITATION_DECLINED:
+    case FEED_TYPES.COLLECTION_INVITE_ACCEPTED:
+    case FEED_TYPES.COLLECTION_INVITE_REJECTED:
+    case FEED_TYPES.COLLECTION_INVITE_CANCELLED:
       return (
         <JobFeedCard
           key={key}
           id={feed._id}
           title={feed?.data?.name}
           type="job-invite-response"
-          accepted={feed?.type === FEED_TYPES.JOB_INVITATION_ACCEPTED}
+          accepted={feed?.type === (FEED_TYPES.JOB_INVITATION_ACCEPTED || FEED_TYPES.COLLECTION_INVITE_ACCEPTED)}
+          cancelled={feed?.type === FEED_TYPES.COLLECTION_INVITE_CANCELLED}
           bookmarked={isBookmarked}
           jobId={feed?.data?._id}
           bookmarkId={bookmarkId}
