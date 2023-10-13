@@ -114,12 +114,13 @@ export const ProfileView = () => {
   };
 
   // TODO:: parse Error for input validations
+  console.log(form.formState.errors)
   return (
     <div className="flex flex-row relative gap-6 h-full grow overflow-y-auto">
       {!isFetched && <Spinner />}
       {isFetched && (
         <>
-          <div className="flex flex-col w-1/5 h-fit bg-white rounded-lg items-center">
+          <div className="flex flex-col w-1/4 h-fit bg-white rounded-lg items-center">
             <div className="flex flex-col gap-4 p-4">
               <div className="flex justify-end min-h-[27px]">
                 <span className="bg-success-lighter text-success py-2 px-4 rounded-xl text-xs font-thin capitalize">
@@ -200,71 +201,107 @@ export const ProfileView = () => {
               <div className="flex">
                 <div className="flex relative w-full mb-8 mx-auto gap-6 flex-col">
                   <div id="input-row" className="flex flex-row justify-between gap-4 w-full">
-                    <Input
-                      {...form.register('firstName')}
-                      className="w-full !bg-[#FCFCFD] !border-[#E8E8E8]"
-                      placeholder="enter first name"
-                      label="First Name"
-                    />
-                    <Input
-                      {...form.register('lastName')}
-                      className="w-full !bg-[#FCFCFD] !border-[#E8E8E8]"
-                      placeholder="enter last name"
-                      label="Last Name"
-                    />
+                    <div className='relative w-1/2'>
+                      <Input
+                        {...form.register('firstName')}
+                        className="w-full !bg-[#FCFCFD] !border-[#E8E8E8]"
+                        placeholder="enter first name"
+                        label="First Name"
+                      />
+                      <span className="absolute -bottom-6 flex w-full">
+                        {form.formState.errors.firstName?.message && (
+                          <span className="text-sm text-red-500">{form.formState.errors.firstName?.message}</span>
+                        )}
+                      </span>
+                    </div>
+                    <div className='relative w-1/2'>
+                      <Input
+                        {...form.register('lastName')}
+                        className="w-full !bg-[#FCFCFD] !border-[#E8E8E8]"
+                        placeholder="enter last name"
+                        label="Last Name"
+                      />
+                      <span className="absolute -bottom-6 flex w-full">
+                        {form.formState.errors.lastName?.message && (
+                          <span className="text-sm text-red-500">{form.formState.errors.lastName?.message}</span>
+                        )}
+                      </span>
+                    </div>
                   </div>
                   <div id="input-row" className="flex flex-row justify-between gap-4 w-full">
-                    <Input
-                      {...form.register('title')}
-                      className="w-full !bg-[#FCFCFD] !border-[#E8E8E8]"
-                      placeholder="e.g Developer"
-                      label="Job Title"
-                    />
-                    <Input
-                      {...form.register('email')}
-                      className="w-full !bg-[#FCFCFD] !border-[#E8E8E8]"
-                      placeholder="Email Address"
-                      label="Email Address"
-                      readOnly
-                    />
+                    <div className='relative w-1/2'>
+                      <Input
+                        {...form.register('title')}
+                        className="w-full !bg-[#FCFCFD] !border-[#E8E8E8]"
+                        placeholder="e.g Developer"
+                        label="Job Title"
+                      />
+                      <span className="absolute -bottom-6 flex w-full">
+                        {form.formState.errors.title?.message && (
+                          <span className="text-sm text-red-500">{form.formState.errors.title?.message}</span>
+                        )}
+                      </span>
+                    </div>
+                    <div className='relative w-1/2'>
+                      <Input
+                        {...form.register('email')}
+                        className="w-full !bg-[#FCFCFD] !border-[#E8E8E8]"
+                        placeholder="Email Address"
+                        label="Email Address"
+                        readOnly
+                      />
+                      <span className="absolute -bottom-6 flex w-full">
+                        {form.formState.errors.email?.message && (
+                          <span className="text-sm text-red-500">{form.formState.errors.email?.message}</span>
+                        )}
+                      </span>
+                    </div>
                   </div>
                   <div id="input-row" className="flex flex-row justify-between gap-4 w-full">
-                    <Input
-                      {...form.register('location')}
-                      className="w-full !bg-[#FCFCFD] !border-[#E8E8E8]"
-                      placeholder="enter city"
-                      label="City"
-                    />
+                    <div className='relative w-1/2'>
+                      <Input
+                        {...form.register('location')}
+                        className="w-full !bg-[#FCFCFD] !border-[#E8E8E8]"
+                        placeholder="enter city"
+                        label="City"
+                      />
+                      <span className="absolute -bottom-6 flex w-full">
+                        {form.formState.errors.location?.message && (
+                          <span className="text-sm text-red-500">{form.formState.errors.location?.message}</span>
+                        )}
+                      </span>
+                    </div>
 
-                    <Controller
-                      name="country"
-                      control={form.control}
-                      render={({ field: { onChange, value } }) => {
-                        return (
-                          <div className='flex flex-col w-full gap-2'>
-                            <label> Country</label>
-                            <Select defaultValue={value} onValueChange={onChange}>
-                              <SelectTrigger className="w-full !bg-[#FCFCFD] !border-[#E8E8E8] text-title text-base h-10 rounded-lg h-[48px]">
-                                <SelectValue placeholder="Select Country" />
-                              </SelectTrigger>
-                              <SelectContent className='max-h-[200px] overflow-y-auto'>
-                                {COUNTRY_LIST.map(({ label, value }) => (
-                                  <SelectItem key={value} value={value} className="hover:bg-[#ECFCE5] rounded py-2">
-                                    {label}
-                                  </SelectItem>
-                                ))}
-                              </SelectContent>
-                            </Select>
-                          </div>
-                        );
-                      }}
-                    />
-                    {/* <Input
-                      {...form.register('country')}
-                      className="w-full !bg-[#FCFCFD] !border-[#E8E8E8]"
-                      placeholder="enter country"
-                      label="Country"
-                    /> */}
+                    <div className='relative w-1/2'>
+                      <Controller
+                        name="country"
+                        control={form.control}
+                        render={({ field: { onChange, value } }) => {
+                          return (
+                            <div className='flex flex-col w-full gap-2'>
+                              <label> Country</label>
+                              <Select defaultValue={value} onValueChange={onChange}>
+                                <SelectTrigger className="w-full !bg-[#FCFCFD] !border-[#E8E8E8] text-title text-base h-10 rounded-lg h-[48px]">
+                                  <SelectValue placeholder="Select Country" />
+                                </SelectTrigger>
+                                <SelectContent className='max-h-[200px] overflow-y-auto'>
+                                  {COUNTRY_LIST.map(({ label, value }) => (
+                                    <SelectItem key={value} value={value} className="hover:bg-[#ECFCE5] rounded py-2">
+                                      {label}
+                                    </SelectItem>
+                                  ))}
+                                </SelectContent>
+                              </Select>
+                            </div>
+                          );
+                        }}
+                      />
+                      <span className="absolute -bottom-6 flex w-full">
+                        {form.formState.errors.country?.message && (
+                          <span className="text-sm text-red-500">{form.formState.errors.country?.message}</span>
+                        )}
+                      </span>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -276,7 +313,7 @@ export const ProfileView = () => {
               <div className="flex flex-col gap-4">
                 <p>Skill Sets</p>
                 <div className="flex flex-row gap-4">
-                  <div className="w-1/2">
+                  <div className="relative w-1/2">
                     <p className="text-body text-sm">Add your top 3 skills first</p>
                     <div className="min-h-[186px] border !bg-[#FCFCFD] !border-[#E8E8E8] rounded-lg">
                       <Controller
@@ -287,14 +324,24 @@ export const ProfileView = () => {
                         )}
                       />
                     </div>
+                    <span className="absolute -bottom-6 flex w-full">
+                      {form.formState.errors.tags?.message && (
+                        <span className="text-sm text-red-500">{form.formState.errors.tags?.message}</span>
+                      )}
+                    </span>
                   </div>
-                  <div className="w-1/2">
+                  <div className="relative w-1/2">
                     <p className="text-body text-sm">Bio</p>
                     <Textarea
                       className="!min-h-[186px] w-full"
                       {...form.register('bio')}
                       placeholder="Enter a 350 character about thing"
                     />
+                    <span className="absolute -bottom-6 flex w-full">
+                      {form.formState.errors.bio?.message && (
+                        <span className="text-sm text-red-500">{form.formState.errors.bio?.message}</span>
+                      )}
+                    </span>
                   </div>
                 </div>
               </div>

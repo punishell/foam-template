@@ -53,7 +53,6 @@ export default function Profile() {
 
       <div className="flex gap-6 w-full">
         <Bio body={talent.bio} />
-        {/* <Achievements achievements={talent.achievements} /> */}
         <Achievements
           achievements={talent.achievements?.map(({ total, type, value }) => ({
             type,
@@ -86,7 +85,7 @@ export default function Profile() {
 
 const Bio = ({ body }: { body: string }) => {
   return (
-    <div className="flex flex-col grow-0 w-1/2 bg-[#FFEFD7] p-4 rounded-4 gap-3 border border-yellow-dark rounded-2xl">
+    <div className="flex flex-col w-[60%] bg-[#FFEFD7] p-4 rounded-4 gap-3 border border-yellow-dark rounded-2xl">
       <h3 className="text-left text-title text-lg font-medium">Bio</h3>
       <div>{body}</div>
     </div>

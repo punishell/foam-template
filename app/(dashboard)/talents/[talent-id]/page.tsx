@@ -21,7 +21,7 @@ export default function TalentDetails() {
 
   const talent = talentData.data.talent;
   const reviews = reviewData.data;
-
+  console.log(reviews);
   return (
     <div className="flex flex-col gap-6 pt-6 overflow-y-auto w-full">
       <ProfileHeader
@@ -69,7 +69,7 @@ export default function TalentDetails() {
 
 const Bio = ({ body }: { body: string }) => {
   return (
-    <div className="flex flex-col w-1/2 bg-[#FFEFD7] p-4 rounded-4 gap-3 border border-yellow-dark rounded-2xl">
+    <div className="flex flex-col w-[60%] bg-[#FFEFD7] p-4 rounded-4 gap-3 border border-yellow-dark rounded-2xl">
       <h3 className="text-left text-title text-lg font-medium">Bio</h3>
       <div>{body}</div>
     </div>

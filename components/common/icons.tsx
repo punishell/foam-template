@@ -23,7 +23,6 @@ export const DollarIcon: React.FC<IconProps> = ({ size = 24, className, style })
 };
 
 export const CheckMark: React.FC<IconProps> = ({ size = 24, className, style, fill, onClick }) => {
-  console.log(fill)
   if (fill) {
     return (
       <svg

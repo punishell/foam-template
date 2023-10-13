@@ -39,6 +39,7 @@ export interface Job {
   _id: string;
   name: string;
   createdAt: string;
+  updatedAt: string;
   creator: UserProfile;
   category: string;
   escrowPaid: boolean;

@@ -78,6 +78,7 @@ interface JobResponseProps {
   bookmarkId: string;
   bookmarked: boolean;
   accepted: boolean;
+  cancelled: boolean;
   type: 'job-invite-response';
   imageUrl?: string;
   close?: (id: string) => void;
@@ -90,7 +91,7 @@ export const JobFeedCard: React.FC<JobFeedCardProps> = (props) => {
   const router = useRouter();
 
   if (type === 'job-invite-filled') {
-    const { id, title, bookmarked, inviter, close } = props;
+    const { id, title, bookmarked, bookmarkId, inviter, close } = props;
 
     return (
       <JobFeedWrapper>
@@ -113,7 +114,7 @@ export const JobFeedCard: React.FC<JobFeedCardProps> = (props) => {
                 See More Jobs
               </Button>
             </Link>
-            <RenderBookMark size={20} isBookmarked={bookmarked} type="feed" id={id} bookmarkId={id} />
+            <RenderBookMark size={20} isBookmarked={bookmarked} type="feed" id={id} bookmarkId={bookmarkId} />
           </div>
         </div>
       </JobFeedWrapper>
@@ -160,20 +161,20 @@ export const JobFeedCard: React.FC<JobFeedCardProps> = (props) => {
   }
 
   if (type === 'job-invite-response') {
-    const { id, title, bookmarked, talent, jobId, close, accepted } = props;
+    const { id, title, bookmarked, bookmarkId, talent, jobId, close, accepted, cancelled } = props;
     return (
       <JobFeedWrapper>
         <AfroProfile src={talent.avatar} score={talent.score} size="lg" url={`/talents/${talent._id}`} />
 
         <div className="flex flex-col gap-4 py-4 w-full">
           <div className="flex justify-between items-center">
-            <h3 className="text-title text-xl font-bold">Job Invitation {accepted ? 'Accepted' : 'Declined'}</h3>
+            <h3 className="text-title text-xl font-bold">Job Invitation {cancelled ? "cancelled" : accepted ? 'Accepted' : 'Declined'}</h3>
 
             {close && <X size={20} className="cursor-pointer" onClick={() => close(id)} />}
           </div>
 
           <p className="text-body">
-            {talent.name} has {accepted ? 'Accepted' : 'Declined'} <span className="text-title text-bold">&quot;{title}&quot;</span> Job. You can check job here
+            {talent.name} has {cancelled ? "cancelled" : accepted ? 'Accepted' : 'Declined'} <span className="text-title text-bold">&quot;{title}&quot;</span> Job. You can check job here
           </p>
 
           <div className="justify-between items-center flex mt-auto">
@@ -182,7 +183,7 @@ export const JobFeedCard: React.FC<JobFeedCardProps> = (props) => {
                 See Update
               </Button>
             </Link>
-            <RenderBookMark size={20} isBookmarked={bookmarked} type="feed" id={id} bookmarkId={id} />
+            <RenderBookMark size={20} isBookmarked={bookmarked} type="feed" id={id} bookmarkId={bookmarkId} />
           </div>
         </div>
       </JobFeedWrapper>
@@ -200,11 +201,12 @@ type JobApplicationCardProps = {
     score: number;
   };
   bookmarked: boolean;
+  bookmarkId: string;
   jobId: string;
   close?: (id: string) => void;
 };
 export const JobApplicationCard: React.FC<JobApplicationCardProps> = (props) => {
-  const { id, title, jobId, bookmarked, applicant, close } = props;
+  const { id, title, jobId, bookmarked, bookmarkId, applicant, close } = props;
 
   return (
     <JobFeedWrapper>
@@ -226,7 +228,7 @@ export const JobApplicationCard: React.FC<JobApplicationCardProps> = (props) => 
               View Applicants
             </Button>
           </Link>
-          <RenderBookMark size={20} isBookmarked={bookmarked} type="feed" id={id} bookmarkId={id} />
+          <RenderBookMark size={20} isBookmarked={bookmarked} type="feed" id={id} bookmarkId={bookmarkId} />
         </div>
       </div>
     </JobFeedWrapper>
@@ -321,6 +323,7 @@ export const JobUpdateFeed: React.FC<TalentJobUpdateProps> = ({
   description,
   progress,
   bookmarked,
+  bookmarkId,
   isCreator,
   jobTitle,
   close,
@@ -362,7 +365,7 @@ export const JobUpdateFeed: React.FC<TalentJobUpdateProps> = ({
               className="w-full max-w-[300px]"
             />
           </div>
-          <RenderBookMark size={20} isBookmarked={bookmarked} type="feed" id={id} bookmarkId={id} />
+          <RenderBookMark size={20} isBookmarked={bookmarked} type="feed" id={id} bookmarkId={bookmarkId} />
         </div>
       </div>
 
@@ -413,6 +416,7 @@ export const JobCompletionFeed: React.FC<JobCompletedProps> = ({
   creator,
   title,
   bookmarked,
+  bookmarkId,
   isCreator,
   close,
 }) => {
@@ -433,7 +437,7 @@ export const JobCompletionFeed: React.FC<JobCompletedProps> = ({
               </Button>
             </Link>
           </div>
-          <RenderBookMark size={20} isBookmarked={bookmarked} type="feed" id={id} bookmarkId={id} />
+          <RenderBookMark size={20} isBookmarked={bookmarked} type="feed" id={id} bookmarkId={bookmarkId} />
         </div>
       </div>
       <div className="absolute right-0 -z-[1] translate-x-1/3 top-16">
@@ -473,6 +477,7 @@ export const JobReviewedFeed: React.FC<ReviewJobProps> = ({
   title,
   description,
   bookmarked,
+  bookmarkId,
   isCreator,
   close,
 }) => {
@@ -493,7 +498,7 @@ export const JobReviewedFeed: React.FC<ReviewJobProps> = ({
               Write Review
             </Button>
           </div>
-          <RenderBookMark size={20} isBookmarked={bookmarked} type="feed" id={id} bookmarkId={id} />
+          <RenderBookMark size={20} isBookmarked={bookmarked} type="feed" id={id} bookmarkId={bookmarkId} />
         </div>
       </div>
 
@@ -536,6 +541,7 @@ export const PaymentReleased: React.FC<PaymentReleasedProps> = ({
   amount,
   description,
   bookmarked,
+  bookmarkId,
   isCreator,
   close,
 }) => {
@@ -559,7 +565,7 @@ export const PaymentReleased: React.FC<PaymentReleasedProps> = ({
               </Button>
             </Link>
           </div>
-          <RenderBookMark size={20} isBookmarked={bookmarked} type="feed" id={id} bookmarkId={id} />
+          <RenderBookMark size={20} isBookmarked={bookmarked} type="feed" id={id} bookmarkId={bookmarkId} />
         </div>
       </div>
 
@@ -598,6 +604,7 @@ export const JobCancelled: React.FC<JobCancelledProps> = ({
   creator,
   title,
   bookmarked,
+  bookmarkId,
   isCreator,
   close,
 }) => {
@@ -618,7 +625,7 @@ export const JobCancelled: React.FC<JobCancelledProps> = ({
               </Button>
             </Link>
           </div>
-          <RenderBookMark size={20} isBookmarked={bookmarked} type="feed" id={id} bookmarkId={id} />
+          <RenderBookMark size={20} isBookmarked={bookmarked} type="feed" id={id} bookmarkId={bookmarkId} />
         </div>
       </div>
 
@@ -709,6 +716,7 @@ export const ReferralJobCompletion: React.FC<ReferralJobCompletionProps> = ({
   talent,
   title,
   bookmarked,
+  bookmarkId,
   rating,
   close,
 }) => {
@@ -736,7 +744,7 @@ export const ReferralJobCompletion: React.FC<ReferralJobCompletionProps> = ({
               See Review
             </Button>
           </div>
-          <RenderBookMark size={20} isBookmarked={bookmarked} type="feed" id={id} bookmarkId={id} />
+          <RenderBookMark size={20} isBookmarked={bookmarked} type="feed" id={id} bookmarkId={bookmarkId} />
         </div>
       </div>
 
