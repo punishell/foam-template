@@ -233,7 +233,7 @@ export const ParseFeedView = (feed: DataFeedResponse, loggedInUser: string, key:
         close={dismissFeed}
         bookmarked={isBookmarked}
         bookmarkId={bookmarkId}
-        title={feed?.type == FEED_TYPES.JOB_CANCELLED_ACCEPTED ? `${inviter.name} accepted Cancel Job` : `${talent.name} requested to cancel a job`}
+        title={feed?.type == FEED_TYPES.JOB_CANCELLED_ACCEPTED ? `${inviter.name} accepted to cancel Cancel Job` : `${talent.name} requested to cancel a job`}
         description={feed?.description}
       />;
     case FEED_TYPES.JOB_REVIEW_CHANGE:
