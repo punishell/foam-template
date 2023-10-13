@@ -870,7 +870,7 @@ interface DeclineReviewChangeParams {
 
 async function declineReviewChange(params: DeclineReviewChangeParams): Promise<ApiResponse> {
   const res = await axios.patch(`/collection/${params.reviewChangeRequestId}`, {
-    status: 'cancelled',
+    status: 'completed',
   });
 
   return res.data.data;
