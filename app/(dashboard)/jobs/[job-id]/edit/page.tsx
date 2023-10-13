@@ -242,10 +242,12 @@ const JobEditForm: React.FC<JobEditFormProps> = ({ job }) => {
             <input
               type="text"
               autoFocus
+              maxLength={60}
               {...form.register('title')}
               placeholder="Enter Job Title"
               className="text-3xl w-full placeholder:text-white placeholder:text-opacity-60 bg-transparent focus:outline-none text-white caret-white"
             />
+            <div className="text-sm text-white ml-auto text-right">{form.watch('title')?.length}/ 60</div>
             <span className="absolute -bottom-5 flex w-full">
               {form.formState.errors.title?.message && (
                 <span className="text-sm text-red-500">{form.formState.errors.title?.message}</span>
