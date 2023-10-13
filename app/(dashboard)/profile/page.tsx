@@ -53,7 +53,6 @@ export default function Profile() {
 
       <div className="flex gap-6 w-full">
         <Bio body={talent.bio} />
-        {/* <Achievements achievements={talent.achievements} /> */}
         <Achievements
           achievements={talent.achievements?.map(({ total, type, value }) => ({
             type,

@@ -22,7 +22,7 @@ interface ReviewProps {
 
 const Review: React.FC<ReviewProps> = ({ body, title, rating, user }) => {
   return (
-    <div className="bg-white min-h-full rounded-2xl p-4 flex flex-col gap-4 w-full min-w-1/2 select-none cursor-grab">
+    <div className="bg-white min-h-full rounded-2xl p-4 flex flex-col gap-4 select-none cursor-grab" style={{ maxWidth: "50%" }}>
       <div className='flex flex-col flex-1 max-w-full gap-4'>
         <h3 className="text-xl font-medium text-title max-w-[400px] break-all">{title}</h3>
         <p className="text-base font-thin text-body max-w-[400px] break-all">{body}</p>
@@ -31,7 +31,7 @@ const Review: React.FC<ReviewProps> = ({ body, title, rating, user }) => {
       <div className="flex items-center justify-between">
         <div className="grid grid-cols-3 gap-2">
           <div className="flex relative">
-            <AfroProfile size="sm" score={user.afroScore} src={user?.avatar} url={`talents/${user?._id}`} />
+            <AfroProfile size="sm" score={user.afroScore} src={user?.avatar} url={`/talents/${user?._id}`} />
           </div>
           <div className="flex flex-col col-span-2 my-auto">
             <span className="text-sm text-title font-medium">{user.name}</span>

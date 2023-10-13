@@ -118,6 +118,7 @@ export const ParseFeedView = (feed: DataFeedResponse, loggedInUser: string, key:
           score: feed?.data?.creator?.score,
         }}
         bookmarked={isBookmarked}
+        bookmarkId={bookmarkId}
         jobId={feed?.data?.parent?._id || ""}
         close={dismissFeed}
       />;
