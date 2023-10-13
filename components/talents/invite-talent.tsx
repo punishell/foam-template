@@ -37,9 +37,9 @@ const InviteTalent: React.FC<{ talentId: string }> = ({ talentId }) => {
   const sortedJobs = jobs.sort((a, b) => {
     return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
   });
-  const unassignedJobs = sortedJobs.filter(
-    (job) => job.status === 'pending' || (job.status === 'ongoing' && job.inviteAccepted === false),
-  );
+  const unassignedJobs = sortedJobs
+    .filter((job) => job.status === 'pending' || (job.status === 'ongoing' && job.inviteAccepted === false))
+    .filter((job) => !job.invite);
 
   return <JobList jobs={unassignedJobs} talentId={talentId} />;
 };
