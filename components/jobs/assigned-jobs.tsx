@@ -32,9 +32,15 @@ export const AcceptedJobs: React.FC<Props> = () => {
   };
 
   const ongoingJobs = sortedJobs.filter(
-    (job) => job.payoutStatus !== 'completed' && job.inviteAccepted && !talentAndClientHasReviewed(job),
+    (job) =>
+      job.payoutStatus !== 'completed' &&
+      job.inviteAccepted &&
+      !talentAndClientHasReviewed(job) &&
+      job.status !== 'cancelled',
   );
-  const completedJobs = sortedJobs.filter((job) => job.payoutStatus === 'completed' || talentAndClientHasReviewed(job));
+  const completedJobs = sortedJobs.filter(
+    (job) => job.payoutStatus === 'completed' || talentAndClientHasReviewed(job) || job.status === 'cancelled',
+  );
 
   return (
     <div className="flex flex-col gap-6 h-full">
@@ -128,7 +134,7 @@ const TalentCompletedJobs: React.FC<CompletedJobsProps> = ({ jobs }) => {
               progress={progress}
               price={paymentFee}
               title={name}
-              isCompleted={talentHasReviewed && clientHasReviewed}
+              isCompleted={(talentHasReviewed && clientHasReviewed) || status === 'cancelled'}
               totalDeliverables={collections.filter((collection) => collection.type === 'deliverable').length}
               client={{
                 id: creator._id,
