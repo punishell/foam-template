@@ -38,15 +38,12 @@ export const TalentJobModal: React.FC<TalentJobModalProps> = ({ jobId, talentId 
   const job = query.data;
 
   const jobCancellation = job.collections.find(isJobCancellation);
+
   const talentRequestedCancellation = jobCancellation?.creator._id === job.owner?._id;
   const clientRequestedCancellation = jobCancellation?.creator._id === job.creator._id;
 
   const talentHasReviewed = job.ratings?.some((review) => review.owner._id === job.owner?._id);
   const clientHasReviewed = job.ratings?.some((review) => review.owner._id === job.creator._id);
-
-  if (clientRequestedCancellation) {
-    return <ReviewJobCancellationRequest job={job} closeModal={() => setIsRequestingJobCancellation(false)} />;
-  }
 
   if (job.status === 'cancelled') {
     return (
@@ -57,6 +54,10 @@ export const TalentJobModal: React.FC<TalentJobModalProps> = ({ jobId, talentId 
         <span>This Job has been cancelled</span>
       </div>
     );
+  }
+
+  if (jobCancellation && clientRequestedCancellation) {
+    return <ReviewJobCancellationRequest job={job} closeModal={() => setIsRequestingJobCancellation(false)} />;
   }
 
   if (talentRequestedCancellation) {
