@@ -120,6 +120,7 @@ interface AchievementProps {
 }
 
 export const Achievements: React.FC<AchievementProps> = ({ achievements = [] }) => {
+  achievements.sort((a, b) => b.total - a.total);
   return (
     <div className="bg-primary-gradient p-[4px] rounded-2xl shrink-0">
       <div className="bg-[#F8FFF4] py-4 px-6 rounded-xl gap-4 flex flex-col w-fit shrink-0">

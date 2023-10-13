@@ -90,14 +90,14 @@ export function useAcceptInvite({ jobCreator, jobId }: { jobCreator: string; job
     mutationKey: ['invite-call-action'],
     onSuccess: () => {
       // create feed for accept invite
-      createFeed.mutate({
-        owners: [jobCreator],
-        title: 'Invite Accepted',
-        description: 'Invite Accepted',
-        data: jobId,
-        type: FEED_TYPES.JOB_INVITATION_ACCEPTED,
-        isPublic: false,
-      });
+      // createFeed.mutate({
+      //   owners: [jobCreator],
+      //   title: 'Invite Accepted',
+      //   description: 'Invite Accepted',
+      //   data: jobId,
+      //   type: FEED_TYPES.JOB_INVITATION_ACCEPTED,
+      //   isPublic: false,
+      // });
       toast.success('Invite Accepted successfully');
     },
     onError: (error: ApiError) => {
@@ -125,14 +125,14 @@ export function useDeclineInvite({ jobCreator, jobId }: { jobCreator: string; jo
     mutationKey: ['invite-call-action'],
     onSuccess: () => {
       // create feed for decline invite
-      createFeed.mutate({
-        owners: [jobCreator],
-        title: 'Invite Declined',
-        description: 'Invite Declined',
-        data: jobId,
-        type: FEED_TYPES.JOB_INVITATION_DECLINED,
-        isPublic: false,
-      });
+      // createFeed.mutate({
+      //   owners: [jobCreator],
+      //   title: 'Invite Declined',
+      //   description: 'Invite Declined',
+      //   data: jobId,
+      //   type: FEED_TYPES.JOB_INVITATION_DECLINED,
+      //   isPublic: false,
+      // });
       toast.success('Invite Declined successfully');
     },
     onError: (error: ApiError) => {
