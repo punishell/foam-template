@@ -43,7 +43,7 @@ export const ClientJobCard: React.FC<ClientJobCardProps> = ({
   return (
     <div className="gap-4 bg-white rounded-3xl border-line w-full flex flex-col grow border p-4">
       <div className="w-full flex gap-4">
-        <AfroProfile score={talent.paktScore} size="md" src={talent.avatar} url={`/talent/${talent.id}`} />
+        <AfroProfile score={talent.paktScore} size="md" src={talent.avatar} url={`/talents/${talent.id}`} />
         <div className="flex flex-col gap-2 grow">
           <div className="flex items-center justify-between gap-2">
             {<span className="text-body text-lg font-bold">{talent.name}</span>}
