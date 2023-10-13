@@ -98,15 +98,23 @@ const ClientJobDetails: React.FC<ClientJobDetailsProps> = ({ job }) => {
           <JobSkills skills={job.tags || []} />
           <JobDescription description={job.description} />
 
+          <JobDeliverables
+            deliverables={job.collections.filter(isJobDeliverable).map((collection) => collection.name)}
+          />
+
+          {!job.invite && (
+            <JobCtas jobId={job._id} skills={job.tagsData} openDeleteModal={() => setIsDeleteModalOpen(true)} />
+          )}
+
           {job.invite && (
-            <div className="p-4 bg-blue-50 justify-between border border-blue-300 text-blue-500 rounded-lg my-3 flex items-center gap-2 w-full">
+            <div className="p-4 bg-blue-50 justify-between border border-blue-300 text-blue-500 rounded-2xl my-3 flex items-center gap-2 w-full">
               <div className="flex items-center gap-2">
                 <Info size={20} />
                 <span>Awaiting Talent Response</span>
               </div>
 
               <button
-                className="bg-red-50 border border-red-500 text-red-500 px-4 py-1 text-sm rounded-lg w-[140px] h-[30px]"
+                className="bg-red-50 border border-red-500 text-red-500 flex items-center justify-center text-sm rounded-lg w-[130px] h-[35px]"
                 onClick={() => {
                   cancelInvite.mutate({ inviteId: job.invite?._id ?? '' }, {});
                 }}
@@ -114,14 +122,6 @@ const ClientJobDetails: React.FC<ClientJobDetailsProps> = ({ job }) => {
                 {cancelInvite.isLoading ? <Spinner size={16} /> : 'Cancel Invite'}
               </button>
             </div>
-          )}
-
-          <JobDeliverables
-            deliverables={job.collections.filter(isJobDeliverable).map((collection) => collection.name)}
-          />
-
-          {!job.invite && (
-            <JobCtas jobId={job._id} skills={job.tagsData} openDeleteModal={() => setIsDeleteModalOpen(true)} />
           )}
         </div>
       </div>
@@ -145,8 +145,8 @@ const ClientPrivateJobCtas: React.FC<ClientPrivateJobCtasProps> = ({ jobId, skil
 
   return (
     <div className="mt-auto w-full flex items-center justify-between gap-4">
-      <div className="w-full max-w-[150px]">
-        <Button fullWidth variant="danger" onClick={openDeleteModal}>
+      <div className="w-full max-w-[160px] border border-red-400 rounded-xl">
+        <Button fullWidth variant="danger" onClick={openDeleteModal} size={'sm'}>
           Delete Job
         </Button>
       </div>
@@ -184,7 +184,7 @@ const ClientOpenJobCtas: React.FC<ClientOpenJobCtasProps> = ({ jobId, openDelete
 
   return (
     <div className="mt-auto w-full flex items-center justify-between gap-4">
-      <div className="w-full max-w-[150px]">
+      <div className="w-full max-w-[160px] border border-red-400 rounded-xl">
         <Button fullWidth variant="danger" onClick={openDeleteModal}>
           Delete Job
         </Button>
