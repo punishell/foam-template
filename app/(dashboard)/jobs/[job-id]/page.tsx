@@ -281,6 +281,10 @@ const TalentJobDetails: React.FC<TalentJobDetailsProps> = ({ job, userId }) => {
     private: TalentPrivateJobCtas,
   };
 
+  const jobIsAssignedToAnotherTalent = job?.owner && job?.owner._id !== userId;
+
+  console.log('owner', job?.owner?._id);
+
   const JobCtas = CTAS[JOB_TYPE];
 
   return (
@@ -312,7 +316,7 @@ const TalentJobDetails: React.FC<TalentJobDetailsProps> = ({ job, userId }) => {
             </div>
           )}
 
-          {!job.inviteAccepted && (
+          {!job.inviteAccepted && !jobIsAssignedToAnotherTalent && (
             <JobCtas
               jobId={job._id}
               inviteId={inviteId}
@@ -322,10 +326,19 @@ const TalentJobDetails: React.FC<TalentJobDetailsProps> = ({ job, userId }) => {
             />
           )}
 
-          {job.inviteAccepted && (
+          {job.inviteAccepted && !jobIsAssignedToAnotherTalent && (
             <div className="p-4 bg-green-50 border border-green-300 text-green-500 rounded-lg my-3 flex items-center gap-2 w-full">
               <Info size={20} />
               <span className="text-green-500 text-center">You have already accepted this Job invite.</span>
+            </div>
+          )}
+
+          {jobIsAssignedToAnotherTalent && (
+            <div className="p-4 bg-red-50 border border-red-300 text-red-500 rounded-lg my-3 flex items-center gap-2 w-full">
+              <Info size={20} />
+              <span className="text-red-500 text-center">
+                This job is already assigned to another talent. You can apply to other jobs.
+              </span>
             </div>
           )}
         </div>
