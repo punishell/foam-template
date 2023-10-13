@@ -7,7 +7,6 @@ import { PageLoading } from '@/components/common/page-loading';
 import { useRouter } from 'next/navigation';
 import { Button } from 'pakt-ui';
 import { useDropzone } from 'react-dropzone';
-import { useUpdateJob } from '@/lib/api/job';
 import { useSearchParams } from 'next/navigation';
 import { Spinner } from '@/components/common';
 import { endOfYesterday, format } from 'date-fns';
@@ -15,6 +14,7 @@ import { NumericInput } from '@/components/common/numeric-input';
 import { DatePicker } from '@/components/common/date-picker';
 import { DeliverablesInput } from '@/components/jobs/deliverables-input';
 import { DollarIcon } from '@/components/common/icons';
+import { useUpdateJob, useInviteTalentToJob } from '@/lib/api/job';
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@/components/common/select';
 import { filterEmptyStrings } from '@/lib/utils';
 interface Props {
@@ -64,11 +64,12 @@ type FormValues = z.infer<typeof schema>;
 
 export default function EditJob({ params }: Props) {
   const jobId = params['job-id'];
-  const jobData = useGetJobById({ jobId });
+  const jobQuery = useGetJobById({ jobId });
 
-  if (jobData.isError) return <PageError className="absolute inset-0" />;
-  if (jobData.isLoading) return <PageLoading className="absolute inset-0" />;
-  const { data: job } = jobData;
+  if (jobQuery.isError) return <PageError className="absolute inset-0" />;
+  if (jobQuery.isLoading) return <PageLoading className="absolute inset-0" />;
+  const { data: job } = jobQuery;
+  console.log('job:', job);
 
   return <JobEditForm job={job} />;
 }
@@ -94,20 +95,23 @@ interface JobEditFormProps {
 }
 
 const JobEditForm: React.FC<JobEditFormProps> = ({ job }) => {
-  const params = useSearchParams();
   const router = useRouter();
-  const talentId = params.get('talent-id');
+  const params = useSearchParams();
+
   const updateJob = useUpdateJob();
-  const [files, setFiles] = React.useState<File[]>([]);
-  const [uploadProgress, setUploadProgress] = React.useState(0);
+  const talentId = params.get('talent-id') ?? '';
+  const inviteTalent = useInviteTalentToJob({ talentId, job });
 
-  const onDrop = React.useCallback(async (acceptedFiles: File[]) => { }, []);
+  // const [files, setFiles] = React.useState<File[]>([]);
+  // const [uploadProgress, setUploadProgress] = React.useState(0);
 
-  const { getRootProps, getInputProps } = useDropzone({
-    onDrop,
-    maxFiles: 5,
-    accept: {},
-  });
+  // const onDrop = React.useCallback(async (acceptedFiles: File[]) => {}, []);
+
+  // const { getRootProps, getInputProps } = useDropzone({
+  //   onDrop,
+  //   maxFiles: 5,
+  //   accept: {},
+  // });
 
   const form = useForm<FormValues>({
     reValidateMode: 'onChange',
@@ -134,34 +138,69 @@ const JobEditForm: React.FC<JobEditFormProps> = ({ job }) => {
     description,
     due,
     firstSkill,
-    jobType,
     title,
     visibility,
     secondSkill,
     thirdSkill,
   }) => {
-    updateJob.mutate(
-      {
-        id: job._id,
-        name: title,
-        tags: filterEmptyStrings([firstSkill, secondSkill, thirdSkill]),
-        category,
-        description,
-        deliverables,
-        paymentFee: Number(budget),
-        isPrivate: visibility === 'private',
-        deliveryDate: format(due, 'yyyy-MM-dd'),
-      },
-      {
-        onSuccess(_data, { id }) {
-          if (talentId) {
-            router.push(`/jobs/${id}/make-deposit/?talent-id=${talentId}`);
-          } else {
-            router.push(`/jobs/${id}`);
-          }
+    if (form.formState.isDirty) {
+      updateJob.mutate(
+        {
+          id: job._id,
+          name: title,
+          tags: filterEmptyStrings([firstSkill, secondSkill, thirdSkill]),
+          category,
+          description,
+          deliverables,
+          paymentFee: Number(budget),
+          isPrivate: visibility === 'private',
+          deliveryDate: format(due, 'yyyy-MM-dd'),
         },
-      },
-    );
+        {
+          onSuccess(_data, { id }) {
+            if (job.escrowPaid) {
+              inviteTalent.mutate(
+                {
+                  talentId,
+                  jobId: id,
+                },
+                {
+                  onSuccess() {
+                    router.push(`/jobs/${id}`);
+                  },
+                },
+              );
+            }
+            if (talentId) {
+              router.push(`/jobs/${id}/make-deposit/?talent-id=${talentId}`);
+            } else {
+              router.push(`/jobs/${id}`);
+            }
+          },
+        },
+      );
+    }
+
+    if (!form.formState.isDirty) {
+      if (job.escrowPaid) {
+        inviteTalent.mutate(
+          {
+            talentId,
+            jobId: job._id,
+          },
+          {
+            onSuccess() {
+              router.push(`/jobs/${job._id}`);
+            },
+          },
+        );
+      }
+      if (talentId) {
+        router.push(`/jobs/${job._id}/make-deposit/?talent-id=${talentId}`);
+      } else {
+        router.push(`/jobs/${job._id}`);
+      }
+    }
   };
 
   const jobSteps = {
@@ -426,7 +465,7 @@ const JobEditForm: React.FC<JobEditFormProps> = ({ job }) => {
             </div>
           </div>
           <div className="flex gap-4 items-center w-full justify-end mt-auto">
-            {!talentId && (
+            {!talentId && !job.escrowPaid && (
               <div className=" max-w-[250px] w-full">
                 <Button onClick={form.handleSubmit(onSubmit)} fullWidth>
                   {updateJob.isLoading ? <Spinner /> : 'Update Job'}
@@ -434,10 +473,18 @@ const JobEditForm: React.FC<JobEditFormProps> = ({ job }) => {
               </div>
             )}
 
-            {talentId && (
+            {talentId && !job.escrowPaid && (
               <div className="max-w-[250px] w-full">
                 <Button onClick={form.handleSubmit(onSubmit)} fullWidth>
-                  {'Make Deposit'}
+                  {updateJob.isLoading ? <Spinner /> : 'Make Deposit'}
+                </Button>
+              </div>
+            )}
+
+            {job.escrowPaid && (
+              <div className="max-w-[250px] w-full">
+                <Button onClick={form.handleSubmit(onSubmit)} fullWidth>
+                  {inviteTalent.isLoading || updateJob.isLoading ? <Spinner /> : 'Invite Talent'}
                 </Button>
               </div>
             )}
