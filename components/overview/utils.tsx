@@ -139,8 +139,6 @@ export const ParseFeedView = (feed: DataFeedResponse, loggedInUser: string, key:
         isCreator={feed?.data?.creator?._id === loggedInUser}
         jobTitle={feed.data.name}
       />;
-    case FEED_TYPES.JOB_COMPLETION:
-      return;
     case FEED_TYPES.REFERRAL_SIGNUP:
       return <ReferralSignupFeed
         key={key}
