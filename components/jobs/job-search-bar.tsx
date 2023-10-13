@@ -46,7 +46,7 @@ export const JobSearchBar = ({ search, skills, range, isTalentView = false, hand
     <form onSubmit={form.handleSubmit(onSubmit)}>
       <div className="bg-white border-[#7DDE86] border p-6 w-full rounded-2xl flex gap-4 items-end">
         <div className="flex flex-col relative grow gap-1">
-          <label htmlFor="" className="text-sm">Job Category</label>
+          <label htmlFor="" className="text-sm">{isTalentView ? "Search" : "Job Category"}</label>
           <input
             type="text"
             placeholder="Enter"
