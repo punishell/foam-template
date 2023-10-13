@@ -461,11 +461,12 @@ interface CancelJobInviteParams {
 }
 
 async function postCancelJobInvite(params: CancelJobInviteParams): Promise<ApiResponse> {
-  const res = await axios.delete(`/invite/${params.inviteId}`);
+  const res = await axios.post(`/invite/${params.inviteId}/cancel`);
   return res.data.data;
 }
 
 export function useCancelJobInvite() {
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: postCancelJobInvite,
     mutationKey: ['cancel-job-invite'],
@@ -473,6 +474,7 @@ export function useCancelJobInvite() {
       toast.error(error?.response?.data.message || 'An error occurred');
     },
     onSuccess: () => {
+      queryClient.refetchQueries(['get-job-by-id']);
       toast.success('Invite cancelled successfully');
     },
   });

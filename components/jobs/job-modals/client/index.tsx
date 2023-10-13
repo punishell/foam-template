@@ -12,7 +12,7 @@ import { RequestJobCancellation, JobCancellationRequest, JobCancellationSuccessR
 interface ClientJobModalProps {
   jobId: string;
   talentId: string;
-  closeModal?: () => void;
+  closeModal: () => void;
 }
 
 export const ClientJobModal: React.FC<ClientJobModalProps> = ({ jobId, talentId, closeModal }) => {
@@ -40,10 +40,6 @@ export const ClientJobModal: React.FC<ClientJobModalProps> = ({ jobId, talentId,
   const talentRequestedCancellation = jobCancellation?.creator._id === job.owner?._id;
   const clientRequestedCancellation = jobCancellation?.creator._id === job.creator._id;
 
-  if (talentRequestedCancellation) {
-    return <JobCancellationRequest job={job} closeModal={() => setIsRequestingJobCancellation(false)} />;
-  }
-
   if (job.status === 'cancelled') {
     return (
       <div className="bg-red-50 flex items-center justify-center h-full text-red-500 flex-col">
@@ -55,12 +51,16 @@ export const ClientJobModal: React.FC<ClientJobModalProps> = ({ jobId, talentId,
     );
   }
 
-  if (job.status === 'completed') {
-    return <ReviewTalent job={job} />;
+  if (jobCancellation && talentRequestedCancellation) {
+    return <JobCancellationRequest job={job} closeModal={() => setIsRequestingJobCancellation(false)} />;
   }
 
   if (clientRequestedCancellation) {
     return <JobCancellationSuccessRequested />;
+  }
+
+  if (job.status === 'completed') {
+    return <ReviewTalent job={job} closeModal={closeModal} />;
   }
 
   return <JobUpdates job={job} requestJobCancellation={() => setIsRequestingJobCancellation(true)} />;

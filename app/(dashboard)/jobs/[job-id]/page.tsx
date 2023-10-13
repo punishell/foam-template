@@ -88,7 +88,7 @@ const ClientJobDetails: React.FC<ClientJobDetailsProps> = ({ job }) => {
           price={job.paymentFee}
           dueDate={job.deliveryDate}
           creator={{
-            _id: job?.owner?._id || "",
+            _id: job?.owner?._id || '',
             score: job?.owner?.score || 0,
             avatar: job?.owner?.profileImage?.url,
             name: `${job?.owner?.firstName} ${job?.owner?.lastName}`,
@@ -98,30 +98,30 @@ const ClientJobDetails: React.FC<ClientJobDetailsProps> = ({ job }) => {
           <JobSkills skills={job.tags || []} />
           <JobDescription description={job.description} />
 
-          {job.invite && (
-            <div className="p-4 bg-blue-50 justify-between border border-blue-300 text-blue-500 rounded-lg my-3 flex items-center gap-2 w-full">
-              <div className="flex items-center gap-2">
-                <Info size={20} />
-                <span>Awaiting Talent Response</span>
-              </div>
-
-              <button
-                className="bg-red-50 border border-red-500 text-red-500 px-4 py-1 text-sm rounded-lg w-[140px] h-[30px]"
-                onClick={() => {
-                  cancelInvite.mutate({ inviteId: '' }, {});
-                }}
-              >
-                {cancelInvite.isLoading ? <Spinner size={16} /> : 'Cancel Invite'}
-              </button>
-            </div>
-          )}
-
           <JobDeliverables
             deliverables={job.collections.filter(isJobDeliverable).map((collection) => collection.name)}
           />
 
           {!job.invite && (
             <JobCtas jobId={job._id} skills={job.tagsData} openDeleteModal={() => setIsDeleteModalOpen(true)} />
+          )}
+
+          {job.invite && (
+            <div className="p-4 bg-blue-50 justify-between border border-blue-300 text-blue-500 rounded-2xl my-3 flex items-center gap-2 w-full">
+              <div className="flex items-center gap-2">
+                <Info size={20} />
+                <span>Awaiting Talent Response</span>
+              </div>
+
+              <button
+                className="bg-red-50 border border-red-500 text-red-500 flex items-center justify-center text-sm rounded-lg w-[130px] h-[35px]"
+                onClick={() => {
+                  cancelInvite.mutate({ inviteId: job.invite?._id ?? '' }, {});
+                }}
+              >
+                {cancelInvite.isLoading ? <Spinner size={16} /> : 'Cancel Invite'}
+              </button>
+            </div>
           )}
         </div>
       </div>
@@ -145,8 +145,8 @@ const ClientPrivateJobCtas: React.FC<ClientPrivateJobCtasProps> = ({ jobId, skil
 
   return (
     <div className="mt-auto w-full flex items-center justify-between gap-4">
-      <div className="w-full max-w-[150px]">
-        <Button fullWidth variant="danger" onClick={openDeleteModal}>
+      <div className="w-full max-w-[160px] border border-red-400 rounded-xl">
+        <Button fullWidth variant="danger" onClick={openDeleteModal} size={'sm'}>
           Delete Job
         </Button>
       </div>
@@ -184,7 +184,7 @@ const ClientOpenJobCtas: React.FC<ClientOpenJobCtasProps> = ({ jobId, openDelete
 
   return (
     <div className="mt-auto w-full flex items-center justify-between gap-4">
-      <div className="w-full max-w-[150px]">
+      <div className="w-full max-w-[160px] border border-red-400 rounded-xl">
         <Button fullWidth variant="danger" onClick={openDeleteModal}>
           Delete Job
         </Button>
@@ -275,7 +275,7 @@ const TalentJobDetails: React.FC<TalentJobDetailsProps> = ({ job, userId }) => {
   const jobApplicants = job.collections.filter(isJobApplicant);
 
   const hasAlreadyApplied = jobApplicants.some((applicant) => applicant.creator._id === userId);
-  const hasBeenInvited = Boolean(String(job?.invite?.receiver) == String(userId));
+  const hasBeenInvited = Boolean(String(job?.invite?.receiver._id) == String(userId));
   const CTAS = {
     open: TalentOpenJobCtas,
     private: TalentPrivateJobCtas,
@@ -312,17 +312,26 @@ const TalentJobDetails: React.FC<TalentJobDetailsProps> = ({ job, userId }) => {
             </div>
           )}
 
-          <JobCtas
-            jobId={job._id}
-            inviteId={inviteId}
-            hasBeenInvited={hasBeenInvited}
-            hasAlreadyApplied={hasAlreadyApplied}
-            jobCreator={job.creator._id}
-          />
+          {!job.inviteAccepted && (
+            <JobCtas
+              jobId={job._id}
+              inviteId={inviteId}
+              hasBeenInvited={hasBeenInvited}
+              hasAlreadyApplied={hasAlreadyApplied}
+              jobCreator={job.creator._id}
+            />
+          )}
+
+          {job.inviteAccepted && (
+            <div className="p-4 bg-green-50 border border-green-300 text-green-500 rounded-lg my-3 flex items-center gap-2 w-full">
+              <Info size={20} />
+              <span className="text-green-500 text-center">You have already accepted this Job invite.</span>
+            </div>
+          )}
         </div>
       </div>
 
-      <div className="basis-[270px]  h-full gap-7 w-fit flex flex-col items-center"></div>
+      <div className="basis-[270px] h-full gap-7 w-fit flex flex-col items-center"></div>
     </div>
   );
 };
@@ -489,7 +498,7 @@ const TalentJobApplyModal: React.FC<TalentJobApplyModalProps> = ({ jobId, jobCre
           /> */}
           <div className="flex items-center border bg-[#FCFCFD] border-line rounded-lg outline-none px-4 py-3 focus-within:border-secondary hover:border-secondary hover:duration-200h-[45px] gap-2">
             {/* <DollarIcon /> */}
-            <span className='text-body '>$</span>
+            <span className="text-body ">$</span>
             <NumericInput
               type="text"
               {...form.register('amount')}
@@ -515,9 +524,7 @@ const TalentJobApplyModal: React.FC<TalentJobApplyModalProps> = ({ jobId, jobCre
             placeholder="Enter your message here"
             className="w-full resize-none bg-[#FCFCFD] border border-line rounded-lg outline-none px-4 py-3 focus-within:border-secondary hover:border-secondary hover:duration-200"
           />
-          <div className="text-sm ml-auto w-fit text-body -mt-1">
-            {form.watch('message')?.length} / 150 characters
-          </div>
+          <div className="text-sm ml-auto w-fit text-body -mt-1">{form.watch('message')?.length} / 150 characters</div>
 
           {form.formState.errors.message && (
             <span className="text-red-500 text-sm">{form.formState.errors.message.message}</span>
@@ -525,7 +532,7 @@ const TalentJobApplyModal: React.FC<TalentJobApplyModalProps> = ({ jobId, jobCre
         </div>
 
         <Button fullWidth>{applyToOpenJob.isLoading ? <Spinner /> : 'Send Application'}</Button>
-      </form >
-    </div >
+      </form>
+    </div>
   );
 };
