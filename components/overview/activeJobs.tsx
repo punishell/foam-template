@@ -111,7 +111,7 @@ export const ActiveJobs = () => {
     isError,
   } = useGetJobs({ category: 'created', status: 'ongoing' });
   const jobDataJoined = [...(jobAssignedData?.data || []), ...(jobCreatedData?.data || [])];
-  const jobData = jobDataJoined.filter((f) => f.inviteAccepted).sort((a, b) => new Date(b.updatedAt).getUTCSeconds() - new Date(a.updatedAt).getUTCSeconds());
+  const jobData = jobDataJoined.filter((f) => f.inviteAccepted).sort((a, b) => new Date(a.updatedAt).getUTCSeconds() - new Date(b.updatedAt).getUTCSeconds());
 
   const activeJobs = useMemo(
     () =>
