@@ -806,20 +806,31 @@ export function useRequestReviewChange({ recipientId }: { recipientId: string })
 
 // Accept Review Change: client review is deleted, all deliverables status as 0;
 interface AcceptReviewChangeParams {
+  jobId: string;
   reviewId: string;
+  requestId: string;
   deliverableIds: string[];
 }
 
+// this basically deletes the review, sets all deliverables to 0
 async function acceptReviewChange(params: AcceptReviewChangeParams): Promise<ApiResponse> {
   let res;
 
   res = await axios.delete(`/reviews/${params.reviewId}`);
 
-  res = await axios.patch(`/collection/many`, {
+  res = await axios.patch(`/collection/many/update`, {
     collections: params.deliverableIds.map((id) => ({
       id,
       progress: 0,
     })),
+  });
+
+  res = await axios.patch(`/collection/${params.requestId}`, {
+    status: 'completed',
+  });
+
+  res = await axios.patch(`/collection/${params.jobId}`, {
+    status: 'ongoing',
   });
 
   return res.data.data;
@@ -859,7 +870,7 @@ interface DeclineReviewChangeParams {
 
 async function declineReviewChange(params: DeclineReviewChangeParams): Promise<ApiResponse> {
   const res = await axios.patch(`/collection/${params.reviewChangeRequestId}`, {
-    status: 'cancelled',
+    status: 'completed',
   });
 
   return res.data.data;

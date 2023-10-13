@@ -33,6 +33,7 @@ export const ReviewClient: React.FC<ReviewClientProps> = ({ job, closeModal }) =
   const clientReview = job.ratings?.find((review) => review.owner._id === job.creator._id);
 
   const reviewChangeRequest = job.collections.find(isReviewChangeRequest);
+  const reviewChangeRequestCompleted = reviewChangeRequest?.status === 'completed';
   const [reviewChangeRequestPending, setReviewChangeRequestPending] = React.useState(
     reviewChangeRequest?.status === 'pending',
   );
@@ -64,7 +65,7 @@ export const ReviewClient: React.FC<ReviewClientProps> = ({ job, closeModal }) =
       </div>
 
       <div className="px-4 flex flex-col gap-6 py-4 h-full">
-        {clientReview && clientReview.rating < 5 && (
+        {clientReview && clientReview.rating < 5 && !reviewChangeRequestCompleted && (
           <div className="p-3 border border-line rounded-xl flex flex-col gap-3">
             <div className="flex justify-between items-center">
               <span>
@@ -155,7 +156,7 @@ export const ReviewClient: React.FC<ReviewClientProps> = ({ job, closeModal }) =
                   onSuccess: () => {
                     releasePaymentMutation.mutate({
                       jobId: jobId,
-                      owner: owner?._id
+                      owner: owner?._id,
                     });
                   },
                 },
