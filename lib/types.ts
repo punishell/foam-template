@@ -41,6 +41,7 @@ export interface Job {
   createdAt: string;
   creator: UserProfile;
   category: string;
+  escrowPaid: boolean;
   progress: number; // 0 - 100
   isPrivate: boolean;
   deliveryDate: string;
