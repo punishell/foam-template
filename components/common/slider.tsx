@@ -1,5 +1,6 @@
-import { motion } from "framer-motion";
-import React from "react";
+'use client';
+import { motion } from 'framer-motion';
+import React from 'react';
 
 export interface SlideItemProps {
   goToNextSlide: () => void;
@@ -8,7 +9,7 @@ export interface SlideItemProps {
 
 interface SliderProps {
   items: {
-    SlideItem: React.FC<{ goToNextSlide: () => void, goToPreviousSlide: () => void }>;
+    SlideItem: React.FC<{ goToNextSlide: () => void; goToPreviousSlide: () => void }>;
   }[];
 }
 
