@@ -143,64 +143,41 @@ const JobEditForm: React.FC<JobEditFormProps> = ({ job }) => {
     secondSkill,
     thirdSkill,
   }) => {
-    if (form.formState.isDirty) {
-      updateJob.mutate(
-        {
-          id: job._id,
-          name: title,
-          tags: filterEmptyStrings([firstSkill, secondSkill, thirdSkill]),
-          category,
-          description,
-          deliverables,
-          paymentFee: Number(budget),
-          isPrivate: visibility === 'private',
-          deliveryDate: format(due, 'yyyy-MM-dd'),
-        },
-        {
-          onSuccess(_data, { id }) {
-            if (job.escrowPaid) {
-              inviteTalent.mutate(
-                {
-                  talentId,
-                  jobId: id,
+    updateJob.mutate(
+      {
+        id: job._id,
+        name: title,
+        tags: filterEmptyStrings([firstSkill, secondSkill, thirdSkill]),
+        category,
+        description,
+        deliverables,
+        paymentFee: Number(budget),
+        isPrivate: visibility === 'private',
+        deliveryDate: format(due, 'yyyy-MM-dd'),
+      },
+      {
+        onSuccess(_data, { id }) {
+          if (job.escrowPaid) {
+            inviteTalent.mutate(
+              {
+                talentId,
+                jobId: id,
+              },
+              {
+                onSuccess() {
+                  router.push(`/jobs/${id}`);
                 },
-                {
-                  onSuccess() {
-                    router.push(`/jobs/${id}`);
-                  },
-                },
-              );
-            }
-            if (talentId) {
-              router.push(`/jobs/${id}/make-deposit/?talent-id=${talentId}`);
-            } else {
-              router.push(`/jobs/${id}`);
-            }
-          },
+              },
+            );
+          }
+          if (talentId) {
+            router.push(`/jobs/${id}/make-deposit/?talent-id=${talentId}`);
+          } else {
+            router.push(`/jobs/${id}`);
+          }
         },
-      );
-    }
-
-    if (!form.formState.isDirty) {
-      if (job.escrowPaid) {
-        inviteTalent.mutate(
-          {
-            talentId,
-            jobId: job._id,
-          },
-          {
-            onSuccess() {
-              router.push(`/jobs/${job._id}`);
-            },
-          },
-        );
-      }
-      if (talentId) {
-        router.push(`/jobs/${job._id}/make-deposit/?talent-id=${talentId}`);
-      } else {
-        router.push(`/jobs/${job._id}`);
-      }
-    }
+      },
+    );
   };
 
   const jobSteps = {
