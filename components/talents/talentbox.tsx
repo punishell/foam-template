@@ -2,10 +2,7 @@ import React from 'react';
 import Link from 'next/link';
 import { ChevronUp } from 'lucide-react';
 import { Badge } from '@/components/common';
-import { AfroScore } from '@/components/common/afro-profile';
 import { colorFromScore, emptyAchievement, getAchievementData, limitString } from '@/lib/utils';
-import Image from 'next/image';
-import { DefaultAvatar } from '../common/default-avatar';
 import { AfroProfile } from '@/components/common/afro-profile';
 
 export const TalentBox: React.FC<{
@@ -32,11 +29,7 @@ export const TalentBox: React.FC<{
           style={{ background: colorCodes.circleColor }}
         />
 
-        <div className="flex relative top-0 mx-auto w-full justify-center p-1 pb-0">
-          <Link href={`/talents/${id}`}>
-            <AfroProfile size="3xl" score={Math.round(Number(score))} src={imageUrl} />
-          </Link>
-        </div>
+        <AfroProfile size="3xl" score={Math.round(Number(score))} src={imageUrl} url={`/talents/${id}`} />
 
         <div className="absolute bottom-0 -mb-[190px] flex h-full w-full flex-col overflow-hidden duration-200 ease-out hover:mb-[0px]">
           <div className="relative z-20">
