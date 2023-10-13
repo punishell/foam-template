@@ -228,8 +228,10 @@ const ReviewChangeRequested: React.FC<ReviewChangeRequestedProps> = ({ closeModa
               fullWidth
               onClick={() => {
                 acceptMutation.mutate({
-                  deliverableIds,
+                  jobId: job._id,
                   reviewId: clientReview?._id ?? '',
+                  requestId: reviewChangeRequest?._id ?? '',
+                  deliverableIds: [...deliverableIds, job._id],
                 });
               }}
             >
