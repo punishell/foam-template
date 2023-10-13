@@ -15,6 +15,7 @@ interface ClientJobCardProps {
   price: number;
   status: JobStatus;
   isCompleted?: boolean;
+  isCancelled?: boolean;
   totalDeliverables: number;
   progress: number; // 0 to 100
   talent: {
@@ -32,6 +33,7 @@ export const ClientJobCard: React.FC<ClientJobCardProps> = ({
   jobId,
   progress,
   status,
+  isCancelled,
   totalDeliverables,
   isCompleted,
 }) => {
@@ -71,6 +73,7 @@ export const ClientJobCard: React.FC<ClientJobCardProps> = ({
 
         {
           <DeliverableProgressBar
+            isCancelled={isCancelled}
             percentageProgress={progress}
             totalDeliverables={totalDeliverables}
             className="w-full max-w-none"

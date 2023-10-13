@@ -39,7 +39,7 @@ export const TalentJobModal: React.FC<TalentJobModalProps> = ({ jobId, talentId 
 
   const jobCancellation = job.collections.find(isJobCancellation);
 
-  const talentRequestedCancellation = jobCancellation?.creator._id === job.owner?._id;
+  const talentRequestedCancellation = jobCancellation?.creator._id === job.owner?._id; // problem here
   const clientRequestedCancellation = jobCancellation?.creator._id === job.creator._id;
 
   const talentHasReviewed = job.ratings?.some((review) => review.owner._id === job.owner?._id);
@@ -60,7 +60,7 @@ export const TalentJobModal: React.FC<TalentJobModalProps> = ({ jobId, talentId 
     return <ReviewJobCancellationRequest job={job} closeModal={() => setIsRequestingJobCancellation(false)} />;
   }
 
-  if (talentRequestedCancellation) {
+  if (jobCancellation && talentRequestedCancellation) {
     return <JobCancellationRequested />;
   }
 
