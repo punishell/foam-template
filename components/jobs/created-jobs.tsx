@@ -28,8 +28,23 @@ export const CreatedJobs: React.FC<Props> = () => {
     return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
   });
 
-  const completedJobs = sortedJobs.filter((job) => job.payoutStatus === 'completed');
-  const ongoingJobs = sortedJobs.filter((job) => job.payoutStatus !== 'completed' && job.inviteAccepted);
+  const talentAndClientHasReviewed = (job: Job) => {
+    return (
+      job.ratings?.some((review) => review.owner._id === job.owner?._id) &&
+      job.ratings?.some((review) => review.owner._id === job.creator?._id)
+    );
+  };
+
+  const completedJobs = sortedJobs.filter(
+    (job) => job.payoutStatus === 'completed' || talentAndClientHasReviewed(job) || job.status === 'cancelled',
+  );
+  const ongoingJobs = sortedJobs.filter(
+    (job) =>
+      job.payoutStatus !== 'completed' &&
+      job.inviteAccepted &&
+      !talentAndClientHasReviewed(job) &&
+      job.status !== 'cancelled',
+  );
   const unassignedJobs = sortedJobs.filter(
     (job) => job.status === 'pending' || (job.status === 'ongoing' && job.inviteAccepted === false),
   );
@@ -67,19 +82,8 @@ const UnassignedJobs: React.FC<UnassignedJobsProps> = ({ jobs }) => {
   return (
     <div className="flex flex-col h-full min-h-[80vh]">
       <div className="grid grid-cols-2 gap-4 overflow-y-auto pb-20">
-        {paginatedJobs.map(({ _id, paymentFee, name, tagsData, createdAt, invite, isPrivate }) => {
-          return (
-            <UnAssignedJobCard
-              id={_id}
-              key={_id}
-              isPrivate={isPrivate}
-              price={paymentFee}
-              title={name}
-              hasInvite={invite !== undefined}
-              createdAt={format(new Date(createdAt), 'dd MMM yyyy')}
-              skills={tagsData.join(',')}
-            />
-          );
+        {paginatedJobs.map((job) => {
+          return <UnAssignedJobCard job={job} key={job._id} />;
         })}
       </div>
       <div className="mt-auto pt-4">
@@ -152,12 +156,16 @@ const CompletedJobs: React.FC<CompletedJobsProps> = ({ jobs }) => {
   return (
     <div className="flex flex-col h-full min-h-[80vh]">
       <div className="grid grid-cols-2 gap-4 overflow-y-auto pb-20">
-        {paginatedJobs.map(({ _id, paymentFee, name, collections, progress, status, owner }) => {
+        {paginatedJobs.map(({ _id, paymentFee, name, collections, progress, status, owner, creator, ratings }) => {
+          const talentHasReviewed = ratings?.some((review) => review.owner._id === owner?._id);
+          const clientHasReviewed = ratings?.some((review) => review.owner._id === creator._id);
+
           return (
             <ClientJobCard
               jobId={_id}
               status={status}
               progress={progress}
+              isCompleted={(talentHasReviewed && clientHasReviewed) || status === 'cancelled'}
               totalDeliverables={collections.filter((collection) => collection.type === 'deliverable').length}
               key={_id}
               price={paymentFee}

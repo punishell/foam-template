@@ -155,7 +155,7 @@ export const DeliverablesStepper: React.FC<DeliverablesStepperProps> = ({
         )}
 
         {showActionButton && !isClient && totalDeliverables === completedDeliverables && (
-          <div className="bg-primary-gradient p-[2px] rounded-[10px] mt-6">
+          <div className="bg-primary-gradient p-[1.5px] rounded-[10px] mt-6">
             <div className="bg-green-50 rounded-lg py-3 px-2">Waiting for Client to approve job as complete.</div>
           </div>
         )}

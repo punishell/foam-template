@@ -41,6 +41,7 @@ export interface Job {
   createdAt: string;
   creator: UserProfile;
   category: string;
+  escrowPaid: boolean;
   progress: number; // 0 - 100
   isPrivate: boolean;
   deliveryDate: string;
@@ -56,14 +57,12 @@ export interface Job {
   ratings: Rating[] | null;
   tagsData: string[];
   invites: any[]; // TODO: add type
-  invite:
-    | undefined
-    | {
-        _id: string;
-        sender: string;
-        receiver: string;
-        status: string;
-      };
+  invite?: {
+    _id: string;
+    sender: UserProfile;
+    receiver: UserProfile;
+    status: 'pending' | 'accepted' | 'rejected' | 'cancelled';
+  };
   status: JobStatus;
   bookmarkId?: string;
   isBookmarked?: boolean;

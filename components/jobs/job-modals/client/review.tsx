@@ -14,7 +14,7 @@ import Lottie from 'lottie-react';
 import { useDeclineReviewChange, useAcceptReviewChange } from '@/lib/api/job';
 interface ReviewTalentProps {
   job: Job;
-  closeModal?: () => void;
+  closeModal: () => void;
 }
 
 const MAX_COMMENT_LENGTH = 500;
@@ -125,7 +125,7 @@ export const ReviewTalent: React.FC<ReviewTalentProps> = ({ job, closeModal }) =
                   recipientId: owner?._id ?? '',
                 },
                 {
-                  onSuccess: () => { },
+                  onSuccess: () => {},
                 },
               );
             }}
@@ -242,7 +242,7 @@ const ReviewChangeRequested: React.FC<ReviewChangeRequestedProps> = ({ closeModa
   );
 };
 
-const ReviewSuccess: React.FC<{ closeModal?: () => void }> = ({ closeModal }) => {
+const ReviewSuccess: React.FC<{ closeModal: () => void }> = ({ closeModal }) => {
   return (
     <div className="h-full px-4 flex items-center justify-center">
       <div className="flex flex-col gap-32 items-center">

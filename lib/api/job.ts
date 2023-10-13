@@ -105,7 +105,7 @@ interface GetJobByIdParams {
   jobId: string;
 }
 
-interface GetJobByIdResponse extends Job { }
+interface GetJobByIdResponse extends Job {}
 
 async function getJobById(params: GetJobByIdParams): Promise<GetJobByIdResponse> {
   const res = await axios.get(`/collection/${params.jobId}`);
@@ -243,8 +243,8 @@ export function useMarkDeliverableAsComplete({ description }: { description: str
         data: jobId,
         isPublic: false,
         meta: {
-          value: Math.floor(progressPercentage(isComplete))
-        }
+          value: Math.floor(progressPercentage(isComplete)),
+        },
       });
       toast.success(`Deliverable marked as ${isComplete ? 'complete' : 'incomplete'} successfully`);
     },
@@ -461,11 +461,12 @@ interface CancelJobInviteParams {
 }
 
 async function postCancelJobInvite(params: CancelJobInviteParams): Promise<ApiResponse> {
-  const res = await axios.delete(`/invite/${params.inviteId}`);
+  const res = await axios.post(`/invite/${params.inviteId}/cancel`);
   return res.data.data;
 }
 
 export function useCancelJobInvite() {
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: postCancelJobInvite,
     mutationKey: ['cancel-job-invite'],
@@ -473,6 +474,7 @@ export function useCancelJobInvite() {
       toast.error(error?.response?.data.message || 'An error occurred');
     },
     onSuccess: () => {
+      queryClient.refetchQueries(['get-job-by-id']);
       toast.success('Invite cancelled successfully');
     },
   });

@@ -28,8 +28,8 @@ export const JobUpdates: React.FC<JobUpdatesProps> = ({ job, requestJobCancellat
 
   return (
     <React.Fragment>
-      <div className="py-6 px-4 bg-primary-gradient text-white font-bold text-3xl flex items-center justify-between">
-        <div className="max-w-[90%]">{name}</div>
+      <div className="py-6 px-4 bg-primary-gradient text-white font-bold text-3xl flex items-start justify-between">
+        <div className="max-w-[90%] break-words">{name}</div>
         <Popover>
           <PopoverTrigger asChild>
             <button>
@@ -40,7 +40,7 @@ export const JobUpdates: React.FC<JobUpdatesProps> = ({ job, requestJobCancellat
             <button className="px-4 py-2 hover:bg-red-100 duration-200 text-left" onClick={requestJobCancellation}>
               Cancel Job
             </button>
-            <button className="px-4 py-2 hover:bg-red-100 duration-200 text-left">Report an Issue</button>
+            {/* <button className="px-4 py-2 hover:bg-red-100 duration-200 text-left">Report an Issue</button> */}
           </PopoverContent>
         </Popover>
       </div>

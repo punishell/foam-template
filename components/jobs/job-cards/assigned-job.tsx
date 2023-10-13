@@ -14,6 +14,7 @@ interface ClientJobCardProps {
   title: string;
   price: number;
   status: JobStatus;
+  isCompleted?: boolean;
   totalDeliverables: number;
   progress: number; // 0 to 100
   talent: {
@@ -32,6 +33,7 @@ export const ClientJobCard: React.FC<ClientJobCardProps> = ({
   progress,
   status,
   totalDeliverables,
+  isCompleted,
 }) => {
   const router = useRouter();
   const [isUpdateModalOpen, setIsUpdateModalOpen] = React.useState(false);
@@ -46,16 +48,16 @@ export const ClientJobCard: React.FC<ClientJobCardProps> = ({
 
             <span className="px-3 text-base text-title inline-flex rounded-full bg-[#B2E9AA66]">${price}</span>
           </div>
-          <div className="flex grow text-title text-2xl items-center">{title}</div>
+          <div className="flex grow text-title text-2xl items-center break-all">{title}</div>
         </div>
       </div>
       <div className="flex items-center gap-4 justify-between mt-auto w-full">
         <div className="gap-2 flex items-center">
-          {
+          {!isCompleted && (
             <Button size="xs" variant="secondary" onClick={() => setIsUpdateModalOpen(true)}>
               {status === 'completed' ? 'Review' : 'See Updates'}
             </Button>
-          }
+          )}
           <Button
             size="xs"
             variant="outline"
@@ -92,6 +94,7 @@ interface TalentJobCardProps {
   title: string;
   price: number;
   status: JobStatus;
+  isCompleted?: boolean;
   totalDeliverables: number;
   progress: number; // 0 to 100
   client: {
@@ -109,6 +112,7 @@ export const TalentJobCard: React.FC<TalentJobCardProps> = ({
   progress,
   jobId,
   status,
+  isCompleted,
   totalDeliverables,
 }) => {
   const router = useRouter();
@@ -124,14 +128,16 @@ export const TalentJobCard: React.FC<TalentJobCardProps> = ({
 
             <span className="px-3 text-base text-title inline-flex rounded-full bg-[#B2E9AA66]">${price}</span>
           </div>
-          <div className="grow text-title text-2xl">{title}</div>
+          <div className="grow text-title text-2xl break-all">{title}</div>
         </div>
       </div>
       <div className="flex items-center gap-4 justify-between mt-auto w-full">
         <div className="gap-2 flex items-center">
-          <Button size="xs" variant="secondary" onClick={() => setIsUpdateModalOpen(true)}>
-            {status === 'completed' ? 'Review' : 'Update'}
-          </Button>
+          {!isCompleted && (
+            <Button size="xs" variant="secondary" onClick={() => setIsUpdateModalOpen(true)}>
+              {status === 'completed' ? 'Review' : 'Update'}
+            </Button>
+          )}
 
           <Button
             size="xs"
