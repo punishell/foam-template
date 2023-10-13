@@ -55,7 +55,7 @@ export const ClientJobModal: React.FC<ClientJobModalProps> = ({ jobId, talentId,
     return <JobCancellationRequest job={job} closeModal={() => setIsRequestingJobCancellation(false)} />;
   }
 
-  if (clientRequestedCancellation) {
+  if (jobCancellation && clientRequestedCancellation) {
     return <JobCancellationSuccessRequested />;
   }
 

@@ -39,7 +39,7 @@ const schema = z.object({
   thirdSkill: z.string().optional().default(''),
   secondSkill: z.string().optional().default(''),
   firstSkill: z.string().nonempty({ message: 'At least, one skill is required' }),
-  budget: z.string().nonempty({ message: 'Budget is required' }),
+  budget: z.coerce.number().min(100, { message: 'Budget must be at least $100' }),
   title: z.string().nonempty({ message: 'Job title is required' }),
   description: z.string().nonempty({ message: 'Job description is required' }),
   category: z.string().nonempty({ message: 'Required' }),
@@ -57,17 +57,17 @@ type FormValues = z.infer<typeof schema>;
 export default function CreateJob() {
   const router = useRouter();
   const createJob = useCreateJob();
-  const { _id: userId } = useUserState();
-  const [files, setFiles] = React.useState<File[]>([]);
-  const [uploadProgress, setUploadProgress] = React.useState(0);
+  // const { _id: userId } = useUserState();
+  // const [files, setFiles] = React.useState<File[]>([]);
+  // const [uploadProgress, setUploadProgress] = React.useState(0);
 
-  const onDrop = React.useCallback(async (acceptedFiles: File[]) => { }, []);
+  // const onDrop = React.useCallback(async (acceptedFiles: File[]) => {}, []);
 
-  const { getRootProps, getInputProps } = useDropzone({
-    onDrop,
-    maxFiles: 5,
-    accept: {},
-  });
+  // const { getRootProps, getInputProps } = useDropzone({
+  //   onDrop,
+  //   maxFiles: 5,
+  //   accept: {},
+  // });
 
   const form = useForm<FormValues>({
     reValidateMode: 'onChange',
@@ -82,7 +82,7 @@ export default function CreateJob() {
     description,
     due,
     firstSkill,
-    jobType,
+
     title,
     visibility,
     secondSkill,
@@ -146,10 +146,12 @@ export default function CreateJob() {
             <input
               type="text"
               autoFocus
+              maxLength={60}
               {...form.register('title')}
               placeholder="Enter Job Title"
               className="text-3xl w-full placeholder:text-white placeholder:text-opacity-60 bg-transparent focus:outline-none text-white caret-white"
             />
+            <div className="text-sm text-white ml-auto text-right">{form.watch('title')?.length}/ 60</div>
             <span className="absolute -bottom-5 flex w-full">
               {form.formState.errors.title?.message && (
                 <span className="text-sm text-red-200">{form.formState.errors.title?.message}!</span>

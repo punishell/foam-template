@@ -2,10 +2,8 @@ import React from 'react';
 import Link from 'next/link';
 import { ChevronUp } from 'lucide-react';
 import { Badge } from '@/components/common';
-import { AfroScore } from '@/components/common/afro-profile';
 import { colorFromScore, emptyAchievement, getAchievementData, limitString } from '@/lib/utils';
-import Image from 'next/image';
-import { DefaultAvatar } from '../common/default-avatar';
+import { AfroProfile } from '@/components/common/afro-profile';
 
 export const TalentBox: React.FC<{
   id: string;
@@ -20,7 +18,7 @@ export const TalentBox: React.FC<{
 }> = ({ id, name, title, imageUrl, score, skills, achievements }) => {
   const colorCodes = colorFromScore(parseInt(score ?? '0'));
   return (
-    <div key={id} className="m-0 h-[365px] overflow-hidden rounded-3xl p-0" style={{ background: colorCodes.bgColor }}>
+    <div key={id} className="m-0 h-[300px] overflow-hidden rounded-3xl p-0" style={{ background: colorCodes.bgColor }}>
       <div className="relative z-0 h-full rounded-2xl">
         <div
           className="top absolute rounded-full left-[-20%] top-[-20%] w-[150px] h-[150px]"
@@ -31,19 +29,7 @@ export const TalentBox: React.FC<{
           style={{ background: colorCodes.circleColor }}
         />
 
-        <div className="flex relative top-0 mx-auto w-full justify-center p-1 pb-0">
-          <Link href={`/talents/${id}`}>
-            <AfroScore size="3xl" score={Math.round(Number(score))}>
-              <div className="h-full w-full rounded-full">
-                {imageUrl ? (
-                  <Image src={imageUrl} alt="profile" layout="fill" className="rounded-full" />
-                ) : (
-                  <DefaultAvatar />
-                )}
-              </div>
-            </AfroScore>
-          </Link>
-        </div>
+        <AfroProfile size="3xl" score={Math.round(Number(score))} src={imageUrl} url={`/talents/${id}`} />
 
         <div className="absolute bottom-0 -mb-[190px] flex h-full w-full flex-col overflow-hidden duration-200 ease-out hover:mb-[0px]">
           <div className="relative z-20">
@@ -109,7 +95,7 @@ export const TalentBox: React.FC<{
               <div className="relative rounded-2xl border-t-0 px-5">
                 <div className="grid grid-rows-3 gap-2">
                   <span className="pb-0 pt-3 text-2xl font-semibold capitalize my-auto">{name}</span>
-                  {<span className="text-base">{title || ''}</span>}
+                  {<span className="text-base capitalize text-body">{title || ''}</span>}
                   {skills?.length > 0 && (
                     <div className="flex w-full items-center gap-2">
                       {skills?.slice(0, 3).map((skill: any, i: number) => {
