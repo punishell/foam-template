@@ -6,7 +6,7 @@ import { PageError } from '@/components/common/page-error';
 import { PageLoading } from '@/components/common/page-loading';
 import { useRouter } from 'next/navigation';
 import { Button } from 'pakt-ui';
-import { useDropzone } from 'react-dropzone';
+// import { useDropzone } from 'react-dropzone';
 import { useSearchParams } from 'next/navigation';
 import { Spinner } from '@/components/common';
 import { endOfYesterday, format } from 'date-fns';
@@ -69,7 +69,6 @@ export default function EditJob({ params }: Props) {
   if (jobQuery.isError) return <PageError className="absolute inset-0" />;
   if (jobQuery.isLoading) return <PageLoading className="absolute inset-0" />;
   const { data: job } = jobQuery;
-  console.log('job:', job);
 
   return <JobEditForm job={job} />;
 }
@@ -157,7 +156,7 @@ const JobEditForm: React.FC<JobEditFormProps> = ({ job }) => {
       },
       {
         onSuccess(_data, { id }) {
-          if (job.escrowPaid) {
+          if (talentId && job.escrowPaid) {
             inviteTalent.mutate(
               {
                 talentId,
@@ -452,6 +451,14 @@ const JobEditForm: React.FC<JobEditFormProps> = ({ job }) => {
               </div>
             )}
 
+            {!talentId && job.escrowPaid && (
+              <div className="max-w-[250px] w-full">
+                <Button onClick={form.handleSubmit(onSubmit)} fullWidth>
+                  {updateJob.isLoading ? <Spinner /> : 'Update Job'}
+                </Button>
+              </div>
+            )}
+
             {talentId && !job.escrowPaid && (
               <div className="max-w-[250px] w-full">
                 <Button onClick={form.handleSubmit(onSubmit)} fullWidth>
@@ -460,7 +467,7 @@ const JobEditForm: React.FC<JobEditFormProps> = ({ job }) => {
               </div>
             )}
 
-            {job.escrowPaid && (
+            {talentId && job.escrowPaid && (
               <div className="max-w-[250px] w-full">
                 <Button onClick={form.handleSubmit(onSubmit)} fullWidth>
                   {inviteTalent.isLoading || updateJob.isLoading ? <Spinner /> : 'Invite Talent'}

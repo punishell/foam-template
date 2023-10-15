@@ -50,7 +50,6 @@ export const JobUpdates: React.FC<JobUpdatesProps> = ({ job, requestJobCancellat
           profile={creator}
           deliveryDate={deliveryDate}
           paymentFee={paymentFee}
-          progress={progress}
           tags={tags}
         />
 
@@ -67,6 +66,7 @@ export const JobUpdates: React.FC<JobUpdatesProps> = ({ job, requestJobCancellat
           <div className="grow h-full">
             <DeliverablesStepper
               jobId={jobId}
+              jobProgress={progress}
               talentId={String(owner?._id)}
               jobCreator={creator?._id}
               deliverables={deliverables.map(({ _id, name, progress, updatedAt }) => ({

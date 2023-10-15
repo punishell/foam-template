@@ -76,16 +76,19 @@ const TalentOngoingJobs: React.FC<OngoingJobsProps> = ({ jobs }) => {
   return (
     <div className="flex flex-col h-full min-h-[80vh]">
       <div className="grid grid-cols-2 gap-4 overflow-y-auto pb-20">
-        {paginatedJobs.map(({ _id, paymentFee, name, creator, progress, collections, status }) => {
+        {paginatedJobs.map(({ _id, paymentFee, name, creator, collections, status }) => {
           return (
             <TalentJobCard
               status={status}
               jobId={_id}
               key={_id}
-              progress={progress}
               price={paymentFee}
               title={name}
               totalDeliverables={collections.filter((collection) => collection.type === 'deliverable').length}
+              completedDeliverables={
+                collections.filter((collection) => collection.type === 'deliverable' && collection.progress === 100)
+                  .length
+              }
               client={{
                 id: creator._id,
                 paktScore: creator.score,
@@ -122,7 +125,7 @@ const TalentCompletedJobs: React.FC<CompletedJobsProps> = ({ jobs }) => {
   return (
     <div className="flex flex-col h-full min-h-[80vh]">
       <div className="grid grid-cols-2 gap-4 overflow-y-auto pb-20">
-        {paginatedJobs.map(({ _id, paymentFee, name, creator, progress, collections, status, ratings, owner }) => {
+        {paginatedJobs.map(({ _id, paymentFee, name, creator, collections, status, ratings, owner }) => {
           const talentHasReviewed = ratings?.some((review) => review.owner._id === owner?._id);
           const clientHasReviewed = ratings?.some((review) => review.owner._id === creator._id);
 
@@ -131,11 +134,14 @@ const TalentCompletedJobs: React.FC<CompletedJobsProps> = ({ jobs }) => {
               jobId={_id}
               status={status}
               key={_id}
-              progress={progress}
               price={paymentFee}
               title={name}
               isCompleted={(talentHasReviewed && clientHasReviewed) || status === 'cancelled'}
               totalDeliverables={collections.filter((collection) => collection.type === 'deliverable').length}
+              completedDeliverables={
+                collections.filter((collection) => collection.type === 'deliverable' && collection.progress === 100)
+                  .length
+              }
               client={{
                 id: creator._id,
                 paktScore: creator.score,

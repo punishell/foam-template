@@ -156,11 +156,18 @@ export function useUpdateJob() {
       toast.error(error?.response?.data.message ?? 'An error occurred');
     },
     onSuccess: async (_, { deliverables = [], id, name }) => {
-      await updateJobDeliverables.mutate({
-        jobId: id,
-        deliverables,
-        replace: true,
-      });
+      updateJobDeliverables.mutate(
+        {
+          jobId: id,
+          deliverables,
+          replace: true,
+        },
+        {
+          onError: (error: ApiError) => {
+            toast.error(error?.response?.data.message ?? 'An error occurred updating deliverables');
+          },
+        },
+      );
       toast.success(`Job ${name} updated successfully`);
     },
   });
@@ -190,11 +197,18 @@ async function postAttachDeliverablesToJob(params: AttachDeliverablesToJobParams
 }
 
 export function useAttachDeliverablesToJob() {
+  const queryClient = useQueryClient();
+
   return useMutation({
     mutationFn: postAttachDeliverablesToJob,
     mutationKey: ['assign-job-deliverables'],
     onError: (error: ApiError) => {
       toast.error(error?.response?.data.message || 'Assigning deliverables failed');
+    },
+    onSuccess: () => {
+      queryClient.refetchQueries({
+        queryKey: ['get-job-by-id'],
+      });
     },
   });
 }
@@ -209,31 +223,26 @@ interface MarkDeliverableAsCompleteParams {
   completedDeliverables: number;
 }
 
-async function postMarkDeliverableAsComplete(params: MarkDeliverableAsCompleteParams): Promise<ApiResponse> {
+async function postToggleDeliverableCompletion(params: MarkDeliverableAsCompleteParams): Promise<ApiResponse> {
   const res = await axios.patch(`/collection/${params.deliverableId}`, {
     progress: params.isComplete ? 100 : 0,
   });
   return res.data;
 }
 
-export function useMarkDeliverableAsComplete({ description }: { description: string }) {
-  const updateJobProgress = useUpdateJobProgress();
+export function useToggleDeliverableCompletion({ description }: { description: string }) {
   const createFeed = useCreateFeed();
+  const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: postMarkDeliverableAsComplete,
+    mutationFn: postToggleDeliverableCompletion,
     mutationKey: ['mark-deliverable-as-complete'],
     onError: (error: ApiError) => {
       toast.error(error?.response?.data.message ?? 'Marking deliverable as complete failed');
     },
     onSuccess: (_, { completedDeliverables, jobId, jobCreator, totalDeliverables, isComplete }) => {
-      const progressPercentage = (isComplete: boolean) => {
-        if (isComplete) return ((completedDeliverables + 1) / totalDeliverables) * 100;
-        else return ((completedDeliverables - 1) / totalDeliverables) * 100;
-      };
-      updateJobProgress.mutate({
-        jobId,
-        progress: Math.floor(progressPercentage(isComplete)),
+      queryClient.refetchQueries({
+        queryKey: ['get-jobs'],
       });
       createFeed.mutate({
         type: FEED_TYPES.JOB_DELIVERABLE_UPDATE,
@@ -243,7 +252,7 @@ export function useMarkDeliverableAsComplete({ description }: { description: str
         data: jobId,
         isPublic: false,
         meta: {
-          value: Math.floor(progressPercentage(isComplete)),
+          value: Math.round((completedDeliverables / totalDeliverables) * 100),
         },
       });
       toast.success(`Deliverable marked as ${isComplete ? 'complete' : 'incomplete'} successfully`);

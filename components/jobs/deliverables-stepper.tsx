@@ -1,7 +1,7 @@
 import React from 'react';
 import { format } from 'date-fns';
 import { Spinner } from '@/components/common';
-import { useMarkDeliverableAsComplete, useMarkJobAsComplete } from '@/lib/api/job';
+import { useToggleDeliverableCompletion, useMarkJobAsComplete, useUpdateJobProgress } from '@/lib/api/job';
 import { Button } from 'pakt-ui';
 
 interface Deliverable {
@@ -33,7 +33,7 @@ const DeliverableStep: React.FC<DeliverableProps> = ({
   totalDeliverables,
   completedDeliverables,
 }) => {
-  const mutation = useMarkDeliverableAsComplete({ description });
+  const mutation = useToggleDeliverableCompletion({ description });
   const [isComplete, setIsComplete] = React.useState(progress === 100);
 
   return (
@@ -89,22 +89,25 @@ const DeliverableStep: React.FC<DeliverableProps> = ({
 
 interface DeliverablesStepperProps {
   jobId: string;
-  jobCreator: string;
   talentId: string;
   readonly?: boolean;
+  jobCreator: string;
+  jobProgress: number;
   showActionButton?: boolean;
   deliverables: Deliverable[];
 }
 
 export const DeliverablesStepper: React.FC<DeliverablesStepperProps> = ({
-  deliverables,
   jobId,
   jobCreator,
   talentId,
+  jobProgress,
+  deliverables,
   readonly: isClient,
   showActionButton = true,
 }) => {
-  const mutation = useMarkJobAsComplete();
+  const updateJobProgress = useUpdateJobProgress();
+  const markJobAsComplete = useMarkJobAsComplete();
   const totalDeliverables = deliverables.length;
   const completedDeliverables = deliverables.filter((deliverable) => deliverable.progress === 100).length;
 
@@ -131,33 +134,56 @@ export const DeliverablesStepper: React.FC<DeliverablesStepperProps> = ({
         })}
 
       <div className="mt-auto">
-        {showActionButton && isClient && totalDeliverables === completedDeliverables && (
+        {showActionButton && isClient && jobProgress === 100 && (
           <Button
             className="mt-6"
             size={'sm'}
             fullWidth
             onClick={() => {
-              mutation.mutate(
+              markJobAsComplete.mutate(
                 {
                   jobId,
                   talentId,
                 },
                 {
                   onError: () => {
-                    mutation.reset();
+                    markJobAsComplete.reset();
                   },
                 },
               );
             }}
           >
-            {mutation.isLoading ? <Spinner size={20} /> : 'Mark Job as Complete'}
+            {markJobAsComplete.isLoading ? <Spinner size={20} /> : 'Mark Job as Complete'}
           </Button>
         )}
 
-        {showActionButton && !isClient && totalDeliverables === completedDeliverables && (
+        {showActionButton && !isClient && jobProgress === 100 && (
           <div className="bg-primary-gradient p-[1.5px] rounded-[10px] mt-6">
             <div className="bg-green-50 rounded-lg py-3 px-2">Waiting for Client to approve job as complete.</div>
           </div>
+        )}
+
+        {showActionButton && !isClient && jobProgress !== 100 && (
+          <Button
+            className="mt-6"
+            size={'sm'}
+            fullWidth
+            onClick={() => {
+              updateJobProgress.mutate(
+                {
+                  jobId,
+                  progress: 100,
+                },
+                {
+                  onError: () => {
+                    updateJobProgress.reset();
+                  },
+                },
+              );
+            }}
+          >
+            {updateJobProgress.isLoading ? <Spinner size={20} /> : 'Complete Job'}
+          </Button>
         )}
       </div>
     </div>

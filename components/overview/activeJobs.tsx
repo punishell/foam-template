@@ -111,7 +111,7 @@ export const ActiveJobs = () => {
     isError,
   } = useGetJobs({ category: 'created', status: 'ongoing' });
   const jobDataJoined = [...(jobAssignedData?.data || []), ...(jobCreatedData?.data || [])];
-  const jobData = jobDataJoined.filter((f) => f.inviteAccepted)
+  const jobData = jobDataJoined.filter((f) => f.inviteAccepted);
   // @ts-ignore
   jobData.sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
 
@@ -124,7 +124,7 @@ export const ActiveJobs = () => {
         const currentProgress = parseInt(String((deliverableTotalCompleted * 100) / deliverableTotal));
         const deliverableCountPercentage = {
           total: deliverableTotal,
-          progress: currentProgress,
+          progress: Math.floor(currentProgress),
         };
         return (
           <ActiveJobCard
@@ -159,7 +159,5 @@ export const ActiveJobs = () => {
   if (isError || assignedError) return <PageError className="rounded-2xl border border-red-200 h-[85vh]" />;
   if (activeJobs.length === 0) return <PageEmpty className="h-[85vh] rounded-2xl border border-line" />;
 
-  return (
-    <div className="flex flex-col gap-5 border border-line bg-white rounded-2xl p-4 w-full">{activeJobs}</div>
-  );
+  return <div className="flex flex-col gap-5 border border-line bg-white rounded-2xl p-4 w-full">{activeJobs}</div>;
 };
