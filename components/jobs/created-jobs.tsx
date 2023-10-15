@@ -1,7 +1,6 @@
 'use client';
 
 import React from 'react';
-import { format } from 'date-fns';
 import type { Job } from '@/lib/types';
 import { Tabs } from '@/components/common/tabs';
 import { UnAssignedJobCard } from '@/components/jobs/job-cards/unassigned-job';
@@ -111,12 +110,15 @@ const OngoingJobs: React.FC<OngoingJobsProps> = ({ jobs }) => {
   return (
     <div className="flex flex-col h-full min-h-[80vh]">
       <div className="grid grid-cols-2 gap-4 overflow-y-auto pb-20">
-        {paginatedJobs.map(({ _id, paymentFee, name, creator, progress, collections, status, owner }) => {
+        {paginatedJobs.map(({ _id, paymentFee, name, collections, status, owner }) => {
           return (
             <ClientJobCard
-              progress={progress}
               status={status}
               totalDeliverables={collections.filter((collection) => collection.type === 'deliverable').length}
+              completedDeliverables={
+                collections.filter((collection) => collection.type === 'deliverable' && collection.progress === 100)
+                  .length
+              }
               jobId={_id}
               key={_id}
               price={paymentFee}
@@ -156,7 +158,7 @@ const CompletedJobs: React.FC<CompletedJobsProps> = ({ jobs }) => {
   return (
     <div className="flex flex-col h-full min-h-[80vh]">
       <div className="grid grid-cols-2 gap-4 overflow-y-auto pb-20">
-        {paginatedJobs.map(({ _id, paymentFee, name, collections, progress, status, owner, creator, ratings }) => {
+        {paginatedJobs.map(({ _id, paymentFee, name, collections, status, owner, creator, ratings }) => {
           const talentHasReviewed = ratings?.some((review) => review.owner._id === owner?._id);
           const clientHasReviewed = ratings?.some((review) => review.owner._id === creator._id);
 
@@ -164,10 +166,13 @@ const CompletedJobs: React.FC<CompletedJobsProps> = ({ jobs }) => {
             <ClientJobCard
               jobId={_id}
               status={status}
-              progress={progress}
               isCancelled={status === 'cancelled'}
               isCompleted={(talentHasReviewed && clientHasReviewed) || status === 'cancelled'}
               totalDeliverables={collections.filter((collection) => collection.type === 'deliverable').length}
+              completedDeliverables={
+                collections.filter((collection) => collection.type === 'deliverable' && collection.progress === 100)
+                  .length
+              }
               key={_id}
               price={paymentFee}
               title={name}

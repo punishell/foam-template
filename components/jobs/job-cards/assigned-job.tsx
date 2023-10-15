@@ -17,7 +17,7 @@ interface ClientJobCardProps {
   isCompleted?: boolean;
   isCancelled?: boolean;
   totalDeliverables: number;
-  progress: number; // 0 to 100
+  completedDeliverables: number;
   talent: {
     id: string;
     name: string;
@@ -31,14 +31,15 @@ export const ClientJobCard: React.FC<ClientJobCardProps> = ({
   price,
   title,
   jobId,
-  progress,
   status,
   isCancelled,
   totalDeliverables,
+  completedDeliverables,
   isCompleted,
 }) => {
   const router = useRouter();
   const [isUpdateModalOpen, setIsUpdateModalOpen] = React.useState(false);
+  const progress = Math.floor((completedDeliverables / totalDeliverables) * 100);
 
   return (
     <div className="gap-4 bg-white rounded-3xl border-line w-full flex flex-col grow border p-4">
@@ -99,7 +100,7 @@ interface TalentJobCardProps {
   status: JobStatus;
   isCompleted?: boolean;
   totalDeliverables: number;
-  progress: number; // 0 to 100
+  completedDeliverables: number;
   client: {
     id: string;
     name: string;
@@ -112,14 +113,15 @@ export const TalentJobCard: React.FC<TalentJobCardProps> = ({
   client,
   price,
   title,
-  progress,
   jobId,
   status,
   isCompleted,
   totalDeliverables,
+  completedDeliverables,
 }) => {
   const router = useRouter();
   const [isUpdateModalOpen, setIsUpdateModalOpen] = React.useState(false);
+  const progress = Math.floor((completedDeliverables / totalDeliverables) * 100);
 
   return (
     <div className="gap-4 bg-white rounded-3xl border-line w-full flex flex-col grow border p-4">
@@ -155,8 +157,8 @@ export const TalentJobCard: React.FC<TalentJobCardProps> = ({
 
         {
           <DeliverableProgressBar
-            percentageProgress={progress}
             totalDeliverables={totalDeliverables}
+            percentageProgress={progress}
             className="w-full max-w-none"
           />
         }
