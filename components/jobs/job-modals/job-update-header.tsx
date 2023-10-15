@@ -1,9 +1,7 @@
 import React from 'react';
-import Image from 'next/image';
 import { format } from 'date-fns';
-import { AfroScore } from '@/components/common/afro-profile';
-import { DefaultAvatar } from '@/components/common/default-avatar';
 import type { UserProfile } from '@/lib/types';
+import { AfroProfile } from '@/components/common/afro-profile';
 
 interface Props {
   status?: 'ongoing' | 'cancel_requested';
@@ -72,15 +70,12 @@ export const JobUpdateHeader: React.FC<Props> = ({
       >
         <div className="pb-4 flex flex-col gap-2">
           <div className="flex gap-2 items-center">
-            <AfroScore score={profile.score} size="sm">
-              <div className="h-full w-full rounded-full">
-                {profile.profileImage?.url ? (
-                  <Image src={profile.profileImage?.url} fill alt="profile" className="rounded-full" />
-                ) : (
-                  <DefaultAvatar />
-                )}
-              </div>
-            </AfroScore>
+            <AfroProfile
+              score={profile?.score || 0}
+              size="md"
+              src={profile.profileImage?.url}
+              url={`/talents/${profile?._id}`}
+            />
             <div className="flex flex-col">
               <span className="text-title text-base font-bold">{`
                   ${profile.firstName} ${profile.lastName}

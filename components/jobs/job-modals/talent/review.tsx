@@ -3,8 +3,6 @@ import Image from 'next/image';
 import { type Job, isReviewChangeRequest } from '@/lib/types';
 import Lottie from 'lottie-react';
 import success from '@/lottiefiles/success.json';
-import { AfroScore } from '@/components/common/afro-profile';
-import { DefaultAvatar } from '@/components/common/default-avatar';
 import { Spinner } from '@/components/common';
 import { Button } from 'pakt-ui';
 import { ChevronLeft } from 'lucide-react';
@@ -13,6 +11,7 @@ import Rating from 'react-rating';
 import { Star } from 'lucide-react';
 import { useReleaseJobPayment } from '@/lib/api/job';
 import { useRouter } from 'next/navigation';
+import { AfroProfile } from '@/components/common/afro-profile';
 
 interface ReviewClientProps {
   job: Job;
@@ -45,6 +44,7 @@ export const ReviewClient: React.FC<ReviewClientProps> = ({ job, closeModal }) =
   if (requestReviewChange) {
     return (
       <RequestReviewChange
+        job={job}
         setRequestReviewChange={setRequestReviewChange}
         setReviewChangeRequestPending={setReviewChangeRequestPending}
         jobId={jobId}
@@ -90,15 +90,12 @@ export const ReviewClient: React.FC<ReviewClientProps> = ({ job, closeModal }) =
           <h3 className="text-lg">How was your experience with</h3>
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <AfroScore score={creator?.score || 0} size="sm">
-                <div className="h-full w-full rounded-full relative">
-                  {creator?.profileImage?.url ? (
-                    <Image src={creator?.profileImage?.url} fill alt="profile" className="rounded-full" />
-                  ) : (
-                    <DefaultAvatar />
-                  )}
-                </div>
-              </AfroScore>
+              <AfroProfile
+                score={creator?.score || 0}
+                size="md"
+                src={creator?.profileImage?.url}
+                url={`/talents/${creator?._id}`}
+              />
 
               <div className="flex flex-col gap-1">
                 <span className="text-title text-base font-medium leading-none">{`${creator?.firstName} ${creator?.lastName}`}</span>
@@ -172,6 +169,7 @@ export const ReviewClient: React.FC<ReviewClientProps> = ({ job, closeModal }) =
 };
 
 interface RequestReviewChangeProps {
+  job: Job;
   jobId: string;
   recipientId: string;
   setRequestReviewChange: (value: boolean) => void;
@@ -179,6 +177,7 @@ interface RequestReviewChangeProps {
 }
 
 const RequestReviewChange: React.FC<RequestReviewChangeProps> = ({
+  job,
   jobId,
   recipientId,
   setRequestReviewChange,
@@ -186,6 +185,8 @@ const RequestReviewChange: React.FC<RequestReviewChangeProps> = ({
 }) => {
   const mutation = useRequestReviewChange({ recipientId });
   const [reason, setReason] = React.useState('');
+
+  const clientReview = job.ratings?.find((review) => review.owner._id === job.creator._id);
 
   return (
     <React.Fragment>
@@ -210,16 +211,16 @@ const RequestReviewChange: React.FC<RequestReviewChangeProps> = ({
         <div>
           <div className="p-3 border border-line rounded-xl flex flex-col gap-3">
             <div className="flex justify-between items-center">
-              <span>Romani&apos; Review</span>
+              <span>{clientReview?.owner.firstName}&apos; Review</span>
               {/*  @ts-ignore */}
               <Rating
                 readonly
-                initialRating={4 || 0}
+                initialRating={clientReview?.rating || 0}
                 fullSymbol={<Star fill="#15D28E" color="#15D28E" />}
                 emptySymbol={<Star fill="transparent" color="#15D28E" />}
               />
             </div>
-            <p className="text-body">Lorem ipsum dolor sit amet consectetur adipisicing elit. Quasi, voluptatem.</p>
+            <p className="text-body">{clientReview?.review}</p>
           </div>
         </div>
 
