@@ -7,12 +7,19 @@ interface Props {
   percentageProgress: number;
 }
 
-const InProgress = () => <div className="bg-line rounded-full h-2 flex-1 basis-0" />;
+const InProgress: React.FC<BarProps> = ({ isCancelled }) => (
+  <div
+    className="rounded-full h-2 flex-1 basis-0"
+    style={{
+      backgroundColor: isCancelled ? '#fee2e2' : '#e8e8e8',
+    }}
+  />
+);
 
-interface CompletedProps {
+interface BarProps {
   isCancelled?: boolean;
 }
-const Completed: React.FC<CompletedProps> = ({ isCancelled }) => (
+const Completed: React.FC<BarProps> = ({ isCancelled }) => (
   <div
     className="rounded-full h-2 flex-1 basis-0"
     style={{
@@ -33,7 +40,7 @@ export const DeliverableProgressBar: React.FC<Props> = ({
     if (i < percentageProgress / (100 / totalDeliverables)) {
       progressBars.push(<Completed key={i} isCancelled={isCancelled} />);
     } else {
-      progressBars.push(<InProgress key={i} />);
+      progressBars.push(<InProgress key={i} isCancelled={isCancelled} />);
     }
   }
 
