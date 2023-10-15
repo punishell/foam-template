@@ -124,6 +124,7 @@ export const JobUpdates: React.FC<JobUpdatesProps> = ({ job, requestJobCancellat
 
           <div className="grow h-full">
             <DeliverablesStepper
+              jobProgress={progress}
               jobId={jobId}
               jobCreator={creator._id}
               talentId={String(owner?._id)}

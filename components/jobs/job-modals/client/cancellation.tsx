@@ -62,7 +62,6 @@ export const JobCancellationRequest: React.FC<JobCancellationRequestProps> = ({ 
           profile={owner}
           deliveryDate={deliveryDate}
           paymentFee={paymentFee}
-          progress={progress}
           tags={tags}
         />
 
@@ -78,6 +77,7 @@ export const JobCancellationRequest: React.FC<JobCancellationRequestProps> = ({ 
           <h3 className="font-bold text-lg">Deliverables</h3>
           <DeliverablesStepper
             jobId={jobId}
+            jobProgress={progress}
             talentId={owner?._id}
             jobCreator={creator._id}
             readonly
@@ -125,6 +125,9 @@ const AcceptJobCancellation: React.FC<AcceptJobCancellationProps> = ({ setAccept
   const amountToPay = (percentageToPay / 100) * job.paymentFee;
 
   const totalDeliverables = job.collections.filter(isJobDeliverable).length;
+  const completedDeliverables = job.collections
+    .filter(isJobDeliverable)
+    .filter((deliverable) => deliverable.progress === 100).length;
 
   return (
     <React.Fragment>
@@ -143,9 +146,9 @@ const AcceptJobCancellation: React.FC<AcceptJobCancellationProps> = ({ setAccept
 
       <div className="flex py-6 px-4 flex-col gap-10 h-full grow">
         <DeliverableProgressBar
-          percentageProgress={job.progress}
           totalDeliverables={totalDeliverables}
           className="max-w-none text-base"
+          percentageProgress={Math.floor((completedDeliverables / totalDeliverables) * 100)}
         />
 
         <div className="flex flex-col gap-1">
