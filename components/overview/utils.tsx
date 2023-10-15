@@ -22,7 +22,13 @@ import {
 } from './feedViewer';
 import { DataFeedResponse } from '@/lib/types';
 
-export const ParseFeedView = (feed: DataFeedResponse, loggedInUser: string, key: number, callback?: () => void, dismissFeed?: (id: string) => void) => {
+export const ParseFeedView = (
+  feed: DataFeedResponse,
+  loggedInUser: string,
+  key: number,
+  callback?: () => void,
+  dismissFeed?: (id: string) => void,
+) => {
   const amount = String(feed?.data?.paymentFee);
   const isBookmarked = feed.isBookmarked || false;
   const bookmarkId = feed.bookmarkId || feed._id;
@@ -47,28 +53,31 @@ export const ParseFeedView = (feed: DataFeedResponse, loggedInUser: string, key:
     name: `${feed?.data?.owner?.firstName || ''} ${feed?.data?.owner?.lastName || ''}`,
     score: feed?.data?.owner?.score || 0,
   };
-  const deliverableTotal = feed?.data?.collections.filter(f => f.type == "deliverable").length;
-  const deliverableTotalCompleted = feed?.meta?.value || feed?.data?.collections.filter(f => (f.type == "deliverable" && f.progress == 100)).length;
-  const currentProgress = parseInt(String(deliverableTotalCompleted * 100 / deliverableTotal));
+  const deliverableTotal = feed?.data?.collections.filter((f) => f.type == 'deliverable').length;
+  const deliverableTotalCompleted =
+    feed?.meta?.value || feed?.data?.collections.filter((f) => f.type == 'deliverable' && f.progress == 100).length;
+  const currentProgress = parseInt(String((deliverableTotalCompleted * 100) / deliverableTotal));
   const deliverableCountPercentage = {
     total: deliverableTotal,
-    progress: currentProgress,
-  }
+    progress: Math.floor(currentProgress),
+  };
 
   switch (feed.type) {
     case FEED_TYPES.COLLECTION_CREATED:
     case FEED_TYPES.PUBLIC_JOB_CREATED:
-      return <PublicJobCreatedFeed
-        key={key}
-        creator={inviter}
-        amount={amount}
-        jobId={feed?.data?._id}
-        title={feed?.title}
-        _id={feed?._id}
-        bookmark={{ active: isBookmarked, id: bookmarkId }}
-        callback={callback}
-        close={dismissFeed}
-      />;
+      return (
+        <PublicJobCreatedFeed
+          key={key}
+          creator={inviter}
+          amount={amount}
+          jobId={feed?.data?._id}
+          title={feed?.title}
+          _id={feed?._id}
+          bookmark={{ active: isBookmarked, id: bookmarkId }}
+          callback={callback}
+          close={dismissFeed}
+        />
+      );
     case FEED_TYPES.COLLECTION_INVITE:
     case FEED_TYPES.JOB_INVITATION_RECEIVED:
       return (
@@ -78,7 +87,7 @@ export const ParseFeedView = (feed: DataFeedResponse, loggedInUser: string, key:
           title={feed?.title}
           type="job-invite-pending"
           amount={amount}
-          inviteId={feed?.data?.invite?._id || ""}
+          inviteId={feed?.data?.invite?._id || ''}
           inviter={inviter}
           jobId={feed?.data?._id}
           bookmarked={isBookmarked}
@@ -107,149 +116,174 @@ export const ParseFeedView = (feed: DataFeedResponse, loggedInUser: string, key:
         />
       );
     case FEED_TYPES.JOB_APPLICATION_SUBMITTED:
-      return <JobApplicationCard
-        key={key}
-        id={feed?._id}
-        title={feed?.data?.parent?.name || ""}
-        applicant={{
-          _id: feed?.data?.creator?._id || "",
-          name: `${feed?.data?.creator.firstName} ${feed?.data?.creator?.lastName}`,
-          avatar: feed?.data?.creator?.profileImage?.url || "",
-          score: feed?.data?.creator?.score,
-        }}
-        bookmarked={isBookmarked}
-        bookmarkId={bookmarkId}
-        jobId={feed?.data?.parent?._id || ""}
-        close={dismissFeed}
-      />;
+      return (
+        <JobApplicationCard
+          key={key}
+          id={feed?._id}
+          title={feed?.data?.parent?.name || ''}
+          applicant={{
+            _id: feed?.data?.creator?._id || '',
+            name: `${feed?.data?.creator.firstName} ${feed?.data?.creator?.lastName}`,
+            avatar: feed?.data?.creator?.profileImage?.url || '',
+            score: feed?.data?.creator?.score,
+          }}
+          bookmarked={isBookmarked}
+          bookmarkId={bookmarkId}
+          jobId={feed?.data?.parent?._id || ''}
+          close={dismissFeed}
+        />
+      );
     case FEED_TYPES.JOB_DELIVERABLE_UPDATE:
     case FEED_TYPES.COLLECTION_UPDATE:
-      return <JobUpdateFeed
-        key={key}
-        talent={talent}
-        creator={inviter}
-        id={feed?._id}
-        title={feed?.title}
-        description={feed?.description}
-        bookmarked={isBookmarked}
-        bookmarkId={bookmarkId}
-        close={dismissFeed}
-        jobId={feed?.data?._id}
-        progress={deliverableCountPercentage}
-        isCreator={feed?.data?.creator?._id === loggedInUser}
-        jobTitle={feed.data.name}
-      />;
+      return (
+        <JobUpdateFeed
+          key={key}
+          talent={talent}
+          creator={inviter}
+          id={feed?._id}
+          title={feed?.title}
+          description={feed?.description}
+          bookmarked={isBookmarked}
+          bookmarkId={bookmarkId}
+          close={dismissFeed}
+          jobId={feed?.data?._id}
+          progress={deliverableCountPercentage}
+          isCreator={feed?.data?.creator?._id === loggedInUser}
+          jobTitle={feed.data.name}
+        />
+      );
     case FEED_TYPES.REFERRAL_SIGNUP:
-      return <ReferralSignupFeed
-        key={key}
-        id={feed?._id} name={`${feed?.creator?.firstName || ''} ${feed?.creator?.lastName || ''}`}
-        title={feed?.title}
-        description={feed?.description}
-        avatar={feed?.creator?.profileImage?.url}
-        userId={feed?.creator?._id}
-        score={feed?.creator?.score}
-        close={dismissFeed}
-        bookmarked={isBookmarked}
-        bookmarkId={bookmarkId}
-      />;
+      return (
+        <ReferralSignupFeed
+          key={key}
+          id={feed?._id}
+          name={`${feed?.creator?.firstName || ''} ${feed?.creator?.lastName || ''}`}
+          title={feed?.title}
+          description={feed?.description}
+          avatar={feed?.creator?.profileImage?.url}
+          userId={feed?.creator?._id}
+          score={feed?.creator?.score}
+          close={dismissFeed}
+          bookmarked={isBookmarked}
+          bookmarkId={bookmarkId}
+        />
+      );
     case FEED_TYPES.JOB_REVIEW:
-      return <JobReviewedFeed
-        key={key}
-        id={feed?._id}
-        talent={talent}
-        creator={inviter}
-        jobId={feed?.data?._id}
-        isCreator={feed?.data?.creator?._id === loggedInUser}
-        title={feed?.data?.name}
-        description={feed?.description}
-        close={dismissFeed}
-        bookmarked={isBookmarked}
-        bookmarkId={bookmarkId}
-      />;
+      return (
+        <JobReviewedFeed
+          key={key}
+          id={feed?._id}
+          talent={talent}
+          creator={inviter}
+          jobId={feed?.data?._id}
+          isCreator={feed?.data?.creator?._id === loggedInUser}
+          title={feed?.data?.name}
+          description={feed?.description}
+          close={dismissFeed}
+          bookmarked={isBookmarked}
+          bookmarkId={bookmarkId}
+        />
+      );
     case FEED_TYPES.REFERRAL_COLLECTION_COMPLETION:
-      return <ReferralJobCompletion
-        key={key}
-        id={feed?._id}
-        talent={talent}
-        jobId={feed?.data?._id}
-        close={dismissFeed}
-        bookmarked={isBookmarked}
-        bookmarkId={bookmarkId}
-        title={feed?.data?.name}
-        rating={feed?.meta?.rating}
-      />;
+      return (
+        <ReferralJobCompletion
+          key={key}
+          id={feed?._id}
+          talent={talent}
+          jobId={feed?.data?._id}
+          close={dismissFeed}
+          bookmarked={isBookmarked}
+          bookmarkId={bookmarkId}
+          title={feed?.data?.name}
+          rating={feed?.meta?.rating}
+        />
+      );
     case FEED_TYPES.JOB_PAYMENT_RELEASED:
-      return <PaymentReleased
-        key={key}
-        id={feed?._id}
-        talent={talent}
-        creator={inviter}
-        jobId={feed?.data?._id}
-        isCreator={feed?.data?.creator?._id === loggedInUser}
-        amount={String(feed?.data?.paymentFee)}
-        description={feed?.description}
-        close={dismissFeed}
-        bookmarked={isBookmarked}
-        bookmarkId={bookmarkId}
-        title={feed?.title}
-      />;
+      return (
+        <PaymentReleased
+          key={key}
+          id={feed?._id}
+          talent={talent}
+          creator={inviter}
+          jobId={feed?.data?._id}
+          isCreator={feed?.data?.creator?._id === loggedInUser}
+          amount={String(feed?.data?.paymentFee)}
+          description={feed?.description}
+          close={dismissFeed}
+          bookmarked={isBookmarked}
+          bookmarkId={bookmarkId}
+          title={feed?.title}
+        />
+      );
     case FEED_TYPES.COLLECTION_COMPLETED:
     case FEED_TYPES.JOB_COMPLETION:
-      return <JobCompletionFeed
-        key={key}
-        id={feed?._id}
-        talent={talent}
-        creator={inviter}
-        jobId={feed?.data?._id}
-        isCreator={feed?.data?.creator?._id === loggedInUser}
-        close={dismissFeed}
-        bookmarked={isBookmarked}
-        bookmarkId={bookmarkId}
-        title={feed?.title}
-      />;
+      return (
+        <JobCompletionFeed
+          key={key}
+          id={feed?._id}
+          talent={talent}
+          creator={inviter}
+          jobId={feed?.data?._id}
+          isCreator={feed?.data?.creator?._id === loggedInUser}
+          close={dismissFeed}
+          bookmarked={isBookmarked}
+          bookmarkId={bookmarkId}
+          title={feed?.title}
+        />
+      );
     case FEED_TYPES.COLLECTION_CANCELLED:
     case FEED_TYPES.JOB_CANCELLED:
-      return <JobCancelled
-        key={key}
-        id={feed?._id}
-        talent={talent}
-        creator={inviter}
-        jobId={feed?.data?._id}
-        isCreator={feed?.data?.creator?._id === loggedInUser}
-        close={dismissFeed}
-        bookmarked={isBookmarked}
-        bookmarkId={bookmarkId}
-        title={feed?.title}
-      />;
+      return (
+        <JobCancelled
+          key={key}
+          id={feed?._id}
+          talent={talent}
+          creator={inviter}
+          jobId={feed?.data?._id}
+          isCreator={feed?.data?.creator?._id === loggedInUser}
+          close={dismissFeed}
+          bookmarked={isBookmarked}
+          bookmarkId={bookmarkId}
+          title={feed?.title}
+        />
+      );
     case FEED_TYPES.JOB_CANCELLED_REQUEST:
     case FEED_TYPES.JOB_CANCELLED_ACCEPTED:
-      return <ReviewChangeCard
-        key={key}
-        id={feed?._id}
-        talent={talent}
-        creator={inviter}
-        jobId={feed?.data?._id}
-        isCreator={feed?.data?.creator?._id === loggedInUser}
-        close={dismissFeed}
-        bookmarked={isBookmarked}
-        bookmarkId={bookmarkId}
-        title={feed?.type == FEED_TYPES.JOB_CANCELLED_ACCEPTED ? `${inviter.name} accepted to cancel Cancel Job` : `${talent.name} requested to cancel a job`}
-        description={feed?.description}
-      />;
+      return (
+        <ReviewChangeCard
+          key={key}
+          id={feed?._id}
+          talent={talent}
+          creator={inviter}
+          jobId={feed?.data?._id}
+          isCreator={feed?.data?.creator?._id === loggedInUser}
+          close={dismissFeed}
+          bookmarked={isBookmarked}
+          bookmarkId={bookmarkId}
+          title={
+            feed?.type == FEED_TYPES.JOB_CANCELLED_ACCEPTED
+              ? `${inviter.name} accepted to cancel Cancel Job`
+              : `${talent.name} requested to cancel a job`
+          }
+          description={feed?.description}
+        />
+      );
     case FEED_TYPES.JOB_REVIEW_CHANGE:
-      return <ReviewChangeCard
-        key={key}
-        id={feed?._id}
-        talent={talent}
-        creator={inviter}
-        jobId={feed?.data?._id}
-        isCreator={feed?.data?.creator?._id === loggedInUser}
-        close={dismissFeed}
-        bookmarked={isBookmarked}
-        bookmarkId={bookmarkId}
-        title={`${talent.name} submitted a redo request`}
-        description={feed?.description}
-      />;
+      return (
+        <ReviewChangeCard
+          key={key}
+          id={feed?._id}
+          talent={talent}
+          creator={inviter}
+          jobId={feed?.data?._id}
+          isCreator={feed?.data?.creator?._id === loggedInUser}
+          close={dismissFeed}
+          bookmarked={isBookmarked}
+          bookmarkId={bookmarkId}
+          title={`${talent.name} submitted a redo request`}
+          description={feed?.description}
+        />
+      );
 
     // case FEED_TYPES.ISSUE_RAISED:
     //   return <IssueResolutionRaiseFeed />;
