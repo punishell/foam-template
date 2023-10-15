@@ -8,7 +8,6 @@ interface Props {
   createdAt: string;
   deliveryDate: string;
   paymentFee: number;
-  progress: number;
   profile: UserProfile;
   tags: {
     color: string;
@@ -21,7 +20,6 @@ export const JobUpdateHeader: React.FC<Props> = ({
   profile,
   deliveryDate,
   paymentFee,
-  progress,
   tags,
   status = 'ongoing',
 }) => {
