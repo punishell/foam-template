@@ -375,7 +375,7 @@ const TalentPrivateJobCtas: React.FC<TalentPrivateJobCtasProps> = ({ inviteId, h
               { id: inviteId },
               {
                 onSuccess: () => {
-                  router.push('/jobs');
+                  router.push('/overview');
                 },
               },
             );
