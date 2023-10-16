@@ -46,12 +46,12 @@ export const RenderBookMark = ({ size = 20, isBookmarked, id, bookmarkId, type =
   };
   if (useCheck) {
     return (
-      <div className='flex gap-2 items-center w-[100px]' onClick={CallFuc}>
+      <div className='flex flex-end min-w-fit' onClick={CallFuc}>
         <CheckMark
           fill={bookmarked ? '#7DDE86' : undefined}
           className={`cursor-pointer`}
           size={24}
-        /> <span className=''>{bookmarked ? "Saved" : "Save"}</span>
+        /> <span className='ml-2'>{bookmarked ? "Saved" : "Save"}</span>
       </div>
     )
   }

@@ -599,17 +599,14 @@ export const PaymentReleased: React.FC<PaymentReleasedProps> = ({
   close,
 }) => {
   return (
-    <div className="border-[#7DDE86] bg-[#FBFFFA] gap-4 p-4 flex border  z-10 w-full rounded-2xl relative overflow-hidden">
+    <div className="border-[#7DDE86] bg-[#FBFFFA] gap-4 pl-2 px-4 flex border z-10 w-full rounded-2xl relative overflow-hidden">
       <AfroProfile src={isCreator ? talent.avatar : creator.avatar} score={isCreator ? talent.score : creator.score} size="lg" url={`/talents/${isCreator ? talent._id : creator._id}`} />
-      <div className="flex flex-col gap-4 w-full">
+      <div className="flex flex-col gap-4 w-full py-4">
         <div className="flex justify-between items-center w-full">
           <h3 className="text-body text-xl font-bold">{isCreator ? "Job Completed" : "Payment Released"}</h3>
           {close && <X size={20} className="cursor-pointer" onClick={() => close(id)} />}
         </div>
-
-
         <p className="text-title text-3xl">{isCreator ? `${title}` : `$${amount} has been added to Your Wallet! 💰`}</p>
-
         <div className="justify-between items-center flex mt-auto">
           <div className="flex items-center gap-2">
             <Link href="/wallet">

@@ -56,11 +56,14 @@ async function dismissAllFeed(): Promise<any> {
 }
 
 export const useGetTimeline = ({ page, limit, filter }: timelineFetchParams) => {
-  return useInfiniteQuery([`get-timeline_${page}_${limit}`], async ({ pageParam = 1 }) => (await getTimelineFeeds({ page: pageParam, limit, filter })).data,
+  return useInfiniteQuery(
+    [`get-timeline_${page}_${limit}`],
+    async ({ pageParam = 1 }) => (await getTimelineFeeds({ page: pageParam, limit, filter })).data,
     {
       getNextPageParam: (_, pages) => pages.length + 1,
-      enabled: false
-    })
+      enabled: false,
+    },
+  );
   // return useQuery({
   //   queryFn: async () => await getTimelineFeeds({ page, limit, filter }),
   //   queryKey: [`get-timeline_${page}_${limit}`],
