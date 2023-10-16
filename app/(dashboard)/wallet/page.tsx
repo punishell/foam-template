@@ -40,28 +40,28 @@ export default function Wallet() {
 
   const getChartData = async () => {
     const response = await Promise.all([
-      fetchWalletStats({ format: "seven-day" }),
-      fetchWalletStats({ format: "thirty-day" }),
+      fetchWalletStats({ format: "weekly" }),
+      fetchWalletStats({ format: "monthly" }),
       fetchWalletStats({ format: "yearly" }),
     ]);
 
-    const weeklyStats = response[0].map((c: any) => {
+    const weeklyStats = response[0].chart.map((c: any) => {
       return {
         date: String(dayjs(c.date).format("ddd")),
         amt: c.amount,
       };
     });
 
-    const monthlyStats = response[1].map((c: any) => {
+    const monthlyStats = response[1].chart.map((c: any) => {
       return {
-        date: String(dayjs(c.date).format("MMM")),
+        date: String(dayjs(c.date).format("ddd")),
         amt: c.amount,
       };
     });
 
-    const yearlyStats = response[2].map((c: any) => {
+    const yearlyStats = response[2].chart.map((c: any) => {
       return {
-        date: String(dayjs(c.date).format("YYYY")),
+        date: String(dayjs(c.date).format("MMM")),
         amt: c.amount,
       };
     });
