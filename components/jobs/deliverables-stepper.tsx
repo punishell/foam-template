@@ -106,7 +106,7 @@ export const DeliverablesStepper: React.FC<DeliverablesStepperProps> = ({
   readonly: isClient,
   showActionButton = true,
 }) => {
-  const updateJobProgress = useUpdateJobProgress();
+  const updateJobProgress = useUpdateJobProgress({ creatorId: jobCreator });
   const markJobAsComplete = useMarkJobAsComplete();
   const totalDeliverables = deliverables.length;
   const completedDeliverables = deliverables.filter((deliverable) => deliverable.progress === 100).length;
@@ -163,7 +163,7 @@ export const DeliverablesStepper: React.FC<DeliverablesStepperProps> = ({
           </div>
         )}
 
-        {showActionButton && !isClient && jobProgress !== 100 && (
+        {showActionButton && !isClient && jobProgress !== 100 && completedDeliverables == totalDeliverables && (
           <Button
             className="mt-6"
             size={'sm'}

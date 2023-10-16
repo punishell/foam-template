@@ -54,9 +54,7 @@ export const ParseFeedView = (
     score: feed?.data?.owner?.score || 0,
   };
   const deliverableTotal = feed?.data?.collections.filter((f) => f.type == 'deliverable').length;
-  const deliverableTotalCompleted =
-    feed?.meta?.value || feed?.data?.collections.filter((f) => f.type == 'deliverable' && f.progress == 100).length;
-  const currentProgress = parseInt(String((deliverableTotalCompleted * 100) / deliverableTotal));
+  const currentProgress = feed?.meta?.value;
   const deliverableCountPercentage = {
     total: deliverableTotal,
     progress: Math.floor(currentProgress),
@@ -150,6 +148,7 @@ export const ParseFeedView = (
           progress={deliverableCountPercentage}
           isCreator={feed?.data?.creator?._id === loggedInUser}
           jobTitle={feed.data.name}
+          isMarked={feed?.meta?.isMarked}
         />
       );
     case FEED_TYPES.REFERRAL_SIGNUP:
@@ -228,7 +227,7 @@ export const ParseFeedView = (
           close={dismissFeed}
           bookmarked={isBookmarked}
           bookmarkId={bookmarkId}
-          title={feed?.title}
+          title={feed?.data?.name}
         />
       );
     case FEED_TYPES.COLLECTION_CANCELLED:

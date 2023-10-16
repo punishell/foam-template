@@ -17,6 +17,7 @@ import { AfroProfile } from '@/components/common/afro-profile';
 import { ClientJobModal } from '@/components/jobs/job-modals/client';
 import { SideModal } from '@/components/common/side-modal';
 import { TalentJobModal } from '../jobs/job-modals/talent';
+import { CheckBox } from '../common/checkBox';
 
 export const JobFeedWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   return (
@@ -313,6 +314,7 @@ interface TalentJobUpdateProps {
     progress: number;
   };
   jobTitle?: string;
+  isMarked: boolean;
   close?: (id: string) => void;
 }
 export const JobUpdateFeed: React.FC<TalentJobUpdateProps> = ({
@@ -327,6 +329,7 @@ export const JobUpdateFeed: React.FC<TalentJobUpdateProps> = ({
   bookmarkId,
   isCreator,
   jobTitle,
+  isMarked,
   close,
 }) => {
   const [isModalOpen, setIsModalOpen] = React.useState(false);
@@ -337,11 +340,12 @@ export const JobUpdateFeed: React.FC<TalentJobUpdateProps> = ({
       <div className="flex flex-col gap-4 py-4 w-full">
         <div className="flex justify-between">
           <h3 className="text-title text-xl items-center w-[90%]">
-            {!isCreator ? title : `${talent.name} completed a deliverable on `} <span className='font-bold'>{jobTitle}</span>
+            {!isCreator ? title : `${talent.name} ${isMarked ? "completed" : "Unchecked"} a deliverable on `} <span className='font-bold'>{jobTitle}</span>
           </h3>
           {close && <X size={20} className="cursor-pointer" onClick={() => close(id)} />}
         </div>
-        <p className="text-body">{!isCreator ? description : `✅ ${description}`}</p>
+        {/* <p className="text-body">{!isCreator ? description : `✅ ${description}`}</p> */}
+        <p className="text-body flex gap-4 flex-row capitalize"> <CheckBox isChecked={isMarked} /> {description}</p>
         <div className="justify-between items-center flex mt-auto">
           <div className="flex items-center gap-2 w-full">
             {progress.progress === 100 && (
@@ -429,6 +433,7 @@ export const JobCompletionFeed: React.FC<JobCompletedProps> = ({
   isCreator,
   close,
 }) => {
+  const [isModalOpen, setIsModalOpen] = React.useState(false);
   return (
     <div className="border-[#9BDCFD] bg-[#F1FBFF] gap-4 pl-2 px-4  flex border z-10 w-full rounded-2xl relative overflow-hidden">
       <AfroProfile src={isCreator ? talent.avatar : creator.avatar} score={isCreator ? talent.score : creator.score} size="lg" url={`/talents/${isCreator ? talent._id : creator._id}`} />
@@ -440,11 +445,11 @@ export const JobCompletionFeed: React.FC<JobCompletedProps> = ({
         <p className="text-title text-3xl">{title}</p>
         <div className="justify-between items-center flex mt-auto">
           <div className="flex items-center gap-2">
-            <Link href={`/messages?user_id=${talent._id}`}>
-              <Button size="xs" variant="outline">
-                Message
-              </Button>
-            </Link>
+            <Button size="xs" variant="secondary" onClick={() => {
+              setIsModalOpen(true);
+            }}>
+              Write Review
+            </Button>
           </div>
           <RenderBookMark size={20} isBookmarked={bookmarked} type="feed" id={id} bookmarkId={bookmarkId} />
         </div>
@@ -452,6 +457,24 @@ export const JobCompletionFeed: React.FC<JobCompletedProps> = ({
       <div className="absolute right-0 -z-[1] translate-x-1/3 top-16">
         <Briefcase size={200} color="#F2F4F5" />
       </div>
+      <SideModal isOpen={isModalOpen} onOpenChange={setIsModalOpen}>
+        {isCreator ?
+          <ClientJobModal
+            jobId={jobId}
+            talentId={talent._id}
+            closeModal={() => {
+              setIsModalOpen(false);
+            }}
+          /> :
+          <TalentJobModal
+            jobId={jobId}
+            talentId={talent._id}
+            closeModal={() => {
+              setIsModalOpen(false);
+            }}
+          />
+        }
+      </SideModal>
     </div>
   );
 };
