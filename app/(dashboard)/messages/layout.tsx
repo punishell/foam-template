@@ -21,21 +21,12 @@ export default function MessagesLayout({ children }: Props) {
   const { conversations, loadingChats } = useMessaging();
 
   return (
-    <div className="flex flex-col gap-6 h-full">
+    <div className="flex flex-col gap-0 h-full">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <span className="text-3xl text-title font-bold">Messages</span>
-
           <Modal isOpen={settingsModalOpen} onOpenChange={setSettingsModalOpen} className="max-w-xl">
             <SettingsModal />
           </Modal>
-        </div>
-
-        <div className="flex items-center gap-7">
-          <div className="flex items-center gap-2 text-3xl text-title">
-            <UserBalance />
-            <span>|</span> <span className="text-body">Balance</span>
-          </div>
         </div>
       </div>
 
