@@ -31,8 +31,6 @@ export const Feeds = () => {
   const scrollParentRef = useRef(null);
   const observerTarget = useRef(null);
 
-  useEffect(() => { feedRefetch() }, [])
-
   const callback = async () => {
     await Promise.all([
       feedRefetch()

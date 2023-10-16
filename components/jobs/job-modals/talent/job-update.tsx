@@ -25,6 +25,7 @@ export const JobUpdates: React.FC<JobUpdatesProps> = ({ job, requestJobCancellat
     _id: jobId,
   } = job;
   const deliverables = collections.filter(isJobDeliverable);
+  console.log("deliverables===", deliverables);
 
   return (
     <React.Fragment>
