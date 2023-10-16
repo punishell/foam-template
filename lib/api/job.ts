@@ -105,7 +105,7 @@ interface GetJobByIdParams {
   jobId: string;
 }
 
-interface GetJobByIdResponse extends Job {}
+interface GetJobByIdResponse extends Job { }
 
 async function getJobById(params: GetJobByIdParams): Promise<GetJobByIdResponse> {
   const res = await axios.get(`/collection/${params.jobId}`);
@@ -244,6 +244,8 @@ export function useToggleDeliverableCompletion({ description }: { description: s
       queryClient.refetchQueries({
         queryKey: ['get-jobs'],
       });
+      // if (isComplete) {
+      const completedD = isComplete ? completedDeliverables + 1 : completedDeliverables - 1;
       createFeed.mutate({
         type: FEED_TYPES.JOB_DELIVERABLE_UPDATE,
         owners: [jobCreator],
@@ -252,9 +254,11 @@ export function useToggleDeliverableCompletion({ description }: { description: s
         data: jobId,
         isPublic: false,
         meta: {
-          value: Math.round((completedDeliverables / totalDeliverables) * 100),
+          value: (100 * completedD) / totalDeliverables,
+          isMarked: isComplete,
         },
       });
+      // }
       toast.success(`Deliverable marked as ${isComplete ? 'complete' : 'incomplete'} successfully`);
     },
   });
@@ -273,9 +277,10 @@ async function postUpdateJobProgress(params: UpdateJobProgressParams): Promise<A
   return res.data.data;
 }
 
-export function useUpdateJobProgress() {
+export function useUpdateJobProgress({ creatorId }: { creatorId: string }) {
   const queryClient = useQueryClient();
   const jobsQuery = useGetJobs({ category: 'assigned' });
+  const createFeed = useCreateFeed();
 
   return useMutation({
     mutationFn: postUpdateJobProgress,
@@ -283,9 +288,22 @@ export function useUpdateJobProgress() {
     onError: (error: ApiError) => {
       toast.error(error?.response?.data.message ?? 'Updating job progress failed');
     },
-    onSuccess: () => {
+    onSuccess: async (_, { jobId, progress }) => {
       jobsQuery.refetch();
       queryClient.refetchQueries(['get-job-by-id']);
+      if (creatorId && progress == 100) {
+        await createFeed.mutate({
+          owners: [creatorId],
+          title: 'Talent Completed Job',
+          description: 'Talent Completed Job',
+          isPublic: false,
+          type: FEED_TYPES.JOB_COMPLETION,
+          data: jobId,
+          meta: {
+            progress,
+          }
+        });
+      }
     },
   });
 }
@@ -314,19 +332,9 @@ export function useMarkJobAsComplete() {
     onError: (error: ApiError) => {
       toast.error(error?.response?.data.message ?? 'Marking job as complete failed');
     },
-    onSuccess: async (_, { jobId, talentId }) => {
+    onSuccess: async () => {
       jobsQuery.refetch();
       queryClient.refetchQueries(['get-job-by-id']);
-      if (talentId) {
-        await createFeed.mutate({
-          owners: [talentId],
-          title: 'Job Completed',
-          description: 'Job Completed',
-          isPublic: false,
-          type: FEED_TYPES.JOB_COMPLETION,
-          data: jobId,
-        });
-      }
       toast.success('Job marked as completed');
     },
   });
