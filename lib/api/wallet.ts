@@ -48,7 +48,7 @@ const fetchSingleTransactions = async (id: string) => {
 // single transactions
 export const fetchWalletStats = async ({ format }: { format: string }) => {
   try {
-    const { data } = await axios.get(`/transaction/aggregate/stats?format=${format}`);
+    const { data } = await axios.get(`/transaction/stats?format=${format}`);
     if (data?.status === 'success') {
       return data?.data;
     }

@@ -61,7 +61,7 @@ export const useGetTimeline = ({ page, limit, filter }: timelineFetchParams) => 
     async ({ pageParam = 1 }) => (await getTimelineFeeds({ page: pageParam, limit, filter })).data,
     {
       getNextPageParam: (_, pages) => pages.length + 1,
-      enabled: false,
+      // enabled: false,
     },
   );
   // return useQuery({
