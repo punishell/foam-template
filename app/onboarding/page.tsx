@@ -14,6 +14,7 @@ import { useUploadImage } from '@/lib/api/upload';
 import { useOnboardingState } from '@/lib/store/onboarding';
 import { GallerySvg } from '@/components/common/gallery-svg';
 import Image from 'next/image';
+import { useUserState } from '@/lib/store/account';
 
 const SKILLS = [
   { label: 'Design', value: 'design', Icon: PenTool },
@@ -25,11 +26,12 @@ const SKILLS = [
 ];
 
 const Skills = ({ goToNextSlide }: SlideItemProps) => {
+  const { firstName } = useUserState();
   const { skill, setSkill } = useOnboardingState();
   return (
     <div className="flex w-full shrink-0 flex-col items-center gap-4">
       <div className="flex flex-col text-left w-full gap-1">
-        <p className="text-2xl">Great to meet you, Leslie.</p>
+        <p className="text-2xl">Great to meet you, {firstName}.</p>
         <span className="text-4xl font-bold text-[#1f2739]">What are you interested in?</span>
       </div>
       <div className="mt-9 grid grid-cols-3 gap-6 w-full">
