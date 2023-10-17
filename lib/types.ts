@@ -164,6 +164,11 @@ export const isReviewChangeRequest = (collection: Collection): collection is Rev
   return collection.type === 'review_change_request';
 };
 
+export const hasFiveStarReview = (reviews: Review[]): boolean => {
+  const hasFiveStar = reviews.filter((r) => r.rating == 5);
+  return hasFiveStar.length > 0;
+};
+
 export interface ImageUp {
   file: File;
   preview: string;

@@ -168,7 +168,7 @@ export function ReferralSideModal({ isOpen, onOpenChange }: ReferralModalProps) 
         </div>
       ) : (
         <div className="flex flex-col h-full p-10 text-center">
-          <Lottie animationData={email} loop={true} />
+          <Lottie animationData={email} loop={false} />
           <p className="text-body text-base mb-8">
             Your Invite has been sent. You’ll be notified when a user signs up with your referral link
           </p>

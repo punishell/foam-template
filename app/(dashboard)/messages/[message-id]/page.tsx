@@ -124,10 +124,10 @@ export default function Chat({ params }: Props) {
         avatar={currentConversation?.header?.avatar}
         score={currentConversation?.header?.score}
       />
-      <div className="grow w-full overflow-y-auto">
+      <div className="w-full overflow-y-auto basis-0 grow">
         <Messages messages={messages} />
       </div>
-      <div className="flex flex-row gap-2 w-full" {...getRootProps()}>
+      <div className="flex flex-row  gap-2 w-full" {...getRootProps()}>
         <div className="flex items-end w-10">
           <button
             className="border h-8 w-8 bg-[#008D6C1A] text-primary rounded-full flex items-center justify-center"
@@ -197,7 +197,7 @@ const Messages = ({ messages }: { messages: [] }) => {
   return (
     <>
       {messages.length > 0 && (
-        <div id="chat_div" className="flex flex-col h-full overflow-y-auto py-6">
+        <div id="chat_div" className="basis-0 flex flex-col h-full overflow-y-auto py-6">
           {messages.map((message: any, i) => (
             <div className="w-full" key={i}>
               {!message.isSent ? (

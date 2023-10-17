@@ -19,6 +19,7 @@ import {
   JobApplicationCard,
   JobUpdateFeed,
   ReviewChangeCard,
+  ReviewResponseChangeCard,
 } from './feedViewer';
 import { DataFeedResponse } from '@/lib/types';
 
@@ -283,6 +284,22 @@ export const ParseFeedView = (
           description={feed?.description}
         />
       );
+    case FEED_TYPES.JOB_REVIEW_CHANGE_ACCEPTED:
+    case FEED_TYPES.JOB_REVIEW_CHANGE_DECLINED:
+      return <ReviewResponseChangeCard
+        key={key}
+        id={feed?._id}
+        talent={talent}
+        creator={inviter}
+        jobId={feed?.data?._id}
+        isCreator={feed?.data?.creator?._id === loggedInUser}
+        close={dismissFeed}
+        bookmarked={isBookmarked}
+        bookmarkId={bookmarkId}
+        title={feed?.title}
+        description={feed?.description}
+        isDeclined={feed?.type == FEED_TYPES.JOB_REVIEW_CHANGE_DECLINED}
+      />
 
     // case FEED_TYPES.ISSUE_RAISED:
     //   return <IssueResolutionRaiseFeed />;

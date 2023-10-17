@@ -52,14 +52,14 @@ const JobHeader = () => {
   const profileCompleted = value > 70;
   if (!profileCompleted) {
     return (
-      <div className={`flex w-full h-[200px] gap-2 rounded-2xl border p-6 bg-white`}>
+      <div className={`flex w-full h-[154px] gap-2 rounded-2xl border p-2 bg-white`}>
         <div className={`flex flex-[8] items-center`}>
-          <div className="flex flex-[2] flex-col">
-            <h3 className="text-[80px] font-bold leading-[104px]">{value}%</h3>
-            <p className="text-[18px]">of your profile is completed</p>
+          <div className="flex flex-[2] flex-col items-center text-center">
+            <h3 className="text-[50px] font-bold leading-[54px]">{value}%</h3>
+            <p className="text-base">of your profile is completed</p>
           </div>
           <div className="gap-2 flex flex-[7] flex-col border-l-[1px] border-[#e8e8e8] pl-[24px]">
-            <h4 className="text-xl font-bold">Complete your profile to start Applying for Jobs and Projects</h4>
+            {/* <h4 className="text-xl font-bold">Complete your profile to start Applying for Jobs and Projects</h4> */}
             <p className="text-base leading-6 tracking-[0.75px] text-body">
               Welcome to Afrofund! Fill out your profile - the more complete it is the more likely you are to get hired.
             </p>
