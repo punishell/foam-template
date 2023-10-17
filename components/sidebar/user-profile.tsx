@@ -1,14 +1,10 @@
 'use client';
 import React from 'react';
-import { useGetAccount } from '@/lib/api/account';
 import { AfroProfile } from '@/components/common/afro-profile';
+import { useUserState } from '@/lib/store/account';
 
 export const UserProfile = () => {
-  const data = useGetAccount();
-
-  if (data.isLoading) return null;
-
-  const account = data.data;
+  const account = useUserState();
 
   return (
     <div className="flex flex-col items-center gap-2">

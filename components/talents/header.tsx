@@ -32,7 +32,7 @@ export const ProfileHeader: React.FC<Props> = ({ _id, name, position, score, ski
         </div>
         <div className="flex flex-col gap-0 grow">
           <div
-            className={`flex flex-row gap-2 px-6 w-full justify-between border-b pb-4`}
+            className={`flex flex-row gap-2 px-6 w-full justify-between border-b-2 pb-4`}
             style={{ borderColor: borderColor }}
           >
             <div className="w-[15%]"></div>

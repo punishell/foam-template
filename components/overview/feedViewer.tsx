@@ -345,7 +345,7 @@ export const JobUpdateFeed: React.FC<TalentJobUpdateProps> = ({
           {close && <X size={20} className="cursor-pointer" onClick={() => close(id)} />}
         </div>
         {/* <p className="text-body">{!isCreator ? description : `✅ ${description}`}</p> */}
-        <p className="text-body flex gap-4 flex-row capitalize"> <CheckBox isChecked={isMarked} /> {description}</p>
+        <p className="text-body flex gap-4 flex-row capitalize"> <CheckBox isChecked={isMarked} /> {description.slice(0, 75)}</p>
         <div className="justify-between items-center flex mt-auto">
           <div className="flex items-center gap-2 w-full">
             {/* {progress.progress === 100 && ( */}
@@ -523,7 +523,7 @@ export const JobReviewedFeed: React.FC<ReviewJobProps> = ({
           {close && <X size={20} className="cursor-pointer" onClick={() => close(id)} />}
         </div>
 
-        <p className="text-body">{description}</p>
+        <p className="text-body">{description.slice(0, 75)}</p>
 
         <div className="justify-between items-center flex mt-auto">
           <div className="flex items-center gap-2">
@@ -856,6 +856,89 @@ export const ReviewChangeCard: React.FC<ReviewChangeProps> = ({
           <div className="flex items-center gap-2">
             <Button size="xs" variant="outline" onClick={() => setIsModalOpen(true)}>
               View Request
+            </Button>
+          </div>
+          <RenderBookMark size={20} isBookmarked={bookmarked} type="feed" id={id} bookmarkId={bookmarkId} />
+        </div>
+      </div>
+
+      <div className="absolute right-0 -z-[1] translate-x-1/3 top-16">
+        <Briefcase size={200} color="#F2F4F5" />
+      </div>
+
+      <SideModal isOpen={isModalOpen} onOpenChange={setIsModalOpen}>
+        {isCreator ?
+          <ClientJobModal
+            jobId={jobId}
+            talentId={talent._id}
+            closeModal={() => {
+              setIsModalOpen(false);
+            }}
+          /> :
+          <TalentJobModal
+            jobId={jobId}
+            talentId={talent._id}
+            closeModal={() => {
+              setIsModalOpen(false);
+            }}
+          />
+        }
+      </SideModal>
+    </div>
+  );
+};
+interface ReviewResponseChangeProps {
+  id: string;
+  title: string;
+  description: string;
+  talent: {
+    _id: string;
+    name: string;
+    avatar: string;
+    score: number;
+  };
+  creator: {
+    _id: string;
+    name: string;
+    avatar: string;
+    score: number;
+  };
+  bookmarked: boolean;
+  bookmarkId: string;
+  jobId: string;
+  isCreator: boolean;
+  isDeclined: boolean;
+  close?: (id: string) => void;
+}
+export const ReviewResponseChangeCard: React.FC<ReviewResponseChangeProps> = ({
+  id,
+  title,
+  jobId,
+  description,
+  creator,
+  talent,
+  bookmarked,
+  bookmarkId,
+  isCreator,
+  isDeclined,
+  close,
+}) => {
+  const [isModalOpen, setIsModalOpen] = React.useState(false);
+  return (
+    <div className={`${isDeclined ? "border-[#FF5247] bg-[#FFF4F4]" : "border-[#9BDCFD] bg-[#F1FBFF]"} gap-4 p-4 flex border z-10 w-full rounded-2xl relative overflow-hidden h-[174px]`}>
+      <AfroProfile src={isCreator ? talent.avatar : creator.avatar} score={isCreator ? talent.score : creator.score} size="lg" url={`/talents/${isCreator ? talent._id : creator._id}`} />
+      <div className="flex flex-col gap-4 w-full">
+        <div className="flex justify-between items-center">
+          <h3 className="text-title text-xl font-bold">{title}</h3>
+          {close && <X size={20} className="cursor-pointer" onClick={() => close(id)} />}
+        </div>
+
+        <p className="text-body">{description}</p>
+
+        <div className="justify-between items-center flex mt-auto">
+          <div className="flex items-center gap-2">
+            <Button size="xs" variant="outline" onClick={() => setIsModalOpen(true)}>
+              {isDeclined ? "Review" : "Update"}
             </Button>
           </div>
           <RenderBookMark size={20} isBookmarked={bookmarked} type="feed" id={id} bookmarkId={bookmarkId} />

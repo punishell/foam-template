@@ -575,7 +575,6 @@ export function useApplyToOpenJob({ jobCreator, jobId }: { jobCreator: string; j
       toast.error(error?.response?.data.message || 'An error occurred');
     },
     onSuccess: (data) => {
-      console.log(data);
       // create new job application feed for job owner
       createFeed.mutate({
         owners: [jobCreator],
