@@ -55,7 +55,7 @@ export const JobCancellationRequest: React.FC<JobCancellationRequestProps> = ({ 
           <span>{jobTitle}</span>
         </div>
       </div>
-      <div className="flex py-6 px-4 flex-col gap-6 h-full grow">
+      <div className="flex py-6 px-4 flex-col gap-6 h-full grow pb-6">
         <JobUpdateHeader
           status="cancel_requested"
           createdAt={createdAt}
@@ -92,17 +92,19 @@ export const JobCancellationRequest: React.FC<JobCancellationRequestProps> = ({ 
             }))}
           />
         </div>
-        <div className="mt-auto border border-red-300 rounded-xl">
-          <Button
-            size={'sm'}
-            fullWidth
-            onClick={() => {
-              setAcceptCancellation(true);
-            }}
-            variant={'danger'}
-          >
-            Review And Cancel Job
-          </Button>
+        <div className="pb-6">
+          <div className="mt-auto border border-red-300 rounded-xl mb-6">
+            <Button
+              size={'sm'}
+              fullWidth
+              onClick={() => {
+                setAcceptCancellation(true);
+              }}
+              variant={'danger'}
+            >
+              Review And Cancel Job
+            </Button>
+          </div>
         </div>
       </div>
     </React.Fragment>

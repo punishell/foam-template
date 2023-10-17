@@ -27,14 +27,20 @@ export const Feeds = () => {
     hasNextPage,
     isFetching,
     isFetchingNextPage,
-  } = useGetTimeline({ page: currentPage, limit: 10, filter: { isOwner: true, type: `${FEED_TYPES.JOB_DELIVERABLE_UPDATE},${FEED_TYPES.JOB_APPLICATION_SUBMITTED},${FEED_TYPES.JOB_CANCELLED},${FEED_TYPES.JOB_COMPLETION},${FEED_TYPES.JOB_INVITATION_ACCEPTED},${FEED_TYPES.JOB_INVITATION_DECLINED},${FEED_TYPES.JOB_INVITATION_RECEIVED},${FEED_TYPES.PUBLIC_JOB_CREATED},${FEED_TYPES.PUBLIC_JOB_FILLED}`, isPublic: true } });
+  } = useGetTimeline({
+    page: currentPage,
+    limit: 10,
+    filter: {
+      isOwner: true,
+      type: `${FEED_TYPES.JOB_DELIVERABLE_UPDATE},${FEED_TYPES.JOB_APPLICATION_SUBMITTED},${FEED_TYPES.JOB_CANCELLED},${FEED_TYPES.JOB_COMPLETION},${FEED_TYPES.JOB_INVITATION_ACCEPTED},${FEED_TYPES.JOB_INVITATION_DECLINED},${FEED_TYPES.JOB_INVITATION_RECEIVED},${FEED_TYPES.PUBLIC_JOB_CREATED},${FEED_TYPES.PUBLIC_JOB_FILLED}`,
+      isPublic: true,
+    },
+  });
   const scrollParentRef = useRef(null);
   const observerTarget = useRef(null);
 
   const callback = async () => {
-    await Promise.all([
-      feedRefetch()
-    ]);
+    await Promise.all([feedRefetch()]);
   };
   const dismissFeed = useDismissFeed();
 
@@ -49,18 +55,21 @@ export const Feeds = () => {
 
   const fetchMore = () => {
     if (hasNextPage && !isFetchingNextPage) {
-      fetchNextPage()
+      fetchNextPage();
     }
   };
 
   useEffect(() => {
     if (!observerTarget.current) return;
-    const observer = new IntersectionObserver((entries) => {
-      if (entries[0].isIntersecting) setObserve(true);
-    }, { threshold: 1 });
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) setObserve(true);
+      },
+      { threshold: 1 },
+    );
 
     if (observerTarget.current) {
-      observer.observe(observerTarget.current)
+      observer.observe(observerTarget.current);
     }
 
     return () => {
@@ -68,8 +77,7 @@ export const Feeds = () => {
         observer.unobserve(observerTarget.current);
       }
     };
-  }, [observerTarget.current])
-
+  }, [observerTarget.current]);
 
   useEffect(() => {
     if (!isLoading && !isFetchingNextPage && prevPage != currentPage) {
@@ -81,11 +89,11 @@ export const Feeds = () => {
     if (observe) {
       fetchMore();
     }
-  }, [observe])
+  }, [observe]);
 
   useEffect(() => {
     // @ts-ignore
-    const allIds = currentData.map(c => c._id);
+    const allIds = currentData.map((c) => c._id);
     if (timelineData && timelineData?.pages) {
       let totalData: any = [];
       for (let i = 0; i < timelineData.pages.length; i++) {
@@ -105,14 +113,22 @@ export const Feeds = () => {
   if (timelineFeeds.length === 0) return <PageEmpty className="h-[85vh] rounded-2xl border border-line" />;
   return (
     <div className="relative h-full">
-      <div id="timeline-content" ref={scrollParentRef} className="h-full overflow-auto scrollbar-hide [&>*]:mb-5 border border-line bg-white rounded-2xl p-4 w-full">
-        <div className='[&>*]:mb-5'>
+      <div
+        id="timeline-content"
+        ref={scrollParentRef}
+        className="h-full overflow-auto scrollbar-hide [&>*]:mb-5 [&:last]:mb-0  border border-line bg-white rounded-2xl p-4 w-full"
+      >
+        <div className="[&>*]:mb-5">
           {timelineFeeds}
-          {(isFetchingNextPage) && <div className='flex flex-row justify-center items-center w-full mx-auto text-center'><Loader size={25} className='text-black animate-spin text-center' /></div>}
+          {isFetchingNextPage && (
+            <div className="flex flex-row justify-center items-center w-full mx-auto text-center">
+              <Loader size={25} className="text-black animate-spin text-center" />
+            </div>
+          )}
           <span ref={observerTarget}></span>
         </div>
       </div>
-      <div className="absolute left-0 right-0 -bottom-[0px] h-10 z-50 bg-gradient-to-b from-transparent via-transparent to-green-50 rounded-2xl"></div>
-    </div >
+      {/* <div className="absolute left-0 right-0 -bottom-[0px] h-10 z-50 bg-gradient-to-b from-transparent via-transparent to-green-50 rounded-2xl"></div> */}
+    </div>
   );
 };

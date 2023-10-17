@@ -63,7 +63,7 @@ const ProfileImage = () => {
   const updateAccount = useUpdateAccount();
   const [uploadProgress, setUploadProgress] = React.useState(0);
 
-  const [imageFile, setImageFile] = React.useState<{ file: File; preview: string; } | null>(null);
+  const [imageFile, setImageFile] = React.useState<{ file: File; preview: string } | null>(null);
 
   const onDrop = React.useCallback(async (acceptedFiles: File[]) => {
     const file = acceptedFiles[0];
@@ -73,7 +73,7 @@ const ProfileImage = () => {
     });
   }, []);
 
-  const { getRootProps, getInputProps } = useDropzone({ onDrop, maxFiles: 1, accept: { 'image/*': [], }, });
+  const { getRootProps, getInputProps } = useDropzone({ onDrop, maxFiles: 1, accept: { 'image/*': [] } });
 
   React.useEffect(() => {
     return () => {
@@ -90,15 +90,13 @@ const ProfileImage = () => {
       {
         onSuccess: (data) => {
           // save account details
-          const payload = { profile: { bio: { title: skill }, }, profileImage: data._id, }
-          updateAccount.mutate(payload,
-            {
-              onSuccess: () => {
-                toast.success('Image uploaded successfully');
-                router.push('/overview');
-              },
+          const payload = { profile: { bio: { title: skill } }, profileImage: data._id };
+          updateAccount.mutate(payload, {
+            onSuccess: () => {
+              toast.success('Image uploaded successfully');
+              router.push('/overview');
             },
-          );
+          });
         },
       },
     );
@@ -113,7 +111,7 @@ const ProfileImage = () => {
       </div>
 
       <div
-        className="relative flex items-center justify-center border overflow-hidden rounded-full h-[270px] w-[270px] bg-[#ECFCE5] hover:bg-lime-50 duration-200 cursor-pointer"
+        className="relative flex items-center justify-center border overflow-hidden rounded-full h-[270px] w-[270px] bg-[#ECFCE5] hover:bg-lime-50 duration-200 cursor-pointer group"
         {...getRootProps()}
       >
         <input {...getInputProps()} />
@@ -134,7 +132,7 @@ const ProfileImage = () => {
 
         {imageFile && (
           <div className="absolute inset-0 bg-black bg-opacity-30 flex items-center justify-center">
-            <div className="flex items-center gap-2 bg-green-200 text-primary border border-primary px-2 py-1 rounded-sm mt-10">
+            <div className="flex items-center gap-2 bg-green-200 text-primary border border-primary px-2 py-1 rounded-sm mt-10 group-hover:opacity-100 opacity-0 duration-200">
               <Edit3 size={24} />
               <span className="text-sm">Change Image</span>
             </div>
@@ -143,7 +141,7 @@ const ProfileImage = () => {
       </div>
 
       <div className="h-[80px] w-full flex items-center justify-center">
-        {(uploadImage.isLoading || updateAccount.isLoading) ? (
+        {uploadImage.isLoading || updateAccount.isLoading ? (
           <UploadProgress progress={uploadProgress} />
         ) : (
           <div className="max-w-xs w-full">
@@ -155,7 +153,7 @@ const ProfileImage = () => {
       </div>
     </div>
   );
-}
+};
 
 interface UploadProgressProps {
   progress: number;
@@ -180,14 +178,9 @@ const UploadProgress: React.FC<UploadProgressProps> = ({ progress }) => {
 export default function OnBoarding() {
   return (
     <React.Fragment>
-      <Slider
-        items={[
-          { SlideItem: Skills },
-          { SlideItem: ProfileImage },
-        ]}
-      />
+      <Slider items={[{ SlideItem: Skills }, { SlideItem: ProfileImage }]} />
     </React.Fragment>
-  )
+  );
 }
 
 interface SkillCardProps {

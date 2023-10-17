@@ -15,16 +15,19 @@ export const LeaderBoard = () => {
     position: i + 1,
   }));
   return (
-    <div className="flex flex-col h-fit w-full gap-2 bg-gradient-leaderboard rounded-2xl py-4">
+    <div className="flex flex-col h-fit w-full gap-2 bg-gradient-leaderboard rounded-2xl py-2 shrink-0">
       <div className="text-xl font-bold text-center text-white">Leaderboard</div>
 
-      <div className=" text-white px-3 flex flex-col  relative gap-2 overflow-y-auto scrollbar-hide">
+      <div className=" text-white px-3 flex flex-col  relative gap-2 scrollbar-hide">
         {!isFetched && isFetching && <Spinner />}
         {leaderboard.map((l, i) => {
           if (l.position == 1) return <FirstPlace key={i} _id={l._id} name={l.name} score={l.score} avatar={l.image} />;
-          if (l.position == 2) return <SecondPlace key={i} _id={l._id} name={l.name} score={l.score} avatar={l.image} />;
+          if (l.position == 2)
+            return <SecondPlace key={i} _id={l._id} name={l.name} score={l.score} avatar={l.image} />;
           if (l.position == 3) return <ThirdPlace key={i} _id={l._id} name={l.name} score={l.score} avatar={l.image} />;
-          return <RunnerUp key={i} _id={l._id} name={l.name} score={l.score} place={`${l.position}th`} avatar={l.image} />;
+          return (
+            <RunnerUp key={i} _id={l._id} name={l.name} score={l.score} place={`${l.position}th`} avatar={l.image} />
+          );
         })}
       </div>
     </div>
