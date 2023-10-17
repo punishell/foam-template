@@ -17,6 +17,7 @@ import { SideModal } from '../common/side-modal';
 import { TalentJobModal } from '../jobs/job-modals/talent';
 import { ClientJobModal } from '../jobs/job-modals/client';
 import { AfroProfile } from '../common/afro-profile';
+import { Job } from '@/lib/types';
 interface ActiveJobCardProps {
   id: string;
   title: string;
@@ -60,7 +61,7 @@ const ActiveJobCard: React.FC<ActiveJobCardProps> = ({
         <div className="flex justify-between items-center">
           <h3 className="text-title text-xl font-bold">{title}</h3>
         </div>
-        <p className="text-body">{description.slice(0, 50)}</p>
+        <p className="text-body">{description.slice(0, 250)}</p>
         <div className="justify-between items-center flex mt-auto">
           <div className="flex items-center gap-4 w-full">
             <div className="flex items-center gap-2">
@@ -96,6 +97,14 @@ const ActiveJobCard: React.FC<ActiveJobCardProps> = ({
   );
 };
 
+const talentAndClientHasReviewed = (job: Job) => {
+  return (
+    job.ratings?.some((review) => review.owner._id === job.owner?._id) &&
+    job.ratings?.some((review) => review.owner._id === job.creator?._id)
+  );
+};
+
+
 export const ActiveJobs = () => {
   const { _id: loggedInUser } = useUserState();
   const {
@@ -103,15 +112,24 @@ export const ActiveJobs = () => {
     isFetched: assignedFetched,
     isFetching: assignedFetching,
     isError: assignedError,
-  } = useGetJobs({ category: 'assigned', status: 'ongoing' });
+  } = useGetJobs({ category: 'assigned' });
   const {
     data: jobCreatedData,
     isFetched,
     isFetching,
     isError,
-  } = useGetJobs({ category: 'created', status: 'ongoing' });
+  } = useGetJobs({ category: 'created' });
   const jobDataJoined = [...(jobAssignedData?.data || []), ...(jobCreatedData?.data || [])];
-  const jobData = jobDataJoined.filter((f) => f.inviteAccepted);
+
+  const ongoingJobs = jobDataJoined.filter(
+    (job) =>
+      job.payoutStatus !== 'completed' &&
+      job.inviteAccepted &&
+      !talentAndClientHasReviewed(job) &&
+      job.status !== 'cancelled',
+  );
+  const jobData = ongoingJobs.filter((f) => f.inviteAccepted);
+  console.log(jobData);
   // @ts-ignore
   jobData.sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
 

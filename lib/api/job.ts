@@ -221,11 +221,13 @@ interface MarkDeliverableAsCompleteParams {
   deliverableId: string;
   totalDeliverables: number;
   completedDeliverables: number;
+  meta: Record<string, any>
 }
 
 async function postToggleDeliverableCompletion(params: MarkDeliverableAsCompleteParams): Promise<ApiResponse> {
   const res = await axios.patch(`/collection/${params.deliverableId}`, {
     progress: params.isComplete ? 100 : 0,
+    meta: params.meta
   });
   return res.data;
 }
@@ -240,13 +242,13 @@ export function useToggleDeliverableCompletion({ description }: { description: s
     onError: (error: ApiError) => {
       toast.error(error?.response?.data.message ?? 'Marking deliverable as complete failed');
     },
-    onSuccess: (_, { completedDeliverables, jobId, jobCreator, totalDeliverables, isComplete }) => {
-      queryClient.refetchQueries({
-        queryKey: ['get-jobs'],
+    onSuccess: async (_, { completedDeliverables, jobId, jobCreator, totalDeliverables, isComplete }) => {
+      await queryClient.refetchQueries({
+        queryKey: ['get-jobs', { jobId }],
       });
       // if (isComplete) {
       const completedD = isComplete ? completedDeliverables + 1 : completedDeliverables - 1;
-      createFeed.mutate({
+      await createFeed.mutate({
         type: FEED_TYPES.JOB_DELIVERABLE_UPDATE,
         owners: [jobCreator],
         title: 'New Job Deliverable Update',
@@ -289,8 +291,10 @@ export function useUpdateJobProgress({ creatorId }: { creatorId: string }) {
       toast.error(error?.response?.data.message ?? 'Updating job progress failed');
     },
     onSuccess: async (_, { jobId, progress }) => {
-      jobsQuery.refetch();
-      await queryClient.refetchQueries(['get-job-by-id', { jobId }]);
+      await Promise.all([
+        jobsQuery.refetch(),
+        queryClient.refetchQueries(['get-job-by-id', { jobId }])
+      ])
       if (creatorId && progress == 100) {
         await createFeed.mutate({
           owners: [creatorId],

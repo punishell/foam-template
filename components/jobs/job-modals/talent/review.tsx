@@ -48,7 +48,7 @@ export const ReviewClient: React.FC<ReviewClientProps> = ({ job, closeModal }) =
         setRequestReviewChange={setRequestReviewChange}
         setReviewChangeRequestPending={setReviewChangeRequestPending}
         jobId={jobId}
-        recipientId={String(owner?._id)}
+        recipientId={String(creator?._id)}
       />
     );
   }

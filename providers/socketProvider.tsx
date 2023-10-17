@@ -146,9 +146,10 @@ export const MessagingProvider = ({ children }: { children: React.ReactNode }) =
       const messageTitle = `${messageSender.firstName} ${messageSender.lastName}`;
       const senderImage = messageSender?.profileImage?.url;
       const senderScore = messageSender?.score ?? 0;
-      // show toast if not on messsaging screen
+      const senderId = messageSender._id;
+      // show toast if not on messaging screen
       if (!messagingScreen) {
-        toast.message(messageTitle, messageContent, senderImage, senderScore)
+        toast.message(messageTitle, messageContent, senderId, senderImage, senderScore)
       }
     });
 

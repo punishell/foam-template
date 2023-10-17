@@ -86,19 +86,19 @@ export const Feeds = () => {
   useEffect(() => {
     // @ts-ignore
     const allIds = currentData.map(c => c._id);
-    if (timelineData && timelineData.pages) {
+    if (timelineData && timelineData?.pages) {
       let totalData: any = [];
       for (let i = 0; i < timelineData.pages.length; i++) {
         const timeData = timelineData.pages[i];
         totalData = [...totalData, ...timeData];
       }
       // @ts-ignore
-      const newData = currentData.concat(totalData.filter(c => !allIds.includes(c._id)));
+      const newData = currentData.concat(totalData.filter(c => !allIds.includes(c._id))).sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));;
       setCurrentData(newData);
     }
   }, [timelineData, timelineData?.pages]);
 
-  const timelineFeeds = (currentData || []).map((feed, i) => ParseFeedView(feed, loggedInUser, i, callback, dismissByID));
+  const timelineFeeds = useMemo(() => (currentData || []).map((feed, i) => ParseFeedView(feed, loggedInUser, i, callback, dismissByID)), [currentData]);
 
   if (isLoading && timelineFeeds.length < 1) return <PageLoading className="h-[85vh] rounded-2xl border border-line" />;
   if (isError) return <PageError className="h-[85vh] rounded-2xl border border-line" />;
