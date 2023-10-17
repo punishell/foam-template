@@ -16,9 +16,9 @@ export default function TalentDetails() {
   const talentData = useGetTalentById(talentId, true);
   const reviewData = useGetTalentReviewById(talentId, "1", "10", true);
 
-  if (talentData.isLoading || (!talentData.isFetched && talentData.isFetching)) return <PageLoading />;
+  if (talentData.isLoading || reviewData.isLoading || (!talentData.isFetched && talentData.isFetching) || (!reviewData.isFetched && reviewData.isFetching)) return <PageLoading />;
 
-  if (talentData.isError) return <PageError />;
+  if (talentData.isError || reviewData.isError) return <PageError />;
 
   const talent = talentData.data.talent;
   const reviews = reviewData.data;
@@ -61,7 +61,7 @@ export default function TalentDetails() {
               }
             })) ?? []
           }
-          loading={talentData.isLoading}
+          loading={false}
         />
       </div>
     </div>
