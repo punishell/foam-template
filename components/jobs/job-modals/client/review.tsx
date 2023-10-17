@@ -17,7 +17,7 @@ interface ReviewTalentProps {
   closeModal: () => void;
 }
 
-const MAX_COMMENT_LENGTH = 500;
+const MAX_COMMENT_LENGTH = 150;
 
 export const ReviewTalent: React.FC<ReviewTalentProps> = ({ job, closeModal }) => {
   const mutation = useCreateJobReview();

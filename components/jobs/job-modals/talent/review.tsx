@@ -18,7 +18,7 @@ interface ReviewClientProps {
   closeModal: () => void;
 }
 
-const MAX_COMMENT_LENGTH = 500;
+const MAX_COMMENT_LENGTH = 150;
 
 export const ReviewClient: React.FC<ReviewClientProps> = ({ job, closeModal }) => {
   const [requestReviewChange, setRequestReviewChange] = React.useState(false);
