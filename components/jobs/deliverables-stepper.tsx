@@ -112,7 +112,7 @@ export const DeliverablesStepper: React.FC<DeliverablesStepperProps> = ({
   const completedDeliverables = deliverables.filter((deliverable) => deliverable.progress === 100).length;
 
   return (
-    <div className="flex flex-col w-full h-full grow pb-3">
+    <div className="flex flex-col w-full h-full grow pb-6">
       {deliverables
         .sort((a, b) => b.progress - a.progress)
         .map(({ deliverableId, description, jobId, progress, updatedAt }, index) => {
