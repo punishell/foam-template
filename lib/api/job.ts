@@ -105,7 +105,7 @@ interface GetJobByIdParams {
   jobId: string;
 }
 
-interface GetJobByIdResponse extends Job {}
+interface GetJobByIdResponse extends Job { }
 
 async function getJobById(params: GetJobByIdParams): Promise<GetJobByIdResponse> {
   const res = await axios.get(`/collection/${params.jobId}`);
@@ -290,7 +290,7 @@ export function useUpdateJobProgress({ creatorId }: { creatorId: string }) {
     },
     onSuccess: async (_, { jobId, progress }) => {
       jobsQuery.refetch();
-      queryClient.refetchQueries(['get-job-by-id']);
+      await queryClient.refetchQueries(['get-job-by-id', { jobId }]);
       if (creatorId && progress == 100) {
         await createFeed.mutate({
           owners: [creatorId],

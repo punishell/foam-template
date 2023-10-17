@@ -58,9 +58,9 @@ const ActiveJobCard: React.FC<ActiveJobCardProps> = ({
       <AfroProfile src={talent.avatar} score={talent.score} size="lg" url={`/talents/${talent._id}`} />
       <div className="flex flex-col gap-4 py-4 w-full">
         <div className="flex justify-between items-center">
-          <h3 className="text-title text-xl font-bold">{title.slice(0, 15)}</h3>
+          <h3 className="text-title text-xl font-bold">{title}</h3>
         </div>
-        <p className="text-body">{description.slice(0, 30)}</p>
+        <p className="text-body">{description.slice(0, 50)}</p>
         <div className="justify-between items-center flex mt-auto">
           <div className="flex items-center gap-4 w-full">
             <div className="flex items-center gap-2">
