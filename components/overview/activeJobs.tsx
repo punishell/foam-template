@@ -131,7 +131,6 @@ export const ActiveJobs = () => {
       job.status !== 'cancelled',
   );
   const jobData = ongoingJobs.filter((f) => f.inviteAccepted);
-  console.log(jobData);
   // @ts-ignore
   jobData.sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
 

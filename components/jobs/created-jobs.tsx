@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import type { Job } from '@/lib/types';
+import { isJobCancellation, isReviewChangeRequest, type Job } from '@/lib/types';
 import { Tabs } from '@/components/common/tabs';
 import { UnAssignedJobCard } from '@/components/jobs/job-cards/unassigned-job';
 import { ClientJobCard } from '@/components/jobs/job-cards/assigned-job';
@@ -12,7 +12,7 @@ import { PageError } from '@/components/common/page-error';
 import { PageLoading } from '@/components/common/page-loading';
 import { Pagination } from '@/components/common/pagination';
 
-interface Props {}
+interface Props { }
 
 export const CreatedJobs: React.FC<Props> = () => {
   const jobsData = useGetJobs({ category: 'created' });
@@ -111,6 +111,7 @@ const OngoingJobs: React.FC<OngoingJobsProps> = ({ jobs }) => {
     <div className="flex flex-col h-full min-h-[80vh]">
       <div className="grid grid-cols-2 gap-4 overflow-y-auto pb-20">
         {paginatedJobs.map(({ _id, paymentFee, name, collections, status, owner }) => {
+          const reviewRequestChange = collections.find(isReviewChangeRequest);
           return (
             <ClientJobCard
               status={status}
@@ -119,6 +120,7 @@ const OngoingJobs: React.FC<OngoingJobsProps> = ({ jobs }) => {
                 collections.filter((collection) => collection.type === 'deliverable' && collection.progress === 100)
                   .length
               }
+              reviewRequestChange={reviewRequestChange}
               jobId={_id}
               key={_id}
               price={paymentFee}

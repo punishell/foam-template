@@ -98,8 +98,6 @@ export const Feeds = () => {
     }
   }, [timelineData, timelineData?.pages]);
 
-  console.log(timelineData, currentData)
-
   const timelineFeeds = useMemo(() => (currentData || []).map((feed, i) => ParseFeedView(feed, loggedInUser, i, callback, dismissByID)), [currentData]);
 
   if (isLoading && timelineFeeds.length < 1) return <PageLoading className="h-[85vh] rounded-2xl border border-line" />;

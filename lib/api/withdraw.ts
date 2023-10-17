@@ -21,10 +21,10 @@ export function useWithdraw() {
   return useMutation({
     mutationFn: postWithdrawalRequest,
     mutationKey: ['withdraw_referral_invite'],
-    onSuccess: (data) => {
+    onSuccess: async (data) => {
+      await queryClient.refetchQueries({ queryKey: ['wallet-tx-q', '10', '1'] });
+      await queryClient.refetchQueries({ queryKey: ['wallet-data-fetch'] });
       toast.success('Withdrawal Successful');
-      queryClient.refetchQueries({ queryKey: ['wallet-tx-q', '10', '1'] });
-      queryClient.refetchQueries({ queryKey: ['wallet-data-fetch'] });
       return data;
     },
     onError: (error: ApiError) => {

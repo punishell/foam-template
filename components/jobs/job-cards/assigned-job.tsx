@@ -1,7 +1,7 @@
 'use client';
 import React from 'react';
 import { Button } from 'pakt-ui';
-import { JobStatus } from '@/lib/types';
+import { JobCancellation, JobStatus, ReviewChangeRequest } from '@/lib/types';
 import { useRouter } from 'next/navigation';
 import { SideModal } from '@/components/common/side-modal';
 import { AfroProfile } from '@/components/common/afro-profile';
@@ -24,6 +24,7 @@ interface ClientJobCardProps {
     avatar?: string;
     paktScore: number;
   };
+  reviewRequestChange?: ReviewChangeRequest
 }
 
 export const ClientJobCard: React.FC<ClientJobCardProps> = ({
@@ -36,6 +37,7 @@ export const ClientJobCard: React.FC<ClientJobCardProps> = ({
   totalDeliverables,
   completedDeliverables,
   isCompleted,
+  reviewRequestChange,
 }) => {
   const router = useRouter();
   const [isUpdateModalOpen, setIsUpdateModalOpen] = React.useState(false);
@@ -59,7 +61,7 @@ export const ClientJobCard: React.FC<ClientJobCardProps> = ({
         <div className="gap-2 flex items-center">
           {!isCompleted && (
             <Button size="xs" variant="secondary" onClick={() => setIsUpdateModalOpen(true)}>
-              {status === 'completed' ? 'Review' : 'See Updates'}
+              {status === 'completed' ? reviewRequestChange ? 'View Request' : 'Review' : 'See Updates'}
             </Button>
           )}
           <Button
