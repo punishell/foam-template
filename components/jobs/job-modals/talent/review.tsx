@@ -119,7 +119,7 @@ export const ReviewClient: React.FC<ReviewClientProps> = ({ job, closeModal }) =
           <h3>Comment</h3>
           <div>
             <textarea
-              rows={5}
+              rows={3}
               value={comment}
               onChange={(e) => {
                 if (e.target.value.length <= MAX_COMMENT_LENGTH) {
