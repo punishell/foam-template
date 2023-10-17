@@ -3,10 +3,8 @@
 import { Button } from 'pakt-ui';
 import { useRouter } from 'next/navigation';
 import { Tabs } from '@/components/common/tabs';
-import { useGetAccount } from '@/lib/api/account';
 import { Feeds } from '@/components/overview/feeds';
 import { Header } from '@/components/overview/header';
-import { AfroScore } from '@/components/overview/paktscore';
 import { LeaderBoard } from '@/components/overview/leaderboard';
 import { Invites } from '@/components/overview/invites';
 import { ActiveJobs } from '@/components/overview/activeJobs';
@@ -15,14 +13,11 @@ import { Search, Plus, Briefcase } from 'lucide-react';
 import { useUserState } from '@/lib/store/account';
 
 export default function Overview() {
-  const account = useGetAccount();
-
   return (
-    <div className="h-[95vh] gap-6 flex flex-col overflow-hidden">
-      <Header />
-
+    <div className="h-screen gap-6 flex flex-col overflow-hidden">
       <div className="flex gap-6 h-full justify-start w-full">
         <div className="w-full flex flex-col grow h-full gap-7">
+          <Header />
           <JobHeader />
           <div className="overflow-y-auto basis-0 flex flex-1">
             <Tabs
@@ -36,9 +31,10 @@ export default function Overview() {
           </div>
         </div>
 
-        <div className="flex flex-col basis-[270px] shrink-0 h-fit gap-7 w-fit items-center">
-          <AfroScore score={account.data?.score} />
-          <LeaderBoard />
+        <div className="basis-[270px] shrink-0 flex flex-col min-h-full xw-fit items-center overflow-y-auto w-full">
+          <div className="overflow-y-auto basis-0 flex flex-col gap-2 flex-1 w-full scrollbar-hide">
+            <LeaderBoard />
+          </div>
         </div>
       </div>
     </div>
