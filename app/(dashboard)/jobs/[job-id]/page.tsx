@@ -91,7 +91,7 @@ const ClientJobDetails: React.FC<ClientJobDetailsProps> = ({ job }) => {
             _id: job?.owner?._id || '',
             score: job?.owner?.score || 0,
             avatar: job?.owner?.profileImage?.url,
-            name: `${job?.owner?.firstName} ${job?.owner?.lastName}`,
+            name: `${job?.owner?.firstName} ${job?.owner?.lastName.slice(0, 1)}.`,
           }}
         />
         <div className="bg-white flex flex-col w-full p-6 rounded-b-xl grow border-line border-t-0 border">
@@ -298,7 +298,7 @@ const TalentJobDetails: React.FC<TalentJobDetailsProps> = ({ job, userId }) => {
             _id: job?.creator?._id || '',
             score: job?.creator?.score || 0,
             avatar: job?.creator?.profileImage?.url,
-            name: `${job?.creator?.firstName} ${job?.creator?.lastName}`,
+            name: `${job?.creator?.firstName} ${job?.creator?.lastName.slice(0, 1)}.`,
           }}
         />
 
