@@ -42,7 +42,6 @@ const schema = z.object({
   due: z.date({
     required_error: 'Due date is required',
   }),
-  jobType: z.string().nonempty({ message: 'Required' }),
   visibility: z.string().nonempty({ message: 'Required' }),
   thirdSkill: z.string().optional().default(''),
   secondSkill: z.string().optional().default(''),
@@ -119,7 +118,6 @@ const JobEditForm: React.FC<JobEditFormProps> = ({ job }) => {
       budget: job.paymentFee,
       deliverables: job.collections.filter(isJobDeliverable).map((collection) => collection.name),
       title: job?.name,
-      jobType: 'freelance',
       category: job?.category,
       description: job?.description,
       due: new Date(job?.deliveryDate),
@@ -194,8 +192,6 @@ const JobEditForm: React.FC<JobEditFormProps> = ({ job }) => {
       form.watch('deliverables').filter((r) => r != '').length > 0 &&
       !form.getFieldState('deliverables').invalid,
     classification:
-      !!form.watch('jobType') &&
-      !form.getFieldState('jobType').invalid &&
       !!form.watch('visibility') &&
       !form.getFieldState('visibility').invalid &&
       !!form.watch('category') &&
@@ -401,40 +397,6 @@ const JobEditForm: React.FC<JobEditFormProps> = ({ job }) => {
                     {form.formState.errors.visibility?.message && (
                       <span className="text-sm text-red-500 whitespace-nowrap">
                         {form.formState.errors.visibility?.message}
-                      </span>
-                    )}
-                  </span>
-                </div>
-              </div>
-
-              <div className="flex flex-col gap-2">
-                <label className="text-sm text-body">Job Type</label>
-                <div className="relative">
-                  <Controller
-                    name="jobType"
-                    control={form.control}
-                    render={({ field: { onChange, value } }) => {
-                      return (
-                        <Select defaultValue={value} onValueChange={onChange}>
-                          <SelectTrigger className="w-[180px] bg-[#F2F4F5] text-title text-base h-10 rounded-lg">
-                            <SelectValue placeholder="Select Job Type" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="freelance" className="hover:bg-[#ECFCE5] rounded py-2">
-                              Freelance
-                            </SelectItem>
-                            {/* <SelectItem value="project" className="hover:bg-[#ECFCE5] rounded py-2">
-                              Project
-                            </SelectItem> */}
-                          </SelectContent>
-                        </Select>
-                      );
-                    }}
-                  />
-                  <span className="absolute -bottom-5 flex w-full">
-                    {form.formState.errors.jobType?.message && (
-                      <span className="text-sm text-red-500 whitespace-nowrap">
-                        {form.formState.errors.jobType?.message}
                       </span>
                     )}
                   </span>
