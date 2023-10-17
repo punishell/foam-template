@@ -4,11 +4,12 @@ import Image from 'next/image';
 import { DefaultAvatar } from '@/components/common/default-avatar';
 import Link from 'next/link';
 
-type Size = 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '3xl';
+type Size = 'sm' | 'md' | '2md' | 'lg' | 'xl' | '2xl' | '3xl';
 
 const SIZE_TO_PX: Record<Size, number> = {
   sm: 60,
   md: 110,
+  '2md': 130,
   lg: 150,
   xl: 180,
   '2xl': 200,

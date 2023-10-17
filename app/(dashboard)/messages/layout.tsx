@@ -17,29 +17,29 @@ interface Props {
 }
 
 export default function MessagesLayout({ children }: Props) {
-  const [settingsModalOpen, setSettingsModalOpen] = React.useState(false);
+  // const [settingsModalOpen, setSettingsModalOpen] = React.useState(false);
   const { conversations, loadingChats } = useMessaging();
 
   return (
     <div className="flex flex-col gap-0 h-full">
-      <div className="flex items-center justify-between">
+      {/* <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
           <Modal isOpen={settingsModalOpen} onOpenChange={setSettingsModalOpen} className="max-w-xl">
             <SettingsModal />
           </Modal>
         </div>
-      </div>
+      </div> */}
 
-      <div className="flex grow w-full h-[90%]">
+      <div className="flex grow w-full mb-4">
         <div className="bg-white basis-[370px] grow-0 border h-full shrink-0 flex flex-col rounded-lg rounded-r-none border-line">
           <ChatListSearch />
-          <div className="flex relative items-center gap-2 px-4 pb-6">
+          {/* <div className="flex relative items-center gap-2 px-4 pb-6">
             <Button variant={'outline'} className="!px-4 !py-2" onClick={() => setSettingsModalOpen(true)}>
               <span className="flex flex-row text-sm font-bold items-center">
                 Set Connection Preference <Settings className="ml-2" size={16} />
               </span>
             </Button>
-          </div>
+          </div> */}
           <ChatList conversations={conversations} loading={loadingChats} />
         </div>
 
