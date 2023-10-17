@@ -241,17 +241,18 @@ const ReviewChangeRequested: React.FC<ReviewChangeRequestedProps> = ({ closeModa
 const ReviewSuccess: React.FC<{ closeModal: () => void }> = ({ closeModal }) => {
   return (
     <div className="h-full px-4 flex items-center justify-center flex-col">
-      <div className="mt-12">
-        <Image src="/images/logo-dark.svg" width={300} height={100} alt="logo" />
-      </div>
-      <div className="flex flex-col gap-32 items-center grow justify-center">
-        <div className="flex flex-col text-center items-center">
-          <div className="max-w-[200px] -mb-4">
-            <Lottie animationData={success} loop={false} />
-          </div>
-          <div className="flex flex-col gap-4 text-center items-center">
+      <div className="flex flex-col gap-20 items-center justify-center h-fit">
+        <div className="">
+          <Image src="/images/logo-dark.svg" width={300} height={100} alt="logo" />
+        </div>
+
+        <div className="max-w-[200px]">
+          <Lottie animationData={success} loop={false} />
+        </div>
+        <div className="flex flex-col text-center items-center  x-mt-40 gap-9">
+          <div className="flex flex-col gap-9 text-center items-center">
             <p className="text-lg text-body max-w-[80%]">
-              Your review has submitted. Talent will also review and payment will be released after..
+              Your review has submitted. Talent will also review and payment will be released after.
             </p>
             <div className="max-w-[200px] w-full">
               <Button fullWidth size="sm" onClick={closeModal}>
