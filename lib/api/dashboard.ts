@@ -41,7 +41,7 @@ async function getTimelineFeeds({ page, limit, filter }: timelineFetchParams): P
 }
 
 async function getLeaderBoard(): Promise<GetTimelineResponse> {
-  const res = await axios.get(`/account/user?limit=6&sort=score&range=1,100`);
+  const res = await axios.get(`/account/user?limit=10&sort=score&range=1,100`);
   return res.data.data;
 }
 
