@@ -59,7 +59,7 @@ export const ReviewTalent: React.FC<ReviewTalentProps> = ({ job, closeModal }) =
           </div>
         </div>
 
-        <div>
+        <div className="border p-3 rounded-xl bg-gray-50">
           <h3 className="text-lg">How was your experience with</h3>
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
@@ -88,7 +88,7 @@ export const ReviewTalent: React.FC<ReviewTalentProps> = ({ job, closeModal }) =
           </div>
         </div>
 
-        <div>
+        <div className="border p-3 rounded-xl bg-gray-50 flex flex-col gap-1">
           <h3>Comment</h3>
           <div>
             <textarea
@@ -100,7 +100,7 @@ export const ReviewTalent: React.FC<ReviewTalentProps> = ({ job, closeModal }) =
                 }
               }}
               placeholder="Write your comment..."
-              className="grow focus:outline-none p-2 resize-none rounded-lg w-full bg-gray-50 border border-line placeholder:text-sm"
+              className="grow focus:outline-none p-2 resize-none rounded-lg w-full bg-white border border-line placeholder:text-sm"
             ></textarea>
             <div className="ml-auto w-fit">
               <span className="text-sm text-body">{comment.length}</span>
@@ -241,17 +241,18 @@ const ReviewChangeRequested: React.FC<ReviewChangeRequestedProps> = ({ closeModa
 const ReviewSuccess: React.FC<{ closeModal: () => void }> = ({ closeModal }) => {
   return (
     <div className="h-full px-4 flex items-center justify-center flex-col">
-      <div className="mt-12">
-        <Image src="/images/logo-dark.svg" width={300} height={100} alt="logo" />
-      </div>
-      <div className="flex flex-col gap-32 items-center grow justify-center">
-        <div className="flex flex-col text-center items-center">
-          <div className="max-w-[200px] -mb-4">
-            <Lottie animationData={success} loop={false} />
-          </div>
-          <div className="flex flex-col gap-4 text-center items-center">
+      <div className="flex flex-col gap-20 items-center justify-center h-fit">
+        <div className="">
+          <Image src="/images/logo-dark.svg" width={300} height={100} alt="logo" />
+        </div>
+
+        <div className="max-w-[200px]">
+          <Lottie animationData={success} loop={false} />
+        </div>
+        <div className="flex flex-col text-center items-center  x-mt-40 gap-9">
+          <div className="flex flex-col gap-9 text-center items-center">
             <p className="text-lg text-body max-w-[80%]">
-              Your review has submitted. Talent will also review and payment will be released after..
+              Your review has submitted. Talent will also review and payment will be released after.
             </p>
             <div className="max-w-[200px] w-full">
               <Button fullWidth size="sm" onClick={closeModal}>

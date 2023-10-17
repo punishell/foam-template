@@ -42,13 +42,14 @@ export const ClientJobCard: React.FC<ClientJobCardProps> = ({
   const progress = Math.floor((completedDeliverables / totalDeliverables) * 100);
 
   return (
-    <div className="gap-4 bg-white rounded-3xl border-line w-full flex flex-col grow border p-4">
+    <div className="gap-1 bg-white rounded-3xl border-line w-full flex flex-col grow border p-4 pt-0">
       <div className="w-full flex gap-4">
-        <AfroProfile score={talent.paktScore} size="md" src={talent.avatar} url={`/talents/${talent.id}`} />
-        <div className="flex flex-col gap-2 grow">
+        <div className="-ml-3">
+          <AfroProfile score={talent.paktScore} size="2md" src={talent.avatar} url={`/talents/${talent.id}`} />
+        </div>
+        <div className="flex flex-col gap-2 grow -ml-3 pt-4">
           <div className="flex items-center justify-between gap-2">
             {<span className="text-body text-lg font-bold">{talent.name}</span>}
-
             <span className="px-3 text-base text-title inline-flex rounded-full bg-[#B2E9AA66]">${price}</span>
           </div>
           <div className="flex grow text-title text-2xl items-center break-all">{title}</div>
@@ -124,16 +125,18 @@ export const TalentJobCard: React.FC<TalentJobCardProps> = ({
   const progress = Math.floor((completedDeliverables / totalDeliverables) * 100);
 
   return (
-    <div className="gap-4 bg-white rounded-3xl border-line w-full flex flex-col grow border p-4">
+    <div className="gap-1 bg-white rounded-3xl border-line w-full flex flex-col grow border p-4 pt-0">
       <div className="w-full flex gap-4">
-        <AfroProfile score={client.paktScore} size="md" src={client.avatar} />
-        <div className="flex flex-col gap-2 grow">
+        <div className="-ml-3">
+          <AfroProfile score={client.paktScore} size="2md" src={client.avatar} />
+        </div>
+        <div className="flex flex-col gap-2 grow -ml-3 pt-4">
           <div className="flex items-center justify-between gap-2">
             {<span className="text-body text-lg font-bold">{client.name}</span>}
 
             <span className="px-3 text-base text-title inline-flex rounded-full bg-[#B2E9AA66]">${price}</span>
           </div>
-          <div className="grow text-title text-2xl break-all">{title}</div>
+          <div className="flex grow text-title text-2xl break-all items-center">{title}</div>
         </div>
       </div>
       <div className="flex items-center gap-4 justify-between mt-auto w-full">
