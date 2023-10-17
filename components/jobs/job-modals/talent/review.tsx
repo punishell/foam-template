@@ -15,7 +15,7 @@ import { AfroProfile } from '@/components/common/afro-profile';
 
 interface ReviewClientProps {
   job: Job;
-  closeModal?: () => void;
+  closeModal: () => void;
 }
 
 const MAX_COMMENT_LENGTH = 500;
@@ -38,7 +38,7 @@ export const ReviewClient: React.FC<ReviewClientProps> = ({ job, closeModal }) =
   );
 
   if (reviewChangeRequestPending) {
-    return <RequestJobChangeSuccess />;
+    return <RequestJobChangeSuccess closeModal={closeModal} />;
   }
 
   if (requestReviewChange) {
@@ -66,7 +66,7 @@ export const ReviewClient: React.FC<ReviewClientProps> = ({ job, closeModal }) =
 
       <div className="px-4 flex flex-col gap-6 py-4 h-full">
         {clientReview && clientReview.rating < 5 && !reviewChangeRequestCompleted && (
-          <div className="p-3 border border-line rounded-xl flex flex-col gap-3">
+          <div className="p-3 border xborder-line border-[#7DDE86] rounded-xl flex flex-col gap-3 bg-[#FBFFFA]">
             <div className="flex justify-between items-center">
               <span>
                 {clientReview.owner.firstName} {clientReview.owner.lastName}&apos; Review
@@ -86,7 +86,7 @@ export const ReviewClient: React.FC<ReviewClientProps> = ({ job, closeModal }) =
           </div>
         )}
 
-        <div>
+        <div className="border p-3 rounded-xl bg-gray-50">
           <h3 className="text-lg">How was your experience with</h3>
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
@@ -115,7 +115,7 @@ export const ReviewClient: React.FC<ReviewClientProps> = ({ job, closeModal }) =
           </div>
         </div>
 
-        <div>
+        <div className="border p-3 rounded-xl bg-gray-50 flex flex-col gap-1">
           <h3>Comment</h3>
           <div>
             <textarea
@@ -127,7 +127,7 @@ export const ReviewClient: React.FC<ReviewClientProps> = ({ job, closeModal }) =
                 }
               }}
               placeholder="Write your comment..."
-              className="grow focus:outline-none p-2 resize-none rounded-lg w-full bg-gray-50 border border-line placeholder:text-sm"
+              className="grow focus:outline-none p-2 resize-none rounded-lg w-full bg-white border border-line placeholder:text-sm"
             ></textarea>
             <div className="ml-auto w-fit">
               <span className="text-sm text-body">{comment.length}</span>
@@ -267,7 +267,7 @@ const RequestReviewChange: React.FC<RequestReviewChangeProps> = ({
   );
 };
 
-const RequestJobChangeSuccess: React.FC = () => {
+const RequestJobChangeSuccess: React.FC<{ closeModal: () => void }> = ({ closeModal }) => {
   const router = useRouter();
 
   return (
@@ -286,7 +286,14 @@ const RequestJobChangeSuccess: React.FC = () => {
               The Client has been notified and will have the opportunity to reopen the job.
             </p>
             <div className="max-w-[200px] w-full">
-              <Button fullWidth size="sm" onClick={() => router.push('/overview')}>
+              <Button
+                fullWidth
+                size="sm"
+                onClick={() => {
+                  closeModal();
+                  router.push('/overview');
+                }}
+              >
                 Go To Dashboard
               </Button>
             </div>
@@ -297,7 +304,7 @@ const RequestJobChangeSuccess: React.FC = () => {
   );
 };
 
-export const ReviewSuccess = () => {
+export const ReviewSuccess: React.FC<{ closeModal: () => void }> = ({ closeModal }) => {
   const router = useRouter();
 
   return (
@@ -314,7 +321,14 @@ export const ReviewSuccess = () => {
           <div className="flex flex-col gap-9 text-center items-center">
             <p className="text-lg text-body max-w-[80%]">Your review has submitted and payment has been released.</p>
             <div className="max-w-[200px] w-full">
-              <Button fullWidth size="sm" onClick={() => router.push('/wallet')}>
+              <Button
+                fullWidth
+                size="sm"
+                onClick={() => {
+                  closeModal();
+                  router.push('/wallet');
+                }}
+              >
                 Go To Wallet
               </Button>
             </div>

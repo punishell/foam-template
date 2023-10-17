@@ -16,7 +16,7 @@ interface TalentJobModalProps {
   closeModal: () => void;
 }
 
-export const TalentJobModal: React.FC<TalentJobModalProps> = ({ jobId, talentId }) => {
+export const TalentJobModal: React.FC<TalentJobModalProps> = ({ jobId, talentId, closeModal }) => {
   const query = useGetJobById({ jobId });
   const [isRequestingJobCancellation, setIsRequestingJobCancellation] = React.useState(false);
 
@@ -65,11 +65,11 @@ export const TalentJobModal: React.FC<TalentJobModalProps> = ({ jobId, talentId 
   }
 
   if (clientHasReviewed && talentHasReviewed) {
-    return <ReviewSuccess />;
+    return <ReviewSuccess closeModal={closeModal} />;
   }
 
   if (clientHasReviewed && !talentHasReviewed) {
-    return <ReviewClient job={job} />;
+    return <ReviewClient job={job} closeModal={closeModal} />;
   }
 
   return <JobUpdates job={job} requestJobCancellation={() => setIsRequestingJobCancellation(true)} />;

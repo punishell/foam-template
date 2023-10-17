@@ -59,7 +59,7 @@ export const ReviewTalent: React.FC<ReviewTalentProps> = ({ job, closeModal }) =
           </div>
         </div>
 
-        <div>
+        <div className="border p-3 rounded-xl bg-gray-50">
           <h3 className="text-lg">How was your experience with</h3>
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
@@ -88,7 +88,7 @@ export const ReviewTalent: React.FC<ReviewTalentProps> = ({ job, closeModal }) =
           </div>
         </div>
 
-        <div>
+        <div className="border p-3 rounded-xl bg-gray-50 flex flex-col gap-1">
           <h3>Comment</h3>
           <div>
             <textarea
@@ -100,7 +100,7 @@ export const ReviewTalent: React.FC<ReviewTalentProps> = ({ job, closeModal }) =
                 }
               }}
               placeholder="Write your comment..."
-              className="grow focus:outline-none p-2 resize-none rounded-lg w-full bg-gray-50 border border-line placeholder:text-sm"
+              className="grow focus:outline-none p-2 resize-none rounded-lg w-full bg-white border border-line placeholder:text-sm"
             ></textarea>
             <div className="ml-auto w-fit">
               <span className="text-sm text-body">{comment.length}</span>
