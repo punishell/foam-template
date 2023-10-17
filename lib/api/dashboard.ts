@@ -61,7 +61,7 @@ export const useGetTimeline = ({ page, limit, filter }: timelineFetchParams) => 
     async ({ pageParam = 1 }) => (await getTimelineFeeds({ page: pageParam, limit, filter })).data,
     {
       getNextPageParam: (_, pages) => pages.length + 1,
-      // enabled: false,
+      enabled: true,
     },
   );
   // return useQuery({
@@ -95,8 +95,10 @@ export function useDismissFeed() {
   return useMutation({
     mutationFn: dismissFeed,
     mutationKey: ['dismiss-feed-by-id'],
-    onSuccess: () => {
-      queryClient.refetchQueries(['get-timeline', '1', {}]);
+    onSuccess: async () => {
+      await queryClient.refetchQueries([`get-timeline_1_10`], {
+        stale: true,
+      });
       toast.success('Feed Dismissed successfully');
     },
     onError: (error: ApiError) => {

@@ -186,9 +186,8 @@ export const AfroScore: React.FC<AfroScoreProps> = ({ size, score: initialScore 
             textAnchor="middle"
             fill="white"
             fontWeight={700}
-            transform={`rotate(180, ${knobPosition.x + (sizeInPx + knobRadius) / 2}, ${
-              knobPosition.y + (sizeInPx + knobRadius) / 2
-            })`}
+            transform={`rotate(180, ${knobPosition.x + (sizeInPx + knobRadius) / 2}, ${knobPosition.y + (sizeInPx + knobRadius) / 2
+              })`}
             fontSize={Math.round(sizeInPx / 10)}
           >
             {`${Math.round(score)}`}
@@ -206,7 +205,7 @@ type AfroProfileProps = Omit<AfroScoreProps, 'children'> & {
 
 export const AfroProfile: React.FC<AfroProfileProps> = ({ size, score, src, url }) => {
   return (
-    <Link href={url || ''}>
+    <Link href={url || ""} className='flex relative items-center justify-center'>
       <AfroScore score={score} size={size}>
         {src ? (
           <Image src={src} alt="profile" fill className="scale-95 rounded-full" style={{ objectFit: 'cover' }} />

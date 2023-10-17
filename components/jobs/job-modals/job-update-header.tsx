@@ -66,11 +66,11 @@ export const JobUpdateHeader: React.FC<Props> = ({
           backgroundColor: status === 'cancel_requested' ? '#FFF8F8' : '#F8FFF4',
         }}
       >
-        <div className="pb-4 flex flex-col gap-2">
+        <div className="pb-1 flex flex-col gap-2">
           <div className="flex gap-2 items-center">
             <AfroProfile
               score={profile?.score || 0}
-              size="md"
+              size="sm"
               src={profile.profileImage?.url}
               url={`/talents/${profile?._id}`}
             />
