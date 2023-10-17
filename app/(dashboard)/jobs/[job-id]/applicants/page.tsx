@@ -14,7 +14,7 @@ import { PageError } from '@/components/common/page-error';
 import { PageEmpty } from '@/components/common/page-empty';
 import { Pagination } from '@/components/common/pagination';
 import { PageLoading } from '@/components/common/page-loading';
-import { AfroScore } from '@/components/common/afro-profile';
+import { AfroProfile, AfroScore } from '@/components/common/afro-profile';
 import { DefaultAvatar } from '@/components/common/default-avatar';
 interface Props {
   params: {
@@ -194,7 +194,7 @@ const ApplicantCard: React.FC<ApplicantCardProps> = ({ bid, talent, message }) =
   return (
     <div className="w-full bg-white p-4 rounded-2xl border border-line flex flex-col gap-3">
       <div className="w-full flex gap-4">
-        {
+        {/* {
           <AfroScore score={score} size="md">
             <div className="h-full w-full rounded-full relative">
               {profileImage?.url ? (
@@ -204,7 +204,8 @@ const ApplicantCard: React.FC<ApplicantCardProps> = ({ bid, talent, message }) =
               )}
             </div>
           </AfroScore>
-        }
+        } */}
+        <AfroProfile score={score} size='md' src={profileImage?.url} />
         <div className="flex flex-col gap-2 grow">
           <div className="flex items-center justify-between gap-2">
             {<span className="text-title text-lg font-bold">{`${firstName} ${lastName}`}</span>}
