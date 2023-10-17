@@ -67,7 +67,7 @@ const ChatListItem: React.FC<ChatListItemProps> = ({ _id, name, avatar, score, u
         className={`flex w-full border-l-4 hover:bg-[#ECFCE5] duration-200 px-3 py-3 gap-2 items-center ${isActiveChat ? 'bg-[#ECFCE5] border-primary' : 'bg-white border-transparent'
           }`}
       >
-        <AfroProfile score={score ?? 0} src={avatar} size="sm" url={`talents/${_id}`} />
+        <AfroProfile score={score ?? 0} src={avatar} size="sm" url={`/talents/${_id}`} />
         <div className="grow flex flex-col">
           <div className="flex justify-between gap-2 items-center">
             <div className="flex gap-2 items-center">

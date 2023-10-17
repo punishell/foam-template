@@ -204,7 +204,7 @@ type AfroProfileProps = Omit<AfroScoreProps, 'children'> & {
 
 export const AfroProfile: React.FC<AfroProfileProps> = ({ size, score, src, url }) => {
   return (
-    <Link href={url || ""} className='flex relative items-center'>
+    <Link href={url || ""} className='flex relative items-center justify-center'>
       <AfroScore score={score} size={size}>
         {src ? (
           <Image src={src} alt="profile" fill className="scale-95 rounded-full" style={{ objectFit: 'cover' }} />

@@ -105,7 +105,7 @@ interface GetJobByIdParams {
   jobId: string;
 }
 
-interface GetJobByIdResponse extends Job { }
+interface GetJobByIdResponse extends Job {}
 
 async function getJobById(params: GetJobByIdParams): Promise<GetJobByIdResponse> {
   const res = await axios.get(`/collection/${params.jobId}`);
@@ -221,13 +221,13 @@ interface MarkDeliverableAsCompleteParams {
   deliverableId: string;
   totalDeliverables: number;
   completedDeliverables: number;
-  meta: Record<string, any>
+  meta: Record<string, any>;
 }
 
 async function postToggleDeliverableCompletion(params: MarkDeliverableAsCompleteParams): Promise<ApiResponse> {
   const res = await axios.patch(`/collection/${params.deliverableId}`, {
     progress: params.isComplete ? 100 : 0,
-    meta: params.meta
+    meta: params.meta,
   });
   return res.data;
 }
@@ -291,10 +291,7 @@ export function useUpdateJobProgress({ creatorId }: { creatorId: string }) {
       toast.error(error?.response?.data.message ?? 'Updating job progress failed');
     },
     onSuccess: async (_, { jobId, progress }) => {
-      await Promise.all([
-        jobsQuery.refetch(),
-        queryClient.refetchQueries(['get-job-by-id', { jobId }])
-      ])
+      await Promise.all([jobsQuery.refetch(), queryClient.refetchQueries(['get-job-by-id', { jobId }])]);
       if (creatorId && progress == 100) {
         await createFeed.mutate({
           owners: [creatorId],

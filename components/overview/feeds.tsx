@@ -10,10 +10,10 @@ import { PageLoading } from '../common/page-loading';
 import { PageError } from '../common/page-error';
 import { FEED_TYPES } from '@/lib/utils';
 import { Loader } from 'lucide-react';
-import { useInfiniteQuery } from '@tanstack/react-query';
 
 export const Feeds = () => {
   const { _id: loggedInUser } = useUserState();
+  // const [resetTimeLine, setResetTimeLine] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [prevPage, setPrevPage] = useState(0);
   const [currentData, setCurrentData] = useState([]);
@@ -93,10 +93,12 @@ export const Feeds = () => {
         totalData = [...totalData, ...timeData];
       }
       // @ts-ignore
-      const newData = currentData.concat(totalData.filter(c => !allIds.includes(c._id))).sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));;
+      let newData = totalData.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
       setCurrentData(newData);
     }
   }, [timelineData, timelineData?.pages]);
+
+  console.log(timelineData, currentData)
 
   const timelineFeeds = useMemo(() => (currentData || []).map((feed, i) => ParseFeedView(feed, loggedInUser, i, callback, dismissByID)), [currentData]);
 

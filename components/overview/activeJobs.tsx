@@ -53,10 +53,12 @@ const ActiveJobCard: React.FC<ActiveJobCardProps> = ({
   progress,
   isCreator,
 }) => {
+  const { _id: loggedInUser } = useUserState();
   const [isUpdateModalOpen, setIsUpdateModalOpen] = React.useState(false);
+  const profileAccount = creator?._id == loggedInUser ? talent : creator;
   return (
     <div className="border-[#9BDCFD] bg-[#F1FBFF] gap-4 pl-2 px-4  flex border z-10 w-full rounded-2xl relative overflow-hidden">
-      <AfroProfile src={talent.avatar} score={talent.score} size="lg" url={`/talents/${talent._id}`} />
+      <AfroProfile src={profileAccount.avatar} score={profileAccount.score} size="lg" url={`/talents/${profileAccount._id}`} />
       <div className="flex flex-col gap-4 py-4 w-full">
         <div className="flex justify-between items-center">
           <h3 className="text-title text-xl font-bold">{title}</h3>
