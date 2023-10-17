@@ -4,11 +4,12 @@ import Image from 'next/image';
 import { DefaultAvatar } from '@/components/common/default-avatar';
 import Link from 'next/link';
 
-type Size = 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '3xl';
+type Size = 'sm' | 'md' | '2md' | 'lg' | 'xl' | '2xl' | '3xl';
 
 const SIZE_TO_PX: Record<Size, number> = {
   sm: 60,
   md: 110,
+  '2md': 130,
   lg: 150,
   xl: 180,
   '2xl': 200,
@@ -185,8 +186,9 @@ export const AfroScore: React.FC<AfroScoreProps> = ({ size, score: initialScore 
             textAnchor="middle"
             fill="white"
             fontWeight={700}
-            transform={`rotate(180, ${knobPosition.x + (sizeInPx + knobRadius) / 2}, ${knobPosition.y + (sizeInPx + knobRadius) / 2
-              })`}
+            transform={`rotate(180, ${knobPosition.x + (sizeInPx + knobRadius) / 2}, ${
+              knobPosition.y + (sizeInPx + knobRadius) / 2
+            })`}
             fontSize={Math.round(sizeInPx / 10)}
           >
             {`${Math.round(score)}`}
@@ -204,7 +206,7 @@ type AfroProfileProps = Omit<AfroScoreProps, 'children'> & {
 
 export const AfroProfile: React.FC<AfroProfileProps> = ({ size, score, src, url }) => {
   return (
-    <Link href={url || ""}>
+    <Link href={url || ''}>
       <AfroScore score={score} size={size}>
         {src ? (
           <Image src={src} alt="profile" fill className="scale-95 rounded-full" style={{ objectFit: 'cover' }} />
