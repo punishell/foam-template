@@ -119,20 +119,22 @@ export const TalentBox: React.FC<{
                   <div className="grid grid-cols-4 gap-2">
                     {achievements &&
                       achievements.length > 0 &&
-                      achievements.map((a: any, i: number) => {
-                        const achievM = getAchievementData(a.type);
-                        return (
-                          <Badge
-                            key={i}
-                            title={achievM?.title}
-                            value={a?.value}
-                            total={a?.total}
-                            textColor={achievM?.textColor}
-                            bgColor={achievM?.bgColor}
-                            type={a.type}
-                          />
-                        );
-                      })}
+                      achievements
+                        .sort((a: any, b: any) => b.total - a.total)
+                        .map((a: any, i: number) => {
+                          const achievM = getAchievementData(a.type);
+                          return (
+                            <Badge
+                              key={i}
+                              title={achievM?.title}
+                              value={a?.value}
+                              total={a?.total}
+                              textColor={achievM?.textColor}
+                              bgColor={achievM?.bgColor}
+                              type={a.type}
+                            />
+                          );
+                        })}
                     {achievements.length == 0 &&
                       emptyAchievement.map((a: any, i: number) => (
                         <Badge
