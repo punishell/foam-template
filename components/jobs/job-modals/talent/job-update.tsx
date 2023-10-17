@@ -4,6 +4,7 @@ import { JobUpdateHeader } from '../job-update-header';
 import { isJobDeliverable, type Job } from '@/lib/types';
 import { DeliverablesStepper } from '@/components/jobs/deliverables-stepper';
 import { Popover, PopoverTrigger, PopoverContent } from '@/components/common/popover';
+import { useUserState } from '@/lib/store/account';
 
 interface JobUpdatesProps {
   job: Job;
@@ -25,7 +26,6 @@ export const JobUpdates: React.FC<JobUpdatesProps> = ({ job, requestJobCancellat
     _id: jobId,
   } = job;
   const deliverables = collections.filter(isJobDeliverable);
-  console.log("deliverables===", deliverables);
 
   return (
     <React.Fragment>
@@ -70,11 +70,12 @@ export const JobUpdates: React.FC<JobUpdatesProps> = ({ job, requestJobCancellat
               jobProgress={progress}
               talentId={String(owner?._id)}
               jobCreator={creator?._id}
-              deliverables={deliverables.map(({ _id, name, progress, updatedAt }) => ({
+              deliverables={deliverables.map(({ _id, name, progress, updatedAt, meta }) => ({
                 jobId: jobId,
                 jobCreator: creator?._id,
                 progress,
                 updatedAt,
+                meta,
                 description: name,
                 deliverableId: _id,
               }))}

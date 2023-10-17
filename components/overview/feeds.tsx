@@ -10,10 +10,10 @@ import { PageLoading } from '../common/page-loading';
 import { PageError } from '../common/page-error';
 import { FEED_TYPES } from '@/lib/utils';
 import { Loader } from 'lucide-react';
-import { useInfiniteQuery } from '@tanstack/react-query';
 
 export const Feeds = () => {
   const { _id: loggedInUser } = useUserState();
+  // const [resetTimeLine, setResetTimeLine] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [prevPage, setPrevPage] = useState(0);
   const [currentData, setCurrentData] = useState([]);
@@ -86,19 +86,21 @@ export const Feeds = () => {
   useEffect(() => {
     // @ts-ignore
     const allIds = currentData.map(c => c._id);
-    if (timelineData && timelineData.pages) {
+    if (timelineData && timelineData?.pages) {
       let totalData: any = [];
       for (let i = 0; i < timelineData.pages.length; i++) {
         const timeData = timelineData.pages[i];
         totalData = [...totalData, ...timeData];
       }
       // @ts-ignore
-      const newData = currentData.concat(totalData.filter(c => !allIds.includes(c._id)));
+      let newData = totalData.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
       setCurrentData(newData);
     }
   }, [timelineData, timelineData?.pages]);
 
-  const timelineFeeds = (currentData || []).map((feed, i) => ParseFeedView(feed, loggedInUser, i, callback, dismissByID));
+  console.log(timelineData, currentData)
+
+  const timelineFeeds = useMemo(() => (currentData || []).map((feed, i) => ParseFeedView(feed, loggedInUser, i, callback, dismissByID)), [currentData]);
 
   if (isLoading && timelineFeeds.length < 1) return <PageLoading className="h-[85vh] rounded-2xl border border-line" />;
   if (isError) return <PageError className="h-[85vh] rounded-2xl border border-line" />;

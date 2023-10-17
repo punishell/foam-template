@@ -348,17 +348,17 @@ export const JobUpdateFeed: React.FC<TalentJobUpdateProps> = ({
         <p className="text-body flex gap-4 flex-row capitalize"> <CheckBox isChecked={isMarked} /> {description}</p>
         <div className="justify-between items-center flex mt-auto">
           <div className="flex items-center gap-2 w-full">
-            {progress.progress === 100 && (
-              <Button
-                size="xs"
-                variant="secondary"
-                onClick={() => {
-                  setIsModalOpen(true);
-                }}
-              >
-                See Update
-              </Button>
-            )}
+            {/* {progress.progress === 100 && ( */}
+            <Button
+              size="xs"
+              variant="secondary"
+              onClick={() => {
+                setIsModalOpen(true);
+              }}
+            >
+              See Update
+            </Button>
+            {/* )} */}
             <Link href={`/messages?userId=${isCreator ? talent._id : creator._id}`}>
               <Button size="xs" variant="outline">
                 Message

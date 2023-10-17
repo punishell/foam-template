@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { format } from 'date-fns';
 import { Spinner } from '@/components/common';
 import { useToggleDeliverableCompletion, useMarkJobAsComplete, useUpdateJobProgress } from '@/lib/api/job';
 import { Button } from 'pakt-ui';
+import dayjs from 'dayjs';
 
 interface Deliverable {
   jobId: string;
@@ -11,6 +12,7 @@ interface Deliverable {
   updatedAt: string;
   description: string;
   deliverableId: string;
+  meta?: Record<string, any>;
 }
 
 interface DeliverableProps extends Deliverable {
@@ -35,6 +37,9 @@ const DeliverableStep: React.FC<DeliverableProps> = ({
 }) => {
   const mutation = useToggleDeliverableCompletion({ description });
   const [isComplete, setIsComplete] = React.useState(progress === 100);
+  useEffect(() => {
+    console.log("progress-changed", progress, isComplete)
+  }, [progress]);
 
   return (
     <div className="flex gap-3 items-start py-1 relative w-full">
@@ -58,6 +63,9 @@ const DeliverableStep: React.FC<DeliverableProps> = ({
               completedDeliverables,
               isComplete: !isComplete,
               jobCreator,
+              meta: {
+                completedAt: !isComplete ? dayjs() : "",
+              }
             },
             {
               onError: () => {
@@ -79,7 +87,7 @@ const DeliverableStep: React.FC<DeliverableProps> = ({
           {description}
         </p>
 
-        {isComplete && (
+        {isComplete && updatedAt && (
           <span className="text-xs text-green-500">Completed: {format(new Date(updatedAt), 'dd MMM yyyy h:mm a')}</span>
         )}
       </div>
@@ -110,12 +118,13 @@ export const DeliverablesStepper: React.FC<DeliverablesStepperProps> = ({
   const markJobAsComplete = useMarkJobAsComplete();
   const totalDeliverables = deliverables.length;
   const completedDeliverables = deliverables.filter((deliverable) => deliverable.progress === 100).length;
+  console.log(deliverables)
 
   return (
     <div className="flex flex-col w-full h-full grow pb-3">
       {deliverables
         .sort((a, b) => b.progress - a.progress)
-        .map(({ deliverableId, description, jobId, progress, updatedAt }, index) => {
+        .map(({ deliverableId, description, jobId, progress, meta }, index) => {
           return (
             <DeliverableStep
               jobId={jobId}
@@ -123,7 +132,7 @@ export const DeliverablesStepper: React.FC<DeliverablesStepperProps> = ({
               isClient={isClient}
               progress={progress}
               key={deliverableId}
-              updatedAt={updatedAt}
+              updatedAt={meta?.completedAt}
               description={description}
               deliverableId={deliverableId}
               totalDeliverables={totalDeliverables}

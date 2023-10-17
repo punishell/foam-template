@@ -8,6 +8,7 @@ import { Reviews } from '@/components/talents/review';
 import { useUserState } from '@/lib/store/account';
 import { ProfileHeader } from '@/components/talents/header';
 import { Bio } from '@/components/talents/bio';
+import { PageLoading } from '@/components/common/page-loading';
 
 export default function Profile() {
   const router = useRouter();
@@ -39,6 +40,7 @@ export default function Profile() {
     }),
     [user],
   );
+  if (isLoading) return <PageLoading />
   const reviews = talentReviews?.data || [];
   return (
     <div className="flex flex-col gap-6 pt-6 overflow-y-auto w-full">
@@ -66,7 +68,7 @@ export default function Profile() {
       <div className='w-full'>
         <Reviews
           reviews={
-            talentReviews?.data?.map((a) => ({
+            reviews?.map((a) => ({
               title: a.data.name,
               body: a.review,
               rating: a.rating,

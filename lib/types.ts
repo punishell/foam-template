@@ -116,6 +116,7 @@ export type JobDeliverable = {
   description: string;
   status: 'pending' | 'ongoing' | 'completed';
   creator: UserProfile;
+  meta?: Record<string, any>;
 };
 
 export type JobApplicant = {
