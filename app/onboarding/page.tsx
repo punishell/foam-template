@@ -103,7 +103,27 @@ const ProfileImage = () => {
   };
 
   return (
-    <div className="flex w-full shrink-0 gap-4 flex-col items-center">
+    <div className="flex w-full shrink-0 gap-4 flex-col items-center relative">
+      <div className="absolute h-[85px] w-[85px] rounded-full left-[6%] top-[5%] opacity-50">
+        <Image src="/images/onboarding-1.png" alt="" height={85} width={85} className="rounded-full" />
+      </div>
+      <div className="absolute h-[85px] w-[85px] opacity-50 rounded-full left-[0%] top-[50%] -translate-y-1/2">
+        <Image src="/images/onboarding-2.png" alt="" height={85} width={85} className="rounded-full" />
+      </div>
+      <div className="absolute h-[85px] w-[85px] opacity-50 rounded-full left-[6%] bottom-[5%]">
+        <Image src="/images/onboarding-3.png" alt="" height={85} width={85} className="rounded-full" />
+      </div>
+
+      <div className="absolute h-[85px] w-[85px] opacity-50 rounded-full right-[6%] top-[5%]">
+        <Image src="/images/onboarding-4.png" alt="" height={85} width={85} className="rounded-full" />
+      </div>
+      <div className="absolute h-[85px] w-[85px] opacity-50 rounded-full right-[0%] top-[50%] -translate-y-1/2">
+        <Image src="/images/onboarding-5.png" alt="" height={85} width={85} className="rounded-full" />
+      </div>
+      <div className="absolute h-[85px] w-[85px] opacity-50 rounded-full right-[6%] bottom-[5%]">
+        <Image src="/images/onboarding-6.png" alt="" height={85} width={85} className="rounded-full" />
+      </div>
+
       <div className="flex flex-col items-center text-body">
         <p className="text-lg">Last Step</p>
         <span className="text-2xl font-bold text-title">Create Your Avatar</span>
