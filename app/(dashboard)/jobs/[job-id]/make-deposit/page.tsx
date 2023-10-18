@@ -97,7 +97,7 @@ export default function MakeDepositPage({ params }: Props) {
 
   const selectPaymentCoin = async (coin: SUPPORTED_COINS) => {
     setPaymentCoin(coin);
-    await mutation.mutate({ jobId, coin });
+    mutation.mutate({ jobId, coin });
   };
 
   return (
@@ -114,9 +114,9 @@ export default function MakeDepositPage({ params }: Props) {
             <div className="flex flex-col gap-2">
               <h2 className="text-2xl font-bold">Escrow Payment</h2>
               <p className="text-body text-lg">
-                Every contracted engagement requires payment to be deposited in an escrow wallet prior to commencement
-                of work. This payment lives on the blockchain and cannot be accessed by Afro.Fund, nor Pakt, nor any
-                third party.
+                Before an invitation is sent to talent, a client is required to deposit payment into a secure escrow
+                wallet. This payment safely lives on the blockchain and cannot be accessed by Afro.Fund, nor Pakt, nor
+                any third party.
               </p>
             </div>
 
@@ -398,13 +398,13 @@ const DepositToAddress = ({ amount, depositAddress, jobId, job, closeModel, coin
                     },
                     {
                       onSuccess: () => {
-                        router.push(`/jobs?my-jobs=unassigned`);
+                        router.push(`/overview`);
                       },
                     },
                   );
                 }
                 closeModel();
-                return router.push(`/jobs?my-jobs=unassigned`);
+                return router.push(`/overview`);
               },
               onError: () => {},
             },
@@ -534,7 +534,7 @@ const DepositAvax: React.FC<WalletDepositProps> = ({ depositAddress, amount, job
                 },
                 {
                   onSuccess: () => {
-                    router.push(`/jobs?my-jobs=unassigned`);
+                    router.push(`/overview`);
                   },
                 },
               );
@@ -594,7 +594,7 @@ const DepositUSDC: React.FC<WalletDepositProps> = ({ amount, depositAddress, job
                 },
                 {
                   onSuccess: () => {
-                    router.push(`/jobs?my-jobs=unassigned`);
+                    router.push(`/overview`);
                   },
                 },
               );
@@ -636,7 +636,7 @@ const DepositUSDC: React.FC<WalletDepositProps> = ({ amount, depositAddress, job
                       },
                       {
                         onSuccess: () => {
-                          router.push(`//jobs?my-jobs=unassigned`);
+                          router.push(`/overview`);
                         },
                       },
                     );

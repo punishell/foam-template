@@ -464,7 +464,7 @@ export const JobCompletionFeed: React.FC<JobCompletedProps> = ({
                 setIsModalOpen(true);
               }}
             >
-              Write Review
+              See Update
             </Button>
           </div>
           <RenderBookMark size={20} isBookmarked={bookmarked} type="feed" id={id} bookmarkId={bookmarkId} />
@@ -559,7 +559,7 @@ export const JobReviewedFeed: React.FC<ReviewJobProps> = ({
                 setIsModalOpen(true);
               }}
             >
-              Write Review
+              See Review
             </Button>
           </div>
           <RenderBookMark size={20} isBookmarked={bookmarked} type="feed" id={id} bookmarkId={bookmarkId} />

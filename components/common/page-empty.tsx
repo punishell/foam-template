@@ -19,7 +19,7 @@ export const PageEmpty: React.FC<Props> = ({ className, label }) => {
         <div className="max-w-[250px] w-full flex items-center justify-center">
           <Lottie animationData={empty} loop={false} />
         </div>
-        <span className="text-body text-lg text-center max-w-xs">{label || 'Nothing to show yet.'}</span>
+        <span className="text-body text-lg text-center max-w-md">{label || 'Nothing to show yet.'}</span>
       </div>
     </div>
   );

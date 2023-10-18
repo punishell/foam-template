@@ -57,7 +57,7 @@ const JobHeader = () => {
           <div className="gap-2 flex flex-[7] flex-col border-l-[1px] border-[#e8e8e8] pl-[24px]">
             {/* <h4 className="text-xl font-bold">Complete your profile to start Applying for Jobs and Projects</h4> */}
             <p className="text-base leading-6 tracking-[0.75px] text-body">
-              Welcome to Afrofund! Fill out your profile - the more complete it is the more likely you are to get hired.
+              Welcome to Afrofund! Fill out your profile so you can begin collaborating.
             </p>
             <div className="h-[48px] w-[226px]">
               <Button variant="primary" size="md" onClick={() => router.push('/settings')}>
@@ -74,8 +74,8 @@ const JobHeader = () => {
   return (
     <div className="grid gap-4 grid-cols-2">
       <div className="border-2 bg-[#ECFCE5] p-4 rounded-2xl border-primary relative overflow-hidden">
-        <div className="flex flex-col gap-4">
-          <p className="text-xl font-bold max-w-[260px]">Make use of Afrofund talent pool to achieve your tasks</p>
+        <div className="flex flex-col gap-4 relative z-10">
+          <p className="text-xl font-bold max-w-[300px]">Search Afrofund Talent Pool to find skilled workers.</p>
           <Button size="sm" onClick={() => router.push('/jobs/create')}>
             <span className="flex items-center gap-2">
               <Plus size={20} />
@@ -90,8 +90,10 @@ const JobHeader = () => {
       </div>
 
       <div className="border-2 p-4 relative overflow-hidden rounded-2xl bg-[#C9F0FF] border-blue-darkest">
-        <div className="flex flex-col gap-4">
-          <p className="text-xl font-bold max-w-[260px]">Browse through list of jobs that matches your skill set</p>
+        <div className="flex flex-col gap-4 z-10 relative">
+          <p className="text-xl font-bold max-w-[320px]">
+            Search the Afrofund job board for work that matches your skills.
+          </p>
           <Button variant="secondary" size="sm" onClick={() => router.push('/jobs')}>
             <span className="flex items-center gap-2">
               <Search size={20} />
@@ -100,7 +102,7 @@ const JobHeader = () => {
           </Button>
         </div>
 
-        <div className="absolute right-0 translate-x-[30px] top-4">
+        <div className="absolute right-0 translate-x-[30px] top-4 ">
           <Search size={150} color="#9BDCFD" />
         </div>
       </div>

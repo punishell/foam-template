@@ -14,7 +14,8 @@ export const Invites = () => {
 
   const invites = query.data.data;
 
-  if (invites.length === 0) return <PageEmpty className="h-[85vh] rounded-2xl border border-line" />;
+  if (invites.length === 0)
+    return <PageEmpty className="h-[85vh] rounded-2xl border border-line" label="Your Invites will appear here" />;
 
   return (
     <div className="flex flex-col gap-5 border border-line bg-white rounded-2xl p-4 w-full">
@@ -35,8 +36,8 @@ export const Invites = () => {
               avatar: creator.profileImage?.url,
               name: `${creator.firstName} ${creator.lastName}`,
             }}
-            bookmarkId=''
-            close={() => { }}
+            bookmarkId=""
+            close={() => {}}
           />
         );
       })}

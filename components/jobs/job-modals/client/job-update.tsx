@@ -64,7 +64,7 @@ export const JobUpdates: React.FC<JobUpdatesProps> = ({ job, requestJobCancellat
         <div className="flex flex-col gap-2 grow">
           <div>
             <h3 className="font-bold text-lg">Job Deliverables</h3>
-            <p className="text-body">Mark the deliverables as you&rsquo;re done with them</p>
+            <p className="text-body">Deliverables will check off as the talent completes them.</p>
           </div>
 
           <div className="grow h-full">

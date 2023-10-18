@@ -80,7 +80,7 @@ const SkillInput = React.forwardRef<HTMLInputElement, SkillInputProps>(({ ...pro
       ref={ref}
       {...props}
       type="text"
-      placeholder="Enter Skill"
+      placeholder="Enter skill"
       className="bg-[#F2F4F5] py-3 rounded-full pl-4 h-full text-base focus:outline-none w-fit border border-line"
     />
   );
@@ -222,47 +222,83 @@ const JobEditForm: React.FC<JobEditFormProps> = ({ job }) => {
             <div className="text-sm text-white ml-auto text-right">{form.watch('title')?.length}/ 60</div>
             <span className="absolute -bottom-5 flex w-full">
               {form.formState.errors.title?.message && (
-                <span className="text-sm text-red-500">{form.formState.errors.title?.message}</span>
+                <span className="text-sm text-red-200">{form.formState.errors.title?.message}</span>
               )}
             </span>
           </div>
 
-          <div className="flex gap-4 max-w-lg">
-            <div className="relative">
-              <div className="bg-[#ECFCE5] border-[#198155] text-primary flex items-center p-2 rounded-lg h-[45px]">
-                <DollarIcon />
-                <NumericInput
-                  type="text"
-                  {...form.register('budget')}
-                  placeholder="Enter Proposed Price"
-                  className="bg-transparent  placeholder:text-[#0065D04D] h-full text-xl focus:outline-none"
-                />
-              </div>
-              <span className="absolute -bottom-5 flex w-full">
-                {form.formState.errors.budget?.message && (
-                  <span className="text-sm text-red-500">{form.formState.errors.budget?.message}</span>
-                )}
-              </span>
-            </div>
-            <div className="relative">
-              <Controller
-                name="due"
-                control={form.control}
-                render={({ field: { onChange, value } }) => (
-                  <DatePicker
-                    className="bg-[#C9F0FF] border-[#0065D0CC] text-[#0065D0CC] h-[45px] w-[250px]"
-                    placeholder="Select Due Date"
-                    selected={value}
-                    onSelect={(date) => onChange(date)}
-                    disabled={(date) => date < endOfYesterday()}
+          <div className="w-full flex items-center gap-4">
+            <div className="flex w-fit gap-4 max-w-lg">
+              <div className="relative">
+                <div className="bg-[#ECFCE5] border-[#198155] text-primary flex items-center p-2 rounded-lg h-[45px]">
+                  <DollarIcon />
+                  <NumericInput
+                    type="text"
+                    {...form.register('budget')}
+                    placeholder="Enter Proposed Price"
+                    className="bg-transparent  placeholder:text-primary h-full text-base focus:outline-none"
                   />
-                )}
-              />
-              <span className="absolute -bottom-5 flex w-full">
-                {form.formState.errors.due?.message && (
-                  <span className="text-sm text-red-500">{form.formState.errors.due?.message}</span>
-                )}
-              </span>
+                </div>
+                <span className="absolute -bottom-5 flex w-full">
+                  {form.formState.errors.budget?.message && (
+                    <span className="text-sm text-red-200">{form.formState.errors.budget?.message}</span>
+                  )}
+                </span>
+              </div>
+              <div className="relative">
+                <Controller
+                  name="due"
+                  control={form.control}
+                  render={({ field: { onChange, value } }) => (
+                    <DatePicker
+                      className="bg-[#C9F0FF] border-[#0065D0CC] text-[#0065D0CC] h-[45px] w-[250px]"
+                      placeholder="Select Due Date"
+                      selected={value}
+                      onSelect={(date) => onChange(date)}
+                      disabled={(date) => date < endOfYesterday()}
+                    />
+                  )}
+                />
+                <span className="absolute -bottom-5 flex w-full">
+                  {form.formState.errors.due?.message && (
+                    <span className="text-sm text-red-200">{form.formState.errors.due?.message}</span>
+                  )}
+                </span>
+              </div>
+            </div>
+
+            <div className=" flex gap-4 items-center w-full justify-end mt-auto">
+              {!talentId && !job.escrowPaid && (
+                <div className=" max-w-[250px] w-full">
+                  <Button onClick={form.handleSubmit(onSubmit)} fullWidth>
+                    {updateJob.isLoading ? <Spinner /> : 'Update Job'}
+                  </Button>
+                </div>
+              )}
+
+              {!talentId && job.escrowPaid && (
+                <div className="max-w-[250px] w-full">
+                  <Button onClick={form.handleSubmit(onSubmit)} fullWidth>
+                    {updateJob.isLoading ? <Spinner /> : 'Update Job'}
+                  </Button>
+                </div>
+              )}
+
+              {talentId && !job.escrowPaid && (
+                <div className="max-w-[250px] w-full">
+                  <Button onClick={form.handleSubmit(onSubmit)} fullWidth>
+                    {updateJob.isLoading ? <Spinner /> : 'Make Deposit'}
+                  </Button>
+                </div>
+              )}
+
+              {talentId && job.escrowPaid && (
+                <div className="max-w-[250px] w-full">
+                  <Button onClick={form.handleSubmit(onSubmit)} fullWidth>
+                    {inviteTalent.isLoading || updateJob.isLoading ? <Spinner /> : 'Invite Talent'}
+                  </Button>
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -304,7 +340,7 @@ const JobEditForm: React.FC<JobEditFormProps> = ({ job }) => {
                 id="description"
                 {...form.register('description')}
                 className="bg-[#C9F0FF] rounded-lg w-full p-4 focus:outline-none border border-blue-300"
-                placeholder="Enter Job Description"
+                placeholder="Enter job description"
                 rows={3}
               />
               <div className="text-sm ml-auto w-fit text-body -mt-1">
@@ -337,7 +373,7 @@ const JobEditForm: React.FC<JobEditFormProps> = ({ job }) => {
           </div>
 
           <div className="flex flex-col gap-4">
-            <h3 className="text-black text-lg font-medium">Classifications</h3>
+            <h3 className="text-black text-lg font-medium">Classification</h3>
             <div className="flex items-center gap-4">
               <div className="flex flex-col gap-2">
                 <label className="text-sm text-body">Job Category</label>
@@ -404,39 +440,6 @@ const JobEditForm: React.FC<JobEditFormProps> = ({ job }) => {
               </div>
             </div>
           </div>
-          <div className="flex gap-4 items-center w-full justify-end mt-auto">
-            {!talentId && !job.escrowPaid && (
-              <div className=" max-w-[250px] w-full">
-                <Button onClick={form.handleSubmit(onSubmit)} fullWidth>
-                  {updateJob.isLoading ? <Spinner /> : 'Update Job'}
-                </Button>
-              </div>
-            )}
-
-            {!talentId && job.escrowPaid && (
-              <div className="max-w-[250px] w-full">
-                <Button onClick={form.handleSubmit(onSubmit)} fullWidth>
-                  {updateJob.isLoading ? <Spinner /> : 'Update Job'}
-                </Button>
-              </div>
-            )}
-
-            {talentId && !job.escrowPaid && (
-              <div className="max-w-[250px] w-full">
-                <Button onClick={form.handleSubmit(onSubmit)} fullWidth>
-                  {updateJob.isLoading ? <Spinner /> : 'Make Deposit'}
-                </Button>
-              </div>
-            )}
-
-            {talentId && job.escrowPaid && (
-              <div className="max-w-[250px] w-full">
-                <Button onClick={form.handleSubmit(onSubmit)} fullWidth>
-                  {inviteTalent.isLoading || updateJob.isLoading ? <Spinner /> : 'Invite Talent'}
-                </Button>
-              </div>
-            )}
-          </div>
         </div>
       </form>
       <div className="basis-[300px] shrink-0 grow-0 flex flex-col gap-6 ">
@@ -446,7 +449,10 @@ const JobEditForm: React.FC<JobEditFormProps> = ({ job }) => {
           <StepIndicator isComplete={jobSteps.skills}>Skills</StepIndicator>
           <StepIndicator isComplete={jobSteps.description}>Description</StepIndicator>
           <StepIndicator isComplete={jobSteps.deliverables}>Deliverables</StepIndicator>
-          <StepIndicator isComplete={jobSteps.classification}>Classification</StepIndicator>
+          <StepIndicator isComplete={jobSteps.classification}>Classifications</StepIndicator>
+          <StepIndicator isComplete={true}>Post Job</StepIndicator>
+          <StepIndicator isComplete={true}>Invite Talent</StepIndicator>
+          <StepIndicator isComplete={false}>Deposit Payment</StepIndicator>
         </div>
         {/* <div className="bg-white p-6 rounded-xl min-h-[250px] border border-line flex flex-col gap-4">
           <div className="flex items-center gap-2">

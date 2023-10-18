@@ -126,8 +126,7 @@ const ProfileImage = () => {
 
       <div className="flex flex-col items-center text-body">
         <p className="text-lg">Last Step</p>
-        <span className="text-2xl font-bold text-title">Create Your Avatar</span>
-        <span className="text-base text-[#6c757d]">Upload an Image</span>
+        <span className="text-2xl font-bold text-title">Upload Your Profile Image</span>
       </div>
 
       <div

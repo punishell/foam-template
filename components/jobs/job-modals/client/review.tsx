@@ -252,7 +252,7 @@ const ReviewSuccess: React.FC<{ closeModal: () => void }> = ({ closeModal }) => 
         <div className="flex flex-col text-center items-center  x-mt-40 gap-9">
           <div className="flex flex-col gap-9 text-center items-center">
             <p className="text-lg text-body max-w-[80%]">
-              Your review has submitted. Talent will also review and payment will be released after.
+              Your review has been submitted. Payment will be released after talent has submitted their review.
             </p>
             <div className="max-w-[200px] w-full">
               <Button fullWidth size="sm" onClick={closeModal}>

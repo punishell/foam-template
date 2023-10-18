@@ -494,7 +494,6 @@ const TalentJobApplyModal: React.FC<TalentJobApplyModalProps> = ({ jobId, jobCre
     <div className="border w-full max-w-xl flex flex-col gap-4 bg-white p-6 rounded-2xl">
       <div className="flex flex-col gap-1 items-center">
         <h2 className="font-medium text-2xl">Propose Price</h2>
-        <span className="text-body">What do you think is a fair price for this job</span>
       </div>
 
       <form className="flex flex-col gap-6 items-center" onSubmit={form.handleSubmit(onSubmit)}>
@@ -502,20 +501,14 @@ const TalentJobApplyModal: React.FC<TalentJobApplyModalProps> = ({ jobId, jobCre
           <label htmlFor="due" className="text-title">
             Enter Bid
           </label>
-          {/* <input
-            type="text"
-            id="due"
-            {...form.register('amount')}
-            placeholder="Enter Bid (e.g $100)"
-            className="w-full border bg-[#FCFCFD] border-line rounded-lg outline-none px-4 py-3 focus-within:border-secondary hover:border-secondary hover:duration-200"
-          /> */}
+
           <div className="flex items-center border bg-[#FCFCFD] border-line rounded-lg outline-none px-4 py-3 focus-within:border-secondary hover:border-secondary hover:duration-200h-[45px] gap-2">
             {/* <DollarIcon /> */}
             <span className="text-body ">$</span>
             <NumericInput
               type="text"
               {...form.register('amount')}
-              placeholder="Enter Bid (e.g $100)"
+              placeholder="e.g 1000"
               className="bg-transparent  h-full text-sm text-body focus:outline-none"
             />
           </div>
@@ -534,7 +527,7 @@ const TalentJobApplyModal: React.FC<TalentJobApplyModalProps> = ({ jobId, jobCre
             maxLength={150}
             id="due"
             {...form.register('message')}
-            placeholder="Enter your message here"
+            placeholder="Describe why you're a good candidate"
             className="w-full resize-none bg-[#FCFCFD] border border-line rounded-lg outline-none px-4 py-3 focus-within:border-secondary hover:border-secondary hover:duration-200"
           />
           <div className="text-sm ml-auto w-fit text-body -mt-1">{form.watch('message')?.length} / 150 characters</div>

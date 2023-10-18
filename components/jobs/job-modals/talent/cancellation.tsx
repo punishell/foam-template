@@ -101,7 +101,7 @@ export const ReviewJobCancellationRequest: React.FC<ReviewJobCancellationRequest
               }}
               variant={'danger'}
             >
-              Review And Cancel Job
+              <span className="normal-case">Cancel Job and Review</span>
             </Button>
           </div>
         </div>
@@ -265,6 +265,7 @@ interface RequestJobCancellationProps {
 export const RequestJobCancellation: React.FC<RequestJobCancellationProps> = ({
   jobId,
   cancelJobCancellationRequest,
+  closeModal,
   talentId,
 }) => {
   const requestJobCancellationMutation = useRequestJobCancellation({ talentId });
@@ -274,7 +275,7 @@ export const RequestJobCancellation: React.FC<RequestJobCancellationProps> = ({
   const [explanation, setExplanation] = React.useState('');
 
   if (isSuccess) {
-    return <JobCancellationRequested />;
+    return <JobCancellationRequested closeModal={closeModal} />;
   }
 
   return (
@@ -290,8 +291,7 @@ export const RequestJobCancellation: React.FC<RequestJobCancellationProps> = ({
 
       <div className="flex py-6 px-4 flex-col gap-6 h-full grow">
         <div className="bg-[#FEF4E3]  p-4 rounded-2xl border border-yellow-dark">
-          The client will need to accept for the cancellation to be effective. Ensure you have had the conversation with
-          them.
+          The client will need to accept for the cancellation to be effective.
         </div>
 
         <div className="flex flex-col gap-2">
@@ -390,7 +390,7 @@ export const RequestJobCancellation: React.FC<RequestJobCancellationProps> = ({
   );
 };
 
-export const JobCancellationRequested: React.FC = () => {
+export const JobCancellationRequested: React.FC<{ closeModal: () => void }> = ({ closeModal }) => {
   const router = useRouter();
   return (
     <div className="h-full px-4 flex items-center justify-center">
@@ -447,7 +447,14 @@ export const JobCancellationRequested: React.FC = () => {
         </svg>
         <p className="text-lg text-body">A cancel request has been sent to the client.</p>
         <div className="max-w-[200px] w-full">
-          <Button fullWidth size="sm" onClick={() => router.push('/overview')}>
+          <Button
+            fullWidth
+            size="sm"
+            onClick={() => {
+              closeModal();
+              router.push('/overview');
+            }}
+          >
             Go To Dashboard
           </Button>
         </div>
