@@ -10,7 +10,7 @@ import { useGetAccount, useUpdateAccount } from '@/lib/api/account';
 import { Spinner } from '../common';
 import { TagInput } from '../common/tag-input';
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@/components/common/select';
-import countryJson from "@/lib/country.json";
+import countryJson from '@/lib/country.json';
 
 const ProfileStates = [
   { label: 'Private', value: 'true' },
@@ -36,7 +36,10 @@ export const ProfileView = () => {
   const [acceptedDelete, setAcceptedDelete] = useState(false);
   const { data: userAccount, refetch: userFetching, isFetched } = useGetAccount();
   const updateAccount = useUpdateAccount();
-  const COUNTRY_LIST: { label: string, value: string }[] = (countryJson || []).map(c => ({ label: c.name, value: c.name }));
+  const COUNTRY_LIST: { label: string; value: string }[] = (countryJson || []).map((c) => ({
+    label: c.name,
+    value: c.name,
+  }));
 
   const userData = useMemo(
     () => ({
@@ -114,7 +117,7 @@ export const ProfileView = () => {
   };
 
   // TODO:: parse Error for input validations
-  console.log(form.formState.errors)
+  console.log(form.formState.errors);
   return (
     <div className="flex flex-row relative gap-6 h-full grow overflow-y-auto">
       {!isFetched && <Spinner />}
@@ -128,7 +131,7 @@ export const ProfileView = () => {
                 </span>
               </div>
               <div className="flex justify-center item-center mx-auto text-center">
-                <UserAvatar2 size='lg' image={userData?.avatar} useUpload={true} onUploadComplete={onUploadComplete} />
+                <UserAvatar2 size="lg" image={userData?.avatar} useUpload={true} onUploadComplete={onUploadComplete} />
               </div>
               <div className="flex flex-row justify-center items-center">
                 <p className="text-lg font-bold text-title">
@@ -201,7 +204,7 @@ export const ProfileView = () => {
               <div className="flex">
                 <div className="flex relative w-full mb-8 mx-auto gap-6 flex-col">
                   <div id="input-row" className="flex flex-row justify-between gap-4 w-full">
-                    <div className='relative w-1/2'>
+                    <div className="relative w-1/2">
                       <Input
                         {...form.register('firstName')}
                         className="w-full !bg-[#FCFCFD] !border-[#E8E8E8]"
@@ -214,7 +217,7 @@ export const ProfileView = () => {
                         )}
                       </span>
                     </div>
-                    <div className='relative w-1/2'>
+                    <div className="relative w-1/2">
                       <Input
                         {...form.register('lastName')}
                         className="w-full !bg-[#FCFCFD] !border-[#E8E8E8]"
@@ -229,7 +232,7 @@ export const ProfileView = () => {
                     </div>
                   </div>
                   <div id="input-row" className="flex flex-row justify-between gap-4 w-full">
-                    <div className='relative w-1/2'>
+                    <div className="relative w-1/2">
                       <Input
                         {...form.register('title')}
                         className="w-full !bg-[#FCFCFD] !border-[#E8E8E8]"
@@ -242,7 +245,7 @@ export const ProfileView = () => {
                         )}
                       </span>
                     </div>
-                    <div className='relative w-1/2'>
+                    <div className="relative w-1/2">
                       <Input
                         {...form.register('email')}
                         className="w-full !bg-[#FCFCFD] !border-[#E8E8E8]"
@@ -258,11 +261,11 @@ export const ProfileView = () => {
                     </div>
                   </div>
                   <div id="input-row" className="flex flex-row justify-between gap-4 w-full">
-                    <div className='relative w-1/2'>
+                    <div className="relative w-1/2">
                       <Input
                         {...form.register('location')}
                         className="w-full !bg-[#FCFCFD] !border-[#E8E8E8]"
-                        placeholder="enter city"
+                        placeholder="Enter city"
                         label="City"
                       />
                       <span className="absolute -bottom-6 flex w-full">
@@ -272,19 +275,19 @@ export const ProfileView = () => {
                       </span>
                     </div>
 
-                    <div className='relative w-1/2'>
+                    <div className="relative w-1/2">
                       <Controller
                         name="country"
                         control={form.control}
                         render={({ field: { onChange, value } }) => {
                           return (
-                            <div className='flex flex-col w-full gap-2'>
+                            <div className="flex flex-col w-full gap-2">
                               <label> Country</label>
                               <Select defaultValue={value} onValueChange={onChange}>
                                 <SelectTrigger className="w-full !bg-[#FCFCFD] !border-[#E8E8E8] text-title text-base h-10 rounded-lg h-[48px]">
                                   <SelectValue placeholder="Select Country" />
                                 </SelectTrigger>
-                                <SelectContent className='max-h-[200px] overflow-y-auto'>
+                                <SelectContent className="max-h-[200px] overflow-y-auto">
                                   {COUNTRY_LIST.map(({ label, value }) => (
                                     <SelectItem key={value} value={value} className="hover:bg-[#ECFCE5] rounded py-2">
                                       {label}
@@ -311,16 +314,20 @@ export const ProfileView = () => {
                 <p className="text-lg text-title font-bold">Professional Information</p>
               </div>
               <div className="flex flex-col gap-4">
-                <p>Skill Sets</p>
                 <div className="flex flex-row gap-4">
                   <div className="relative w-1/2">
-                    <p className="text-body text-sm">Add your top 3 skills first</p>
+                    <p className="text-sm">Skill Sets</p>
                     <div className="min-h-[186px] border !bg-[#FCFCFD] !border-[#E8E8E8] rounded-lg">
                       <Controller
                         name="tags"
                         control={form.control}
                         render={({ field: { onChange, value = [] } }) => (
-                          <TagInput tags={value} setTags={onChange} className="items-start border border-none" />
+                          <TagInput
+                            tags={value}
+                            setTags={onChange}
+                            className="items-start border border-none"
+                            placeholder="Add your top 3 skills first"
+                          />
                         )}
                       />
                     </div>
@@ -331,7 +338,7 @@ export const ProfileView = () => {
                     </span>
                   </div>
                   <div className="relative w-1/2">
-                    <p className="text-body text-sm">Bio</p>
+                    <p className="text-sm">Bio</p>
                     <Textarea
                       className="!min-h-[186px] w-full"
                       {...form.register('bio')}
@@ -347,7 +354,10 @@ export const ProfileView = () => {
               </div>
             </div>
             <div className="bg-white rounded-lg p-4 mb-8">
-              <div className="flex flex-row justify-between h-[50px] items-center cursor-pointer" onClick={() => setShowDelete(!showDelete)}>
+              <div
+                className="flex flex-row justify-between h-[50px] items-center cursor-pointer"
+                onClick={() => setShowDelete(!showDelete)}
+              >
                 <p className="text-lg text-title font-bold">Delete Account</p>
                 {showDelete ? <ChevronUp /> : <ChevronDown />}
               </div>

@@ -16,6 +16,8 @@ import { SubmitHandler, useForm, Controller } from 'react-hook-form';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { useVerifyEmail, useResendOTP } from '@/lib/api';
 import { Timer } from 'lucide-react';
+import { useUserState } from '@/lib/store/account';
+import { set } from 'date-fns';
 
 const formSchema = z.object({
   otp: z.string().min(6, { message: 'OTP is required' }),
@@ -24,6 +26,7 @@ const formSchema = z.object({
 type FormValues = z.infer<typeof formSchema>;
 
 export default function SignupVerifyEmail() {
+  const { setUser } = useUserState();
   const [countdown, setCountdown] = React.useState(0);
   const [isResendDisabled, setIsResendDisabled] = React.useState(true);
 
@@ -64,8 +67,10 @@ export default function SignupVerifyEmail() {
         token,
       },
       {
-        onSuccess: ({ token: authToken }) => {
-          setCookie(AUTH_TOKEN_KEY, authToken);
+        onSuccess: (data) => {
+          setCookie(AUTH_TOKEN_KEY, data.token);
+          // @ts-ignore
+          setUser(data);
           router.push('/onboarding');
         },
       },
@@ -103,14 +108,14 @@ export default function SignupVerifyEmail() {
         <div className="flex flex-col items-center gap-2 text-center text-white">
           <h3 className="font-sans text-3xl font-bold">Verify Email</h3>
           <p className="font-sans text-base">
-            An OTP has been sent to your email address. Enter it to verify your email.
+            A code has been sent to your email address. Enter it to verify your email.
           </p>
         </div>
         <form
           className="flex relative z-[100] w-full mx-auto max-w-[600px] flex-col bg-[rgba(0,124,91,0.20)] backdrop-blur-md items-center gap-6 rounded-2xl border border-white border-opacity-20 bg-[rgba(0, 124, 91, 0.20)] px-[40px] py-10 backdrop-blur-lg"
           onSubmit={form.handleSubmit(onSubmit)}
         >
-          <div className='flex flex-col w-fit gap-4'>
+          <div className="flex flex-col w-fit gap-4">
             <Controller
               name="otp"
               control={form.control}
@@ -150,14 +155,14 @@ export default function SignupVerifyEmail() {
                   size="xs"
                   fullWidth
                   variant="outline"
-                  onClick={!(resendOTP.isLoading || isResendDisabled) ? handleResendOTP : () => { }}
+                  onClick={!(resendOTP.isLoading || isResendDisabled) ? handleResendOTP : () => {}}
                   disabled={resendOTP.isLoading || isResendDisabled}
-                  className='!border-white !text-white'
-                  style={{ opacity: (resendOTP.isLoading || isResendDisabled) ? 0.2 : 1 }}
+                  className="!border-white !text-white"
+                  style={{ opacity: resendOTP.isLoading || isResendDisabled ? 0.2 : 1 }}
                 >
-                  <span className='flex flex-row gap-2'>
-                    <Timer size={16} className='text-white' />
-                    {resendOTP.isLoading ? <Spinner size={16} /> : 'Resend OTP'}
+                  <span className="flex flex-row gap-2">
+                    <Timer size={16} className="text-white" />
+                    {resendOTP.isLoading ? <Spinner size={16} /> : 'Resend Code'}
                   </span>
                 </Button>
               </div>

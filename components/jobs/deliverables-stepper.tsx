@@ -38,7 +38,7 @@ const DeliverableStep: React.FC<DeliverableProps> = ({
   const mutation = useToggleDeliverableCompletion({ description });
   const [isComplete, setIsComplete] = React.useState(progress === 100);
   useEffect(() => {
-    console.log("progress-changed", progress, isComplete)
+    console.log('progress-changed', progress, isComplete);
   }, [progress]);
 
   return (
@@ -64,8 +64,8 @@ const DeliverableStep: React.FC<DeliverableProps> = ({
               isComplete: !isComplete,
               jobCreator,
               meta: {
-                completedAt: !isComplete ? dayjs() : "",
-              }
+                completedAt: !isComplete ? dayjs() : '',
+              },
             },
             {
               onError: () => {
@@ -118,7 +118,7 @@ export const DeliverablesStepper: React.FC<DeliverablesStepperProps> = ({
   const markJobAsComplete = useMarkJobAsComplete();
   const totalDeliverables = deliverables.length;
   const completedDeliverables = deliverables.filter((deliverable) => deliverable.progress === 100).length;
-  console.log(deliverables)
+  console.log(deliverables);
 
   return (
     <div className="flex flex-col w-full h-full grow pb-6">
@@ -162,7 +162,7 @@ export const DeliverablesStepper: React.FC<DeliverablesStepperProps> = ({
               );
             }}
           >
-            {markJobAsComplete.isLoading ? <Spinner size={20} /> : 'Mark Job as Complete'}
+            {markJobAsComplete.isLoading ? <Spinner size={20} /> : 'Finalize Job and Review'}
           </Button>
         )}
 

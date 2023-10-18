@@ -1,18 +1,24 @@
-import { zodResolver } from "@hookform/resolvers/zod";
-import { InputErrorMessage, Modal, OtpInput, SlideItemProps, Slider, Spinner } from "@/components/common";
+import { zodResolver } from '@hookform/resolvers/zod';
+import { InputErrorMessage, Modal, OtpInput, SlideItemProps, Slider, Spinner } from '@/components/common';
 // import { useActivateEmailOTP, useDeactivateEmailOTP, useIssueEmailOTP, useSendEmailOTP } from "@/lib/api";
-import { useEmail2FAState } from "@/lib/store";
-import Image from "next/image";
-import { Button, Checkbox, Text } from "pakt-ui";
-import React from "react";
-import { Controller, SubmitHandler, useForm } from "react-hook-form";
-import * as z from "zod";
-import { ChevronLeft, Timer, XCircleIcon } from "lucide-react";
-import { useActivate2FA, useDeActivate2FA, useDeActivate2FAEmailInitiate, useGetAccount, useInitialize2FA } from "@/lib/api/account";
-import { useUserState } from "@/lib/store/account";
-import { TWO_FA_CONSTANTS } from "@/lib/constants";
-import dayjs from "dayjs";
-import { formatCountdown } from "@/lib/utils";
+import { useEmail2FAState } from '@/lib/store';
+import Image from 'next/image';
+import { Button, Checkbox, Text } from 'pakt-ui';
+import React from 'react';
+import { Controller, SubmitHandler, useForm } from 'react-hook-form';
+import * as z from 'zod';
+import { ChevronLeft, Timer, XCircleIcon } from 'lucide-react';
+import {
+  useActivate2FA,
+  useDeActivate2FA,
+  useDeActivate2FAEmailInitiate,
+  useGetAccount,
+  useInitialize2FA,
+} from '@/lib/api/account';
+import { useUserState } from '@/lib/store/account';
+import { TWO_FA_CONSTANTS } from '@/lib/constants';
+import dayjs from 'dayjs';
+import { formatCountdown } from '@/lib/utils';
 
 interface Email2FAProps {
   isEnabled: boolean;
@@ -79,14 +85,14 @@ const InitiateActivateOTP = ({ goToNextSlide }: SlideItemProps) => {
       </div>
 
       <Text.p size="base">
-        An OTP will be sent to <span className="text-success">{email}</span>
+        A code will be sent to <span className="text-success">{email}</span>
       </Text.p>
       <div className="m-auto flex items-center">
         <Image src="/icons/email-auth.svg" width={150} height={210} alt="" />
       </div>
 
       <Button onClick={handleInitiateOtp} className="w-full" fullWidth>
-        {isLoading ? <Spinner /> : "Send OTP"}
+        {isLoading ? <Spinner /> : 'Send Code'}
       </Button>
     </div>
   );
@@ -159,16 +165,26 @@ const VerifyActivateOTP = ({ goToNextSlide, goToPreviousSlide }: SlideItemProps)
             control={control}
             render={({ field: { onChange, value } }) => <OtpInput value={value} onChange={onChange} numInputs={6} />}
           />
-          <div className="flex justify-center text-center my-2"><InputErrorMessage message={errors.otp?.message} /></div>
+          <div className="flex justify-center text-center my-2">
+            <InputErrorMessage message={errors.otp?.message} />
+          </div>
         </div>
 
         <Button className="w-full" fullWidth>
-          {isLoading ? <Spinner /> : "Confirm"}
+          {isLoading ? <Spinner /> : 'Confirm'}
         </Button>
       </form>
       <Text.p>{formatCountdown(countdown)}</Text.p>
-      <Button variant="outline" className="!border-body !rounded-xl" size="xs" disabled={isResendDisabled} onClick={handleInitiateOtp}>
-        <div className="flex flex-row gap-2"><Timer size={15} /> Resend OTP</div>
+      <Button
+        variant="outline"
+        className="!border-body !rounded-xl"
+        size="xs"
+        disabled={isResendDisabled}
+        onClick={handleInitiateOtp}
+      >
+        <div className="flex flex-row gap-2">
+          <Timer size={15} /> Resend Code
+        </div>
       </Button>
     </div>
   );
@@ -211,11 +227,11 @@ const InitiateDeactivateOTP = ({ goToNextSlide }: SlideItemProps) => {
         <XCircleIcon className="text-body my-auto cursor-pointer" onClick={closeModal} />
       </div>
       <Text.p size="sm" className="my-auto">
-        An OTP will be sent to <span className="text-success">{email}</span>
+        A code will be sent to <span className="text-success">{email}</span>
       </Text.p>
 
       <Button onClick={handleInitiateOtp} className="w-full" fullWidth>
-        {isLoading ? <Spinner /> : "Send OTP"}
+        {isLoading ? <Spinner /> : 'Send OTP'}
       </Button>
     </div>
   );
@@ -235,7 +251,7 @@ const VerifyDeactivateOTP = ({ goToNextSlide }: SlideItemProps) => {
   });
 
   const onSubmit: SubmitHandler<EmailOtpFormValues> = async ({ otp }) => {
-    await mutateAsync({ code: otp })
+    await mutateAsync({ code: otp });
     goToNextSlide();
   };
 
@@ -260,7 +276,7 @@ const VerifyDeactivateOTP = ({ goToNextSlide }: SlideItemProps) => {
         </div>
 
         <Button className="w-full" fullWidth>
-          {isLoading ? <Spinner /> : "Deactivate"}
+          {isLoading ? <Spinner /> : 'Deactivate'}
         </Button>
       </form>
     </div>
@@ -276,9 +292,13 @@ const OTPDeactivateSuccess = () => {
         <Text.h3 size="xs">Email</Text.h3>
         <XCircleIcon className="text-body my-auto cursor-pointer" onClick={closeModal} />
       </div>
-      <Text.p size="sm" className="my-auto">You have successfully deactivated Email OTP.</Text.p>
+      <Text.p size="sm" className="my-auto">
+        You have successfully deactivated Email OTP.
+      </Text.p>
 
-      <Button className="w-full" onClick={closeModal} fullWidth>Done</Button>
+      <Button className="w-full" onClick={closeModal} fullWidth>
+        Done
+      </Button>
     </div>
   );
 };

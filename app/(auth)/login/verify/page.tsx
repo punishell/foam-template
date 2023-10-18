@@ -32,8 +32,8 @@ export default function SignupVerifyEmail() {
   const loginOTP = useLoginOTP();
   const searchParams = useSearchParams();
   const token = searchParams.get('token');
-  const email = searchParams.get("email");
-  const verifyType = searchParams.get("type");
+  const email = searchParams.get('email');
+  const verifyType = searchParams.get('type');
 
   React.useEffect(() => {
     if (verifyType == TWO_FA_CONSTANTS.EMAIL) {
@@ -73,7 +73,7 @@ export default function SignupVerifyEmail() {
           // @ts-ignore
           setCookie(AUTH_TOKEN_KEY, data.token);
           return router.push('/overview');
-        }
+        },
       },
     );
   };
@@ -110,14 +110,16 @@ export default function SignupVerifyEmail() {
         <div className="flex flex-col items-center gap-2 text-center text-white">
           <h3 className="font-sans text-3xl font-bold">2FA Security</h3>
           <p className="font-sans text-base">
-            {verifyType === TWO_FA_CONSTANTS.AUTHENTICATOR ? "Enter the OTP from your authenticator" : `Enter the OTP we sent to ${email}`}
+            {verifyType === TWO_FA_CONSTANTS.AUTHENTICATOR
+              ? 'Enter the OTP from your authenticator'
+              : `Enter the code that was sent to ${email}`}
           </p>
         </div>
         <form
           className="flex relative z-[100] w-full mx-auto max-w-[600px] flex-col bg-[rgba(0,124,91,0.20)] backdrop-blur-md items-center gap-6 rounded-2xl border border-white border-opacity-20 bg-[rgba(0, 124, 91, 0.20)] px-[40px] py-10 backdrop-blur-lg"
           onSubmit={form.handleSubmit(onSubmit)}
         >
-          <div className='flex flex-col w-fit gap-4'>
+          <div className="flex flex-col w-fit gap-4">
             <Controller
               name="otp"
               control={form.control}
@@ -150,20 +152,22 @@ export default function SignupVerifyEmail() {
               {loginOTP.isLoading ? <Spinner /> : 'Submit'}
             </Button>
 
-            {verifyType == TWO_FA_CONSTANTS.EMAIL && <div className="flex flex-col gap-4 items-center w-full">
-              <span className="text-white">{formatCountdown(countdown)}</span>
-              <div className="w-full max-w-[150px]">
-                <Button
-                  size="xs"
-                  fullWidth
-                  variant="secondary"
-                  onClick={handleResendOTP}
-                  disabled={resendOTP.isLoading || isResendDisabled}
-                >
-                  {resendOTP.isLoading ? <Spinner size={16} /> : 'Resend OTP'}
-                </Button>
+            {verifyType == TWO_FA_CONSTANTS.EMAIL && (
+              <div className="flex flex-col gap-4 items-center w-full">
+                <span className="text-white">{formatCountdown(countdown)}</span>
+                <div className="w-full max-w-[150px]">
+                  <Button
+                    size="xs"
+                    fullWidth
+                    variant="secondary"
+                    onClick={handleResendOTP}
+                    disabled={resendOTP.isLoading || isResendDisabled}
+                  >
+                    {resendOTP.isLoading ? <Spinner size={16} /> : 'Resend Code'}
+                  </Button>
+                </div>
               </div>
-            </div>}
+            )}
           </div>
         </form>
       </Container>

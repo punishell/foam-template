@@ -164,12 +164,12 @@ export default function CreateJob() {
                   type="text"
                   {...form.register('budget')}
                   placeholder="Enter Proposed Price"
-                  className="bg-transparent  placeholder:text-[#0065D04D] h-full text-xl focus:outline-none"
+                  className="bg-transparent  placeholder:text-primary h-full text-base focus:outline-none"
                 />
               </div>
               <span className="absolute -bottom-5 flex w-full">
                 {form.formState.errors.budget?.message && (
-                  <span className="text-sm text-red-500">{form.formState.errors.budget?.message}</span>
+                  <span className="text-sm text-red-200">{form.formState.errors.budget?.message}</span>
                 )}
               </span>
             </div>
@@ -189,7 +189,7 @@ export default function CreateJob() {
               />
               <span className="absolute -bottom-5 flex w-full">
                 {form.formState.errors.due?.message && (
-                  <span className="text-sm text-red-500">{form.formState.errors.due?.message}</span>
+                  <span className="text-sm text-red-200">{form.formState.errors.due?.message}</span>
                 )}
               </span>
             </div>
@@ -235,7 +235,7 @@ export default function CreateJob() {
                 maxLength={400}
                 {...form.register('description')}
                 className="bg-[#C9F0FF] rounded-lg w-full p-4 focus:outline-none border border-blue-300"
-                placeholder="Enter Job Description"
+                placeholder="Enter job description"
                 rows={3}
               />
               <div className="text-sm ml-auto w-fit text-body -mt-1">
@@ -337,13 +337,12 @@ export default function CreateJob() {
                 </div>
               </div>
 
-              {/* ddd */}
+              <div className="ml-auto max-w-[250px] w-full border border-gray-300 rounded-xl mt-auto">
+                <Button disabled={createJob.isLoading || !form.formState.isValid} fullWidth>
+                  {createJob.isLoading ? <Spinner /> : form.watch('visibility') == 'private' ? 'Post Job' : 'Post Job'}
+                </Button>
+              </div>
             </div>
-          </div>
-          <div className="ml-auto max-w-[250px] w-full border border-gray-300 rounded-xl mt-auto">
-            <Button disabled={createJob.isLoading || !form.formState.isValid} fullWidth>
-              {createJob.isLoading ? <Spinner /> : form.watch('visibility') == 'private' ? 'Create Job' : 'Post Job'}
-            </Button>
           </div>
         </div>
       </form>
@@ -354,7 +353,10 @@ export default function CreateJob() {
           <StepIndicator isComplete={jobSteps.skills}>Skills</StepIndicator>
           <StepIndicator isComplete={jobSteps.description}>Description</StepIndicator>
           <StepIndicator isComplete={jobSteps.deliverables}>Deliverables</StepIndicator>
-          <StepIndicator isComplete={jobSteps.classification}>Classification</StepIndicator>
+          <StepIndicator isComplete={jobSteps.classification}>Classifications</StepIndicator>
+          <StepIndicator isComplete={false}>Post Job</StepIndicator>
+          <StepIndicator isComplete={false}>Invite Talent</StepIndicator>
+          <StepIndicator isComplete={false}>Deposit Payment</StepIndicator>
         </div>
         {/* <div className="bg-white p-6 rounded-xl min-h-[250px] border border-line flex flex-col gap-4">
           <div className="flex items-center gap-2">
@@ -383,7 +385,7 @@ const SkillInput = React.forwardRef<HTMLInputElement, SkillInputProps>(({ ...pro
       ref={ref}
       {...props}
       type="text"
-      placeholder="Enter Skill"
+      placeholder="Enter skill"
       className="bg-[#F2F4F5] py-3 rounded-full pl-4 h-full text-base focus:outline-none w-fit border border-line"
     />
   );

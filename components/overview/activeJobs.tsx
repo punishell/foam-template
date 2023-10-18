@@ -58,7 +58,12 @@ const ActiveJobCard: React.FC<ActiveJobCardProps> = ({
   const profileAccount = creator?._id == loggedInUser ? talent : creator;
   return (
     <div className="border-[#9BDCFD] bg-[#F1FBFF] gap-4 pl-2 px-4  flex border z-10 w-full rounded-2xl relative overflow-hidden">
-      <AfroProfile src={profileAccount.avatar} score={profileAccount.score} size="lg" url={`/talents/${profileAccount._id}`} />
+      <AfroProfile
+        src={profileAccount.avatar}
+        score={profileAccount.score}
+        size="lg"
+        url={`/talents/${profileAccount._id}`}
+      />
       <div className="flex flex-col gap-4 py-4 w-full">
         <div className="flex justify-between items-center">
           <h3 className="text-title text-xl font-bold">{title}</h3>
@@ -106,7 +111,6 @@ const talentAndClientHasReviewed = (job: Job) => {
   );
 };
 
-
 export const ActiveJobs = () => {
   const { _id: loggedInUser } = useUserState();
   const {
@@ -115,12 +119,7 @@ export const ActiveJobs = () => {
     isFetching: assignedFetching,
     isError: assignedError,
   } = useGetJobs({ category: 'assigned' });
-  const {
-    data: jobCreatedData,
-    isFetched,
-    isFetching,
-    isError,
-  } = useGetJobs({ category: 'created' });
+  const { data: jobCreatedData, isFetched, isFetching, isError } = useGetJobs({ category: 'created' });
   const jobDataJoined = [...(jobAssignedData?.data || []), ...(jobCreatedData?.data || [])];
 
   const ongoingJobs = jobDataJoined.filter(
@@ -176,7 +175,8 @@ export const ActiveJobs = () => {
   if ((!isFetched || !assignedFetched) && (isFetching || assignedFetching))
     return <PageLoading className="h-[85vh] rounded-2xl border border-line" />;
   if (isError || assignedError) return <PageError className="rounded-2xl border border-red-200 h-[85vh]" />;
-  if (activeJobs.length === 0) return <PageEmpty className="h-[85vh] rounded-2xl border border-line" />;
+  if (activeJobs.length === 0)
+    return <PageEmpty className="h-[85vh] rounded-2xl border border-line" label="Your Active Jobs will appear here" />;
 
   return <div className="flex flex-col gap-5 border border-line bg-white rounded-2xl p-4 w-full">{activeJobs}</div>;
 };

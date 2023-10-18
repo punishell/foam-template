@@ -28,7 +28,13 @@ export const FeedsBookmark = () => {
 
   if (!isFetched && isFetching) return <PageLoading className="h-[85vh] rounded-2xl border border-line" />;
   if (isError) return <PageError className="rounded-2xl border border-red-200 h-[85vh]" />;
-  if (bookmarks.length === 0) return <PageEmpty className="h-[85vh] rounded-2xl border border-line" />;
+  if (bookmarks.length === 0)
+    return (
+      <PageEmpty
+        className="h-[85vh] rounded-2xl border border-line"
+        label="Bookmarked notifications will appear here"
+      />
+    );
 
   return <div className="flex flex-col gap-5 border border-line bg-white rounded-2xl p-4 w-full">{bookmarks}</div>;
 };
