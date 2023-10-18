@@ -1,7 +1,7 @@
 import { ApiError, axios } from '@/lib/axios';
 import { toast } from '@/components/common/toaster';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { useGetWalletTxs } from './wallet';
+import { useGetWalletDetails, useGetWalletTxs } from './wallet';
 
 interface WithdrawalParams {
   address: string;
@@ -18,12 +18,14 @@ async function postWithdrawalRequest(payload: WithdrawalParams): Promise<any> {
 
 export function useWithdraw() {
   const queryClient = useQueryClient();
+  const { refetch } = useGetWalletDetails();
   return useMutation({
     mutationFn: postWithdrawalRequest,
     mutationKey: ['withdraw_referral_invite'],
     onSuccess: async (data) => {
       await queryClient.refetchQueries({ queryKey: ['wallet-tx-q', '10', '1'] });
       await queryClient.refetchQueries({ queryKey: ['wallet-data-fetch'] });
+      await refetch();
       toast.success('Withdrawal Successful');
       return data;
     },

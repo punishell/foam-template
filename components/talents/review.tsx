@@ -6,6 +6,7 @@ import { ArrowLeftCircle, ArrowRightCircle, Star } from 'lucide-react';
 import { Spinner } from '@/components/common/';
 import { AfroProfile } from '../common/afro-profile';
 import { BlazeCarousel, useBlazeSlider } from '../common/blazeCarousel';
+import { useUserState } from '@/lib/store/account';
 
 
 interface ReviewProps {
@@ -22,6 +23,8 @@ interface ReviewProps {
 }
 
 const Review: React.FC<ReviewProps> = ({ body, title, rating, user }) => {
+  const { _id: loggedInUser } = useUserState();
+  const navigateUrl = loggedInUser == user._id ? "/profile" : `/talents/${user?._id}`;
   return (
     <div className="bg-white min-h-full rounded-2xl p-4 flex flex-col gap-4 select-none cursor-grab w-full" style={{ maxWidth: "50%" }}>
       <div className='flex flex-col flex-1 max-w-full gap-4'>
@@ -32,7 +35,7 @@ const Review: React.FC<ReviewProps> = ({ body, title, rating, user }) => {
       <div className="flex items-center justify-between">
         <div className="grid grid-cols-3 gap-2">
           <div className="flex relative">
-            <AfroProfile size="sm" score={user.afroScore} src={user?.avatar} url={`/talents/${user?._id}`} />
+            <AfroProfile size="sm" score={user.afroScore} src={user?.avatar} url={navigateUrl} />
           </div>
           <div className="flex flex-col col-span-2 my-auto">
             <span className="text-sm text-title font-medium">{user.name}</span>

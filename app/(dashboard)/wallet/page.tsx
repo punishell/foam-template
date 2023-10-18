@@ -2,13 +2,10 @@
 
 import React, { useEffect, useMemo } from 'react';
 import Image from 'next/image';
-import { Bell } from 'lucide-react';
 import { Button } from 'pakt-ui';
 import { formatUsd } from '@/lib/utils';
 import dayjs from 'dayjs';
-import { UserBalance } from '@/components/common/user-balance';
-import { fetchWalletStats, useGetWalletTxs } from '@/lib/api/wallet';
-import { useWalletState } from '@/lib/store/wallet';
+import { fetchWalletStats, useGetWalletDetails, useGetWalletTxs } from '@/lib/api/wallet';
 import { WalletTransactions } from '@/components/wallet/transactions';
 import { WalletBalanceChart, chartDataProps } from '@/components/wallet/chart';
 import { WithdrawalModal } from '@/components/wallet/withdrawalModal';
@@ -25,7 +22,9 @@ export default function Wallet() {
     pageSize: 6,
   });
   const [statData, setStatData] = React.useState<chartDataProps>({ weekly: [], monthly: [], yearly: [] });
-  const { totalWalletBalance, wallets } = useWalletState();
+  const { data: walletData } = useGetWalletDetails();
+  const wallets = walletData?.data.data.wallets ?? [];
+  const totalWalletBalance = walletData?.data.data.totalWalletBalance ?? "0.00";
   const {
     data: walletTx,
     refetch: fetchWalletTx,
@@ -63,25 +62,42 @@ export default function Wallet() {
       };
     });
 
-    const monthlyStats = response[1].chart.map((c: any) => {
-      return {
-        date: String(dayjs(c.date).format("ddd")),
-        amt: c.amount,
-      };
-    });
+    const monthlyStats = () => {
+      const data = response[1].chart;
+      const n = 3;
+      const mainData = [];
+      let amt = 0;
+      for (var i = 0, j = 0; i < data.length; i++) {
+        const c = data[i];
+        const date = String(dayjs(c.date).format("DD MMM"));
+        amt += c.amount;
+        if (i >= n && i % n === 0) {
+          // push to array
+          mainData.push({
+            date,
+            amt
+          })
+          amt = 0
+          j++;
+        }
+      }
+      console.log(mainData);
+      return mainData as any;
+    }
 
     const yearlyStats = response[2].chart.map((c: any) => {
       return {
-        date: String(dayjs(c.date).format("MMM")),
+        date: String(dayjs(c.date).format("MMM YY")),
         amt: c.amount,
       };
     });
 
     const chartData = {
       weekly: weeklyStats,
-      monthly: monthlyStats,
+      monthly: monthlyStats(),
       yearly: yearlyStats,
     };
+
     setStatData(chartData);
   };
 
