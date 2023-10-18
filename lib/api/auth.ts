@@ -144,7 +144,7 @@ export function useLogin() {
     onSuccess: (data) => {
       // @ts-ignore
       setUser(data);
-      setWallet({ totalWalletBalance: "0.00", value: "0.00", wallets: [] })
+      setWallet({ totalWalletBalance: '0.00', value: '0.00', wallets: [] });
     },
   });
 }

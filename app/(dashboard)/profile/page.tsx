@@ -73,7 +73,7 @@ export default function Profile() {
               body: a.review,
               rating: a.rating,
               user: {
-                _id: a._id,
+                _id: a.owner._id,
                 afroScore: a.owner.score,
                 name: `${a.owner.firstName}${a.owner.lastName}`,
                 title: a.owner.profile.bio?.title || "",

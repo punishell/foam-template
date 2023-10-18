@@ -5,12 +5,13 @@ export interface IWallet {
   totalWalletBalance: string;
   value: string;
   wallets:
-  {
-    _id: string;
-    amount: number;
-    usdValue: number;
-    coin: string;
-  }[] | [];
+    | {
+        _id: string;
+        amount: number;
+        usdValue: number;
+        coin: string;
+      }[]
+    | [];
 }
 
 type WalletState = IWallet & {

@@ -99,7 +99,7 @@ export const MessagingProvider = ({ children }: { children: React.ReactNode }) =
         setSocket(socket);
         socket.emit(conversationEnums.USER_CONNECT, { userId: loggedInUser }, (response: SocketResponse<any>) => {
           if (!response.error) {
-            const parsedConversation = parseUserChats(response.data);
+            const parsedConversation = parseUserChats(response.data.messages);
             setConversations(parsedConversation);
             setLoadingChats(false);
             setUnreadChats(parsedConversation);
@@ -250,7 +250,7 @@ export const MessagingProvider = ({ children }: { children: React.ReactNode }) =
     await socket.emit(conversationEnums.GET_ALL_CONVERSATIONS, { userId: loggedInUser },
       (response: SocketResponse<any>) => {
         if (!response.error) {
-          const payload = response?.data;
+          const payload = response?.data?.messages;
           const parsedConversation = parseUserChats(payload);
           setConversations(parsedConversation);
           setLoadingChats(false);
