@@ -1,11 +1,12 @@
 'use client';
 import React from 'react';
+import { cn } from '@/lib/utils';
 import { Job, isJobDeliverable } from '@/lib/types';
 import { useGetJobById } from '@/lib/api/job';
 import { PageError } from '@/components/common/page-error';
 import { PageLoading } from '@/components/common/page-loading';
 import { useRouter } from 'next/navigation';
-import { Button } from 'pakt-ui';
+// import { Button as SubmitButton } from 'pakt-ui';
 // import { useDropzone } from 'react-dropzone';
 import { useSearchParams } from 'next/navigation';
 import { Spinner } from '@/components/common';
@@ -227,8 +228,8 @@ const JobEditForm: React.FC<JobEditFormProps> = ({ job }) => {
             </span>
           </div>
 
-          <div className="w-full flex items-center gap-4">
-            <div className="flex w-fit gap-4 max-w-lg">
+          <div className="w-full flex items-center gap-8">
+            <div className="flex w-fit gap-4 max-w-xl">
               <div className="relative">
                 <div className="bg-[#ECFCE5] border-[#198155] text-primary flex items-center p-2 rounded-lg h-[45px]">
                   <DollarIcon />
@@ -267,36 +268,36 @@ const JobEditForm: React.FC<JobEditFormProps> = ({ job }) => {
               </div>
             </div>
 
-            <div className=" flex gap-4 items-center w-full justify-end mt-auto">
+            <div className="flex gap-4 items-center w-full justify-end mt-auto">
               {!talentId && !job.escrowPaid && (
                 <div className=" max-w-[250px] w-full">
-                  <Button onClick={form.handleSubmit(onSubmit)} fullWidth>
+                  <SubmitButton onClick={form.handleSubmit(onSubmit)}>
                     {updateJob.isLoading ? <Spinner /> : 'Update Job'}
-                  </Button>
+                  </SubmitButton>
                 </div>
               )}
 
               {!talentId && job.escrowPaid && (
                 <div className="max-w-[250px] w-full">
-                  <Button onClick={form.handleSubmit(onSubmit)} fullWidth>
+                  <SubmitButton onClick={form.handleSubmit(onSubmit)}>
                     {updateJob.isLoading ? <Spinner /> : 'Update Job'}
-                  </Button>
+                  </SubmitButton>
                 </div>
               )}
 
               {talentId && !job.escrowPaid && (
                 <div className="max-w-[250px] w-full">
-                  <Button onClick={form.handleSubmit(onSubmit)} fullWidth>
+                  <SubmitButton onClick={form.handleSubmit(onSubmit)}>
                     {updateJob.isLoading ? <Spinner /> : 'Make Deposit'}
-                  </Button>
+                  </SubmitButton>
                 </div>
               )}
 
               {talentId && job.escrowPaid && (
                 <div className="max-w-[250px] w-full">
-                  <Button onClick={form.handleSubmit(onSubmit)} fullWidth>
+                  <SubmitButton onClick={form.handleSubmit(onSubmit)}>
                     {inviteTalent.isLoading || updateJob.isLoading ? <Spinner /> : 'Invite Talent'}
-                  </Button>
+                  </SubmitButton>
                 </div>
               )}
             </div>
@@ -472,3 +473,23 @@ const JobEditForm: React.FC<JobEditFormProps> = ({ job }) => {
     </div>
   );
 };
+
+type SubmitButtonProps = React.ComponentProps<'button'>;
+
+const SubmitButton = React.forwardRef<HTMLButtonElement, SubmitButtonProps>(
+  ({ className, children, ...props }, forwardedRef) => {
+    return (
+      <button
+        className={cn(' rounded-[10px] border-white h-[45px] w-full bg-white p-[4px] ', className)}
+        {...props}
+        ref={forwardedRef}
+      >
+        <div className="w-full h-full bg-[#7FFFA2] hover:bg-green-300 duration-200 rounded-[8px] flex items-center justify-center">
+          {children}
+        </div>
+      </button>
+    );
+  },
+);
+
+SubmitButton.displayName = 'SubmitButton';
