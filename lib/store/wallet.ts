@@ -4,14 +4,14 @@ import { persist } from 'zustand/middleware';
 export interface IWallet {
   totalWalletBalance: string;
   value: string;
-  wallets: [
-    {
-      _id: string;
-      amount: number;
-      usdValue: number;
-      coin: string;
-    },
-  ];
+  wallets:
+    | {
+        _id: string;
+        amount: number;
+        usdValue: number;
+        coin: string;
+      }[]
+    | [];
 }
 
 type WalletState = IWallet & {

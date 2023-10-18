@@ -2,6 +2,7 @@ import { axios, ApiError } from '@/lib/axios';
 import { useMutation } from '@tanstack/react-query';
 import { toast } from '@/components/common/toaster';
 import { useUserState } from '../store/account';
+import { useWalletState } from '../store/wallet';
 
 // Signup
 
@@ -133,6 +134,7 @@ async function postLogin2FA({ code, tempToken }: Login2FAParams): Promise<LoginR
 
 export function useLogin() {
   const { setUser } = useUserState();
+  const { setWallet } = useWalletState();
   return useMutation({
     mutationFn: postLogin,
     mutationKey: ['login'],
@@ -142,6 +144,7 @@ export function useLogin() {
     onSuccess: (data) => {
       // @ts-ignore
       setUser(data);
+      setWallet({ totalWalletBalance: '0.00', value: '0.00', wallets: [] });
     },
   });
 }
