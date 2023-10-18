@@ -27,7 +27,7 @@ export const ProfileHeader: React.FC<Props> = ({ _id, name, position, score, ski
       <InviteTalentModal isOpen={isModalOpen} setIsOpen={setIsModalOpen} talentId={_id} />
 
       <div className="w-full flex relative bg-white py-6 rounded-2xl gap-6 border border-line">
-        <div className="absolute left-[0%] top-[0%] shrink-0">
+        <div className="absolute left-[0%] top-[0%] shrink-0 mr-2">
           <AfroProfile src={profileImage} score={score} size="xl" />
         </div>
         <div className="flex flex-col gap-0 grow">
@@ -35,7 +35,7 @@ export const ProfileHeader: React.FC<Props> = ({ _id, name, position, score, ski
             className={`flex flex-row gap-2 px-6 w-full justify-between border-b-2 pb-4`}
             style={{ borderColor: borderColor }}
           >
-            <div className="w-[15%]"></div>
+            <div className="w-[18%]"></div>
             <div className="flex flex-row justify-between w-[85%]">
               <div className="flex flex-col gap-1">
                 <h1 className="text-3xl font-bold text-title">{name}</h1>
@@ -71,7 +71,7 @@ export const ProfileHeader: React.FC<Props> = ({ _id, name, position, score, ski
             </div>
           </div>
           <div className="flex flex-row px-6 py-2 pt-4 min-h-[80px]">
-            <div className="w-[15%]"></div>
+            <div className="w-[18%]"></div>
             <div className="flex w-[85%] flex-wrap gap-2 h-fit">
               {skills.map((skill, i) => (
                 <span
