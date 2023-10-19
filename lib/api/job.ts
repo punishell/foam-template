@@ -106,7 +106,7 @@ interface GetJobByIdParams {
   extras?: string;
 }
 
-interface GetJobByIdResponse extends Job { }
+interface GetJobByIdResponse extends Job {}
 
 async function getJobById(params: GetJobByIdParams): Promise<GetJobByIdResponse> {
   const res = await axios.get(`/collection/${params.jobId}`);

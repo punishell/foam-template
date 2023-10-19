@@ -485,6 +485,7 @@ export const JobCompletionFeed: React.FC<JobCompletedProps> = ({
             closeModal={() => {
               setIsModalOpen(false);
             }}
+            extras={id}
           />
         ) : (
           <TalentJobModal
@@ -493,6 +494,7 @@ export const JobCompletionFeed: React.FC<JobCompletedProps> = ({
             closeModal={() => {
               setIsModalOpen(false);
             }}
+            extras={id}
           />
         )}
       </SideModal>
