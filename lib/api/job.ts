@@ -105,7 +105,7 @@ interface GetJobByIdParams {
   jobId: string;
 }
 
-interface GetJobByIdResponse extends Job { }
+interface GetJobByIdResponse extends Job {}
 
 async function getJobById(params: GetJobByIdParams): Promise<GetJobByIdResponse> {
   const res = await axios.get(`/collection/${params.jobId}`);
@@ -246,8 +246,8 @@ export function useToggleDeliverableCompletion({ description }: { description: s
       await Promise.all([
         queryClient.refetchQueries({ queryKey: ['get-jobs', { page: 1, limit: 10 }] }),
         queryClient.refetchQueries({ queryKey: ['get-jobs', { page: 1, limit: 10, category: 'assigned' }] }),
-        queryClient.refetchQueries({ queryKey: ['get-job-by-id', { jobId }] })
-      ])
+        queryClient.refetchQueries({ queryKey: ['get-job-by-id', { jobId }] }),
+      ]);
       // if (isComplete) {
       const completedD = isComplete ? completedDeliverables + 1 : completedDeliverables - 1;
       await createFeed.mutate({

@@ -44,7 +44,9 @@ export default function Wallet() {
         coin: tx.currency.toUpperCase(),
         usdValue: formatUsd(tx.usdValue),
         status: tx.status,
-      })),
+      }))
+        // @ts-ignore
+        .sort((a, b) => new Date(b?.createdAt) - new Date(a?.createdAt)),
     [walletTx?.data?.data],
   );
 
