@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useGetJobById } from '@/lib/api/job';
 import { isJobCancellation } from '@/lib/types';
 import { PageError } from '@/components/common/page-error';
@@ -8,15 +8,17 @@ import Lottie from 'lottie-react';
 import warning from '@/lottiefiles/warning.json';
 import { ReviewTalent } from './review';
 import { RequestJobCancellation, JobCancellationRequest, JobCancellationSuccessRequested } from './cancellation';
+import { QueryClient } from '@tanstack/react-query';
 
 interface ClientJobModalProps {
   jobId: string;
   talentId: string;
   closeModal: () => void;
+  extras?: string;
 }
 
-export const ClientJobModal: React.FC<ClientJobModalProps> = ({ jobId, talentId, closeModal }) => {
-  const query = useGetJobById({ jobId });
+export const ClientJobModal: React.FC<ClientJobModalProps> = ({ jobId, talentId, closeModal, extras }) => {
+  const query = useGetJobById({ jobId, extras });
   const [isRequestingJobCancellation, setIsRequestingJobCancellation] = React.useState(false);
 
   if (isRequestingJobCancellation) {
@@ -29,7 +31,6 @@ export const ClientJobModal: React.FC<ClientJobModalProps> = ({ jobId, talentId,
       />
     );
   }
-
   if (query.isError) return <PageError className="absolute inset-0" />;
 
   if (query.isLoading) return <PageLoading className="absolute inset-0" />;

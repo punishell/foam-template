@@ -103,6 +103,7 @@ export function useGetJobs(params: GetJobsParams) {
 
 interface GetJobByIdParams {
   jobId: string;
+  extras?: string;
 }
 
 interface GetJobByIdResponse extends Job { }
@@ -774,10 +775,10 @@ export function useAcceptJobCancellation() {
           isPublic: false,
           meta: {
             value: rating,
-            review: review
-          }
-        })
-      ])
+            review: review,
+          },
+        }),
+      ]);
       toast.success(`Job cancellation accepted successfully`);
     },
   });

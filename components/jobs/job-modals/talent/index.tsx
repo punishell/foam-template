@@ -14,10 +14,11 @@ interface TalentJobModalProps {
   jobId: string;
   talentId: string;
   closeModal: () => void;
+  extras?: string;
 }
 
-export const TalentJobModal: React.FC<TalentJobModalProps> = ({ jobId, talentId, closeModal }) => {
-  const query = useGetJobById({ jobId });
+export const TalentJobModal: React.FC<TalentJobModalProps> = ({ jobId, talentId, closeModal, extras }) => {
+  const query = useGetJobById({ jobId, extras });
   const [isRequestingJobCancellation, setIsRequestingJobCancellation] = React.useState(false);
 
   if (isRequestingJobCancellation) {
