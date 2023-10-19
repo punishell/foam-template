@@ -55,9 +55,11 @@ export function useSaveToBookmark(callBack?: () => void) {
     mutationFn: addToBookmark,
     mutationKey: ['save-bookmark'],
     onSuccess: async () => {
-      queryClient.refetchQueries([`get-bookmark_req`]);
-      queryClient.refetchQueries(['get-timeline']);
-      callBack && (await callBack());
+      await Promise.all([
+        queryClient.refetchQueries([`get-bookmark_req`]),
+        queryClient.refetchQueries(['get-timeline']),
+        callBack && callBack(),
+      ]);
       toast.success('Saved to bookmark successfully');
     },
     onError: (error: ApiError) => {
