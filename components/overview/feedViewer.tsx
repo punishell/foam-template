@@ -583,6 +583,7 @@ export const JobReviewedFeed: React.FC<ReviewJobProps> = ({
             closeModal={() => {
               setIsModalOpen(false);
             }}
+            extras={id}
           />
         ) : (
           <TalentJobModal
@@ -591,6 +592,7 @@ export const JobReviewedFeed: React.FC<ReviewJobProps> = ({
             closeModal={() => {
               setIsModalOpen(false);
             }}
+            extras={id}
           />
         )}
       </SideModal>
@@ -941,6 +943,7 @@ export const ReviewChangeCard: React.FC<ReviewChangeProps> = ({
             closeModal={() => {
               setIsModalOpen(false);
             }}
+            extras={id}
           />
         ) : (
           <TalentJobModal
@@ -949,6 +952,7 @@ export const ReviewChangeCard: React.FC<ReviewChangeProps> = ({
             closeModal={() => {
               setIsModalOpen(false);
             }}
+            extras={id}
           />
         )}
       </SideModal>
@@ -1033,6 +1037,7 @@ export const ReviewResponseChangeCard: React.FC<ReviewResponseChangeProps> = ({
             closeModal={() => {
               setIsModalOpen(false);
             }}
+            extras={id}
           />
         ) : (
           <TalentJobModal
@@ -1041,6 +1046,7 @@ export const ReviewResponseChangeCard: React.FC<ReviewResponseChangeProps> = ({
             closeModal={() => {
               setIsModalOpen(false);
             }}
+            extras={id}
           />
         )}
       </SideModal>
