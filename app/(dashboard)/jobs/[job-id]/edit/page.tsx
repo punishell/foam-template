@@ -1,12 +1,12 @@
 'use client';
 import React from 'react';
-import { cn } from '@/lib/utils';
+// import { cn } from '@/lib/utils';
 import { Job, isJobDeliverable } from '@/lib/types';
 import { useGetJobById } from '@/lib/api/job';
 import { PageError } from '@/components/common/page-error';
 import { PageLoading } from '@/components/common/page-loading';
 import { useRouter } from 'next/navigation';
-// import { Button as SubmitButton } from 'pakt-ui';
+import { Button } from 'pakt-ui';
 // import { useDropzone } from 'react-dropzone';
 import { useSearchParams } from 'next/navigation';
 import { Spinner } from '@/components/common';
@@ -200,249 +200,217 @@ const JobEditForm: React.FC<JobEditFormProps> = ({ job }) => {
   };
 
   return (
-    <div className="flex gap-6 overflow-y-auto pb-10 h-full">
-      <form
-        onSubmit={form.handleSubmit(onSubmit)}
-        onKeyDown={(e) => {
-          if (e.key === 'Enter') {
-            e.preventDefault();
-          }
-        }}
-        className="border grow bg-white rounded-2xl flex flex-col h-fit"
-      >
-        <div className="bg-primary-gradient p-6 pb-8 rounded-t-2xl flex flex-col gap-10">
-          <div className="relative">
-            <input
-              type="text"
-              autoFocus
-              maxLength={60}
-              {...form.register('title')}
-              placeholder="Enter Job Title"
-              className="text-3xl w-full placeholder:text-white placeholder:text-opacity-60 bg-transparent focus:outline-none text-white caret-white"
-            />
-            <div className="text-sm text-white ml-auto text-right">{form.watch('title')?.length}/ 60</div>
-            <span className="absolute -bottom-5 flex w-full">
-              {form.formState.errors.title?.message && (
-                <span className="text-sm text-red-200">{form.formState.errors.title?.message}</span>
-              )}
-            </span>
-          </div>
+    <div className="flex gap-6 pb-10 h-full">
+      <div className="w-full overflow-y-auto rounded-2xl overflow-hidden border border-line">
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') {
+              e.preventDefault();
+            }
+          }}
+          className="grow bg-white rounded-2xl flex flex-col h-fit"
+        >
+          <div className="bg-primary-gradient p-6 pb-8 rounded-t-2xl flex flex-col gap-10">
+            <div className="relative">
+              <input
+                type="text"
+                autoFocus
+                maxLength={60}
+                {...form.register('title')}
+                placeholder="Enter Job Title"
+                className="text-3xl w-full placeholder:text-white placeholder:text-opacity-60 bg-transparent focus:outline-none text-white caret-white"
+              />
+              <div className="text-sm text-white ml-auto text-right">{form.watch('title')?.length}/ 60</div>
+              <span className="absolute -bottom-5 flex w-full">
+                {form.formState.errors.title?.message && (
+                  <span className="text-sm text-red-200">{form.formState.errors.title?.message}</span>
+                )}
+              </span>
+            </div>
 
-          <div className="w-full flex items-center gap-8">
-            <div className="flex w-fit gap-4 max-w-xl">
-              <div className="relative">
-                <div className="bg-[#ECFCE5] border-[#198155] text-primary flex items-center p-2 rounded-lg h-[45px]">
-                  <DollarIcon />
-                  <NumericInput
-                    type="text"
-                    {...form.register('budget')}
-                    placeholder="Enter Proposed Price"
-                    className="bg-transparent  placeholder:text-primary h-full text-base focus:outline-none"
-                  />
+            <div className="w-full flex items-center gap-8">
+              <div className="flex w-fit gap-4 max-w-xl">
+                <div className="relative">
+                  <div className="bg-[#ECFCE5] border-[#198155] text-primary flex items-center p-2 rounded-lg h-[45px]">
+                    <DollarIcon />
+                    <NumericInput
+                      type="text"
+                      {...form.register('budget')}
+                      placeholder="Enter Proposed Price"
+                      className="bg-transparent  placeholder:text-primary h-full text-base focus:outline-none"
+                    />
+                  </div>
+                  <span className="absolute -bottom-5 flex w-full">
+                    {form.formState.errors.budget?.message && (
+                      <span className="text-sm text-red-200">{form.formState.errors.budget?.message}</span>
+                    )}
+                  </span>
                 </div>
-                <span className="absolute -bottom-5 flex w-full">
-                  {form.formState.errors.budget?.message && (
-                    <span className="text-sm text-red-200">{form.formState.errors.budget?.message}</span>
+                <div className="relative">
+                  <Controller
+                    name="due"
+                    control={form.control}
+                    render={({ field: { onChange, value } }) => (
+                      <DatePicker
+                        className="bg-[#C9F0FF] border-[#0065D0CC] text-[#0065D0CC] h-[45px] w-[250px]"
+                        placeholder="Select Due Date"
+                        selected={value}
+                        onSelect={(date) => onChange(date)}
+                        disabled={(date) => date < endOfYesterday()}
+                      />
+                    )}
+                  />
+                  <span className="absolute -bottom-5 flex w-full">
+                    {form.formState.errors.due?.message && (
+                      <span className="text-sm text-red-200">{form.formState.errors.due?.message}</span>
+                    )}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="p-6 flex flex-col gap-6 grow">
+            <div className="flex flex-col gap-2">
+              <h3 className="text-black text-lg font-medium">Preferred Skills</h3>
+              <div className="flex gap-2 items-center justify-start">
+                <div className="relative">
+                  <SkillInput {...form.register('firstSkill')} />
+                  <span className="absolute -bottom-6 flex w-full">
+                    {form.formState.errors.firstSkill?.message && (
+                      <span className="text-sm text-red-500">{form.formState.errors.firstSkill?.message}</span>
+                    )}
+                  </span>
+                </div>
+                <div className="relative">
+                  <SkillInput {...form.register('secondSkill')} />
+                  <span className="absolute -bottom-6 flex w-full">
+                    {form.formState.errors.secondSkill?.message && (
+                      <span className="text-sm text-red-500">{form.formState.errors.secondSkill?.message}</span>
+                    )}
+                  </span>
+                </div>
+                <div className="relative">
+                  <SkillInput {...form.register('thirdSkill')} />
+                  <span className="absolute -bottom-6 flex w-full">
+                    {form.formState.errors.thirdSkill?.message && (
+                      <span className="text-sm text-red-500">{form.formState.errors.thirdSkill?.message}</span>
+                    )}
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div className="flex flex-col gap-2">
+              <h3 className="text-black text-lg font-medium">Job Description</h3>
+              <div className="relative">
+                <textarea
+                  maxLength={400}
+                  id="description"
+                  {...form.register('description')}
+                  className="bg-[#C9F0FF] rounded-lg w-full p-4 focus:outline-none border border-blue-300"
+                  placeholder="Enter job description"
+                  rows={3}
+                />
+                <div className="text-sm ml-auto w-fit text-body -mt-1">
+                  {form.watch('description')?.length} / 400 characters
+                </div>
+                <span className="absolute -bottom-4 flex w-full">
+                  {form.formState.errors.description?.message && (
+                    <span className="text-sm text-red-500">{form.formState.errors.description?.message}</span>
                   )}
                 </span>
               </div>
+            </div>
+            <div className="flex flex-col gap-2">
+              <h3 className="text-black text-lg font-medium">Deliverables</h3>
+
               <div className="relative">
                 <Controller
-                  name="due"
+                  name="deliverables"
                   control={form.control}
-                  render={({ field: { onChange, value } }) => (
-                    <DatePicker
-                      className="bg-[#C9F0FF] border-[#0065D0CC] text-[#0065D0CC] h-[45px] w-[250px]"
-                      placeholder="Select Due Date"
-                      selected={value}
-                      onSelect={(date) => onChange(date)}
-                      disabled={(date) => date < endOfYesterday()}
-                    />
+                  render={({ field: { onChange, value = [] } }) => (
+                    <DeliverablesInput deliverables={value} setDeliverables={onChange} />
                   )}
                 />
-                <span className="absolute -bottom-5 flex w-full">
-                  {form.formState.errors.due?.message && (
-                    <span className="text-sm text-red-200">{form.formState.errors.due?.message}</span>
-                  )}
-                </span>
-              </div>
-            </div>
-
-            <div className="flex gap-4 items-center w-full justify-end mt-auto">
-              {!talentId && !job.escrowPaid && (
-                <div className=" max-w-[250px] w-full">
-                  <SubmitButton onClick={form.handleSubmit(onSubmit)}>
-                    {updateJob.isLoading ? <Spinner /> : 'Update Job'}
-                  </SubmitButton>
-                </div>
-              )}
-
-              {!talentId && job.escrowPaid && (
-                <div className="max-w-[250px] w-full">
-                  <SubmitButton onClick={form.handleSubmit(onSubmit)}>
-                    {updateJob.isLoading ? <Spinner /> : 'Update Job'}
-                  </SubmitButton>
-                </div>
-              )}
-
-              {talentId && !job.escrowPaid && (
-                <div className="max-w-[250px] w-full">
-                  <SubmitButton onClick={form.handleSubmit(onSubmit)}>
-                    {updateJob.isLoading ? <Spinner /> : 'Make Deposit'}
-                  </SubmitButton>
-                </div>
-              )}
-
-              {talentId && job.escrowPaid && (
-                <div className="max-w-[250px] w-full">
-                  <SubmitButton onClick={form.handleSubmit(onSubmit)}>
-                    {inviteTalent.isLoading || updateJob.isLoading ? <Spinner /> : 'Invite Talent'}
-                  </SubmitButton>
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-        <div className="p-6 flex flex-col gap-6 grow">
-          <div className="flex flex-col gap-2">
-            <h3 className="text-black text-lg font-medium">Preferred Skills</h3>
-            <div className="flex gap-2 items-center justify-start">
-              <div className="relative">
-                <SkillInput {...form.register('firstSkill')} />
                 <span className="absolute -bottom-6 flex w-full">
-                  {form.formState.errors.firstSkill?.message && (
-                    <span className="text-sm text-red-500">{form.formState.errors.firstSkill?.message}</span>
-                  )}
-                </span>
-              </div>
-              <div className="relative">
-                <SkillInput {...form.register('secondSkill')} />
-                <span className="absolute -bottom-6 flex w-full">
-                  {form.formState.errors.secondSkill?.message && (
-                    <span className="text-sm text-red-500">{form.formState.errors.secondSkill?.message}</span>
-                  )}
-                </span>
-              </div>
-              <div className="relative">
-                <SkillInput {...form.register('thirdSkill')} />
-                <span className="absolute -bottom-6 flex w-full">
-                  {form.formState.errors.thirdSkill?.message && (
-                    <span className="text-sm text-red-500">{form.formState.errors.thirdSkill?.message}</span>
+                  {form.formState.errors.deliverables?.message && (
+                    <span className="text-sm text-red-500">{form.formState.errors.deliverables?.message}</span>
                   )}
                 </span>
               </div>
             </div>
-          </div>
-          <div className="flex flex-col gap-2">
-            <h3 className="text-black text-lg font-medium">Job Description</h3>
-            <div className="relative">
-              <textarea
-                maxLength={400}
-                id="description"
-                {...form.register('description')}
-                className="bg-[#C9F0FF] rounded-lg w-full p-4 focus:outline-none border border-blue-300"
-                placeholder="Enter job description"
-                rows={3}
-              />
-              <div className="text-sm ml-auto w-fit text-body -mt-1">
-                {form.watch('description')?.length} / 400 characters
-              </div>
-              <span className="absolute -bottom-4 flex w-full">
-                {form.formState.errors.description?.message && (
-                  <span className="text-sm text-red-500">{form.formState.errors.description?.message}</span>
-                )}
-              </span>
-            </div>
-          </div>
-          <div className="flex flex-col gap-2">
-            <h3 className="text-black text-lg font-medium">Deliverables</h3>
 
-            <div className="relative">
-              <Controller
-                name="deliverables"
-                control={form.control}
-                render={({ field: { onChange, value = [] } }) => (
-                  <DeliverablesInput deliverables={value} setDeliverables={onChange} />
-                )}
-              />
-              <span className="absolute -bottom-6 flex w-full">
-                {form.formState.errors.deliverables?.message && (
-                  <span className="text-sm text-red-500">{form.formState.errors.deliverables?.message}</span>
-                )}
-              </span>
-            </div>
-          </div>
-
-          <div className="flex flex-col gap-4">
-            <h3 className="text-black text-lg font-medium">Classification</h3>
-            <div className="flex items-center gap-4">
-              <div className="flex flex-col gap-2">
-                <label className="text-sm text-body">Job Category</label>
-                <div className="relative">
-                  <Controller
-                    name="category"
-                    control={form.control}
-                    render={({ field: { onChange, value } }) => {
-                      return (
-                        <Select defaultValue={value} onValueChange={onChange}>
-                          <SelectTrigger className="w-[180px] bg-[#F2F4F5] text-title text-base h-10 rounded-lg">
-                            <SelectValue placeholder="Select Category" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {CATEGORY_OPTIONS.map(({ label, value }) => (
-                              <SelectItem key={value} value={value} className="hover:bg-[#ECFCE5] rounded py-2">
-                                {label}
+            <div className="flex flex-col gap-4">
+              <h3 className="text-black text-lg font-medium">Classification</h3>
+              <div className="flex items-center gap-4">
+                <div className="flex flex-col gap-2">
+                  <label className="text-sm text-body">Job Category</label>
+                  <div className="relative">
+                    <Controller
+                      name="category"
+                      control={form.control}
+                      render={({ field: { onChange, value } }) => {
+                        return (
+                          <Select defaultValue={value} onValueChange={onChange}>
+                            <SelectTrigger className="w-[180px] bg-[#F2F4F5] text-title text-base h-10 rounded-lg">
+                              <SelectValue placeholder="Select Category" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {CATEGORY_OPTIONS.map(({ label, value }) => (
+                                <SelectItem key={value} value={value} className="hover:bg-[#ECFCE5] rounded py-2">
+                                  {label}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        );
+                      }}
+                    />
+                    <span className="absolute -bottom-5 flex w-full">
+                      {form.formState.errors.category?.message && (
+                        <span className="text-sm text-red-500">{form.formState.errors.category?.message}</span>
+                      )}
+                    </span>
+                  </div>
+                </div>
+                <div className="flex flex-col gap-2">
+                  <label className="text-sm text-body">Visibility</label>
+                  <div className="relative">
+                    <Controller
+                      name="visibility"
+                      control={form.control}
+                      render={({ field: { onChange, value } }) => {
+                        return (
+                          <Select defaultValue={value} onValueChange={onChange}>
+                            <SelectTrigger className="w-[180px] bg-[#F2F4F5] text-title text-base h-10 rounded-lg">
+                              <SelectValue placeholder="Select Visibility" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="private" className="hover:bg-[#ECFCE5] rounded py-2">
+                                Private
                               </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                      );
-                    }}
-                  />
-                  <span className="absolute -bottom-5 flex w-full">
-                    {form.formState.errors.category?.message && (
-                      <span className="text-sm text-red-500">{form.formState.errors.category?.message}</span>
-                    )}
-                  </span>
-                </div>
-              </div>
-              <div className="flex flex-col gap-2">
-                <label className="text-sm text-body">Visibility</label>
-                <div className="relative">
-                  <Controller
-                    name="visibility"
-                    control={form.control}
-                    render={({ field: { onChange, value } }) => {
-                      return (
-                        <Select defaultValue={value} onValueChange={onChange}>
-                          <SelectTrigger className="w-[180px] bg-[#F2F4F5] text-title text-base h-10 rounded-lg">
-                            <SelectValue placeholder="Select Visibility" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="private" className="hover:bg-[#ECFCE5] rounded py-2">
-                              Private
-                            </SelectItem>
-                            <SelectItem value="open" className="hover:bg-[#ECFCE5] rounded py-2">
-                              Public
-                            </SelectItem>
-                          </SelectContent>
-                        </Select>
-                      );
-                    }}
-                  />
-                  <span className="absolute -bottom-5 flex w-full">
-                    {form.formState.errors.visibility?.message && (
-                      <span className="text-sm text-red-500 whitespace-nowrap">
-                        {form.formState.errors.visibility?.message}
-                      </span>
-                    )}
-                  </span>
+                              <SelectItem value="open" className="hover:bg-[#ECFCE5] rounded py-2">
+                                Public
+                              </SelectItem>
+                            </SelectContent>
+                          </Select>
+                        );
+                      }}
+                    />
+                    <span className="absolute -bottom-5 flex w-full">
+                      {form.formState.errors.visibility?.message && (
+                        <span className="text-sm text-red-500 whitespace-nowrap">
+                          {form.formState.errors.visibility?.message}
+                        </span>
+                      )}
+                    </span>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
-      </form>
+        </form>
+      </div>
       <div className="basis-[300px] shrink-0 grow-0 flex flex-col gap-6 ">
         <div className="bg-white p-6 rounded-xl h-fit border border-line flex flex-col gap-3">
           <h3 className="font-bold">Steps</h3>
@@ -454,6 +422,40 @@ const JobEditForm: React.FC<JobEditFormProps> = ({ job }) => {
           <StepIndicator isComplete={true}>Post Job</StepIndicator>
           <StepIndicator isComplete={true}>Invite Talent</StepIndicator>
           <StepIndicator isComplete={false}>Deposit Payment</StepIndicator>
+        </div>
+
+        <div className="flex gap-4 w-full">
+          {!talentId && !job.escrowPaid && (
+            <div className="w-full">
+              <Button onClick={form.handleSubmit(onSubmit)} fullWidth>
+                {updateJob.isLoading ? <Spinner /> : 'Update Job'}
+              </Button>
+            </div>
+          )}
+
+          {!talentId && job.escrowPaid && (
+            <div className="w-full">
+              <Button onClick={form.handleSubmit(onSubmit)} fullWidth>
+                {updateJob.isLoading ? <Spinner /> : 'Update Job'}
+              </Button>
+            </div>
+          )}
+
+          {talentId && !job.escrowPaid && (
+            <div className="w-full">
+              <Button onClick={form.handleSubmit(onSubmit)} fullWidth>
+                {updateJob.isLoading ? <Spinner /> : 'Make Deposit'}
+              </Button>
+            </div>
+          )}
+
+          {talentId && job.escrowPaid && (
+            <div className="w-full">
+              <Button onClick={form.handleSubmit(onSubmit)} fullWidth>
+                {inviteTalent.isLoading || updateJob.isLoading ? <Spinner /> : 'Invite Talent'}
+              </Button>
+            </div>
+          )}
         </div>
         {/* <div className="bg-white p-6 rounded-xl min-h-[250px] border border-line flex flex-col gap-4">
           <div className="flex items-center gap-2">
@@ -473,23 +475,3 @@ const JobEditForm: React.FC<JobEditFormProps> = ({ job }) => {
     </div>
   );
 };
-
-type SubmitButtonProps = React.ComponentProps<'button'>;
-
-const SubmitButton = React.forwardRef<HTMLButtonElement, SubmitButtonProps>(
-  ({ className, children, ...props }, forwardedRef) => {
-    return (
-      <button
-        className={cn(' rounded-[10px] border-white h-[45px] w-full bg-white p-[4px] ', className)}
-        {...props}
-        ref={forwardedRef}
-      >
-        <div className="w-full h-full bg-[#7FFFA2] hover:bg-green-300 duration-200 rounded-[8px] flex items-center justify-center">
-          {children}
-        </div>
-      </button>
-    );
-  },
-);
-
-SubmitButton.displayName = 'SubmitButton';
