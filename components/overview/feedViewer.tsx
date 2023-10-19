@@ -871,7 +871,9 @@ interface ReviewChangeProps {
   bookmarked: boolean;
   bookmarkId: string;
   jobId: string;
+  isAccepted: boolean;
   isCreator: boolean;
+  rating?: number;
   close?: (id: string) => void;
 }
 export const ReviewChangeCard: React.FC<ReviewChangeProps> = ({
@@ -884,6 +886,8 @@ export const ReviewChangeCard: React.FC<ReviewChangeProps> = ({
   bookmarked,
   bookmarkId,
   isCreator,
+  isAccepted,
+  rating,
   close,
 }) => {
   const [isModalOpen, setIsModalOpen] = React.useState(false);
@@ -905,9 +909,17 @@ export const ReviewChangeCard: React.FC<ReviewChangeProps> = ({
 
         <div className="justify-between items-center flex mt-auto">
           <div className="flex items-center gap-2">
-            <Button size="xs" variant="outline" onClick={() => setIsModalOpen(true)}>
+            {!isAccepted && <Button size="xs" variant="outline" onClick={() => setIsModalOpen(true)}>
               View Request
-            </Button>
+            </Button>}
+            {rating &&
+              // @ts-ignore
+              <Rating
+                initialRating={rating}
+                fullSymbol={<Star fill="#15D28E" color="#15D28E" />}
+                emptySymbol={<Star fill="transparent" color="#15D28E" />}
+                readonly
+              />}
           </div>
           <RenderBookMark size={20} isBookmarked={bookmarked} type="feed" id={id} bookmarkId={bookmarkId} />
         </div>

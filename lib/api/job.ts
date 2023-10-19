@@ -105,7 +105,7 @@ interface GetJobByIdParams {
   jobId: string;
 }
 
-interface GetJobByIdResponse extends Job {}
+interface GetJobByIdResponse extends Job { }
 
 async function getJobById(params: GetJobByIdParams): Promise<GetJobByIdResponse> {
   const res = await axios.get(`/collection/${params.jobId}`);
@@ -205,9 +205,9 @@ export function useAttachDeliverablesToJob() {
     onError: (error: ApiError) => {
       toast.error(error?.response?.data.message || 'Assigning deliverables failed');
     },
-    onSuccess: () => {
+    onSuccess: (_, { jobId }) => {
       queryClient.refetchQueries({
-        queryKey: ['get-job-by-id'],
+        queryKey: ['get-job-by-id', { jobId }],
       });
     },
   });
@@ -334,9 +334,9 @@ export function useMarkJobAsComplete() {
     onError: (error: ApiError) => {
       toast.error(error?.response?.data.message ?? 'Marking job as complete failed');
     },
-    onSuccess: async () => {
+    onSuccess: async (_, { jobId }) => {
       jobsQuery.refetch();
-      queryClient.refetchQueries(['get-job-by-id']);
+      queryClient.refetchQueries(['get-job-by-id', { jobId }]);
       toast.success('Job marked as completed');
     },
   });
@@ -370,7 +370,7 @@ export function useCreateJobReview() {
       toast.error(error?.response?.data.message || 'An error occurred');
     },
     onSuccess: (_, { jobId, recipientId, review }) => {
-      queryClient.refetchQueries(['get-job-by-id']);
+      queryClient.refetchQueries(['get-job-by-id', { jobId }]);
       createFeed.mutate({
         title: 'Job Review',
         description: review,
@@ -412,7 +412,7 @@ export function useReleaseJobPayment() {
     },
     onSuccess: (_, { jobId, owner }) => {
       jobsQuery.refetch();
-      queryClient.refetchQueries(['get-job-by-id']);
+      queryClient.refetchQueries(['get-job-by-id', { jobId }]);
       if (owner) {
         createFeed.mutate({
           title: 'Job Payment',
@@ -705,7 +705,7 @@ export function useRequestJobCancellation({ talentId }: { talentId: string }) {
       toast.error(error?.response?.data.message ?? 'Error requesting job cancellation');
     },
     onSuccess: (_, { jobId }) => {
-      queryClient.refetchQueries({ queryKey: ['get-job-by-id'] });
+      queryClient.refetchQueries({ queryKey: ['get-job-by-id', { jobId }] });
       createFeed.mutate({
         title: 'Job Cancel Request',
         description: 'Job Cancel Request',
@@ -761,17 +761,23 @@ export function useAcceptJobCancellation() {
     onError: (error: ApiError) => {
       toast.error(error?.response?.data.message ?? 'Error accepting job cancellation');
     },
-    onSuccess: (_, { jobId, recipientId }) => {
-      queryClient.refetchQueries({ queryKey: ['get-job-by-id'] });
-      // create feeds
-      createFeed.mutate({
-        title: 'Job Cancel Accepted',
-        description: 'Job Cancel Accepted',
-        owners: [recipientId],
-        data: jobId,
-        type: FEED_TYPES.JOB_CANCELLED_ACCEPTED,
-        isPublic: false,
-      });
+    onSuccess: async (_, { jobId, recipientId, rating, review }) => {
+      await Promise.all([
+        queryClient.refetchQueries({ queryKey: ['get-job-by-id', { jobId }] }),
+        // create feeds
+        createFeed.mutate({
+          title: 'Job Cancel Accepted',
+          description: 'Job Cancel Accepted',
+          owners: [recipientId],
+          data: jobId,
+          type: FEED_TYPES.JOB_CANCELLED_ACCEPTED,
+          isPublic: false,
+          meta: {
+            value: rating,
+            review: review
+          }
+        })
+      ])
       toast.success(`Job cancellation accepted successfully`);
     },
   });
@@ -807,7 +813,7 @@ export function useRequestReviewChange({ recipientId }: { recipientId: string })
       toast.error(error?.response?.data.message ?? 'Error requesting review change');
     },
     onSuccess: (_, { jobId }) => {
-      queryClient.refetchQueries({ queryKey: ['get-job-by-id'] });
+      queryClient.refetchQueries({ queryKey: ['get-job-by-id', { jobId }] });
       // create feeds
       createFeed.mutate({
         title: 'Request Review Change',
@@ -865,7 +871,7 @@ export function useAcceptReviewChange({ jobId, recipientId }: { jobId: string; r
       toast.error(error?.response?.data.message ?? 'Error accepting review change');
     },
     onSuccess: () => {
-      queryClient.refetchQueries({ queryKey: ['get-job-by-id'] });
+      queryClient.refetchQueries({ queryKey: ['get-job-by-id', { jobId }] });
       // create feeds
       createFeed.mutate({
         title: 'Review Change Accepted',
@@ -905,7 +911,7 @@ export function useDeclineReviewChange({ jobId, recipientId }: { jobId: string; 
       toast.error(error?.response?.data.message ?? 'Error declining review change');
     },
     onSuccess: () => {
-      queryClient.refetchQueries({ queryKey: ['get-job-by-id'] });
+      queryClient.refetchQueries({ queryKey: ['get-job-by-id', { jobId }] });
       // create feeds
       createFeed.mutate({
         title: 'Review Change Accepted',

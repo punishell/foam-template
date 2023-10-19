@@ -262,10 +262,12 @@ export const ParseFeedView = (
           bookmarkId={bookmarkId}
           title={
             feed?.type == FEED_TYPES.JOB_CANCELLED_ACCEPTED
-              ? `${inviter.name} accepted to cancel Cancel Job`
+              ? feed?.data?.name
               : `${talent.name} requested to cancel a job`
           }
           description={feed?.description}
+          isAccepted={feed?.type == FEED_TYPES.JOB_CANCELLED_ACCEPTED}
+          rating={feed?.meta?.value}
         />
       );
     case FEED_TYPES.JOB_REVIEW_CHANGE:
@@ -282,6 +284,7 @@ export const ParseFeedView = (
           bookmarkId={bookmarkId}
           title={`${talent.name} submitted a redo request`}
           description={feed?.description}
+          isAccepted={false}
         />
       );
     case FEED_TYPES.JOB_REVIEW_CHANGE_ACCEPTED:
