@@ -244,8 +244,7 @@ export function useToggleDeliverableCompletion({ description }: { description: s
     },
     onSuccess: async (_, { completedDeliverables, jobId, jobCreator, totalDeliverables, isComplete }) => {
       await Promise.all([
-        queryClient.refetchQueries({ queryKey: ['get-jobs', { page: 1, limit: 10 }] }),
-        queryClient.refetchQueries({ queryKey: ['get-jobs', { page: 1, limit: 10, category: 'assigned' }] }),
+        queryClient.refetchQueries({ queryKey: ['get-jobs', { category: 'assigned' }] }),
         queryClient.refetchQueries({ queryKey: ['get-job-by-id', { jobId }] }),
       ]);
       // if (isComplete) {

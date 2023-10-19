@@ -46,7 +46,7 @@ export default function Wallet() {
         status: tx.status,
       }))
         // @ts-ignore
-        .sort((a, b) => new Date(b?.createdAt) - new Date(a?.createdAt)),
+        .sort((a, b) => new Date(b?.createdAt).getTime() - new Date(a?.createdAt).getTime()),
     [walletTx?.data?.data],
   );
 
