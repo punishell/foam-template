@@ -21,6 +21,7 @@ interface ReviewClientProps {
 const MAX_COMMENT_LENGTH = 150;
 
 export const ReviewClient: React.FC<ReviewClientProps> = ({ job, closeModal }) => {
+  const router = useRouter();
   const [requestReviewChange, setRequestReviewChange] = React.useState(false);
 
   const mutation = useCreateJobReview();
@@ -155,6 +156,7 @@ export const ReviewClient: React.FC<ReviewClientProps> = ({ job, closeModal }) =
                       jobId: jobId,
                       owner: owner?._id,
                     });
+                    router.push('/wallet');
                   },
                 },
               );
