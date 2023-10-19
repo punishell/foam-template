@@ -104,7 +104,7 @@ export default function Signup() {
     checkLowerUpper: form.getValues().password && /[A-Z]/.test(form.getValues().password) && /[a-z]/.test(form.getValues().password) || false,
     checkNumber: form.getValues().password && form.getValues().password.match(/\d+/g) ? true : false,
     specialCharacter: form.getValues().password && spChars.test(form.getValues().password) || false,
-    confirmedPassword: form.getValues().password === form.getValues().confirmPassword,
+    confirmedPassword: form.getValues().password === form.getValues().confirmPassword && form.getValues().password != "",
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }), [form.watch("password"), form.watch("confirmPassword")]);
 
@@ -136,14 +136,14 @@ export default function Signup() {
           >
             <div className="flex gap-4 flex-col w-full">
               <div className="grid gap-4 grid-cols-2">
-                <div className="flex flex-col gap-2">
+                <div className="flex flex-col gap-2 relative mb-2">
                   <label htmlFor="firstName" className="text-white text-sm">
                     First Name
                   </label>
                   <Input id="firstName" {...form.register('firstName')} placeholder="First Name" />
                   <InputErrorMessage message={form.formState.errors.firstName?.message} />
                 </div>
-                <div className="flex flex-col gap-2">
+                <div className="flex flex-col gap-2 relative">
                   <label htmlFor="lastName" className="text-white text-sm">
                     Last Name
                   </label>
@@ -152,7 +152,7 @@ export default function Signup() {
                 </div>
               </div>
 
-              <div className="flex flex-col gap-2">
+              <div className="flex flex-col gap-2 relative mb-2">
                 <label htmlFor="email" className="text-white text-sm">
                   Email Address
                 </label>
@@ -160,7 +160,7 @@ export default function Signup() {
                 <InputErrorMessage message={form.formState.errors.email?.message} />
               </div>
 
-              <div className="flex flex-col gap-2">
+              <div className="flex flex-col gap-2 relative mb-2">
                 <label htmlFor="password" className="text-white text-sm">
                   Create Password
                 </label>
@@ -180,7 +180,7 @@ export default function Signup() {
                 </div>
               </div>
 
-              <div className="flex flex-col gap-2">
+              <div className="flex flex-col gap-2 relative mb-2">
                 <label htmlFor="confirmPassword" className="text-white text-sm">
                   Confirm Password
                 </label>
