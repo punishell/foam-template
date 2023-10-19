@@ -38,7 +38,7 @@ export const AuthApp2FA = ({ isEnabled, disabled }: AuthApp2FA) => {
         <div className="absolute right-4 top-4">
           <Checkbox checked={isEnabled} />
         </div>
-        <div className="flex h-[75px] items-center">
+        <div className="flex h-[100px] items-center">
           <Image src="/icons/authenticator-app.svg" width={76} height={76} alt="" />
         </div>
         <Text.p size="lg">Authenticator app</Text.p>
