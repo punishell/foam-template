@@ -354,9 +354,6 @@ export default function CreateJob() {
           <StepIndicator isComplete={jobSteps.description}>Description</StepIndicator>
           <StepIndicator isComplete={jobSteps.deliverables}>Deliverables</StepIndicator>
           <StepIndicator isComplete={jobSteps.classification}>Classifications</StepIndicator>
-          <StepIndicator isComplete={false}>Post Job</StepIndicator>
-          <StepIndicator isComplete={false}>Invite Talent</StepIndicator>
-          <StepIndicator isComplete={false}>Deposit Payment</StepIndicator>
         </div>
         {/* <div className="bg-white p-6 rounded-xl min-h-[250px] border border-line flex flex-col gap-4">
           <div className="flex items-center gap-2">
