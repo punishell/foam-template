@@ -24,12 +24,13 @@ interface ReviewProps {
 
 const Review: React.FC<ReviewProps> = ({ body, title, rating, user }) => {
   const { _id: loggedInUser } = useUserState();
+  const MAX_LEN = 150;
   const navigateUrl = loggedInUser == user._id ? "/profile" : `/talents/${user?._id}`;
   return (
     <div className="bg-white min-h-full rounded-2xl p-4 flex flex-col gap-4 select-none cursor-grab w-full" style={{ maxWidth: "50%" }}>
       <div className='flex flex-col flex-1 max-w-full gap-4'>
-        <h3 className="text-xl font-medium text-title max-w-[400px] break-all">{title}</h3>
-        <p className="text-base font-thin text-body max-w-[400px] break-all">{body}</p>
+        <h3 className="text-xl font-medium text-title max-w-fit break-all">{title}</h3>
+        <p className="text-base font-thin text-body max-w-fit break-all">{body.length > MAX_LEN ? `${body.slice(0, 150)}...` : body}</p>
       </div>
 
       <div className="flex items-center justify-between">

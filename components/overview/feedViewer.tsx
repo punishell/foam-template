@@ -19,6 +19,8 @@ import { SideModal } from '@/components/common/side-modal';
 import { TalentJobModal } from '../jobs/job-modals/talent';
 import { CheckBox } from '../common/checkBox';
 
+const MAX_LEN = 150;
+
 export const JobFeedWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   return (
     <div className="border-blue-lighter gap-4 px-4 pl-2 flex border bg-[#F1FBFF] z-10 w-full rounded-2xl relative overflow-hidden h-[174px]">
@@ -351,7 +353,7 @@ export const JobUpdateFeed: React.FC<TalentJobUpdateProps> = ({
         {/* <p className="text-body">{!isCreator ? description : `✅ ${description}`}</p> */}
         <p className="text-body flex gap-4 flex-row capitalize">
           {' '}
-          <CheckBox isChecked={isMarked} /> {description.slice(0, 75)}
+          <CheckBox isChecked={isMarked} /> {description.length > MAX_LEN ? `${description.slice(0, MAX_LEN)}...` : description}
         </p>
         <div className="justify-between items-center flex mt-auto">
           <div className="flex items-center gap-2 w-full">
@@ -548,7 +550,7 @@ export const JobReviewedFeed: React.FC<ReviewJobProps> = ({
           {close && <X size={20} className="cursor-pointer" onClick={() => close(id)} />}
         </div>
 
-        <p className="text-body">{description.slice(0, 75)}</p>
+        <p className="text-body">{description.length > MAX_LEN ? `${description.slice(0, MAX_LEN)}...` : description}</p>
 
         <div className="justify-between items-center flex mt-auto">
           <div className="flex items-center gap-2">
@@ -976,9 +978,8 @@ export const ReviewResponseChangeCard: React.FC<ReviewResponseChangeProps> = ({
   const [isModalOpen, setIsModalOpen] = React.useState(false);
   return (
     <div
-      className={`${
-        isDeclined ? 'border-[#FF5247] bg-[#FFF4F4]' : 'border-[#9BDCFD] bg-[#F1FBFF]'
-      } gap-4 p-4 flex border z-10 w-full rounded-2xl relative overflow-hidden h-[174px]`}
+      className={`${isDeclined ? 'border-[#FF5247] bg-[#FFF4F4]' : 'border-[#9BDCFD] bg-[#F1FBFF]'
+        } gap-4 p-4 flex border z-10 w-full rounded-2xl relative overflow-hidden h-[174px]`}
     >
       <AfroProfile
         src={isCreator ? talent.avatar : creator.avatar}
