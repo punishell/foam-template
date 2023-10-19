@@ -54,7 +54,7 @@ export function useCreateJob() {
           type: FEED_TYPES.PUBLIC_JOB_CREATED,
         });
       }
-      toast.success(`Job ${name} created successfully`);
+      toast.success(`Job ${name} posted successfully`);
       return;
     },
   });

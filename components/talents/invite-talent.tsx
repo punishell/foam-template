@@ -64,7 +64,7 @@ const JobList: React.FC<JobListProps> = ({ jobs, talentId }) => {
         </div>
       </div>
       <div className="px-4 py-1">
-        <p className="font-bold text-xl">Select Job to invite talent to</p>
+        <p className="font-bold text-xl">Select job</p>
       </div>
       <div className="flex flex-col gap-4 overflow-y-auto grow px-4">
         {jobs.map((job) => {

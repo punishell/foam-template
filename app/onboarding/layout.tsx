@@ -51,7 +51,7 @@ export default function OnboardingLayout({ children }: Props) {
               <Image src="/images/logo.svg" alt="Logo" width={250} height={60} />
             </div>
             <div className="bg-white rounded-2xl border p-8 w-full relative">
-              <div className="absolute bg-repeat opacity-50 inset-0 bg-[url(/images/rain.png)]" />
+              <div className="absolute bg-repeat opacity-50 inset-0 bg-[url(/images/rain.png)] rounded-2xl" />
               {children}
             </div>
           </div>

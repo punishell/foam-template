@@ -23,7 +23,7 @@ export const DeliverablesInput: React.FC<DeliverablesProps> = ({ deliverables, s
     setDeliverables(updatedDeliverables);
   };
 
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === 'Enter' && deliverables.length < MAX_DELIVERABLES) {
       addDeliverable();
 
@@ -31,7 +31,8 @@ export const DeliverablesInput: React.FC<DeliverablesProps> = ({ deliverables, s
         const newDeliverableIndex = deliverables.length;
         // wait for the new deliverable to be rendered
         setTimeout(() => {
-          const newDeliverableInput = deliverableListRef.current?.children[newDeliverableIndex].querySelector('input');
+          const newDeliverableInput =
+            deliverableListRef.current?.children[newDeliverableIndex].querySelector('textarea');
           newDeliverableInput?.focus();
         }, 1);
       }
@@ -45,12 +46,13 @@ export const DeliverablesInput: React.FC<DeliverablesProps> = ({ deliverables, s
           return (
             <div key={index} className="flex gap-2">
               <div className="w-full border-line rounded-lg pr-16 border hover:border-secondary hover:duration-200 relative">
-                <input
+                <textarea
+                  // rows={2}
+                  contentEditable
                   key={index}
                   value={deliverable}
                   onKeyDown={handleKeyDown}
                   onChange={(e) => editDeliverable(index, e.target.value)}
-                  type="text"
                   maxLength={120}
                   className="w-full resize-none rounded-lg outline-none px-4 py-2 focus-within:border-secondary"
                 />

@@ -81,7 +81,7 @@ export const ReviewClient: React.FC<ReviewClientProps> = ({ job, closeModal }) =
             </div>
             <p className="text-body">{clientReview.review}</p>
             <Button fullWidth size={'xs'} variant={'secondary'} onClick={() => setRequestReviewChange(true)}>
-              Request Changes
+              Request opportunity to improve
             </Button>
           </div>
         )}
@@ -204,8 +204,8 @@ const RequestReviewChange: React.FC<RequestReviewChangeProps> = ({
       </div>
       <div className="flex py-6 px-4 flex-col gap-6 h-full grow">
         <div className="bg-[#FEF4E3] p-3 rounded-xl border border-yellow flex flex-col gap-2">
-          Requesting to Improve will give the client the opportunity to Reopen the Job. After completion both parties
-          will leave reviews.
+          If the client approves your request, the job will be reopened. After completion both parties will leave new
+          reviews.
         </div>
 
         <div>

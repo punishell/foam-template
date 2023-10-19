@@ -13,7 +13,7 @@ import { Input, Button } from 'pakt-ui';
 import { Container } from '@/components/common/container';
 import { useValidateReferral } from '@/lib/api/referral';
 import Lottie from 'lottie-react';
-import warning from "@/lottiefiles/warning-2.json";
+import warning from '@/lottiefiles/warning-2.json';
 import { PasswordCriteria } from '@/components/settings/security';
 
 const passwordSchema = z
@@ -54,41 +54,49 @@ export default function Signup() {
 
   const validateReferral = () => {
     if (!referralCode) {
-      // throw error 
+      // throw error
       _setErrorMsg(true);
       _setIsLoading(false);
     }
     // validate code here
-    validateRef.mutate({ token: referralCode }, {
-      onSuccess: () => { _setIsLoading(false) },
-      onError: async () => {
-        _setErrorMsg(true);
-        _setIsLoading(false);
-      }
-    })
-  }
+    validateRef.mutate(
+      { token: referralCode },
+      {
+        onSuccess: () => {
+          _setIsLoading(false);
+        },
+        onError: async () => {
+          _setErrorMsg(true);
+          _setIsLoading(false);
+        },
+      },
+    );
+  };
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
   });
 
   const onSubmit: SubmitHandler<FormValues> = (values) => {
-    signup.mutate({ ...values, referral: referralCode }, {
-      onSuccess: ({ tempToken, email }) => {
-        router.push(
-          `/signup/verify?${createQueryStrings([
-            {
-              name: 'email',
-              value: email,
-            },
-            {
-              name: 'token',
-              value: tempToken.token,
-            },
-          ])}`,
-        );
+    signup.mutate(
+      { ...values, referral: referralCode },
+      {
+        onSuccess: ({ tempToken, email }) => {
+          router.push(
+            `/signup/verify?${createQueryStrings([
+              {
+                name: 'email',
+                value: email,
+              },
+              {
+                name: 'token',
+                value: tempToken.token,
+              },
+            ])}`,
+          );
+        },
       },
-    });
+    );
   };
 
   const validatingErr = useMemo(() => ({
@@ -107,15 +115,20 @@ export default function Signup() {
           <Image src="/images/logo.svg" alt="Logo" width={250} height={60} />
         </div>
 
-        {!isLoading && <Link className="rounded-lg border-2 bg-white !bg-opacity-10 px-5 py-2 text-white duration-200 hover:bg-opacity-30" href="/login">
-          Login
-        </Link>}
+        {!isLoading && (
+          <Link
+            className="rounded-lg border-2 bg-white !bg-opacity-10 px-5 py-2 text-white duration-200 hover:bg-opacity-30"
+            href="/login"
+          >
+            Login
+          </Link>
+        )}
       </Container>
-      {!isLoading && !errorMsg &&
+      {!isLoading && !errorMsg && (
         <Container className="flex h-full w-full max-w-2xl flex-col items-center justify-center gap-6">
           <div className="flex flex-col items-center gap-2 text-center text-white">
             <h3 className="font-sans text-3xl font-bold">Create Your Account</h3>
-            <p className="font-sans text-base">Create Your Account</p>
+            {/* <p className="font-sans text-base">Create Your Account</p> */}
           </div>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
@@ -186,17 +199,23 @@ export default function Signup() {
             </Button>
           </form>
         </Container>
-      }
-      {isLoading && <div className='flex h-full justify-center text-white'><Spinner /></div>}
-      {!isLoading && errorMsg &&
+      )}
+      {isLoading && (
+        <div className="flex h-full justify-center text-white">
+          <Spinner />
+        </div>
+      )}
+      {!isLoading && errorMsg && (
         <Container className="mt-28 text-white text-center flex w-full max-w-xl flex-col items-center gap-2 justify-center p-8 rounded-2xl mx-auto  bg-[rgba(0,124,91,0.20)] backdrop-blur-md border border-white border-opacity-20 bg-[rgba(0, 124, 91, 0.20)] px-[40px] py-10 backdrop-blur-lg">
           <div className="max-w-[150px] w-full flex items-center justify-center">
             <Lottie animationData={warning} />
           </div>
-          <h3 className='text-3xl font-bold'>Invalid Referral Code</h3>
-          <h6 className='text-lg font-thin flex-wrap opacity-[0.8]'>You need a valid referral code to be able to sign up to Afrofund. </h6>
+          <h3 className="text-3xl font-bold">Invalid Referral Code</h3>
+          <h6 className="text-lg font-thin flex-wrap opacity-[0.8]">
+            You need a valid referral code to be able to sign up to Afrofund.{' '}
+          </h6>
         </Container>
-      }
+      )}
     </React.Fragment>
   );
 }
