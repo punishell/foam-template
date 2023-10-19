@@ -40,6 +40,7 @@ export default function JobApplications({ params }: Props) {
   const accountData = useGetAccount();
   const jobData = useGetJobById({ jobId });
   const [skillFilters, setSkillFilters] = React.useState<string[]>([]);
+  const [sortBy, setSortBy] = React.useState<'score' | 'bid'>('score');
   const [bidSort, setBidSort] = React.useState<SortBy>('highest-to-lowest');
   const [scoreSort, setScoreSort] = React.useState<SortBy>('highest-to-lowest');
   const [currentPage, setCurrentPage] = React.useState(1);
@@ -77,9 +78,11 @@ export default function JobApplications({ params }: Props) {
     })
     .sort((a, b) => {
       const bidSortResult = sortFunction(a, b, (value) => value.paymentFee, bidSort);
-      if (bidSortResult !== 0) return bidSortResult;
       const scoreSortResult = sortFunction(a, b, (value) => value.creator.score, scoreSort);
-      return scoreSortResult;
+
+      if (sortBy === 'bid') return bidSortResult;
+      if (sortBy === 'score') return scoreSortResult;
+      return 0;
     });
 
   const itemsPerPage = 3;
@@ -107,7 +110,7 @@ export default function JobApplications({ params }: Props) {
         </div>
       </div>
 
-      <div className="w-full flex gap-6 grow">
+      <div className="w-full grow  flex gap-6 overflow-hidden">
         <div className="shrink-0 basis-[300px] grow-0 bg-white rounded-2xl border p-4 border-[#7DDE86] h-fit flex flex-col gap-4">
           <div>
             <label htmlFor="score">Afroscore</label>
@@ -115,6 +118,7 @@ export default function JobApplications({ params }: Props) {
               placeholder="Highest to lowest"
               options={SORT_BY}
               onChange={(value) => {
+                setSortBy('score');
                 setScoreSort(value as SortBy);
               }}
             />
@@ -125,6 +129,7 @@ export default function JobApplications({ params }: Props) {
               placeholder="Highest to lowest"
               options={SORT_BY}
               onChange={(value) => {
+                setSortBy('bid');
                 setBidSort(value as SortBy);
               }}
             />
@@ -133,27 +138,36 @@ export default function JobApplications({ params }: Props) {
             <span>Preferred Skills</span>
 
             <div className="flex flex-col gap-2">
-              {job.tagsData.map((tag) => (
-                <button
-                  key={tag}
-                  onClick={() => {
-                    if (skillFilters.includes(tag)) {
-                      setSkillFilters(skillFilters.filter((filter) => filter !== tag));
-                    } else {
-                      setSkillFilters([...skillFilters, tag]);
-                    }
-                  }}
-                  className="border bg-gray-50 py-3 rounded-lg gap-2 flex items-center px-3 w-full justify-between hover:border-[#7DDE86] duration-300"
-                >
-                  <span className="text-body">{tag}</span>
-                  <Checkbox checked={skillFilters.includes(tag)} />
-                </button>
-              ))}
+              {job.tagsData
+                .map((tag) => tag.toLowerCase())
+                .map((tag) => (
+                  <button
+                    key={tag}
+                    onClick={() => {
+                      if (skillFilters.includes(tag)) {
+                        setSkillFilters(skillFilters.filter((skill) => skill !== tag));
+                      } else {
+                        setSkillFilters([...skillFilters, tag]);
+                      }
+                    }}
+                    className="border bg-gray-50 py-3 rounded-lg gap-2 flex items-center px-3 w-full justify-between hover:border-[#7DDE86] duration-300"
+                  >
+                    <span className="text-body capitalize">{tag}</span>
+                    <Checkbox checked={skillFilters.includes(tag)} />
+                  </button>
+                ))}
             </div>
           </div>
         </div>
 
-        {paginatedApplicants.length === 0 && (
+        {applicants.length === 0 && (
+          <PageEmpty
+            className="h-[60vh] rounded-2xl"
+            label="No applicants yet, try sharing your job with your network"
+          />
+        )}
+
+        {paginatedApplicants.length === 0 && applicants.length > 0 && (
           <PageEmpty
             className="h-[60vh] rounded-2xl"
             label="No talent matches the criteria, try changing your filter"
@@ -161,7 +175,7 @@ export default function JobApplications({ params }: Props) {
         )}
 
         {paginatedApplicants.length > 0 && (
-          <div className="grow h-full flex flex-col gap-4">
+          <div className="grow h-full flex flex-col gap-4 overflow-y-auto">
             <div className="overflow-y-auto flex flex-col gap-4 ">
               {paginatedApplicants.map((applicant) => (
                 <ApplicantCard
@@ -172,7 +186,7 @@ export default function JobApplications({ params }: Props) {
                 />
               ))}
             </div>
-            <div className="mt-auto py-4">
+            <div className="pb-4">
               <Pagination currentPage={currentPage} totalPages={totalPages} setCurrentPage={setCurrentPage} />
             </div>
           </div>
@@ -205,7 +219,7 @@ const ApplicantCard: React.FC<ApplicantCardProps> = ({ bid, talent, message }) =
             </div>
           </AfroScore>
         } */}
-        <AfroProfile score={score} size='md' src={profileImage?.url} />
+        <AfroProfile score={score} size="md" src={profileImage?.url} />
         <div className="flex flex-col gap-2 grow">
           <div className="flex items-center justify-between gap-2">
             {<span className="text-title text-lg font-bold">{`${firstName} ${lastName}`}</span>}
