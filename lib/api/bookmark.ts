@@ -39,7 +39,7 @@ async function removeFromBookmark({ id }: { id: string }): Promise<any> {
 export const useGetBookmarks = ({ page, limit, filter }: timelineFetchParams) => {
   return useQuery({
     queryFn: async () => await getBookmarks({ page, limit, filter }),
-    queryKey: [`get-bookmark_req_${page}+${limit}`],
+    queryKey: [`get-bookmark_req_${page}`],
     onError: (error: ApiError) => {
       toast.error(error?.response?.data.message || 'An error occurred');
     },
@@ -56,7 +56,7 @@ export function useSaveToBookmark(callBack?: () => void) {
     mutationKey: ['save-bookmark'],
     onSuccess: async () => {
       await Promise.all([
-        queryClient.refetchQueries([`get-bookmark_req`]),
+        queryClient.refetchQueries([`get-bookmark_req_1`]),
         queryClient.refetchQueries(['get-timeline']),
         callBack && callBack(),
       ]);
@@ -74,9 +74,11 @@ export function useRemoveFromBookmark(callBack?: () => void) {
     mutationFn: removeFromBookmark,
     mutationKey: ['removeFromBookmark'],
     onSuccess: async () => {
-      queryClient.refetchQueries([`get-bookmark_req`]);
-      queryClient.refetchQueries(['get-timeline']);
-      callBack && (await callBack());
+      await Promise.all([
+        queryClient.refetchQueries([`get-bookmark_req_1`]),
+        queryClient.refetchQueries(['get-timeline']),
+        callBack && callBack(),
+      ]);
       toast.success('Removed From bookmark successfully');
     },
     onError: (error: ApiError) => {
