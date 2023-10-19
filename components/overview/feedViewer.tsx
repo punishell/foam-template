@@ -395,6 +395,7 @@ export const JobUpdateFeed: React.FC<TalentJobUpdateProps> = ({
             closeModal={() => {
               setIsModalOpen(false);
             }}
+            extras={id}
           />
         ) : (
           <TalentJobModal
@@ -403,6 +404,7 @@ export const JobUpdateFeed: React.FC<TalentJobUpdateProps> = ({
             closeModal={() => {
               setIsModalOpen(false);
             }}
+            extras={id}
           />
         )}
       </SideModal>

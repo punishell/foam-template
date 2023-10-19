@@ -37,7 +37,7 @@ export const Invites = () => {
               name: `${creator.firstName} ${creator.lastName}`,
             }}
             bookmarkId=""
-            close={() => {}}
+            close={() => { }}
           />
         );
       })}
