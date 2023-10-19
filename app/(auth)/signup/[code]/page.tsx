@@ -96,8 +96,9 @@ export default function Signup() {
     checkLowerUpper: form.getValues().password && /[A-Z]/.test(form.getValues().password) && /[a-z]/.test(form.getValues().password) || false,
     checkNumber: form.getValues().password && form.getValues().password.match(/\d+/g) ? true : false,
     specialCharacter: form.getValues().password && spChars.test(form.getValues().password) || false,
+    confirmedPassword: form.getValues().password === form.getValues().confirmPassword,
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }), [form.watch("password")]);
+  }), [form.watch("password"), form.watch("confirmPassword")]);
 
   return (
     <React.Fragment>
@@ -162,6 +163,7 @@ export default function Signup() {
                   <PasswordCriteria isValidated={validatingErr.checkLowerUpper} criteria="Upper and lower case characters" isSignUp={true} />
                   <PasswordCriteria isValidated={validatingErr.checkNumber} criteria="1 or mote numbers" isSignUp={true} />
                   <PasswordCriteria isValidated={validatingErr.specialCharacter} criteria="1 or more special characters" isSignUp={true} />
+                  <PasswordCriteria isValidated={validatingErr.confirmedPassword} criteria="passwords must be match" isSignUp={true} />
                 </div>
               </div>
 
