@@ -419,8 +419,6 @@ const JobEditForm: React.FC<JobEditFormProps> = ({ job }) => {
           <StepIndicator isComplete={jobSteps.description}>Description</StepIndicator>
           <StepIndicator isComplete={jobSteps.deliverables}>Deliverables</StepIndicator>
           <StepIndicator isComplete={jobSteps.classification}>Classifications</StepIndicator>
-          <StepIndicator isComplete={true}>Post Job</StepIndicator>
-          <StepIndicator isComplete={true}>Invite Talent</StepIndicator>
           <StepIndicator isComplete={false}>Deposit Payment</StepIndicator>
         </div>
 
