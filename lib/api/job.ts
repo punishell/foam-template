@@ -243,9 +243,11 @@ export function useToggleDeliverableCompletion({ description }: { description: s
       toast.error(error?.response?.data.message ?? 'Marking deliverable as complete failed');
     },
     onSuccess: async (_, { completedDeliverables, jobId, jobCreator, totalDeliverables, isComplete }) => {
-      await queryClient.refetchQueries({
-        queryKey: ['get-jobs', { jobId }],
-      });
+      await Promise.all([
+        queryClient.refetchQueries({ queryKey: ['get-jobs', { page: 1, limit: 10 }] }),
+        queryClient.refetchQueries({ queryKey: ['get-jobs', { page: 1, limit: 10, category: 'assigned' }] }),
+        queryClient.refetchQueries({ queryKey: ['get-job-by-id', { jobId }] }),
+      ]);
       // if (isComplete) {
       const completedD = isComplete ? completedDeliverables + 1 : completedDeliverables - 1;
       await createFeed.mutate({
