@@ -106,7 +106,7 @@ interface GetJobByIdParams {
   extras?: string;
 }
 
-interface GetJobByIdResponse extends Job {}
+interface GetJobByIdResponse extends Job { }
 
 async function getJobById(params: GetJobByIdParams): Promise<GetJobByIdResponse> {
   const res = await axios.get(`/collection/${params.jobId}`);
@@ -370,7 +370,7 @@ export function useCreateJobReview() {
     onError: (error: ApiError) => {
       toast.error(error?.response?.data.message || 'An error occurred');
     },
-    onSuccess: (_, { jobId, recipientId, review }) => {
+    onSuccess: (_, { jobId, recipientId, review, rating }) => {
       queryClient.refetchQueries(['get-job-by-id', { jobId }]);
       createFeed.mutate({
         title: 'Job Review',
@@ -379,6 +379,9 @@ export function useCreateJobReview() {
         data: jobId,
         owners: [recipientId],
         type: FEED_TYPES.JOB_REVIEW,
+        meta: {
+          rating: rating
+        }
       });
       toast.success('Your review has been submitted successfully');
     },
