@@ -182,6 +182,7 @@ export const ParseFeedView = (
           close={dismissFeed}
           bookmarked={isBookmarked}
           bookmarkId={bookmarkId}
+          rating={feed?.meta?.rating}
         />
       );
     case FEED_TYPES.REFERRAL_COLLECTION_COMPLETION:

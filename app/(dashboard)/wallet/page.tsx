@@ -31,7 +31,7 @@ export default function Wallet() {
     isLoading,
     isFetched: walletFetched,
     isFetching: walletIsFetching,
-  } = useGetWalletTxs({ limit: pageSize, page: pageIndex });
+  } = useGetWalletTxs({ limit: pageSize, page: pageIndex, filters: { status: ["processing", "completed", "reprocessing"] } });
 
   const walletTransactions = useMemo(
     () =>
