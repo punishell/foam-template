@@ -41,7 +41,7 @@ export default function RootLayout({ children }: Props) {
     <html lang="en" suppressHydrationWarning className="h-screen">
       <head />
       <body className={`${circularStd.variable} font-sans min-h-screen antialiased`}>
-        {/* <Toaster position="top-right" gutter={8} /> */}
+        <Toaster position="top-right" gutter={8} />
         <Providers>{children}</Providers>
       </body>
     </html>
