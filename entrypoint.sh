@@ -2,7 +2,7 @@
 # no verbose
 set +x
 # config
-envFilename='.env.production'
+envFilename='.env'
 nextFolder='./.next'
 function apply_path {
   # read all config file  
@@ -22,7 +22,7 @@ function apply_path {
     if [ -n "$configValue" ] && [ -n "$envValue" ]; then
       # replace all
       echo "Replace: ${configValue} with: ${envValue}"
-      find $nextFolder \( -type d -name .git -prune \) -o -type f -print0 | xargs -0 sed -i "s#$configValue#$envValue#g"
+      find $nextFolder \( -type d -name .git -prune \) -o -type f -print0 | xargs -0 sed -I "s#$configValue#$envValue#g"
     fi
   done < $envFilename
 }
