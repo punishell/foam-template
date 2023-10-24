@@ -40,7 +40,6 @@ RUN ["chmod", "+x", "./entrypoint.sh"]
 ENTRYPOINT ["./entrypoint.sh"]
 USER nextjs
 ENV NEXT_TELEMETRY_DISABLED 1
-# CMD ["node_modules/.bin/next", "start"]
 
 ARG PORT
 ENV PORT=${PORT:-9094}
