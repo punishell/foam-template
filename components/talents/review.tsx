@@ -30,9 +30,9 @@ const Review: React.FC<ReviewProps> = ({ body, title, rating, user }) => {
       className="bg-white min-h-full rounded-2xl p-4 flex flex-col gap-4 select-none cursor-grab w-full"
       style={{ maxWidth: '50%' }}
     >
-      <div className="flex flex-col flex-1 max-w-full gap-4 w-[98%]">
-        <h3 className="text-xl font-medium text-title max-w-fit break-all">{title}</h3>
-        <p className="text-base font-thin text-body max-w-fit break-words">
+      <div className="flex flex-col flex-1 max-w-[100%] gap-4 break-all" style={{ wordWrap: "break-word", overflowWrap: "break-word", wordBreak: "break-word" }}>
+        <h3 className="text-xl font-medium text-title">{title}</h3>
+        <p className="text-base font-thin text-body max-w-fit">
           {body.length > MAX_LEN ? `${body.slice(0, 150)}...` : body}
         </p>
       </div>

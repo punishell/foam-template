@@ -15,7 +15,7 @@ FROM node:18-alpine AS builder
 WORKDIR /app
 COPY . .
 COPY --from=deps /app/node_modules ./node_modules
-RUN yarn set version v1.22.17
+RUN yarn set version v1.22.19
 RUN yarn build
 
 # Production image, copy all the files and run next
@@ -35,7 +35,7 @@ COPY entrypoint.sh .
 COPY .env .
 # Execute script
 RUN apk add --no-cache --upgrade bash
-RUN yarn set version v1.22.17
+RUN yarn set version v1.22.19
 RUN ["chmod", "+x", "./entrypoint.sh"]
 ENTRYPOINT ["./entrypoint.sh"]
 USER nextjs
@@ -46,4 +46,4 @@ ARG PORT
 ENV PORT=${PORT:-9094}
 ENV NODE_ENV "production"
 EXPOSE $PORT
-CMD ["sh", "-c", "yarn start -p ${PORT}"]
+CMD ["sh", "-c", "yarn serve -p ${PORT}"]
