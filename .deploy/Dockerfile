@@ -36,8 +36,8 @@ COPY .env .
 # Execute script
 RUN apk add --no-cache --upgrade bash
 RUN yarn set version v1.22.19
-RUN ["chmod", "+x", "./entrypoint.sh"]
-ENTRYPOINT ["./entrypoint.sh"]
+# RUN ["chmod", "+x", "./entrypoint.sh"]
+# ENTRYPOINT ["./entrypoint.sh"]
 USER nextjs
 ENV NEXT_TELEMETRY_DISABLED 1
 
