@@ -31,13 +31,13 @@ COPY --from=builder /app/public ./public
 COPY --from=builder --chown=nextjs:nodejs /app/.next ./.next
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/package.json ./package.json
-# COPY entrypoint.sh .
-# COPY .env .
+COPY entrypoint.sh .
+COPY .env .
 # Execute script
 RUN apk add --no-cache --upgrade bash
 RUN yarn set version v1.22.19
-# RUN ["chmod", "+x", "./entrypoint.sh"]
-# ENTRYPOINT ["./entrypoint.sh"]
+RUN ["chmod", "+x", "./entrypoint.sh"]
+ENTRYPOINT ["./entrypoint.sh"]
 USER nextjs
 ENV NEXT_TELEMETRY_DISABLED 1
 
