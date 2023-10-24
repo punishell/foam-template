@@ -47,7 +47,7 @@ jobs:
           ECR_REPOSITORY: ${{ env.ECR_REPOSITORY }}
           RELEASE_VERSION: ${{ steps.vars.outputs.tag }}
         run: |
-          docker build --build-arg PORT=9090 -f ./.deploy/Dockerfile -t $ECR_REGISTRY/$ECR_REPOSITORY:$RELEASE_VERSION .
+          docker build --build-arg PORT=3000 -f ./.deploy/Dockerfile -t $ECR_REGISTRY/$ECR_REPOSITORY:$RELEASE_VERSION .
           docker tag $ECR_REGISTRY/$ECR_REPOSITORY:$RELEASE_VERSION $ECR_REGISTRY/$ECR_REPOSITORY:latest
         
       - name: Push image to Amazon ECR
