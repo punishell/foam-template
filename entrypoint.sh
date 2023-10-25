@@ -2,7 +2,7 @@
 # no verbose
 set +x
 # config
-envFilename='.env.production'
+envFilename='.env'
 nextFolder='./.next/'
 function apply_path {
   # read all config file  
