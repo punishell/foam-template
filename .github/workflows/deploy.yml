@@ -36,7 +36,7 @@ jobs:
           ECR_REPOSITORY: ${{ env.ECR_REPOSITORY }}
         run: |
           docker build --build-arg PORT=9090 -f ./.deploy/Dockerfile -t $ECR_REGISTRY/$ECR_REPOSITORY:latest .
-          docker tag $ECR_REGISTRY/$ECR_REPOSITORY:$GITHUB_REF $ECR_REGISTRY/$ECR_REPOSITORY:latest
+          docker tag $ECR_REGISTRY/$ECR_REPOSITORY:latest
         
       - name: Push image to Amazon ECR
         env:
