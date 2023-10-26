@@ -2,7 +2,7 @@
 # no verbose
 set +x
 # config
-envFilename='.env.production'
+envFilename='.env'
 nextFolder='./.next/'
 function apply_path {
   # read all config file  
@@ -17,7 +17,7 @@ function apply_path {
     configValue="$(cut -d'=' -f2 <<<"$line")"
     # get system env
     envValue=$(env | grep "^$configName=" | grep -oe '[^=]*$');
-    echo "${configValue}----${envValue}"
+    echo "values-to-replace: ${configValue}----${envValue}"
     
     # if config found
     if [ -n "$configValue" ] && [ -n "$envValue" ]; then
