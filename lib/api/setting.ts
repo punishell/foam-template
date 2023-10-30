@@ -4,7 +4,6 @@ import { toast } from '@/components/common/toaster';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { useUserState } from '../store/account';
 
-
 async function fetchSystemSettings(): Promise<Record<string, any>> {
   const res = await axios.get(`/settings`);
   return res.data.data;

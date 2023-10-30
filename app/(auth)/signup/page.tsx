@@ -16,6 +16,7 @@ import Lottie from 'lottie-react';
 import warning from '@/lottiefiles/warning-2.json';
 import { PasswordCriteria } from '@/components/settings/security';
 import { useGetSetting } from '@/lib/api/setting';
+import { SETTING_CONSTANTS } from '@/lib/constants';
 
 const passwordSchema = z
   .string()
@@ -53,8 +54,8 @@ export default function Signup() {
 
   useMemo(() => {
     if (systemSetting) {
-      const signupByInviteONly = Boolean(systemSetting["allow_sign_on_invite_only"] ?? false);
-      console.log(signupByInviteONly, systemSetting["allow_sign_on_invite_only"]);
+      const signupByInviteONly = Boolean(systemSetting[SETTING_CONSTANTS.ALLOW_SIGN_ON_INVITE_ONLY] ?? false);
+      console.log(signupByInviteONly, systemSetting[SETTING_CONSTANTS.ALLOW_SIGN_ON_INVITE_ONLY]);
       _setErrorMsg(signupByInviteONly)
     }
   }, [systemSetting]);
