@@ -54,8 +54,7 @@ export default function Signup() {
 
   useMemo(() => {
     if (systemSetting) {
-      const signupByInviteONly = Boolean(systemSetting[SETTING_CONSTANTS.ALLOW_SIGN_ON_INVITE_ONLY] ?? false);
-      console.log(signupByInviteONly, systemSetting[SETTING_CONSTANTS.ALLOW_SIGN_ON_INVITE_ONLY]);
+      const signupByInviteONly = Boolean(systemSetting[SETTING_CONSTANTS.ALLOW_SIGN_ON_INVITE_ONLY] === "true");
       _setErrorMsg(signupByInviteONly)
     }
   }, [systemSetting]);

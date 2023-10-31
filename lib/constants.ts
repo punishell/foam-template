@@ -5,5 +5,5 @@ export const TWO_FA_CONSTANTS = {
 };
 
 export const SETTING_CONSTANTS = {
-  ALLOW_SIGN_ON_INVITE_ONLY: "allow_sign_on_invite_only",
-}
+  ALLOW_SIGN_ON_INVITE_ONLY: 'allow_sign_on_invite_only',
+};
