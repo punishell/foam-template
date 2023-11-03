@@ -69,11 +69,9 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   };
 
   const Logout = () => {
-    {
-      deleteCookie(AUTH_TOKEN_KEY);
-      queryClient.clear();
-      router.push('/login');
-    }
+    deleteCookie(AUTH_TOKEN_KEY);
+    queryClient.clear();
+    router.push('/login');
   }
 
   const { getRemainingTime, activate } = useIdleTimer({
