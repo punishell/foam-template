@@ -12,19 +12,17 @@ const AUTH_URL = '/login';
 const authRoutes = ['/login', '/signup', '/forgot-password', '/verify'];
 const isAuthRoute = (pathName: string) => {
   let exists = false;
-  console.log("pathName==>", pathName);
   for (let i = 0; i < authRoutes.length; i++) {
     const authRoute = authRoutes[i];
     pathName.includes(authRoute) ? (exists = true) : null;
   }
   return exists;
-}
+};
 
 export function middleware(request: NextRequest) {
   const token = request.cookies.get(AUTH_TOKEN_KEY);
   if (!token) {
-    const isValidAuth = isAuthRoute(request.nextUrl.pathname)
-    console.log(isValidAuth);
+    const isValidAuth = isAuthRoute(request.nextUrl.pathname);
     if (!isValidAuth && request.nextUrl.pathname != '') {
       return redirectToLogin(request);
     }
