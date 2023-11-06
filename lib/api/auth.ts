@@ -1,8 +1,5 @@
 import { toast } from '@/components/common/toaster';
-import {
-  ApiError,
-  axios,
-} from '@/lib/axios';
+import { ApiError, axios } from '@/lib/axios';
 import { useMutation } from '@tanstack/react-query';
 
 import { useUserState } from '../store/account';
