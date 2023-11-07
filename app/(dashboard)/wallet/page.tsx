@@ -95,7 +95,6 @@ export default function Wallet() {
           j++;
         }
       }
-      console.log(mainData);
       return mainData as any;
     }
 
