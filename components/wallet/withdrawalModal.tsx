@@ -47,10 +47,12 @@ export const WithdrawalModal = ({
   isOpen,
   onChange,
   wallets,
+  network = "Avax C-Chain",
 }: {
   isOpen: boolean;
   onChange: (state: boolean) => void;
   wallets: any[];
+  network: string;
 }) => {
   const [is2FA, _setIs2FA] = useState(false);
   const { twoFa } = useUserState();
@@ -132,7 +134,7 @@ export const WithdrawalModal = ({
             <div className="flex flex-col gap-2">
               <div className="flex items-center justify-between">
                 <span>Wallet Address</span>
-                <span className="text-title font-medium">Network: Avax C-Chain</span>
+                <span className="text-title font-medium">Network: {network}</span>
               </div>
 
               <div className="relative mb-4">

@@ -1,7 +1,15 @@
 import { toast } from '@/components/common/toaster';
-import { ApiError, ApiResponse, axios } from '@/lib/axios';
+import {
+  ApiError,
+  ApiResponse,
+  axios,
+} from '@/lib/axios';
 import { useWalletState } from '@/lib/store/wallet';
-import { type QueryKey, useQuery, type UseQueryOptions } from '@tanstack/react-query';
+import {
+  type QueryKey,
+  useQuery,
+  type UseQueryOptions,
+} from '@tanstack/react-query';
 
 export interface IWallet {
   totalWalletBalance: string;
@@ -158,6 +166,29 @@ export const useGetPaymentCoins = () => {
   const getQueryIdKey = ['payment-coin'];
   return useQuery({
     queryFn: fetchPaymentCoins,
+    queryKey: getQueryIdKey,
+    onError: (error: any) => {
+      toast.error(error.response?.data.message || 'An error fetching talents occurred');
+    },
+  });
+};
+
+export interface ActiveRPCProps {
+  rpcName: string;
+  rpcChainId: string;
+  rpcUrls: string[];
+  blockExplorerUrls: string[],
+}
+
+const fetchRPCServer = async (): Promise<ActiveRPCProps> => {
+  const res = await axios.get(`/payment/rpc`);
+  return res.data.data;
+};
+
+export const useGetActiveRPC = () => {
+  const getQueryIdKey = ['active-rpc'];
+  return useQuery({
+    queryFn: fetchRPCServer,
     queryKey: getQueryIdKey,
     onError: (error: any) => {
       toast.error(error.response?.data.message || 'An error fetching talents occurred');

@@ -17,6 +17,7 @@ import { WalletTransactions } from '@/components/wallet/transactions';
 import { WithdrawalModal } from '@/components/wallet/withdrawalModal';
 import {
   fetchWalletStats,
+  useGetActiveRPC,
   useGetWalletDetails,
   useGetWalletTxs,
 } from '@/lib/api/wallet';
@@ -44,6 +45,9 @@ export default function Wallet() {
     isFetched: walletFetched,
     isFetching: walletIsFetching,
   } = useGetWalletTxs({ limit: pageSize, page: pageIndex, filters: { status: ["processing", "completed", "reprocessing"] } });
+  const { data: rpcData, isLoading: rpcLoading } = useGetActiveRPC();
+
+  const chainName = rpcData?.rpcName ?? "";
 
   const walletTransactions = useMemo(
     () =>
@@ -143,7 +147,7 @@ export default function Wallet() {
               <Button size="md" onClick={() => setIsOpen(true)}>
                 Withdraw
               </Button>
-              <WithdrawalModal isOpen={isOpen} onChange={setIsOpen} wallets={wallets} />
+              <WithdrawalModal isOpen={isOpen} onChange={setIsOpen} wallets={wallets} network={chainName} />
             </div>
             <div className="grid grid-cols-2 gap-6 h-full">
               {wallets.map((w, i) => (
