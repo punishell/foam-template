@@ -17,6 +17,7 @@ import * as z from 'zod';
 import { Spinner } from '@/components/common';
 import { Container } from '@/components/common/container';
 import { useRequestPasswordReset } from '@/lib/api';
+import { createQueryStrings } from '@/lib/utils';
 import { zodResolver } from '@hookform/resolvers/zod';
 
 const formSchema = z.object({
@@ -34,10 +35,18 @@ export default function ConfirmEmail() {
   });
 
   const onSubmit: SubmitHandler<FormValues> = (values) => {
-    console.log(values)
     requestPasswordReset.mutate(values, {
-      onSuccess: () => {
-        // router.push('/login');
+      onSuccess: (data) => {
+        router.push(`/forgot-password/reset?${createQueryStrings([
+          {
+            name: 'email',
+            value: values.email,
+          },
+          {
+            name: 'token',
+            value: data.tempToken.token,
+          },
+        ])}`);
       },
     });
   };

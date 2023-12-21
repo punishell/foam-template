@@ -1,5 +1,8 @@
 import { toast } from '@/components/common/toaster';
-import { ApiError, axios } from '@/lib/axios';
+import {
+  ApiError,
+  axios,
+} from '@/lib/axios';
 import { useMutation } from '@tanstack/react-query';
 
 import { useUserState } from '../store/account';
@@ -173,6 +176,10 @@ interface ResetPasswordParams {
 
 interface ResetPasswordResponse {
   message: string;
+  tempToken: {
+    token: string;
+    expiresIn: number;
+  };
 }
 
 async function postRequestPasswordReset({ email }: ResetPasswordParams): Promise<ResetPasswordResponse> {
@@ -184,6 +191,63 @@ export function useRequestPasswordReset() {
   return useMutation({
     mutationFn: postRequestPasswordReset,
     mutationKey: ['request-reset-password'],
+    onError: (error: ApiError) => {
+      toast.error(error?.response?.data.message || 'An error occurred');
+    },
+  });
+}
+
+
+
+interface VerifyResetPasswordParams {
+  token: string;
+  tempToken: string;
+}
+
+interface VerifyResetPasswordResponse {
+  message: string;
+  tempToken: {
+    token: string;
+    expiresIn: number;
+  };
+}
+
+async function postVerifyPasswordReset({ tempToken, token }: VerifyResetPasswordParams): Promise<VerifyResetPasswordResponse> {
+  const res = await axios.post('/auth/password/validate', { tempToken, token });
+  return res.data.data;
+}
+
+
+export function useVerifyResetPassword() {
+  return useMutation({
+    mutationFn: postVerifyPasswordReset,
+    mutationKey: ['verify-reset-password'],
+    onError: (error: ApiError) => {
+      toast.error(error?.response?.data.message || 'An error occurred');
+    },
+  });
+}
+
+
+interface ResetAccountPasswordParams {
+  token: string;
+  tempToken: string;
+  password: string;
+}
+
+interface ResetAccountPasswordResponse {
+  message: string;
+}
+
+async function postAccountPasswordReset({ tempToken, token, password }: ResetAccountPasswordParams): Promise<ResetAccountPasswordResponse> {
+  const res = await axios.post('/auth/password/change', { tempToken, token, password });
+  return res.data.data;
+}
+
+export function useResetPassword() {
+  return useMutation({
+    mutationFn: postAccountPasswordReset,
+    mutationKey: ['account-reset-password'],
     onError: (error: ApiError) => {
       toast.error(error?.response?.data.message || 'An error occurred');
     },
