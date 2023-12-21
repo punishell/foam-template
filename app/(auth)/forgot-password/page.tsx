@@ -1,14 +1,23 @@
 'use client';
-import * as z from 'zod';
 import React from 'react';
-import Link from 'next/link';
+
 import Image from 'next/image';
-import { Button, Input } from 'pakt-ui';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import {
+  Button,
+  Input,
+} from 'pakt-ui';
+import {
+  SubmitHandler,
+  useForm,
+} from 'react-hook-form';
+import * as z from 'zod';
+
+import { Spinner } from '@/components/common';
+import { Container } from '@/components/common/container';
 import { useRequestPasswordReset } from '@/lib/api';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { SubmitHandler, useForm } from 'react-hook-form';
-import { Container } from '@/components/common/container';
 
 const formSchema = z.object({
   email: z.string().min(1, { message: 'Email is required' }).email('Please enter a valid email address.'),
@@ -25,6 +34,7 @@ export default function ConfirmEmail() {
   });
 
   const onSubmit: SubmitHandler<FormValues> = (values) => {
+    console.log(values)
     requestPasswordReset.mutate(values, {
       onSuccess: () => {
         // router.push('/login');
@@ -56,11 +66,11 @@ export default function ConfirmEmail() {
             <label className="text-sm font-sans text-white" htmlFor="email">
               Email
             </label>
-            <Input placeholder="Email" type="email" className="w-full" id="email" />
+            <Input {...form.register('email')} placeholder="Email" type="email" className="w-full" id="email" />
           </div>
 
-          <Button fullWidth type="submit">
-            Send Reset Link
+          <Button fullWidth disabled={!form.formState.isValid || requestPasswordReset.isLoading}>
+            {requestPasswordReset.isLoading ? <Spinner /> : 'Send Reset Link'}
           </Button>
 
           <Link href="/login" className="text-white text-sm font-sans mt-4">

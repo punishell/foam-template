@@ -1,18 +1,29 @@
 import React, { useState } from 'react';
-import type { Bookmark, Job } from '@/lib/types';
-import { Tabs } from '@/components/common/tabs';
+
+import {
+  usePathname,
+  useRouter,
+  useSearchParams,
+} from 'next/navigation';
 import { useDebounce } from 'usehooks-ts';
-import { createQueryStrings2 } from '@/lib/utils';
-import { OpenJobCard } from '@/components/jobs/job-cards/open-job';
-import { paginate } from '@/lib/utils';
-import { useGetJobs } from '@/lib/api/job';
+
+import { NumericInput } from '@/components/common/numeric-input';
 import { PageEmpty } from '@/components/common/page-empty';
 import { PageError } from '@/components/common/page-error';
 import { PageLoading } from '@/components/common/page-loading';
-import { useGetBookmarks } from '@/lib/api/bookmark';
 import { Pagination } from '@/components/common/pagination';
-import { NumericInput } from '@/components/common/numeric-input';
-import { useSearchParams, useRouter, usePathname } from 'next/navigation';
+import { Tabs } from '@/components/common/tabs';
+import { OpenJobCard } from '@/components/jobs/job-cards/open-job';
+import { useGetBookmarks } from '@/lib/api/bookmark';
+import { useGetJobs } from '@/lib/api/job';
+import type {
+  Bookmark,
+  Job,
+} from '@/lib/types';
+import {
+  createQueryStrings2,
+  paginate,
+} from '@/lib/utils';
 
 export const OpenJobs = () => {
   const router = useRouter();
@@ -48,7 +59,12 @@ export const OpenJobs = () => {
     debouncedMaximumPriceQuery,
   ]);
 
-  const jobsData = useGetJobs({ category: 'open', status: 'pending' });
+  const queryParams = new URLSearchParams(searchParams as any);
+  const searchQ = queryParams.get('search') || '';
+  const skillQ = queryParams.get('skills') || '';
+  const rangeQ = queryParams.get('range') || '';
+  console.log(searchQ, skillQ, rangeQ)
+  const jobsData = useGetJobs({ category: 'open', status: 'pending', filter: { search: searchQ, tags: skillQ, range: rangeQ } });
   const bookmarkData = useGetBookmarks({ page: 1, limit: 5, filter: { type: 'collection' } });
 
   if (jobsData.isError || bookmarkData.isError)
