@@ -1,5 +1,5 @@
-import { PageLoading } from '@/components/common/page-loading';
+import { PageLoading } from "@/components/common/page-loading";
 
-export default function Loading() {
-  return <PageLoading />;
+export default function Loading(): React.JSX.Element {
+    return <PageLoading />;
 }

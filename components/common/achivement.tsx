@@ -1,6 +1,5 @@
-
 export const emptyAchievement = () => {
-  return <></>
+    return <></>;
 };
 
 export const achievementMap: Record<string, any> = {};

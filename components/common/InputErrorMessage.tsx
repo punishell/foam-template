@@ -1,9 +1,9 @@
 import React from "react";
 
 interface ErrorMessageProps {
-  message?: string;
+    message?: string;
 }
 
 export const InputErrorMessage = ({ message }: ErrorMessageProps) => {
-  return <span className="text-danger absolute bottom-[-20px] text-xs">{message}</span>;
+    return <span className="absolute bottom-[-20px] text-xs text-danger">{message}</span>;
 };

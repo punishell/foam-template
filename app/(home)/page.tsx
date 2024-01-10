@@ -1,14 +1,16 @@
-'use client';
-import React from 'react';
-import { useRouter } from 'next/navigation';
-import { PageLoading } from '@/components/common/page-loading';
+"use client";
 
-export default function Home() {
-  const router = useRouter();
+import React from "react";
+import { useRouter } from "next/navigation";
 
-  React.useEffect(() => {
-    router.replace('/overview');
-  }, [router]);
+import { PageLoading } from "@/components/common/page-loading";
 
-  return <PageLoading />;
+export default function Home(): React.JSX.Element {
+    const router = useRouter();
+
+    React.useEffect(() => {
+        router.replace("/overview");
+    }, [router]);
+
+    return <PageLoading />;
 }

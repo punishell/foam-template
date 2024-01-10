@@ -1,32 +1,34 @@
-'use client'
-import React, { useEffect, useRef } from 'react';
-import { MessageCircle } from 'lucide-react';
-import { useSearchParams } from 'next/navigation';
-import { useMessaging } from '@/providers/socketProvider';
-import { PageLoading } from '@/components/common/page-loading';
+"use client";
 
-export default function Messages() {
-  const { startUserInitializeConversation, startingNewChat } = useMessaging();
-  const searchParams = useSearchParams();
-  const queryParams = new URLSearchParams(searchParams as any);
-  const userId = queryParams.get('userId');
-  const initialized = useRef(false)
+import { useEffect, useRef } from "react";
+import { MessageCircle } from "lucide-react";
+import { useSearchParams } from "next/navigation";
+import { useMessaging } from "@/providers/socketProvider";
+import { PageLoading } from "@/components/common/page-loading";
 
-  useEffect(() => {
-    if (userId && !initialized.current) {
-      initialized.current = true;
-      startUserInitializeConversation(userId);
-    }
-  }, [userId]);
+export default function Messages(): React.JSX.Element {
+    const { startUserInitializeConversation, startingNewChat } = useMessaging();
+    const searchParams = useSearchParams();
+    const queryParams = new URLSearchParams(searchParams as unknown as string);
+    const userId = queryParams.get("userId");
+    const initialized = useRef(false);
 
-  if (startingNewChat) return <PageLoading />
+    useEffect(() => {
+        if (userId && !initialized.current) {
+            initialized.current = true;
+            void startUserInitializeConversation(userId);
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [userId]);
 
-  return (
-    <div className="bg-white h-full w-full flex items-center justify-center">
-      <div className="flex flex-col items-center gap-2 text-body text-center">
-        <MessageCircle size={120} className="text-slate-400" />
-        <span>Send private messages to a client or talent</span>
-      </div>
-    </div>
-  );
+    if (startingNewChat) return <PageLoading />;
+
+    return (
+        <div className="flex h-full w-full items-center justify-center bg-white">
+            <div className="flex flex-col items-center gap-2 text-center text-body">
+                <MessageCircle size={120} className="text-slate-400" />
+                <span>Send private messages to a client or talent</span>
+            </div>
+        </div>
+    );
 }
