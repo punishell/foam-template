@@ -2,7 +2,6 @@ import { Button, Input, Text } from "pakt-ui";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { Check } from "lucide-react";
 import { AuthApp2FA } from "./auth-app";
 import { Email2FA } from "./email-2fa";
 import { SecurityQuestion2FA } from "./security-question-2fa";
@@ -12,6 +11,7 @@ import { useMemo } from "react";
 import { useUserState } from "@/lib/store/account";
 import { TWO_FA_CONSTANTS } from "@/lib/constants";
 import { spChars } from "@/lib/utils";
+import { PasswordCriteria } from "@/components/common/password-criteria";
 
 const changePasswordFormSchema = z
     .object({
@@ -153,19 +153,3 @@ export const SecurityView = () => {
     );
 };
 
-export const PasswordCriteria: React.FC<{
-    isValidated: boolean;
-    criteria: string;
-    isSignUp?: boolean;
-}> = ({ isValidated, criteria, isSignUp }) => {
-    return (
-        <div
-            className={`flex flex-row items-center gap-4 ${
-                isValidated ? "text-success" : `${isSignUp ? "text-white" : "text-body"}`
-            }`}
-        >
-            <Check size={15} />
-            {criteria}
-        </div>
-    );
-};
