@@ -199,7 +199,11 @@ export interface DataFeedResponse {
     owners?: User[];
     title: string;
     type: string;
-    meta?: Record<string, unknown>;
+    meta?: {
+        value: number;
+        isMarked: boolean;
+        rating: number;
+    };
     _id: string;
 }
 

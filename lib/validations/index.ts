@@ -47,3 +47,7 @@ export const signupSchema = z
         path: ["confirmPassword"],
         message: "Passwords do not match.",
     });
+
+export const referralSchema = z.object({
+    emails: z.array(z.string()).nonempty({ message: "emails are required" }),
+});

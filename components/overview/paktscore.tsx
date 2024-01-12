@@ -1,4 +1,9 @@
-import React from "react";
+"use client";
+
+/* -------------------------------------------------------------------------- */
+/*                             External Dependency                            */
+/* -------------------------------------------------------------------------- */
+
 import Image from "next/image";
 import { AfroScore as AfroScorePrimitive } from "@/components/common/afro-profile";
 
@@ -6,15 +11,7 @@ interface Props {
     score?: number;
 }
 
-export const AfroScore = ({ score = 0 }: Props) => {
-    return (
-        <div className="flex w-full flex-col items-center justify-center rounded-2xl border border-line bg-white">
-            {score > 0 ? <NonZeroAfroScore score={score} /> : <ZeroAfroScore />}
-        </div>
-    );
-};
-
-const ZeroAfroScore = () => {
+const ZeroAfroScore = (): React.ReactElement => {
     return (
         <div className="flex flex-col gap-6 px-6 pt-4">
             <div className="flex flex-col items-center gap-2 text-center">
@@ -31,7 +28,7 @@ const ZeroAfroScore = () => {
     );
 };
 
-const NonZeroAfroScore: React.FC<Props> = ({ score = 0 }) => {
+const NonZeroAfroScore = ({ score = 0 }: Props): React.ReactElement => {
     return (
         <div className="flex flex-col items-center gap-1 p-4 pt-0">
             <AfroScorePrimitive score={score} size="xl">
@@ -40,6 +37,14 @@ const NonZeroAfroScore: React.FC<Props> = ({ score = 0 }) => {
                 </div>
             </AfroScorePrimitive>
             <span className="text-2xl font-bold text-title">Afroscore</span>
+        </div>
+    );
+};
+
+export const AfroScore = ({ score = 0 }: Props): React.ReactElement => {
+    return (
+        <div className="flex w-full flex-col items-center justify-center rounded-2xl border border-line bg-white">
+            {score > 0 ? <NonZeroAfroScore score={score} /> : <ZeroAfroScore />}
         </div>
     );
 };

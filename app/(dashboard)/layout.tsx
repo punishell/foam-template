@@ -19,7 +19,7 @@ import { Sidebar } from "@/components/sidebar";
 function Loader(): React.JSX.Element {
     return (
         <div aria-live="polite" aria-busy="true" className="flex h-screen w-screen items-center justify-center">
-            <RaceBy />
+            <RaceBy color="#007C5B" />
         </div>
     );
 }
