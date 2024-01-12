@@ -2,6 +2,7 @@
 
 import { Button } from "pakt-ui";
 import { useRouter } from "next/navigation";
+import { Search, Plus, Briefcase } from "lucide-react";
 import { Tabs } from "@/components/common/tabs";
 import { Feeds } from "@/components/overview/feeds";
 import { Header } from "@/components/overview/header";
@@ -9,7 +10,6 @@ import { LeaderBoard } from "@/components/overview/leaderboard";
 import { Invites } from "@/components/overview/invites";
 import { ActiveJobs } from "@/components/overview/activeJobs";
 import { FeedsBookmark } from "@/components/overview/bookmark";
-import { Search, Plus, Briefcase } from "lucide-react";
 import { useUserState } from "@/lib/store/account";
 
 export default function Overview() {
@@ -41,15 +41,15 @@ export default function Overview() {
     );
 }
 
-const JobHeader = () => {
+const JobHeader = (): React.JSX.Element => {
     const router = useRouter();
     const user = useUserState();
     const value = user.profileCompleteness ?? 0;
     const profileCompleted = value > 70;
     if (!profileCompleted) {
         return (
-            <div className={`flex h-[154px] w-full gap-2 rounded-2xl border bg-white p-2`}>
-                <div className={`flex flex-[8] items-center`}>
+            <div className="flex h-[154px] w-full gap-2 rounded-2xl border bg-white p-2">
+                <div className="flex flex-[8] items-center">
                     <div className="flex flex-[2] flex-col items-center text-center">
                         <h3 className="text-[50px] font-bold leading-[54px]">{value}%</h3>
                         <p className="text-base">of your profile is completed</p>
@@ -60,7 +60,13 @@ const JobHeader = () => {
                             Welcome to Afrofund! Fill out your profile so you can begin collaborating.
                         </p>
                         <div className="h-[48px] w-[226px]">
-                            <Button variant="primary" size="md" onClick={() => router.push("/settings")}>
+                            <Button
+                                variant="primary"
+                                size="md"
+                                onClick={() => {
+                                    router.push("/settings");
+                                }}
+                            >
                                 <span className="flex items-center gap-2">
                                     <span>Complete Profile</span>
                                 </span>
@@ -78,7 +84,12 @@ const JobHeader = () => {
                     <p className="max-w-[300px] text-xl font-bold">
                         Search Afrofund Talent Pool to find skilled workers.
                     </p>
-                    <Button size="sm" onClick={() => router.push("/jobs/create")}>
+                    <Button
+                        size="sm"
+                        onClick={() => {
+                            router.push("/jobs/create");
+                        }}
+                    >
                         <span className="flex items-center gap-2">
                             <Plus size={20} />
                             <span>Create Job</span>
@@ -96,7 +107,13 @@ const JobHeader = () => {
                     <p className="max-w-[320px] text-xl font-bold">
                         Search the Afrofund job board for work that matches your skills.
                     </p>
-                    <Button variant="secondary" size="sm" onClick={() => router.push("/jobs")}>
+                    <Button
+                        variant="secondary"
+                        size="sm"
+                        onClick={() => {
+                            router.push("/jobs");
+                        }}
+                    >
                         <span className="flex items-center gap-2">
                             <Search size={20} />
                             <span>Find Jobs</span>

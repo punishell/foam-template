@@ -5,6 +5,6 @@ interface Props {
     className?: string;
 }
 
-export const Container: React.FC<Props> = ({ children, className }) => {
+export const Container = ({ children, className }: Props): React.JSX.Element => {
     return <div className={`${cn("container mx-auto w-full px-4", className)}`}>{children}</div>;
 };

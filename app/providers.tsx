@@ -1,5 +1,9 @@
 "use client";
 
+/* -------------------------------------------------------------------------- */
+/*                             External Dependency                            */
+/* -------------------------------------------------------------------------- */
+
 import React from "react";
 import { clarity } from "react-microsoft-clarity";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
