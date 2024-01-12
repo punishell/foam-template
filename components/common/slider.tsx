@@ -1,6 +1,11 @@
 "use client";
+
+/* -------------------------------------------------------------------------- */
+/*                             External Dependency                            */
+/* -------------------------------------------------------------------------- */
+
 import { motion } from "framer-motion";
-import React from "react";
+import { type ReactElement, useRef, useState } from "react";
 
 export interface SlideItemProps {
     goToNextSlide: () => void;
@@ -8,24 +13,24 @@ export interface SlideItemProps {
 }
 
 interface SliderProps {
-    items: {
+    items: Array<{
         SlideItem: React.FC<{ goToNextSlide: () => void; goToPreviousSlide: () => void }>;
-    }[];
+    }>;
 }
 
-export const Slider = ({ items }: SliderProps) => {
-    const wrapperRef = React.useRef<HTMLDivElement>(null);
+export const Slider = ({ items }: SliderProps): ReactElement => {
+    const wrapperRef = useRef<HTMLDivElement>(null);
     const wrapperWidth = wrapperRef.current?.clientWidth ?? 0;
 
-    const [currentSlide, setCurrentSlide] = React.useState(0);
+    const [currentSlide, setCurrentSlide] = useState(0);
 
-    const handleNext = () => {
+    const handleNext = (): void => {
         if (currentSlide === items.length - 1) return;
         if (currentSlide === items.length) return;
         setCurrentSlide((prev) => prev + 1);
     };
 
-    const handlePrevious = () => {
+    const handlePrevious = (): void => {
         if (currentSlide === 0) return;
         if (currentSlide === items.length) return;
         setCurrentSlide((prev) => prev - 1);

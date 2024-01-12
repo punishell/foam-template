@@ -1,7 +1,16 @@
 "use client";
 
+/* -------------------------------------------------------------------------- */
+/*                             External Dependency                            */
+/* -------------------------------------------------------------------------- */
+
 import Link from "next/link";
 import Image from "next/image";
+
+/* -------------------------------------------------------------------------- */
+/*                             Internal Dependency                            */
+/* -------------------------------------------------------------------------- */
+
 import { Container } from "@/components/common/container";
 
 // import { useEffect } from "react";
