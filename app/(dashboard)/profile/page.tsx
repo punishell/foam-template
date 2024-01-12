@@ -1,8 +1,15 @@
-"use client";
+/* -------------------------------------------------------------------------- */
+/*                             External Dependency                            */
+/* -------------------------------------------------------------------------- */
 
-import React, { useEffect, useMemo } from "react";
-import { useGetTalentReviewById } from "@/lib/api";
+import { type ReactElement, useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
+
+/* -------------------------------------------------------------------------- */
+/*                             Internal Dependency                            */
+/* -------------------------------------------------------------------------- */
+
+import { useGetTalentReviewById } from "@/lib/api";
 import { Achievements } from "@/components/talents/achievement";
 import { Reviews } from "@/components/talents/review";
 import { useUserState } from "@/lib/store/account";
@@ -10,7 +17,7 @@ import { ProfileHeader } from "@/components/talents/header";
 import { Bio } from "@/components/talents/bio";
 import { PageLoading } from "@/components/common/page-loading";
 
-export default function Profile() {
+export default function ProfilePage(): ReactElement | null {
     const router = useRouter();
     const user = useUserState();
     const talentId = String(user?._id);
@@ -18,40 +25,42 @@ export default function Profile() {
 
     useEffect(() => {
         if (talentId) {
-            FetchTalent();
+            void FetchTalent();
         } else router.back();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [user]);
 
     const talent = useMemo(
         () => ({
             id: user?._id,
             name: `${user?.firstName} ${user?.lastName}`,
-            position: user?.profile?.bio?.title || "",
-            image: user?.profileImage?.url || "",
-            bio: user?.profile?.bio?.description || "",
-            score: user?.score || 0,
-            achievements: (user?.achievements || []).map((a) => ({
+            position: user?.profile?.bio?.title ?? "",
+            image: user?.profileImage?.url ?? "",
+            bio: user?.profile?.bio?.description ?? "",
+            score: user?.score ?? 0,
+            achievements: (user?.achievements ?? []).map((a) => ({
                 title: a.type,
                 type: a.type,
                 total: Number(a.total),
                 value: Number(a.value),
             })),
             skills:
-                (user?.profile?.talent?.tagsIds || []).map((t) => ({ name: t.name, backgroundColor: t.color })) || [],
+                (user?.profile?.talent?.tagsIds ?? []).map((t) => ({ name: t.name, backgroundColor: t.color })) || [],
         }),
         [user],
     );
+
     if (isLoading) return <PageLoading />;
-    const reviews = talentReviews?.data || [];
+    const reviews = talentReviews?.data ?? [];
     return (
         <div className="grid h-fit grid-cols-1 items-start gap-6 overflow-y-auto pb-4">
             <ProfileHeader
-                _id={talent.id}
+                _id={talent.id as string}
                 name={talent.name}
                 position={talent.position}
                 score={talent.score}
                 skills={talent.skills}
-                isOwnProfile={true}
+                isOwnProfile
                 profileImage={talent.image}
             />
 
@@ -62,7 +71,7 @@ export default function Profile() {
                         type,
                         title: type,
                         total: Number(total),
-                        value: parseInt(String(value)),
+                        value: parseInt(String(value), 10),
                     }))}
                 />
             </div>
@@ -74,10 +83,10 @@ export default function Profile() {
                             body: a.review,
                             rating: a.rating,
                             user: {
-                                _id: a.owner._id,
+                                _id: a.owner._id ?? "",
                                 afroScore: a.owner.score,
                                 name: `${a.owner.firstName}${a.owner.lastName}`,
-                                title: a.owner.profile.bio?.title || "",
+                                title: a.owner.profile?.bio?.title ?? "",
                                 avatar: a.owner.profileImage?.url ?? "",
                             },
                         })) ?? []
