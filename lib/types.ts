@@ -1,7 +1,7 @@
 export interface User {
     _id?: string;
     type?: string;
-    email?: string;
+    email?: string | undefined;
     lastName?: string;
     firstName?: string;
     score?: number;

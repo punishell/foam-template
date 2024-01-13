@@ -1,78 +1,42 @@
+"use client";
+
+/* eslint-disable react/jsx-pascal-case */
+/* -------------------------------------------------------------------------- */
+/*                             External Dependency                            */
+/* -------------------------------------------------------------------------- */
+
+import { useEffect, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { InputErrorMessage, Modal, OtpInput, SlideItemProps, Slider, Spinner } from "@/components/common";
-// import { useActivateEmailOTP, useDeactivateEmailOTP, useIssueEmailOTP, useSendEmailOTP } from "@/lib/api";
-import { useEmail2FAState } from "@/lib/store";
 import Image from "next/image";
 import { Button, Checkbox, Text } from "pakt-ui";
-import React from "react";
-import { Controller, SubmitHandler, useForm } from "react-hook-form";
+import { Controller, type SubmitHandler, useForm } from "react-hook-form";
 import * as z from "zod";
 import { ChevronLeft, Timer, XCircleIcon } from "lucide-react";
+// import { useActivateEmailOTP, useDeactivateEmailOTP, useIssueEmailOTP, useSendEmailOTP } from "@/lib/api";
+
+/* -------------------------------------------------------------------------- */
+/*                             Internal Dependency                            */
+/* -------------------------------------------------------------------------- */
+
 import {
     useActivate2FA,
     useDeActivate2FA,
     useDeActivate2FAEmailInitiate,
-    useGetAccount,
+    // useGetAccount,
     useInitialize2FA,
 } from "@/lib/api/account";
 import { useUserState } from "@/lib/store/account";
 import { TWO_FA_CONSTANTS } from "@/lib/constants";
-import dayjs from "dayjs";
+import { useEmail2FAState } from "@/lib/store";
+import { InputErrorMessage, Modal, OtpInput, type SlideItemProps, Slider, Spinner } from "@/components/common";
 import { formatCountdown } from "@/lib/utils";
 
-interface Email2FAProps {
-    isEnabled: boolean;
-    disabled?: boolean;
-}
-
-export const Email2FA = ({ isEnabled, disabled }: Email2FAProps) => {
-    const { isModalOpen, closeModal, openModal } = useEmail2FAState();
-
-    return (
-        <React.Fragment>
-            <button
-                onClick={openModal}
-                className="relative flex shrink grow basis-0 cursor-pointer flex-col items-center gap-6 rounded-md border-transparent bg-[#F2F2F2] px-7 py-9 disabled:cursor-not-allowed disabled:opacity-[0.5]"
-                disabled={disabled}
-            >
-                <div className="absolute right-4 top-4">
-                    <Checkbox checked={isEnabled} />
-                </div>
-                <div className="flex h-[100px] items-center">
-                    <Image src="/icons/email-auth.svg" width={76} height={76} alt="" />
-                </div>
-                <Text.p size="lg">Email Auth</Text.p>
-            </button>
-
-            <Modal isOpen={isModalOpen} onOpenChange={closeModal} className="rounded-2xl bg-white p-6">
-                {isEnabled ? (
-                    <Slider
-                        items={[
-                            { SlideItem: InitiateDeactivateOTP },
-                            { SlideItem: VerifyDeactivateOTP },
-                            { SlideItem: OTPDeactivateSuccess },
-                        ]}
-                    />
-                ) : (
-                    <Slider
-                        items={[
-                            { SlideItem: InitiateActivateOTP },
-                            { SlideItem: VerifyActivateOTP },
-                            { SlideItem: OTPActivateSuccess },
-                        ]}
-                    />
-                )}
-            </Modal>
-        </React.Fragment>
-    );
-};
-
-const InitiateActivateOTP = ({ goToNextSlide }: SlideItemProps) => {
+const InitiateActivateOTP = ({ goToNextSlide }: SlideItemProps): React.JSX.Element => {
     const { email } = useUserState();
     const { closeModal } = useEmail2FAState();
     const { mutateAsync, isLoading } = useInitialize2FA();
 
-    const handleInitiateOtp = async () => {
+    const handleInitiateOtp = async (): Promise<void> => {
         await mutateAsync({ type: TWO_FA_CONSTANTS.EMAIL });
         goToNextSlide();
     };
@@ -104,27 +68,29 @@ const otpSchema = z.object({
 
 type EmailOtpFormValues = z.infer<typeof otpSchema>;
 
-const VerifyActivateOTP = ({ goToNextSlide, goToPreviousSlide }: SlideItemProps) => {
-    const [countdown, setCountdown] = React.useState(0);
-    const [isResendDisabled, setIsResendDisabled] = React.useState(true);
+const VerifyActivateOTP = ({ goToNextSlide, goToPreviousSlide }: SlideItemProps): React.JSX.Element => {
+    const [countdown, setCountdown] = useState(0);
+    const [isResendDisabled, setIsResendDisabled] = useState(true);
     const { email } = useUserState();
     const { mutateAsync, isLoading } = useActivate2FA();
     const { closeModal } = useEmail2FAState();
     const initiate = useInitialize2FA();
 
-    const handleInitiateOtp = async () => {
+    const handleInitiateOtp = async (): Promise<void> => {
         await initiate.mutateAsync({ type: TWO_FA_CONSTANTS.EMAIL });
         setIsResendDisabled(true);
     };
 
     // TODO:: move to a useCountdown timer react-hook
-    React.useEffect(() => {
+    useEffect(() => {
         if (isResendDisabled) {
             setCountdown(60);
             const timer = setInterval(() => {
                 setCountdown((prev) => (prev > 1 ? prev - 1 : 0));
             }, 1000);
-            setTimeout(() => setIsResendDisabled(false), 60000);
+            setTimeout(() => {
+                setIsResendDisabled(false);
+            }, 60000);
 
             return () => {
                 clearInterval(timer);
@@ -192,7 +158,7 @@ const VerifyActivateOTP = ({ goToNextSlide, goToPreviousSlide }: SlideItemProps)
     );
 };
 
-const OTPActivateSuccess = () => {
+const OTPActivateSuccess = (): React.JSX.Element => {
     const { closeModal } = useEmail2FAState();
 
     return (
@@ -212,12 +178,12 @@ const OTPActivateSuccess = () => {
 };
 
 // DEACTIVATION
-const InitiateDeactivateOTP = ({ goToNextSlide }: SlideItemProps) => {
+const InitiateDeactivateOTP = ({ goToNextSlide }: SlideItemProps): React.JSX.Element => {
     const { email } = useUserState();
     const { closeModal } = useEmail2FAState();
     const { mutateAsync, isLoading } = useDeActivate2FAEmailInitiate();
 
-    const handleInitiateOtp = async () => {
+    const handleInitiateOtp = async (): Promise<void> => {
         await mutateAsync();
         goToNextSlide();
     };
@@ -239,7 +205,7 @@ const InitiateDeactivateOTP = ({ goToNextSlide }: SlideItemProps) => {
     );
 };
 
-const VerifyDeactivateOTP = ({ goToNextSlide }: SlideItemProps) => {
+const VerifyDeactivateOTP = ({ goToNextSlide }: SlideItemProps): React.JSX.Element => {
     const { closeModal } = useEmail2FAState();
     const { mutateAsync, isLoading } = useDeActivate2FA();
     const { email } = useUserState();
@@ -287,7 +253,7 @@ const VerifyDeactivateOTP = ({ goToNextSlide }: SlideItemProps) => {
     );
 };
 
-const OTPDeactivateSuccess = () => {
+const OTPDeactivateSuccess = (): React.JSX.Element => {
     const { closeModal } = useEmail2FAState();
 
     return (
@@ -304,5 +270,53 @@ const OTPDeactivateSuccess = () => {
                 Done
             </Button>
         </div>
+    );
+};
+
+interface Email2FAProps {
+    isEnabled: boolean;
+    disabled?: boolean;
+}
+
+export const Email2FA = ({ isEnabled, disabled }: Email2FAProps): React.JSX.Element => {
+    const { isModalOpen, closeModal, openModal } = useEmail2FAState();
+
+    return (
+        <>
+            <button
+                onClick={openModal}
+                className="relative flex shrink grow basis-0 cursor-pointer flex-col items-center gap-6 rounded-md border-transparent bg-[#F2F2F2] px-7 py-9 disabled:cursor-not-allowed disabled:opacity-[0.5]"
+                disabled={disabled}
+                type="button"
+            >
+                <div className="absolute right-4 top-4">
+                    <Checkbox checked={isEnabled} />
+                </div>
+                <div className="flex h-[100px] items-center">
+                    <Image src="/icons/email-auth.svg" width={76} height={76} alt="" />
+                </div>
+                <Text.p size="lg">Email Auth</Text.p>
+            </button>
+
+            <Modal isOpen={isModalOpen} onOpenChange={closeModal} className="rounded-2xl bg-white p-6">
+                {isEnabled ? (
+                    <Slider
+                        items={[
+                            { SlideItem: InitiateDeactivateOTP },
+                            { SlideItem: VerifyDeactivateOTP },
+                            { SlideItem: OTPDeactivateSuccess },
+                        ]}
+                    />
+                ) : (
+                    <Slider
+                        items={[
+                            { SlideItem: InitiateActivateOTP },
+                            { SlideItem: VerifyActivateOTP },
+                            { SlideItem: OTPActivateSuccess },
+                        ]}
+                    />
+                )}
+            </Modal>
+        </>
     );
 };

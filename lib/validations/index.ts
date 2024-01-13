@@ -51,3 +51,33 @@ export const signupSchema = z
 export const referralSchema = z.object({
     emails: z.array(z.string()).nonempty({ message: "emails are required" }),
 });
+
+export const editProfileFormSchema = z.object({
+    firstName: z.string().min(1, "First Name is required"),
+    lastName: z.string().min(1, "Last Name is required"),
+    title: z.string().min(1, "Job Title is required"),
+    email: z.string().min(1, "Email is required").email("Invalid email"),
+    bio: z.string().min(1, "Bio is required"),
+    location: z.string().min(1, "Location is required"),
+    country: z.string().min(1, "Country is required"),
+    tags: z.array(z.string()).nonempty({ message: "skills are required" }),
+    isPrivate: z.boolean().default(false).optional(),
+});
+
+export const changePasswordFormSchema = z
+    .object({
+        currentPassword: z.string().min(1, "Current Password is required"),
+        newPassword: z
+            .string()
+            .min(1, "New Password is required")
+            .regex(
+                // eslint-disable-next-line no-useless-escape
+                /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})/,
+                "Must Contain 8 Characters, One Uppercase, One Lowercase, One Number and One Special Case Character",
+            ),
+        confirmNewPassword: z.string().min(1, "Confirm New Password is required"),
+    })
+    .refine((data) => data.newPassword === data.confirmNewPassword, {
+        message: "Passwords don't match",
+        path: ["confirmNewPassword"],
+    });

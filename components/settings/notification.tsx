@@ -1,4 +1,10 @@
-import React from "react";
+"use client";
+
+/* -------------------------------------------------------------------------- */
+/*                             External Dependency                            */
+/* -------------------------------------------------------------------------- */
+
+import { type ReactElement } from "react";
 import { Checkbox } from "pakt-ui";
 
 const NotificationTypes = [
@@ -9,7 +15,7 @@ const NotificationTypes = [
     { label: "Payments", email: true, browser: true },
 ];
 
-export const NotificationView = () => {
+export const NotificationView = (): ReactElement => {
     return (
         <div className="flex h-full flex-col">
             <div className="flex flex-col gap-4 rounded-lg bg-white p-4 pb-20">
@@ -25,7 +31,7 @@ export const NotificationView = () => {
                         <div
                             key={i}
                             className={`flex flex-row px-8 py-4 text-base text-title ${
-                                i % 2 == 0 ? "bg-preference" : ""
+                                i % 2 === 0 ? "bg-preference" : ""
                             }`}
                         >
                             <p className="w-64 flex-1">{n.label}</p>

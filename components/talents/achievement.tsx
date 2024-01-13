@@ -1,3 +1,5 @@
+"use client";
+
 type AchievementType = "review" | "referral" | "five-star" | "squad";
 
 interface Achievement {
