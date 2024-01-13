@@ -5,12 +5,13 @@ export interface IWallet {
     totalWalletBalance: string;
     value: string;
     wallets:
-        | {
+        | Array<{
               _id: string;
               amount: number;
               usdValue: number;
               coin: string;
-          }[]
+              icon: string;
+          }>
         | [];
 }
 
@@ -23,9 +24,10 @@ export const useWalletState = create<WalletState>()(
         (set) => ({
             totalWalletBalance: "0.00",
             value: "0.00",
-            // @ts-ignore
             wallets: [],
-            setWallet: (wallet) => set(wallet),
+            setWallet: (wallet) => {
+                set(wallet);
+            },
         }),
         {
             name: "wallet",

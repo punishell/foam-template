@@ -1,62 +1,28 @@
+"use client";
+
+/* eslint-disable react/jsx-pascal-case */
+/* -------------------------------------------------------------------------- */
+/*                             External Dependency                            */
+/* -------------------------------------------------------------------------- */
+
+import { useEffect, useMemo, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { InputErrorMessage, Modal, SlideItemProps, Slider, Spinner } from "@/components/common";
 // import { useAnswerSecurityQuestion, useGetSecurityQuestions, useSetUserSecurityQuestion } from "@/lib/api";
-import { useSecurityQuestion2FAState } from "@/lib/store";
 import Image from "next/image";
 import { Button, Checkbox, Input, Select, Text } from "pakt-ui";
-import React, { useEffect, useMemo, useState } from "react";
-import { Controller, SubmitHandler, useForm } from "react-hook-form";
+import { Controller, type SubmitHandler, useForm } from "react-hook-form";
 import * as z from "zod";
 import { XCircleIcon } from "lucide-react";
-import { useActivate2FA, useDeActivate2FA, useGetAccount, useInitialize2FA } from "@/lib/api/account";
+
+/* -------------------------------------------------------------------------- */
+/*                             Internal Dependency                            */
+/* -------------------------------------------------------------------------- */
+
+import { useSecurityQuestion2FAState } from "@/lib/store";
+import { InputErrorMessage, Modal, type SlideItemProps, Slider, Spinner } from "@/components/common";
+import { useActivate2FA, useDeActivate2FA, useInitialize2FA } from "@/lib/api/account";
 import { TWO_FA_CONSTANTS } from "@/lib/constants";
 import { toast } from "@/components/common/toaster";
-
-interface SecurityQuestion2FA {
-    isEnabled: boolean;
-    disabled?: boolean;
-    refetchAccount?: () => void;
-}
-
-export const SecurityQuestion2FA = ({ isEnabled, disabled, refetchAccount }: SecurityQuestion2FA) => {
-    const { isModalOpen, closeModal, openModal } = useSecurityQuestion2FAState();
-    const [isActive, _setIsActive] = useState(isEnabled);
-    useEffect(() => {
-        if (!isModalOpen) _setIsActive(isEnabled);
-    }, [isEnabled]);
-
-    useEffect(() => {
-        if (!isModalOpen) _setIsActive(isEnabled);
-    }, [isModalOpen]);
-
-    return (
-        <React.Fragment>
-            <button
-                onClick={openModal}
-                className="relative flex shrink grow basis-0 cursor-pointer flex-col items-center gap-6 rounded-md border-transparent bg-[#F2F2F2] px-7 py-9 disabled:cursor-not-allowed disabled:opacity-[0.5]"
-                disabled={disabled}
-            >
-                <div className="absolute right-4 top-4">
-                    <Checkbox checked={isEnabled} />
-                </div>
-                <div className="flex h-[75px] items-center">
-                    <Image src="/icons/security-question.svg" width={50} height={70} alt="" />
-                </div>
-                <Text.p size="lg">Security Question</Text.p>
-            </button>
-
-            <Modal isOpen={isModalOpen} onOpenChange={closeModal} className="rounded-xl bg-white p-8">
-                {isActive ? (
-                    <Slider
-                        items={[{ SlideItem: DeactivateSecurityQuestion }, { SlideItem: DeactivateSecuritySuccess }]}
-                    />
-                ) : (
-                    <Slider items={[{ SlideItem: ActivateSecurityQuestion }, { SlideItem: ActivateSecuritySuccess }]} />
-                )}
-            </Modal>
-        </React.Fragment>
-    );
-};
 
 const securityQuestionsSchema = z
     .object({
@@ -71,11 +37,14 @@ const securityQuestionsSchema = z
 
 type SecurityQuestionFormValues = z.infer<typeof securityQuestionsSchema>;
 
-const InitiateActivateSecurityQuestion = ({ goToNextSlide }: SlideItemProps) => {
-    const { closeModal, setSecurityQuestions } = useSecurityQuestion2FAState();
-    const { mutateAsync, isLoading } = useInitialize2FA();
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const InitiateActivateSecurityQuestion = ({ goToNextSlide }: SlideItemProps): React.JSX.Element => {
+    const { closeModal } = useSecurityQuestion2FAState();
+    const { isLoading } = useInitialize2FA();
+    // const { closeModal, setSecurityQuestions } = useSecurityQuestion2FAState();
+    // const { mutateAsync, isLoading } = useInitialize2FA();
 
-    const handleInitiateOtp = async () => {
+    const handleInitiateOtp = async (): Promise<void> => {
         // const data = await mutateAsync({ type: TWO_FA_CONSTANTS.SECURITY_QUESTION });
         // if (data.securityQuestions) {
         //   setSecurityQuestions(data.securityQuestions)
@@ -102,12 +71,12 @@ const InitiateActivateSecurityQuestion = ({ goToNextSlide }: SlideItemProps) => 
     );
 };
 
-const ActivateSecurityQuestion = ({ goToNextSlide }: SlideItemProps) => {
+const ActivateSecurityQuestion = ({ goToNextSlide }: SlideItemProps): React.JSX.Element => {
     const { isModalOpen, closeModal, securityQuestions, setSecurityQuestions } = useSecurityQuestion2FAState();
     const { mutateAsync, isLoading } = useActivate2FA();
     const Initialize = useInitialize2FA();
 
-    const handleInitiateOtp = async () => {
+    const handleInitiateOtp = async (): Promise<void> => {
         if (!Initialize.isLoading) {
             const data = await Initialize.mutateAsync({ type: TWO_FA_CONSTANTS.SECURITY_QUESTION });
             if (data.securityQuestions) {
@@ -117,7 +86,8 @@ const ActivateSecurityQuestion = ({ goToNextSlide }: SlideItemProps) => {
     };
 
     useEffect(() => {
-        if (!Initialize.isSuccess) handleInitiateOtp();
+        if (!Initialize.isSuccess) void handleInitiateOtp();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isModalOpen]);
 
     const questionOptions = useMemo(
@@ -191,7 +161,7 @@ const ActivateSecurityQuestion = ({ goToNextSlide }: SlideItemProps) => {
     );
 };
 
-const ActivateSecuritySuccess = () => {
+const ActivateSecuritySuccess = (): React.JSX.Element => {
     const { closeModal } = useSecurityQuestion2FAState();
     return (
         <div className="flex w-full shrink-0 flex-col items-center">
@@ -211,15 +181,18 @@ const ActivateSecuritySuccess = () => {
     );
 };
 
-const DeactivateSecurityQuestion = ({ goToNextSlide }: SlideItemProps) => {
+const DeactivateSecurityQuestion = ({ goToNextSlide }: SlideItemProps): React.JSX.Element => {
     const { closeModal } = useSecurityQuestion2FAState();
     const { mutate, isLoading } = useDeActivate2FA();
-    const { refetch: fetchAccount } = useGetAccount();
+    // const { refetch: fetchAccount } = useGetAccount();
     const [answer, setAnswer] = useState("");
     // const [_loading, _setLoading] = useState(isLoading);
 
-    const handleDeactivate = async () => {
-        if (!answer || answer == "") return toast.error("Answer is required");
+    const handleDeactivate = async (): Promise<void> => {
+        if (!answer || answer === "") {
+            toast.error("Answer is required");
+            return;
+        }
         mutate(
             { code: answer },
             {
@@ -242,7 +215,9 @@ const DeactivateSecurityQuestion = ({ goToNextSlide }: SlideItemProps) => {
                 <Input
                     label="Enter Answer"
                     placeholder="Enter your answer"
-                    onChange={(e) => setAnswer(e.target.value)}
+                    onChange={(e) => {
+                        setAnswer(e.target.value);
+                    }}
                 />
             </div>
             <Button className="w-full" onClick={handleDeactivate} fullWidth>
@@ -252,7 +227,7 @@ const DeactivateSecurityQuestion = ({ goToNextSlide }: SlideItemProps) => {
     );
 };
 
-const DeactivateSecuritySuccess = ({}: SlideItemProps) => {
+const DeactivateSecuritySuccess = (): React.JSX.Element => {
     const { closeModal } = useSecurityQuestion2FAState();
     return (
         <div className="flex w-full shrink-0 flex-col items-center">
@@ -269,5 +244,58 @@ const DeactivateSecuritySuccess = ({}: SlideItemProps) => {
                 Done
             </Button>
         </div>
+    );
+};
+
+interface SecurityQuestion2FAProps {
+    isEnabled: boolean;
+    disabled?: boolean;
+    // refetchAccount?: () => void;
+}
+
+export const SecurityQuestion2FA = ({
+    isEnabled,
+    disabled,
+    // refetchAccount,
+}: SecurityQuestion2FAProps): React.JSX.Element => {
+    const { isModalOpen, closeModal, openModal } = useSecurityQuestion2FAState();
+    const [isActive, _setIsActive] = useState(isEnabled);
+    useEffect(() => {
+        if (!isModalOpen) _setIsActive(isEnabled);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [isEnabled]);
+
+    useEffect(() => {
+        if (!isModalOpen) _setIsActive(isEnabled);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [isModalOpen]);
+
+    return (
+        <>
+            <button
+                onClick={openModal}
+                className="relative flex shrink grow basis-0 cursor-pointer flex-col items-center gap-6 rounded-md border-transparent bg-[#F2F2F2] px-7 py-9 disabled:cursor-not-allowed disabled:opacity-[0.5]"
+                disabled={disabled}
+                type="button"
+            >
+                <div className="absolute right-4 top-4">
+                    <Checkbox checked={isEnabled} />
+                </div>
+                <div className="flex h-[75px] items-center">
+                    <Image src="/icons/security-question.svg" width={50} height={70} alt="" />
+                </div>
+                <Text.p size="lg">Security Question</Text.p>
+            </button>
+
+            <Modal isOpen={isModalOpen} onOpenChange={closeModal} className="rounded-xl bg-white p-8">
+                {isActive ? (
+                    <Slider
+                        items={[{ SlideItem: DeactivateSecurityQuestion }, { SlideItem: DeactivateSecuritySuccess }]}
+                    />
+                ) : (
+                    <Slider items={[{ SlideItem: ActivateSecurityQuestion }, { SlideItem: ActivateSecuritySuccess }]} />
+                )}
+            </Modal>
+        </>
     );
 };

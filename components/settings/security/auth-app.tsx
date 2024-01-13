@@ -1,83 +1,45 @@
+"use client";
+
+/* eslint-disable react/jsx-pascal-case */
+/* -------------------------------------------------------------------------- */
+/*                             External Dependency                            */
+/* -------------------------------------------------------------------------- */
+
+import { useEffect, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { InputErrorMessage, Modal, OtpInput, SlideItemProps, Slider, Spinner } from "@/components/common";
-// import { useActivateAuthApp2FA, useDeactivateAuthApp2FA, useInitializeAuthApp2FA } from "@/lib/api";
-import { useAuthApp2FAState } from "@/lib/store";
 import Image from "next/image";
 import { Button, Checkbox, CopyToClipboard, Text } from "pakt-ui";
-import React, { useEffect, useState } from "react";
-import { Controller, SubmitHandler, useForm } from "react-hook-form";
+import { Controller, type SubmitHandler, useForm } from "react-hook-form";
 import * as z from "zod";
 import { ChevronLeft, XCircleIcon } from "lucide-react";
+// import { useActivateAuthApp2FA, useDeactivateAuthApp2FA, useInitializeAuthApp2FA } from "@/lib/api";
+
+/* -------------------------------------------------------------------------- */
+/*                             Internal Dependency                            */
+/* -------------------------------------------------------------------------- */
+
+import { useAuthApp2FAState } from "@/lib/store";
+import { InputErrorMessage, Modal, OtpInput, type SlideItemProps, Slider, Spinner } from "@/components/common";
 import { useActivate2FA, useDeActivate2FA, useGetAccount, useInitialize2FA } from "@/lib/api/account";
 import { TWO_FA_CONSTANTS } from "@/lib/constants";
 import { toast } from "@/components/common/toaster";
 
-interface AuthApp2FA {
+interface AuthApp2FAProps {
     isEnabled: boolean;
     disabled?: boolean;
 }
 
-export const AuthApp2FA = ({ isEnabled, disabled }: AuthApp2FA) => {
-    const { isModalOpen, closeModal, openModal } = useAuthApp2FAState();
-    const [isActive, _setIsActive] = useState(isEnabled);
-    useEffect(() => {
-        if (!isModalOpen) _setIsActive(isEnabled);
-    }, [isEnabled]);
-
-    useEffect(() => {
-        if (!isModalOpen) _setIsActive(isEnabled);
-    }, [isModalOpen]);
-
-    return (
-        <React.Fragment>
-            <button
-                onClick={openModal}
-                className="relative flex shrink grow basis-0 cursor-pointer flex-col items-center gap-6 rounded-md border-transparent bg-[#F2F2F2] px-7 py-9 disabled:cursor-not-allowed disabled:opacity-[0.5]"
-                disabled={disabled}
-            >
-                <div className="absolute right-4 top-4">
-                    <Checkbox checked={isEnabled} />
-                </div>
-                <div className="flex h-[100px] items-center">
-                    <Image src="/icons/authenticator-app.svg" width={76} height={76} alt="" />
-                </div>
-                <Text.p size="lg">Authenticator app</Text.p>
-            </button>
-
-            <Modal
-                isOpen={isModalOpen}
-                onOpenChange={closeModal}
-                className="h-fit rounded-2xl bg-white p-6"
-                disableClickOutside
-            >
-                {isActive ? (
-                    <Slider items={[{ SlideItem: VerifyDeactivateAuthApp }, { SlideItem: DeactivateAuthAppSuccess }]} />
-                ) : (
-                    <Slider
-                        items={[
-                            { SlideItem: InitiateAuthApp },
-                            { SlideItem: ScanAuthApp },
-                            { SlideItem: VerifyActivateAuthApp },
-                            { SlideItem: ActivateAuthAppSuccess },
-                        ]}
-                    />
-                )}
-            </Modal>
-        </React.Fragment>
-    );
-};
-
 // Activate
-const InitiateAuthApp = ({ goToNextSlide }: SlideItemProps) => {
+const InitiateAuthApp = ({ goToNextSlide }: SlideItemProps): React.JSX.Element => {
     const { mutateAsync, isLoading } = useInitialize2FA();
     const { setSecret, setQrCode, closeModal } = useAuthApp2FAState();
 
-    const handleInitiateAuthApp = async () => {
+    const handleInitiateAuthApp = async (): Promise<void> => {
         try {
             const data = await mutateAsync({ type: TWO_FA_CONSTANTS.AUTHENTICATOR });
-            console.log(data);
+            // console.log(data);
             if (data.qrCodeUrl) {
-                setSecret(data?.secret || "A5treyQJHS-JHFNKE-OPJ0unekVyt");
+                setSecret(data?.secret ?? "A5treyQJHS-JHFNKE-OPJ0unekVyt");
                 setQrCode(data.qrCodeUrl);
                 goToNextSlide();
             } else toast.error("An Error Occurred, Try Again!!!");
@@ -105,7 +67,7 @@ const InitiateAuthApp = ({ goToNextSlide }: SlideItemProps) => {
     );
 };
 
-const ScanAuthApp = ({ goToNextSlide }: SlideItemProps) => {
+const ScanAuthApp = ({ goToNextSlide }: SlideItemProps): React.JSX.Element => {
     const { secret, qrCode, closeModal } = useAuthApp2FAState();
     return (
         <div className="flex w-full shrink-0 flex-col items-center gap-8 text-center">
@@ -132,7 +94,7 @@ const otpSchema = z.object({
 
 type AuthAppOtpFormValues = z.infer<typeof otpSchema>;
 
-const VerifyActivateAuthApp = ({ goToNextSlide, goToPreviousSlide }: SlideItemProps) => {
+const VerifyActivateAuthApp = ({ goToNextSlide, goToPreviousSlide }: SlideItemProps): React.JSX.Element => {
     const { closeModal } = useAuthApp2FAState();
     const { mutate, isLoading } = useActivate2FA();
 
@@ -145,10 +107,12 @@ const VerifyActivateAuthApp = ({ goToNextSlide, goToPreviousSlide }: SlideItemPr
     });
 
     const onSubmit: SubmitHandler<AuthAppOtpFormValues> = async ({ otp }) => {
-        return mutate(
+        mutate(
             { code: otp },
             {
-                onSuccess: () => goToNextSlide(),
+                onSuccess: () => {
+                    goToNextSlide();
+                },
             },
         );
     };
@@ -186,12 +150,12 @@ const VerifyActivateAuthApp = ({ goToNextSlide, goToPreviousSlide }: SlideItemPr
     );
 };
 
-const ActivateAuthAppSuccess = () => {
+const ActivateAuthAppSuccess = (): React.JSX.Element => {
     const { closeModal } = useAuthApp2FAState();
     const { refetch: fetchAccount, isFetching } = useGetAccount();
-    const Close = async () => {
-        if (!isFetching) fetchAccount();
-        return closeModal();
+    const Close = async (): Promise<void> => {
+        if (!isFetching) void fetchAccount();
+        closeModal();
     };
     return (
         <div className="flex w-full shrink-0 flex-col items-center">
@@ -213,7 +177,7 @@ const ActivateAuthAppSuccess = () => {
 };
 
 // Deactivate
-const VerifyDeactivateAuthApp = ({ goToNextSlide }: SlideItemProps) => {
+const VerifyDeactivateAuthApp = ({ goToNextSlide }: SlideItemProps): React.JSX.Element => {
     const { closeModal } = useAuthApp2FAState();
     const { mutate, isLoading } = useDeActivate2FA();
 
@@ -226,10 +190,12 @@ const VerifyDeactivateAuthApp = ({ goToNextSlide }: SlideItemProps) => {
     });
 
     const onSubmit: SubmitHandler<AuthAppOtpFormValues> = async ({ otp }) => {
-        return mutate(
+        mutate(
             { code: otp },
             {
-                onSuccess: () => goToNextSlide(),
+                onSuccess: () => {
+                    goToNextSlide();
+                },
             },
         );
     };
@@ -261,7 +227,7 @@ const VerifyDeactivateAuthApp = ({ goToNextSlide }: SlideItemProps) => {
     );
 };
 
-const DeactivateAuthAppSuccess = () => {
+const DeactivateAuthAppSuccess = (): React.JSX.Element => {
     const { closeModal } = useAuthApp2FAState();
     return (
         <div className="flex w-full shrink-0 flex-col items-center gap-4">
@@ -277,5 +243,58 @@ const DeactivateAuthAppSuccess = () => {
                 Done
             </Button>
         </div>
+    );
+};
+
+export const AuthApp2FA = ({ isEnabled, disabled }: AuthApp2FAProps): React.JSX.Element => {
+    const { isModalOpen, closeModal, openModal } = useAuthApp2FAState();
+    const [isActive, _setIsActive] = useState(isEnabled);
+    useEffect(() => {
+        if (!isModalOpen) _setIsActive(isEnabled);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [isEnabled]);
+
+    useEffect(() => {
+        if (!isModalOpen) _setIsActive(isEnabled);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [isModalOpen]);
+
+    return (
+        <>
+            <button
+                onClick={openModal}
+                className="relative flex shrink grow basis-0 cursor-pointer flex-col items-center gap-6 rounded-md border-transparent bg-[#F2F2F2] px-7 py-9 disabled:cursor-not-allowed disabled:opacity-[0.5]"
+                disabled={disabled}
+                type="button"
+            >
+                <div className="absolute right-4 top-4">
+                    <Checkbox checked={isEnabled} />
+                </div>
+                <div className="flex h-[100px] items-center">
+                    <Image src="/icons/authenticator-app.svg" width={76} height={76} alt="" />
+                </div>
+                <Text.p size="lg">Authenticator app</Text.p>
+            </button>
+
+            <Modal
+                isOpen={isModalOpen}
+                onOpenChange={closeModal}
+                className="h-fit rounded-2xl bg-white p-6"
+                disableClickOutside
+            >
+                {isActive ? (
+                    <Slider items={[{ SlideItem: VerifyDeactivateAuthApp }, { SlideItem: DeactivateAuthAppSuccess }]} />
+                ) : (
+                    <Slider
+                        items={[
+                            { SlideItem: InitiateAuthApp },
+                            { SlideItem: ScanAuthApp },
+                            { SlideItem: VerifyActivateAuthApp },
+                            { SlideItem: ActivateAuthAppSuccess },
+                        ]}
+                    />
+                )}
+            </Modal>
+        </>
     );
 };

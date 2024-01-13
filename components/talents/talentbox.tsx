@@ -1,22 +1,52 @@
-import React from "react";
-import Link from "next/link";
+"use client";
+
+/* -------------------------------------------------------------------------- */
+/*                             External Dependency                            */
+/* -------------------------------------------------------------------------- */
+
 import { ChevronUp } from "lucide-react";
+
+/* -------------------------------------------------------------------------- */
+/*                             Internal Dependency                            */
+/* -------------------------------------------------------------------------- */
+
 import { Badge } from "@/components/common";
-import { colorFromScore, emptyAchievement, getAchievementData, limitString } from "@/lib/utils";
+import { type AchievementType, colorFromScore, emptyAchievement, getAchievementData, limitString } from "@/lib/utils";
 import { AfroProfile } from "@/components/common/afro-profile";
 
-export const TalentBox: React.FC<{
+interface Achievement {
+    total: string;
+    value: string;
+    type: AchievementType;
+}
+
+interface TalentBoxProps {
     id: string;
     name: string;
     title: string;
     imageUrl?: string;
     score?: string;
-    width?: string;
-    style?: any;
-    skills: any[] | [];
-    achievements: [];
-}> = ({ id, name, title, imageUrl, score, skills, achievements }) => {
-    const colorCodes = colorFromScore(parseInt(score ?? "0"));
+    skills: Array<{ name: string; color: string }>;
+    achievements: Achievement[];
+}
+
+interface EmptyAchievementProps {
+    title: string;
+    total: number;
+    textColor: string;
+    bgColor: string;
+}
+
+export const TalentBox = ({
+    id,
+    name,
+    title,
+    imageUrl,
+    score,
+    skills,
+    achievements,
+}: TalentBoxProps): React.JSX.Element => {
+    const colorCodes = colorFromScore(parseInt(score ?? "0", 10));
     return (
         <div
             key={id}
@@ -104,21 +134,24 @@ export const TalentBox: React.FC<{
                             <div className="relative rounded-2xl border-t-0 px-5">
                                 <div className="grid grid-rows-3 gap-2">
                                     <span className="my-auto pb-0 pt-3 text-2xl font-semibold capitalize">{name}</span>
-                                    {<span className="text-base capitalize text-body">{title || ""}</span>}
+                                    <span className="text-base capitalize text-body">{title || ""}</span>
                                     {skills?.length > 0 && (
                                         <div className="flex w-full items-center gap-2">
-                                            {skills?.slice(0, 3).map((skill: any, i: number) => {
-                                                const { color, name } = skill;
-                                                return (
-                                                    <span
-                                                        key={i}
-                                                        className="shrink-0 grow items-center gap-2 rounded-3xl px-3 py-1 text-center capitalize"
-                                                        style={{ backgroundColor: color ?? "#B2AAE9" }}
-                                                    >
-                                                        {limitString(name || skill)}
-                                                    </span>
-                                                );
-                                            })}
+                                            {skills
+                                                ?.slice(0, 3)
+                                                .map((skill: { name: string; color: string }, i: number) => {
+                                                    const { color, name: n } = skill;
+                                                    const s = n || skill;
+                                                    return (
+                                                        <span
+                                                            key={i}
+                                                            className="shrink-0 grow items-center gap-2 rounded-3xl px-3 py-1 text-center capitalize"
+                                                            style={{ backgroundColor: color ?? "#B2AAE9" }}
+                                                        >
+                                                            {limitString(s as string)}
+                                                        </span>
+                                                    );
+                                                })}
                                         </div>
                                     )}
                                 </div>
@@ -129,8 +162,11 @@ export const TalentBox: React.FC<{
                                         {achievements &&
                                             achievements.length > 0 &&
                                             achievements
-                                                .sort((a: any, b: any) => b.total - a.total)
-                                                .map((a: any, i: number) => {
+                                                .sort(
+                                                    (a: Achievement, b: Achievement) =>
+                                                        parseFloat(b.total) - parseFloat(a.total),
+                                                )
+                                                .map((a: Achievement, i: number) => {
                                                     const achievM = getAchievementData(a.type);
                                                     return (
                                                         <Badge
@@ -144,13 +180,13 @@ export const TalentBox: React.FC<{
                                                         />
                                                     );
                                                 })}
-                                        {achievements.length == 0 &&
-                                            emptyAchievement.map((a: any, i: number) => (
+                                        {achievements.length === 0 &&
+                                            emptyAchievement.map((a: EmptyAchievementProps, i: number) => (
                                                 <Badge
                                                     key={i}
                                                     title={a.title}
                                                     value={0}
-                                                    total={parseInt(a.total)}
+                                                    total={a.total}
                                                     textColor={a.textColor}
                                                     bgColor={a.bgColor}
                                                     type={a.title}

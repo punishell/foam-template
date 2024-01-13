@@ -1,27 +1,38 @@
-import React from "react";
-import { JobFeedCard } from "./feedViewer";
+"use client";
+
+/* -------------------------------------------------------------------------- */
+/*                             External Dependency                            */
+/* -------------------------------------------------------------------------- */
+
+import { type ReactElement } from "react";
+
+/* -------------------------------------------------------------------------- */
+/*                             Internal Dependency                            */
+/* -------------------------------------------------------------------------- */
+
 import { useGetInvites } from "@/lib/api/invites";
 import { PageEmpty } from "@/components/common/page-empty";
 import { PageError } from "@/components/common/page-error";
 import { PageLoading } from "@/components/common/page-loading";
+import { JobFeedCard } from "./feed-viewer/feeds/job-feed";
 
-export const Invites = () => {
+export const Invites = (): ReactElement => {
     const query = useGetInvites({ filter: { status: "pending" } });
 
-    if (query.isLoading) return <PageLoading className="h-[85vh] rounded-2xl border border-line" />;
+    if (query.isLoading) return <PageLoading className="h-[65vh] rounded-2xl border border-line" />;
 
-    if (query.isError) return <PageError className="h-[85vh] rounded-2xl border border-red-200" />;
+    if (query.isError) return <PageError className="h-[65vh] rounded-2xl border border-red-200" />;
 
     const invites = query.data.data;
 
     if (invites.length === 0)
-        return <PageEmpty className="h-[85vh] rounded-2xl border border-line" label="Your Invites will appear here" />;
+        return <PageEmpty className="h-[65vh] rounded-2xl border border-line" label="Your Invites will appear here" />;
 
     return (
         <div className="flex w-full flex-col gap-5 rounded-2xl border border-line bg-white p-4">
             {invites.map(({ _id: inviteId, data }) => {
                 const { creator, name, _id: jobId, paymentFee } = data;
-                console.log("feed--", inviteId);
+                // console.log("feed--", inviteId);
                 return (
                     <JobFeedCard
                         id={jobId}

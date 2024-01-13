@@ -1,7 +1,7 @@
-import { User } from "@/lib/types";
-import { ApiError, axios } from "@/lib/axios";
-import { toast } from "@/components/common/toaster";
 import { useQuery, useMutation } from "@tanstack/react-query";
+import { type User } from "@/lib/types";
+import { type ApiError, axios } from "@/lib/axios";
+import { toast } from "@/components/common/toaster";
 import { useUserState } from "../store/account";
 
 interface GetAccountResponse {

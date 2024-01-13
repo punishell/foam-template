@@ -1,20 +1,29 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
+"use client";
 
-import { useDismissAllFeed, useDismissFeed, useGetTimeline } from "@/lib/api/dashboard";
-import { ParseFeedView } from "./utils";
-import { Spinner } from "../common";
+/* -------------------------------------------------------------------------- */
+/*                             External Dependency                            */
+/* -------------------------------------------------------------------------- */
+
+import { type ReactElement, useEffect, useMemo, useRef, useState } from "react";
+import { Loader } from "lucide-react";
+
+/* -------------------------------------------------------------------------- */
+/*                             Internal Dependency                            */
+/* -------------------------------------------------------------------------- */
+
+import { useDismissFeed, useGetTimeline } from "@/lib/api/dashboard";
+import { ParseFeedView } from "./feed-viewer";
 import { useUserState } from "@/lib/store/account";
 import { PageEmpty } from "../common/page-empty";
 import { PageLoading } from "../common/page-loading";
 import { PageError } from "../common/page-error";
 import { FEED_TYPES } from "@/lib/utils";
-import { Loader } from "lucide-react";
 
-export const Feeds = () => {
+export const Feeds = (): ReactElement => {
     const { _id: loggedInUser } = useUserState();
-    // const [resetTimeLine, setResetTimeLine] = useState(false);
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [currentPage, setCurrentPage] = useState(1);
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [prevPage, setPrevPage] = useState(0);
     const [currentData, setCurrentData] = useState([]);
     const [observe, setObserve] = useState(false);
@@ -25,7 +34,6 @@ export const Feeds = () => {
         isError,
         fetchNextPage,
         hasNextPage,
-        isFetching,
         isFetchingNextPage,
     } = useGetTimeline({
         page: currentPage,
@@ -39,86 +47,96 @@ export const Feeds = () => {
     const scrollParentRef = useRef(null);
     const observerTarget = useRef(null);
 
-    const callback = async () => {
+    const callback = async (): Promise<void> => {
         await Promise.all([feedRefetch()]);
     };
     const dismissFeed = useDismissFeed();
 
-    const dismissByID = (id: string) => {
+    const dismissByID = (id: string): void => {
         dismissFeed.mutate(id, {
             onSuccess: () => {
                 // refetch feeds
-                callback && callback();
+                void callback?.();
             },
         });
     };
 
-    const fetchMore = () => {
+    const fetchMore = (): void => {
         setObserve(false);
         if (hasNextPage && !isFetchingNextPage) {
-            fetchNextPage();
+            void fetchNextPage();
         }
     };
 
     useEffect(() => {
-        console.log(observerTarget);
-        if (!observerTarget.current) return;
+        // console.log(observerTarget);
+        const currentObserverTarget = observerTarget.current;
+        if (!currentObserverTarget) return;
         const observer = new IntersectionObserver(
             (entries) => {
-                if (entries[0].isIntersecting) setObserve(true);
+                if (entries[0] && entries[0].isIntersecting) setObserve(true);
             },
             { threshold: 0.5 },
         );
 
-        if (observerTarget.current) {
-            observer.observe(observerTarget.current);
-        }
+        observer.observe(currentObserverTarget);
 
         return () => {
-            if (observerTarget.current) {
-                observer.unobserve(observerTarget.current);
-            }
+            observer.unobserve(currentObserverTarget);
         };
-    }, [observerTarget.current]);
+    }, []);
 
     useEffect(() => {
-        if (!isLoading && !isFetchingNextPage && prevPage != currentPage) {
-            feedRefetch();
+        if (!isLoading && !isFetchingNextPage && prevPage !== currentPage) {
+            void feedRefetch();
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [currentPage]);
 
     useEffect(() => {
         if (observe) {
             fetchMore();
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [observe]);
 
     useEffect(() => {
-        // @ts-ignore
-        const allIds = currentData.map((c) => c._id);
-        if (timelineData && timelineData?.pages) {
-            let totalData: any = [];
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        let totalData: any = [];
+        // if (timelineData?.pages) {
+        if (timelineData && Array.isArray(timelineData.pages)) {
             for (let i = 0; i < timelineData.pages.length; i++) {
                 const timeData = timelineData.pages[i];
-                totalData = [...totalData, ...timeData];
+                if (Array.isArray(timeData)) {
+                    totalData = [...totalData, ...timeData];
+                }
             }
-            // @ts-ignore
-            let newData = totalData.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-            setCurrentData(newData);
         }
+
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const newData = totalData.sort((a: any, b: any) => {
+            if (a && b) {
+                return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+            }
+            return 0;
+        });
+        setCurrentData(newData);
+        // }
     }, [timelineData, timelineData?.pages]);
 
     const timelineFeeds = useMemo(
-        () => (currentData || []).map((feed, i) => ParseFeedView(feed, loggedInUser, i, callback, dismissByID)),
+        () =>
+            (currentData || []).map((feed, i) => ParseFeedView(feed, loggedInUser as string, i, callback, dismissByID)),
+        // eslint-disable-next-line react-hooks/exhaustive-deps
         [currentData],
     );
 
     if (isLoading && timelineFeeds.length < 1)
-        return <PageLoading className="h-[85vh] rounded-2xl border border-line" />;
-    if (isError) return <PageError className="h-[85vh] rounded-2xl border border-line" />;
-    if (timelineFeeds.length === 0) return <PageEmpty className="h-[85vh] rounded-2xl border border-line" />;
+        return <PageLoading className="h-[65vh] rounded-2xl border border-line" />;
+    if (isError) return <PageError className="h-[65vh] rounded-2xl border border-line" />;
+    if (timelineFeeds.length === 0) return <PageEmpty className="h-[65vh] rounded-2xl border border-line" />;
     return (
-        <div className="relative h-full">
+        <div className="relative h-[65vh]">
             <div
                 id="timeline-content"
                 ref={scrollParentRef}
@@ -131,7 +149,7 @@ export const Feeds = () => {
                             <Loader size={25} className="animate-spin text-center text-black" />
                         </div>
                     )}
-                    <span ref={observerTarget}></span>
+                    <span ref={observerTarget} />
                 </div>
             </div>
             {/* <div className="absolute left-0 right-0 -bottom-[0px] h-10 z-50 bg-gradient-to-b from-transparent via-transparent to-green-50 rounded-2xl"></div> */}

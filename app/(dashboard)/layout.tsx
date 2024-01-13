@@ -1,5 +1,9 @@
 "use client";
 
+/* -------------------------------------------------------------------------- */
+/*                             External Dependency                            */
+/* -------------------------------------------------------------------------- */
+
 import { type ReactNode, useState, useEffect } from "react";
 import { RaceBy } from "@uiball/loaders";
 import { getCookie, deleteCookie } from "cookies-next";
@@ -8,6 +12,10 @@ import { useIdleTimer } from "react-idle-timer";
 import { Button } from "pakt-ui";
 import { formatDistance } from "date-fns";
 import { useQueryClient } from "@tanstack/react-query";
+
+/* -------------------------------------------------------------------------- */
+/*                             Internal Dependency                            */
+/* -------------------------------------------------------------------------- */
 
 import { useGetAccount } from "@/lib/api/account";
 import { AUTH_TOKEN_KEY } from "@/lib/utils";
@@ -19,7 +27,7 @@ import { Sidebar } from "@/components/sidebar";
 function Loader(): React.JSX.Element {
     return (
         <div aria-live="polite" aria-busy="true" className="flex h-screen w-screen items-center justify-center">
-            <RaceBy />
+            <RaceBy color="#007C5B" />
         </div>
     );
 }

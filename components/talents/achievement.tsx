@@ -1,3 +1,5 @@
+"use client";
+
 type AchievementType = "review" | "referral" | "five-star" | "squad";
 
 interface Achievement {
@@ -42,7 +44,7 @@ const ACHIEVEMENT_STYLES: AchievementTypeMap = {
         barColor: "#C0EEFF",
         barIndicatorColor: "#9BDCFD",
     },
-    ["five-star"]: {
+    "five-star": {
         title: "5 Star Jobs",
         textColor: "#287B7B",
         borderColor: "#287B7B",
@@ -70,7 +72,7 @@ interface AchievementBarProps {
     achievement: Achievement;
 }
 
-const AchievementBar: React.FC<AchievementBarProps> = ({ achievement }) => {
+const AchievementBar = ({ achievement }: AchievementBarProps): JSX.Element => {
     const styles = ACHIEVEMENT_STYLES[achievement.type];
     const percentage = (achievement.value / achievement.maxValue) * 100;
 
@@ -114,15 +116,15 @@ const AchievementBar: React.FC<AchievementBarProps> = ({ achievement }) => {
 };
 
 interface AchievementProps {
-    achievements?: {
+    achievements?: Array<{
         title: string;
         type: string;
         value: number;
         total: number;
-    }[];
+    }>;
 }
 
-export const Achievements: React.FC<AchievementProps> = ({ achievements = [] }) => {
+export const Achievements = ({ achievements = [] }: AchievementProps): JSX.Element => {
     achievements.sort((a, b) => b.total - a.total);
     return (
         <div className="shrink-0 rounded-2xl bg-primary-gradient p-[4px]">

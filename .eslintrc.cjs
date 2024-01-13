@@ -48,8 +48,10 @@ module.exports = {
         "@typescript-eslint/no-unsafe-member-access": "off",
         "@typescript-eslint/unbound-method": "off", // Avoid referencing unbound methods which may cause unintentional scoping of `this`.If your function does not access `this`, you can annotate it with `this: void`, or consider using an arrow function instead.
         "react/function-component-definition": [
-            "off",
-            { "namedComponents": ["function-declaration", "function-expression", "arrow-function"] },
+            2,
+            {
+                "namedComponents": ["function-declaration", "function-expression", "arrow-function"],
+            },
         ],
         "react/require-default-props": "off",
         "import/no-extraneous-dependencies": "off",

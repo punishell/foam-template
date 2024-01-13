@@ -1,33 +1,71 @@
 "use client";
 
+/* -------------------------------------------------------------------------- */
+/*                             External Dependency                            */
+/* -------------------------------------------------------------------------- */
+
+import { type ReactElement, useEffect, useMemo, useState, useCallback } from "react";
 import { useDebounce } from "usehooks-ts";
-import { useGetTalents } from "@/lib/api";
-import { createQueryStrings2 } from "@/lib/utils";
-import React, { useEffect, useMemo, useState } from "react";
-import { TalentList } from "@/components/talents/talentList";
-import { NumericInput } from "@/components/common/numeric-input";
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
 
-export default function Talents() {
+/* -------------------------------------------------------------------------- */
+/*                             Internal Dependency                            */
+/* -------------------------------------------------------------------------- */
+
+import { useGetTalents } from "@/lib/api";
+import { type AchievementType, createQueryStrings2 } from "@/lib/utils";
+import { TalentList } from "@/components/talents/talentList";
+import { NumericInput } from "@/components/common/numeric-input";
+
+interface TalentProps {
+    _id: string;
+    firstName: string;
+    lastName: string;
+    profile?: {
+        bio?: {
+            title: string;
+        };
+        talent?: {
+            tagsIds: Array<{ name: string; color: string }>;
+        };
+    };
+    score?: string;
+    profileImage?: {
+        url: string;
+    };
+    achievements: Array<{ total: string; value: string; type: AchievementType }>;
+}
+
+interface MappedTalent {
+    _id: string;
+    name: string;
+    title: string;
+    score: string;
+    image: string;
+    skills: Array<{ name: string; color: string }>;
+    achievements: Array<{ total: string; value: string; type: AchievementType }>;
+}
+
+export default function TalentsPage(): ReactElement {
     const [isSearching, setIsSearching] = useState(true);
 
     const router = useRouter();
     const pathname = usePathname();
     const searchParams = useSearchParams();
 
-    const [searchQuery, setSearchQuery] = useState(searchParams.get("search") || "");
+    const [searchQuery, setSearchQuery] = useState(searchParams.get("search") ?? "");
     const debouncedSearchQuery = useDebounce(searchQuery, 300);
 
-    const [skillsQuery, setSkillsQuery] = useState(searchParams.get("skills") || "");
+    const [skillsQuery, setSkillsQuery] = useState(searchParams.get("skills") ?? "");
     const debouncedSkillsQuery = useDebounce(skillsQuery, 300);
 
-    const [minimumPriceQuery, setMinimumPriceQuery] = useState(searchParams.get("range")?.split(",")[0] || 0);
+    const [minimumPriceQuery, setMinimumPriceQuery] = useState(searchParams.get("range")?.split(",")[0] ?? 0);
     const debouncedMinimumPriceQuery = useDebounce(minimumPriceQuery, 300);
 
-    const [maximumPriceQuery, setMaximumPriceQuery] = useState(searchParams.get("range")?.split(",")[1] || 100);
+    const [maximumPriceQuery, setMaximumPriceQuery] = useState(searchParams.get("range")?.split(",")[1] ?? 100);
     const debouncedMaximumPriceQuery = useDebounce(maximumPriceQuery, 300);
 
-    React.useEffect(() => {
+    useEffect(() => {
         const queries = createQueryStrings2({
             skills: debouncedSkillsQuery ?? "",
             search: debouncedSearchQuery ?? "",
@@ -44,16 +82,16 @@ export default function Talents() {
         debouncedMaximumPriceQuery,
     ]);
 
-    const queryParams = new URLSearchParams(searchParams as any);
-    const Limit = queryParams.get("limit") || "6";
-    const page = queryParams.get("page") || "1";
-    const searchQ = queryParams.get("search") || "";
-    const skillQ = queryParams.get("skills") || "";
-    const rangeQ = queryParams.get("range") || "";
+    const queryParams = new URLSearchParams(searchParams);
+    const Limit = queryParams.get("limit") ?? "6";
+    const page = queryParams.get("page") ?? "1";
+    const searchQ = queryParams.get("search") ?? "";
+    const skillQ = queryParams.get("skills") ?? "";
+    const rangeQ = queryParams.get("range") ?? "";
 
-    const createQueryString = React.useCallback(
+    const createQueryString = useCallback(
         (name: string, value: string) => {
-            const params = new URLSearchParams(searchParams as any);
+            const params = new URLSearchParams(searchParams);
             params.set(name, value);
             return params.toString();
         },
@@ -66,8 +104,8 @@ export default function Talents() {
         isFetched,
         isFetching,
     } = useGetTalents({
-        page: parseInt(page),
-        limit: parseInt(Limit),
+        page: parseInt(page, 10),
+        limit: parseInt(Limit, 10),
         filter: {
             search: searchQ,
             tags: skillQ,
@@ -78,30 +116,35 @@ export default function Talents() {
         },
     });
 
+    const mapTalentData = (talent: TalentProps): MappedTalent => ({
+        _id: talent._id,
+        name: `${talent.firstName} ${talent.lastName}`,
+        title: talent?.profile?.bio?.title ?? "",
+        score: talent?.score ?? "0",
+        image: talent?.profileImage?.url ?? "",
+        skills: (talent?.profile?.talent?.tagsIds ?? []).map((t) => ({
+            name: t.name,
+            color: t.color,
+        })),
+        achievements: talent?.achievements.map((a) => ({
+            total: a.total,
+            value: a.value,
+            type: a.type as AchievementType,
+        })),
+    });
+
     const talentLists = useMemo(() => {
         setIsSearching(false);
-        return (talentData?.data || []).map((talent: any) => ({
-            _id: talent._id,
-            name: `${talent.firstName} ${talent.lastName}`,
-            title: talent?.profile?.bio?.title || "",
-            score: talent?.score || 0,
-            image: talent?.profileImage?.url || "",
-            skills: (talent?.profile?.talent?.tagsIds || []).map((t: any) => ({ name: t.name, color: t.color })),
-            achievements: talent?.achievements.map((a: any) => ({
-                total: a.total,
-                value: a.value,
-                type: a.type,
-            })),
-        }));
+        return ((talentData?.data as TalentProps[]) ?? []).map(mapTalentData);
     }, [talentData?.data]);
 
     useEffect(() => {
-        fetchTalents();
+        void fetchTalents();
     }, [searchParams, fetchTalents]);
 
-    const handlePagination = (page: number) => {
+    const handlePagination = (p: number): void => {
         setIsSearching(true);
-        return router.push(`${pathname}?${createQueryString("page", String(page))}`);
+        router.push(`${pathname}?${createQueryString("page", String(p))}`);
     };
 
     return (
@@ -115,7 +158,9 @@ export default function Talents() {
                         type="text"
                         value={searchQuery}
                         placeholder="Name, Category, etc."
-                        onChange={(e) => setSearchQuery(e.target.value)}
+                        onChange={(e) => {
+                            setSearchQuery(e.target.value);
+                        }}
                         className="h-11 rounded-lg border border-line bg-gray-50 px-3 focus:outline-none"
                     />
                 </div>
@@ -127,7 +172,9 @@ export default function Talents() {
                         type="text"
                         value={skillsQuery}
                         placeholder="Java, Solidity, etc."
-                        onChange={(e) => setSkillsQuery(e.target.value)}
+                        onChange={(e) => {
+                            setSkillsQuery(e.target.value);
+                        }}
                         className="h-11 rounded-lg border border-line bg-gray-50 px-3 focus:outline-none"
                     />
                 </div>
@@ -140,7 +187,9 @@ export default function Talents() {
                             type="text"
                             value={minimumPriceQuery}
                             placeholder="From"
-                            onChange={(e) => setMinimumPriceQuery(e.target.value)}
+                            onChange={(e) => {
+                                setMinimumPriceQuery(e.target.value);
+                            }}
                             className="grow bg-transparent px-3 placeholder:text-sm focus:outline-none"
                         />
                         <div className="border-r border-line" />
@@ -148,7 +197,9 @@ export default function Talents() {
                             type="text"
                             placeholder="To"
                             value={maximumPriceQuery}
-                            onChange={(e) => setMaximumPriceQuery(e.target.value)}
+                            onChange={(e) => {
+                                setMaximumPriceQuery(e.target.value);
+                            }}
                             className="grow bg-transparent px-3 placeholder:text-sm focus:outline-none"
                         />
                     </div>

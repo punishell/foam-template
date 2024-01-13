@@ -1,7 +1,7 @@
-import { toast } from "@/components/common/toaster";
-import { ApiError, ApiResponse, axios } from "@/lib/axios";
-import { useWalletState } from "@/lib/store/wallet";
 import { type QueryKey, useQuery, type UseQueryOptions } from "@tanstack/react-query";
+import { toast } from "@/components/common/toaster";
+import { type ApiError, type ApiResponse, axios } from "@/lib/axios";
+import { useWalletState } from "@/lib/store/wallet";
 
 export interface IWallet {
     totalWalletBalance: string;
@@ -26,7 +26,7 @@ export interface IWalletTx {
 const getWalletQueryKey: QueryKey = ["wallet-details"];
 const getWalletTxQueryKey: QueryKey = ["wallet-txs"];
 // fetch wallets
-const fetchWallet = async () => await axios.get(`/wallet`);
+const fetchWallet = async () => axios.get(`/wallet`);
 
 // transactions
 const fetchWalletTransactions = async ({
@@ -38,7 +38,7 @@ const fetchWalletTransactions = async ({
     page: number;
     filters: Record<string, any>;
 }) => {
-    return await axios.get(`/transaction`, {
+    return axios.get(`/transaction`, {
         params: {
             page,
             limit,
@@ -98,7 +98,7 @@ export const useGetWalletDetails = () => {
     const { setWallet } = useWalletState();
     const options: UseQueryOptions<ApiResponse<IWallet>, ApiError<null>> = {
         queryFn: async () => {
-            return await fetchWallet();
+            return fetchWallet();
         },
         queryKey: ["wallet-data-fetch"],
         onError: (error) => {
@@ -123,7 +123,7 @@ export const useGetWalletTxs = ({
 }) => {
     const options: UseQueryOptions<ApiResponse<IWalletTx>, ApiError<null>> = {
         queryFn: async () => {
-            return await fetchWalletTransactions({ limit, page, filters });
+            return fetchWalletTransactions({ limit, page, filters });
         },
         queryKey: ["wallet-tx-q", limit, page],
         onError: (error) => {

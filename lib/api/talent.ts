@@ -1,21 +1,16 @@
-import { axios, ApiError, ApiResponse } from "@/lib/axios";
-import { Review, User } from "@/lib/types";
 import { useQuery, type QueryKey, type UseQueryOptions } from "@tanstack/react-query";
+import { axios, type ApiError } from "@/lib/axios";
+import { type Review, type User } from "@/lib/types";
 import { toast } from "@/components/common/toaster";
 
 // Talent Fetch
-
-// GET ACCOUNT DETAILS
-type GetTalentFetchSuccess = {
-    talent: User;
-};
 
 type GetTalentFetchDetailsError = ApiError<null>;
 
 interface talentFetchParams {
     page: number;
     limit: number;
-    filter: Record<string, any>;
+    filter: Record<string, unknown>;
 }
 interface talentListResponse {
     data: User[];
@@ -52,14 +47,14 @@ async function getTalentReview(userId: string, page: string, limit: string): Pro
 }
 
 export const useGetTalents = ({ limit, page, filter }: talentFetchParams) => {
-    const getQueryKey: QueryKey = [`talents_${limit}_${page}_${filter}`];
+    const getQueryKey: QueryKey = [`talents_${limit}_${page}_${JSON.stringify(filter)}`];
     const options: UseQueryOptions<talentListResponse, GetTalentFetchDetailsError> = {
         queryFn: async () => {
-            return await getTalent({ limit, page, filter });
+            return getTalent({ limit, page, filter });
         },
         queryKey: getQueryKey,
         onError: (error) => {
-            toast.error(error.response?.data.message || "An error fetching talents occurred");
+            toast.error(error.response?.data.message ?? "An error fetching talents occurred");
         },
         enabled: true,
     };
@@ -76,7 +71,7 @@ export const useGetTalentById = (id: string, enabled: boolean = false) => {
         },
         queryKey: getQueryIdKey,
         onError: (error: GetTalentFetchDetailsError) => {
-            toast.error(error.response?.data.message || "An error fetching talents occurred");
+            toast.error(error.response?.data.message ?? "An error fetching talents occurred");
         },
         enabled,
     });
@@ -91,7 +86,7 @@ export const useGetTalentReviewById = (id: string, page: string, limit: string, 
         },
         queryKey: getQueryIdReview,
         onError: (error: GetTalentFetchDetailsError) => {
-            toast.error(error.response?.data.message || "An error fetching talents occurred");
+            toast.error(error.response?.data.message ?? "An error fetching talents occurred");
         },
         enabled,
     });

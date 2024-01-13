@@ -1,4 +1,4 @@
-import { ClassValue, clsx } from "clsx";
+import { type ClassValue, clsx } from "clsx";
 import { create } from "domain";
 import { twMerge } from "tailwind-merge";
 
@@ -12,7 +12,7 @@ export function decodeBase64URL(value: string) {
         return decodeURIComponent(
             atob(value.replace(/[-]/g, "+").replace(/[_]/g, "/"))
                 .split("")
-                .map((c) => "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2))
+                .map((c) => `%${`00${c.charCodeAt(0).toString(16)}`.slice(-2)}`)
                 .join(""),
         );
     } catch (e) {
@@ -20,9 +20,8 @@ export function decodeBase64URL(value: string) {
             // running on nodejs < 16
             // Buffer supports Base64-URL transparently
             return Buffer.from(value, "base64").toString("utf-8");
-        } else {
-            throw e;
         }
+        throw e;
     }
 }
 
@@ -68,7 +67,7 @@ export const emptyAchievement = [
     { id: "squad", title: "Squad", total: 10, textColor: "#D3180C", bgColor: "#FFE5E5" },
 ];
 
-type AchievementType = "review" | "referral" | "five-star" | "squad";
+export type AchievementType = "review" | "referral" | "five-star" | "squad";
 
 export const getAchievementData = (type: AchievementType) => {
     return emptyAchievement.find(({ id }) => id == type);
@@ -87,7 +86,7 @@ export const colorFromScore = (score: number) => {
 };
 
 export const limitString = (str: string, limit: number = 10) =>
-    str.length > limit ? str.slice(0, limit) + "..." : str;
+    str.length > limit ? `${str.slice(0, limit)}...` : str;
 
 export const createQueryString = (name: string, value: string) => {
     const params = new URLSearchParams();
@@ -99,23 +98,25 @@ type CreateQueryStringsParams = Array<{ name: string; value: string }>;
 
 export const createQueryStrings = (opts: CreateQueryStringsParams) => {
     const params = new URLSearchParams();
-    opts.forEach((opt) => params.set(opt.name, opt.value));
+    opts.forEach((opt) => {
+        params.set(opt.name, opt.value);
+    });
     return params.toString();
 };
 
-type CreateQueryStringsOpts = {
-    [key: string]: string;
-};
+type CreateQueryStringsOpts = Record<string, string>;
 
 export const createQueryStrings2 = (opts: CreateQueryStringsOpts) => {
     const params = new URLSearchParams();
-    Object.keys(opts).forEach((key) => params.set(key, opts[key]));
+    Object.keys(opts).forEach((key) => {
+        params.set(key, opts[key]);
+    });
     return params.toString();
 };
 
 export const parseFilterObjectToString = (filterData: Record<string, any>) => {
-    let qString = "",
-        prev = "";
+    let qString = "";
+    let prev = "";
     const newData = filterData;
     Object.keys(newData).map((key, i) => {
         if (!["", undefined, null].includes(newData[key])) {
@@ -204,13 +205,13 @@ export function formatBytes(bytes: number, decimals = 2) {
 
     const i = Math.floor(Math.log(bytes) / Math.log(k));
 
-    return `${parseFloat((bytes / Math.pow(k, i)).toFixed(dm))} ${sizes[i]}`;
+    return `${parseFloat((bytes / k ** i).toFixed(dm))} ${sizes[i]}`;
 }
 
 const allowedFileTypes = ["pdf", "doc", "ai", "avi", "docx", "csv", "ppt", "zip", "rar"];
 
 export function getPreviewByType(file: File) {
-    const type = file.type;
+    const { type } = file;
     let preview;
     if (type.includes("image/")) {
         preview = URL.createObjectURL(file);
@@ -235,7 +236,7 @@ export function getPreviewByTypeUrl(url: string, type: string) {
     return { preview, type };
 }
 
-export const CopyText = (text: string) => navigator.clipboard.writeText(text);
+export const CopyText = async (text: string) => navigator.clipboard.writeText(text);
 
 export const spChars = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/;
 
@@ -244,7 +245,7 @@ export const paginate = <T>(array: T[], itemsPerPage: number, currentPage: numbe
 };
 
 export const truncate = (str: string, n: number) => {
-    return str.length > n ? str.slice(0, n - 1) + "..." : str;
+    return str.length > n ? `${str.slice(0, n - 1)}...` : str;
 };
 
 export function filterEmptyStrings(arr: string[]): string[] {

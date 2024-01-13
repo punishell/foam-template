@@ -1,11 +1,13 @@
-"use client";
-import React from "react";
+/* -------------------------------------------------------------------------- */
+/*                             Internal Dependency                            */
+/* -------------------------------------------------------------------------- */
+
 import { Tabs } from "@/components/common/tabs";
 import { ProfileView } from "@/components/settings/profile";
 // import { NotificationView } from '@/components/settings/notification';
 import { SecurityView } from "@/components/settings/security";
 
-export default function Settings() {
+export default function SettingsPage(): JSX.Element {
     return (
         <div className="relative flex h-full flex-col gap-8 overflow-y-auto">
             <Tabs

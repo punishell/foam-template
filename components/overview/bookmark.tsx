@@ -1,14 +1,23 @@
-import React, { useMemo } from "react";
+"use client";
 
-import { Spinner } from "../common";
-import { ParseFeedView } from "./utils";
+/* -------------------------------------------------------------------------- */
+/*                             External Dependency                            */
+/* -------------------------------------------------------------------------- */
+
+import { type ReactElement, useMemo } from "react";
+
+/* -------------------------------------------------------------------------- */
+/*                             Internal Dependency                            */
+/* -------------------------------------------------------------------------- */
+
+import { ParseFeedView } from "./feed-viewer";
 import { useUserState } from "@/lib/store/account";
 import { useGetBookmarks } from "@/lib/api/bookmark";
 import { PageEmpty } from "../common/page-empty";
 import { PageLoading } from "../common/page-loading";
 import { PageError } from "../common/page-error";
 
-export const FeedsBookmark = () => {
+export const FeedsBookmark = (): ReactElement => {
     const { _id: loggedInUser } = useUserState();
     const {
         data: bookmarkData,
@@ -20,18 +29,24 @@ export const FeedsBookmark = () => {
 
     const bookmarks = useMemo(
         () =>
-            (bookmarkData?.data || []).map((feed, i) =>
-                ParseFeedView({ ...feed.feed, bookmarkId: feed._id, isBookmarked: true }, loggedInUser, i, refetch),
+            (bookmarkData?.data ?? []).map((feed, i) =>
+                ParseFeedView(
+                    { ...feed.feed, bookmarkId: feed._id, isBookmarked: true },
+                    loggedInUser as string,
+                    i,
+                    refetch,
+                ),
             ),
+        // eslint-disable-next-line react-hooks/exhaustive-deps
         [bookmarkData?.data],
     );
 
-    if (!isFetched && isFetching) return <PageLoading className="h-[85vh] rounded-2xl border border-line" />;
-    if (isError) return <PageError className="h-[85vh] rounded-2xl border border-red-200" />;
+    if (!isFetched && isFetching) return <PageLoading className="h-[65vh] rounded-2xl border border-line" />;
+    if (isError) return <PageError className="h-[65vh] rounded-2xl border border-red-200" />;
     if (bookmarks.length === 0)
         return (
             <PageEmpty
-                className="h-[85vh] rounded-2xl border border-line"
+                className="h-[65vh] rounded-2xl border border-line"
                 label="Bookmarked notifications will appear here"
             />
         );

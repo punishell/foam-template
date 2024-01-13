@@ -1,8 +1,17 @@
 "use client";
 
-import React from "react";
+/* -------------------------------------------------------------------------- */
+/*                             External Dependency                            */
+/* -------------------------------------------------------------------------- */
+
+import { type ReactElement } from "react";
 import Rating from "react-rating";
 import { ArrowLeftCircle, ArrowRightCircle, Star } from "lucide-react";
+
+/* -------------------------------------------------------------------------- */
+/*                             Internal Dependency                            */
+/* -------------------------------------------------------------------------- */
+
 import { Spinner } from "@/components/common/";
 import { AfroProfile } from "../common/afro-profile";
 import { BlazeCarousel, useBlazeSlider } from "../common/blazeCarousel";
@@ -13,18 +22,18 @@ interface ReviewProps {
     title: string;
     rating: number;
     user: {
-        _id: string;
+        _id: string | undefined;
         name: string;
         title: string;
-        afroScore: number;
+        afroScore: number | undefined;
         avatar: string;
     };
 }
 
-const Review: React.FC<ReviewProps> = ({ body, title, rating, user }) => {
+const Review = ({ body, title, rating, user }: ReviewProps): ReactElement => {
     const { _id: loggedInUser } = useUserState();
     const MAX_LEN = 150;
-    const navigateUrl = loggedInUser == user._id ? "/profile" : `/talents/${user?._id}`;
+    const navigateUrl = loggedInUser === user._id ? "/profile" : `/talents/${user?._id}`;
     return (
         <div
             className="flex min-h-full w-full cursor-grab select-none flex-col gap-4 rounded-2xl bg-white p-4"
@@ -43,14 +52,14 @@ const Review: React.FC<ReviewProps> = ({ body, title, rating, user }) => {
             <div className="flex items-center justify-between">
                 <div className="grid grid-cols-3 gap-2">
                     <div className="relative flex">
-                        <AfroProfile size="sm" score={user.afroScore} src={user?.avatar} url={navigateUrl} />
+                        <AfroProfile size="sm" score={user.afroScore as number} src={user?.avatar} url={navigateUrl} />
                     </div>
                     <div className="col-span-2 my-auto flex flex-col">
                         <span className="text-sm font-medium text-title">{user.name}</span>
                         <span className="text-sm text-body">{user.title}</span>
                     </div>
                 </div>
-                {/* @ts-ignore */}
+                {/* @ts-expect-error --- Types Error */}
                 <Rating
                     initialRating={rating}
                     fullSymbol={<Star fill="#15D28E" color="#15D28E" />}
@@ -62,11 +71,11 @@ const Review: React.FC<ReviewProps> = ({ body, title, rating, user }) => {
     );
 };
 
-export const Reviews = ({ reviews, loading }: { reviews: ReviewProps[]; loading: boolean }) => {
+export const Reviews = ({ reviews, loading }: { reviews: ReviewProps[]; loading: boolean }): ReactElement => {
     const sliderInstance = useBlazeSlider();
 
-    const currentSlide = sliderInstance.currentSlide;
-    const totalSlides = sliderInstance.totalSlides;
+    const { currentSlide } = sliderInstance;
+    const { totalSlides } = sliderInstance;
 
     return (
         <div className="rounded-4 w-full basis-0 gap-1 rounded-2xl bg-primary-gradient p-4">
@@ -76,12 +85,16 @@ export const Reviews = ({ reviews, loading }: { reviews: ReviewProps[]; loading:
                     <ArrowLeftCircle
                         size={32}
                         className={`cursor-pointer ${currentSlide === 0 ? "text-body" : "text-white"}`}
-                        onClick={() => sliderInstance.nextSlide()}
+                        onClick={() => {
+                            sliderInstance.nextSlide();
+                        }}
                     />
                     <ArrowRightCircle
                         size={32}
                         className={`cursor-pointer ${currentSlide === totalSlides ? "text-body" : "text-white"}`}
-                        onClick={() => sliderInstance.prevSlide()}
+                        onClick={() => {
+                            sliderInstance.prevSlide();
+                        }}
                     />
                 </div>
             </div>
@@ -92,7 +105,6 @@ export const Reviews = ({ reviews, loading }: { reviews: ReviewProps[]; loading:
                 </div>
             ) : (
                 <div className="relative h-full basis-0">
-                    {/* @ts-ignore */}
                     <BlazeCarousel elRef={sliderInstance?.ref}>
                         {reviews &&
                             reviews.length > 0 &&

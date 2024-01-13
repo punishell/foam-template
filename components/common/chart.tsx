@@ -1,13 +1,22 @@
 "use client";
 
-import React from "react";
+/* -------------------------------------------------------------------------- */
+/*                             External Dependency                            */
+/* -------------------------------------------------------------------------- */
+
 import { CartesianGrid, Line, LineChart, ResponsiveContainer, XAxis, YAxis } from "recharts";
 
-interface ChartProps<T extends { [key: string]: string | number }> {
-    data: T[];
+interface TransformedData {
+    date: string;
+    amt: number;
+    [key: string]: string | number; // Add this line
+}
+
+interface ChartProps {
+    data: TransformedData[];
     height?: "sm" | "md" | "lg";
-    dataKey: Extract<keyof T, string>;
-    xAxisKey: Extract<keyof T, string>;
+    dataKey: string;
+    xAxisKey: string;
 }
 
 const HEIGHT_MAP = {
@@ -16,12 +25,7 @@ const HEIGHT_MAP = {
     lg: 400,
 };
 
-export const Chart = <T extends { [key: string]: string | number }>({
-    data,
-    dataKey,
-    xAxisKey,
-    height = "sm",
-}: ChartProps<T>) => {
+export const Chart = ({ data, dataKey, xAxisKey, height = "sm" }: ChartProps): React.JSX.Element => {
     return (
         <ResponsiveContainer width="100%" height="100%" maxHeight={HEIGHT_MAP[height]}>
             <LineChart data={data} margin={{ right: 5, top: 5, left: 0, bottom: 5 }}>

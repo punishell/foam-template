@@ -1,7 +1,7 @@
 export interface User {
-    _id?: string;
+    _id: string;
     type?: string;
-    email?: string;
+    email?: string | undefined;
     lastName?: string;
     firstName?: string;
     score?: number;
@@ -199,7 +199,11 @@ export interface DataFeedResponse {
     owners?: User[];
     title: string;
     type: string;
-    meta?: Record<string, unknown>;
+    meta?: {
+        value: number;
+        isMarked: boolean;
+        rating: number;
+    };
     _id: string;
 }
 

@@ -1,27 +1,37 @@
-import React from "react";
+"use client";
+
+/* -------------------------------------------------------------------------- */
+/*                             External Dependency                            */
+/* -------------------------------------------------------------------------- */
+
+import { type ReactElement } from "react";
+
+/* -------------------------------------------------------------------------- */
+/*                             Internal Dependency                            */
+/* -------------------------------------------------------------------------- */
 
 import { FEED_TYPES } from "@/lib/utils";
 
-import {
-    JobFeedCard,
-    PublicJobCreatedFeed,
-    ReferralSignupFeed,
-    ReferralJobCompletion,
-    PaymentReleased,
-    JobCompletionFeed,
-    JobReviewedFeed,
-    JobCancelled,
-    // IssueResolutionRaiseFeed,
-    // IssueResolutionResolveFeed,
-    // IssueResolutionRejectFeed,
-    // SecondIssueResolutionRejectFeed,
-    // JuryInvitationFeed,
-    JobApplicationCard,
-    JobUpdateFeed,
-    ReviewChangeCard,
-    ReviewResponseChangeCard,
-} from "./feedViewer";
-import { DataFeedResponse } from "@/lib/types";
+// IssueResolutionRaiseFeed,
+// IssueResolutionResolveFeed,
+// IssueResolutionRejectFeed,
+// SecondIssueResolutionRejectFeed,
+// JuryInvitationFeed,
+
+import { type DataFeedResponse } from "@/lib/types";
+
+import { PublicJobCreatedFeed } from "./feeds/public-job-created";
+import { JobFeedCard } from "./feeds/job-feed";
+import { JobApplicationCard } from "./feeds/job-applicant";
+import { JobUpdateFeed } from "./feeds/job-update";
+import { ReferralSignupFeed } from "./feeds/referral-signup";
+import { JobReviewedFeed } from "./feeds/job-reviewed";
+import { ReferralJobCompletion } from "./feeds/referral-job-completion";
+import { PaymentReleased } from "./feeds/payment-released";
+import { JobCompletionFeed } from "./feeds/job-completion";
+import { ReviewResponseChangeCard } from "./feeds/review-response-change";
+import { ReviewChangeCard } from "./feeds/review-change";
+import { JobCancelled } from "./feeds/job-cancelled";
 
 export const ParseFeedView = (
     feed: DataFeedResponse,
@@ -29,40 +39,42 @@ export const ParseFeedView = (
     key: number,
     callback?: () => void,
     dismissFeed?: (id: string) => void,
-) => {
+): ReactElement | null | undefined => {
     const amount = String(feed?.data?.paymentFee);
-    const isBookmarked = feed.isBookmarked || false;
-    const bookmarkId = feed.bookmarkId || feed._id;
+    // const isBookmarked = feed.isBookmarked ?? false;
+    // const bookmarkId = feed.bookmarkId ?? feed._id;
+    const { _id, type } = feed;
+    const { isBookmarked = false, bookmarkId = _id } = feed;
 
     const feedCreator = {
-        _id: feed?.creator?._id || "",
-        avatar: feed?.creator?.profileImage?.url || "",
-        name: `${feed?.creator?.firstName || ""} ${feed?.creator?.lastName || ""}`,
-        score: feed?.creator?.score || 0,
+        _id: feed?.creator?._id ?? "",
+        avatar: feed?.creator?.profileImage?.url ?? "",
+        name: `${feed?.creator?.firstName ?? ""} ${feed?.creator?.lastName ?? ""}`,
+        score: feed?.creator?.score ?? 0,
     };
 
     const inviter = {
-        _id: feed?.data?.creator?._id || "",
-        avatar: feed?.data?.creator?.profileImage?.url || "",
-        name: `${feed?.data?.creator?.firstName || ""} ${feed?.data?.creator?.lastName || ""}`,
-        score: feed?.data?.creator?.score || 0,
+        _id: feed?.data?.creator?._id ?? "",
+        avatar: feed?.data?.creator?.profileImage?.url ?? "",
+        name: `${feed?.data?.creator?.firstName ?? ""} ${feed?.data?.creator?.lastName ?? ""}`,
+        score: feed?.data?.creator?.score ?? 0,
     };
 
     const talent = {
-        _id: feed?.data?.owner?._id || "",
-        avatar: feed?.data?.owner?.profileImage?.url || "",
-        name: `${feed?.data?.owner?.firstName || ""} ${feed?.data?.owner?.lastName || ""}`,
-        score: feed?.data?.owner?.score || 0,
+        _id: feed?.data?.owner?._id ?? "",
+        avatar: feed?.data?.owner?.profileImage?.url ?? "",
+        name: `${feed?.data?.owner?.firstName ?? ""} ${feed?.data?.owner?.lastName ?? ""}`,
+        score: feed?.data?.owner?.score ?? 0,
     };
-    console.log(feed?.data);
-    const deliverableTotal = (feed?.data?.collections || []).filter((f) => f.type == "deliverable").length;
+    // console.log(feed?.data);
+    const deliverableTotal = (feed?.data?.collections ?? []).filter((f) => f.type === "deliverable").length;
     const currentProgress = feed?.meta?.value;
     const deliverableCountPercentage = {
         total: deliverableTotal,
-        progress: Math.floor(currentProgress),
+        progress: Math.floor(currentProgress as number),
     };
 
-    switch (feed.type) {
+    switch (type) {
         case FEED_TYPES.COLLECTION_CREATED:
         case FEED_TYPES.PUBLIC_JOB_CREATED:
             return (
@@ -83,11 +95,11 @@ export const ParseFeedView = (
             return (
                 <JobFeedCard
                     key={key}
-                    id={feed._id}
+                    id={_id}
                     title={feed?.title}
                     type="job-invite-pending"
                     amount={amount}
-                    inviteId={feed?.data?.invite?._id || ""}
+                    inviteId={feed?.data?.invite?._id ?? ""}
                     inviter={inviter}
                     jobId={feed?.data?._id}
                     bookmarked={isBookmarked}
@@ -103,7 +115,7 @@ export const ParseFeedView = (
             return (
                 <JobFeedCard
                     key={key}
-                    id={feed._id}
+                    id={_id}
                     title={feed?.data?.name}
                     type="job-invite-response"
                     accepted={
@@ -122,21 +134,22 @@ export const ParseFeedView = (
                 <JobApplicationCard
                     key={key}
                     id={feed?._id}
-                    title={feed?.data?.parent?.name || ""}
+                    title={feed?.data?.parent?.name ?? ""}
                     applicant={{
                         _id: feed?.data?.creator?._id || "",
                         name: `${feed?.data?.creator.firstName} ${feed?.data?.creator?.lastName}`,
-                        avatar: feed?.data?.creator?.profileImage?.url || "",
+                        avatar: feed?.data?.creator?.profileImage?.url ?? "",
                         score: feed?.data?.creator?.score,
                     }}
                     bookmarked={isBookmarked}
                     bookmarkId={bookmarkId}
-                    jobId={feed?.data?.parent?._id || ""}
+                    jobId={feed?.data?.parent?._id ?? ""}
                     close={dismissFeed}
                 />
             );
         case FEED_TYPES.JOB_DELIVERABLE_UPDATE:
-        case FEED_TYPES.COLLECTION_UPDATE:
+        case FEED_TYPES.COLLECTION_UPDATE: {
+            const { data } = feed;
             return (
                 <JobUpdateFeed
                     key={key}
@@ -151,20 +164,21 @@ export const ParseFeedView = (
                     jobId={feed?.data?._id}
                     progress={deliverableCountPercentage}
                     isCreator={feed?.data?.creator?._id === loggedInUser}
-                    jobTitle={feed.data.name}
-                    isMarked={feed?.meta?.isMarked}
+                    jobTitle={data.name}
+                    isMarked={feed?.meta?.isMarked as boolean}
                 />
             );
+        }
         case FEED_TYPES.REFERRAL_SIGNUP:
             return (
                 <ReferralSignupFeed
                     key={key}
                     id={feed?._id}
-                    name={`${feed?.creator?.firstName || ""} ${feed?.creator?.lastName || ""}`}
+                    name={`${feed?.creator?.firstName ?? ""} ${feed?.creator?.lastName ?? ""}`}
                     title={feed?.title}
                     description={feed?.description}
                     avatar={feed?.creator?.profileImage?.url}
-                    userId={feed?.creator?._id}
+                    userId={feed?.creator?._id as string}
                     score={feed?.creator?.score}
                     close={dismissFeed}
                     bookmarked={isBookmarked}
@@ -199,7 +213,7 @@ export const ParseFeedView = (
                     bookmarked={isBookmarked}
                     bookmarkId={bookmarkId}
                     title={feed?.data?.name}
-                    rating={feed?.meta?.rating}
+                    rating={feed?.meta?.rating as number}
                 />
             );
         case FEED_TYPES.JOB_PAYMENT_RELEASED:
@@ -265,12 +279,12 @@ export const ParseFeedView = (
                     bookmarked={isBookmarked}
                     bookmarkId={bookmarkId}
                     title={
-                        feed?.type == FEED_TYPES.JOB_CANCELLED_ACCEPTED
+                        feed?.type === FEED_TYPES.JOB_CANCELLED_ACCEPTED
                             ? feed?.data?.name
                             : `${talent.name} requested to cancel a job`
                     }
                     description={feed?.description}
-                    isAccepted={feed?.type == FEED_TYPES.JOB_CANCELLED_ACCEPTED}
+                    isAccepted={feed?.type === FEED_TYPES.JOB_CANCELLED_ACCEPTED}
                     rating={feed?.meta?.value}
                 />
             );
@@ -306,7 +320,7 @@ export const ParseFeedView = (
                     bookmarkId={bookmarkId}
                     title={feed?.title}
                     description={feed?.description}
-                    isDeclined={feed?.type == FEED_TYPES.JOB_REVIEW_CHANGE_DECLINED}
+                    isDeclined={feed?.type === FEED_TYPES.JOB_REVIEW_CHANGE_DECLINED}
                 />
             );
 
@@ -321,7 +335,7 @@ export const ParseFeedView = (
         // case FEED_TYPES.JURY_INVITATION:
         //   return <JuryInvitationFeed />;
         default:
-            return;
+            return null;
         // return (
         //   <JobFeedCard
         //     key={key}

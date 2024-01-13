@@ -47,3 +47,47 @@ export const signupSchema = z
         path: ["confirmPassword"],
         message: "Passwords do not match.",
     });
+
+export const referralSchema = z.object({
+    emails: z.array(z.string()).nonempty({ message: "emails are required" }),
+});
+
+export const editProfileFormSchema = z.object({
+    firstName: z.string().min(1, "First Name is required"),
+    lastName: z.string().min(1, "Last Name is required"),
+    title: z.string().min(1, "Job Title is required"),
+    email: z.string().min(1, "Email is required").email("Invalid email"),
+    bio: z.string().min(1, "Bio is required"),
+    location: z.string().min(1, "Location is required"),
+    country: z.string().min(1, "Country is required"),
+    tags: z.array(z.string()).nonempty({ message: "skills are required" }),
+    isPrivate: z.boolean().default(false).optional(),
+});
+
+export const changePasswordFormSchema = z
+    .object({
+        currentPassword: z.string().min(1, "Current Password is required"),
+        newPassword: z
+            .string()
+            .min(1, "New Password is required")
+            .regex(
+                // eslint-disable-next-line no-useless-escape
+                /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})/,
+                "Must Contain 8 Characters, One Uppercase, One Lowercase, One Number and One Special Case Character",
+            ),
+        confirmNewPassword: z.string().min(1, "Confirm New Password is required"),
+    })
+    .refine((data) => data.newPassword === data.confirmNewPassword, {
+        message: "Passwords don't match",
+        path: ["confirmNewPassword"],
+    });
+
+export const withdrawFormSchema = z.object({
+    coin: z.string().min(1, "Password is required"),
+    address: z.string().min(1, "Address is required"),
+    amount: z.number().min(1, "$100 is the minimum required amount for withdrawal"),
+    password: z.string().min(1, "password is required"),
+    confirm: z.literal(true, {
+        errorMap: () => ({ message: "You must accept Terms and Conditions" }),
+    }),
+});

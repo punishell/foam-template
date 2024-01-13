@@ -1,50 +1,50 @@
-import React, { useMemo, useState } from "react";
-import { SideModal } from "../common/side-modal";
-import { Calendar, ChevronLeft, CopyIcon } from "lucide-react";
+"use client";
+
+/* -------------------------------------------------------------------------- */
+/*                             External Dependency                            */
+/* -------------------------------------------------------------------------- */
+
+import { useMemo, useState } from "react";
+import { CopyIcon } from "lucide-react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
-import { Controller, SubmitHandler, useForm } from "react-hook-form";
-import { Button, CopyToClipboard } from "pakt-ui";
-import { UserAvatar } from "../common/user-avatar";
+import { Controller, type SubmitHandler, useForm } from "react-hook-form";
+import { Button } from "pakt-ui";
+import Lottie from "lottie-react";
+import dayjs from "dayjs";
+import { type z } from "zod";
+
+/* -------------------------------------------------------------------------- */
+/*                             Internal Dependency                            */
+/* -------------------------------------------------------------------------- */
 
 import email from "@/lottiefiles/email.json";
-import Lottie from "lottie-react";
-import { TagInput } from "../common/tag-input";
+import { TagInput } from "../../common/tag-input";
 import { useGetReferral, useSendReferralInvite } from "@/lib/api/referral";
-import dayjs from "dayjs";
-import { Spinner } from "../common";
+import { SideModal } from "../../common/side-modal";
+import { Spinner } from "../../common";
 import { CopyText } from "@/lib/utils";
-import { AfroProfile } from "../common/afro-profile";
+import { referralSchema } from "@/lib/validations";
+import RecentReferral from "./recent-referrals";
 
 interface ReferralModalProps {
     isOpen: boolean;
     onOpenChange: (open: boolean) => void;
 }
 
-const recentReferrals = [
-    { name: "Mary Monroe", score: 74, title: "Product Designer", image: "", dated: "22/05/2023" },
-    { name: "Mary Monroe", score: 74, title: "Product Designer", image: "", dated: "22/05/2023" },
-    { name: "Mary Monroe", score: 74, title: "Product Designer", image: "", dated: "22/05/2023" },
-];
-
-const referralSchema = z.object({
-    emails: z.array(z.string()).nonempty({ message: "emails are required" }),
-});
-
 type LoginFormValues = z.infer<typeof referralSchema>;
 
-export function ReferralSideModal({ isOpen, onOpenChange }: ReferralModalProps) {
+export function ReferralSideModal({ isOpen, onOpenChange }: ReferralModalProps): React.ReactElement {
     const [isSentEmail, setIsSentEmail] = useState(false);
     const { data } = useGetReferral({ page: 1, limit: 5, filter: {} });
     const sendInvite = useSendReferralInvite();
 
     const referralLink = data?.stats.referralLink;
-    const remainingInvites = (data?.stats?.totalAllowedInvites || 0) - (data?.stats?.inviteSent ?? 0);
-    const inviteDuration = data?.stats?.duration || "week";
+    const remainingInvites = (data?.stats?.totalAllowedInvites ?? 0) - (data?.stats?.inviteSent ?? 0);
+    const inviteDuration = data?.stats?.duration ?? "week";
 
     const recentReferrals = useMemo(
         () =>
-            (data?.referrals?.data || []).map((u) => ({
+            (data?.referrals?.data ?? []).map((u) => ({
                 _id: u?.referral?._id || "",
                 name: `${u?.referral?.firstName} ${u?.referral?.lastName}` || "",
                 title: u?.referral?.profile?.bio?.title || "",
@@ -60,14 +60,14 @@ export function ReferralSideModal({ isOpen, onOpenChange }: ReferralModalProps) 
     });
 
     const onSubmit: SubmitHandler<LoginFormValues> = async (values) => {
-        const data = await sendInvite.mutateAsync(values);
-        if (data) {
+        const d = await sendInvite.mutateAsync(values);
+        if (d) {
             setIsSentEmail(true);
         }
         form.resetField("emails");
     };
 
-    const copyLink = () => CopyText(String(referralLink));
+    const copyLink = async (): Promise<void> => CopyText(String(referralLink));
 
     return (
         <SideModal isOpen={isOpen} onOpenChange={onOpenChange} className="flex flex-col">
@@ -105,7 +105,7 @@ export function ReferralSideModal({ isOpen, onOpenChange }: ReferralModalProps) 
                             <div className="mr-0 mt-4 flex w-full ">
                                 <Button
                                     className="min-h-[50px]"
-                                    variant={"primary"}
+                                    variant="primary"
                                     disabled={!form.formState.isValid || sendInvite.isLoading}
                                     fullWidth
                                 >
@@ -128,7 +128,7 @@ export function ReferralSideModal({ isOpen, onOpenChange }: ReferralModalProps) 
                                 <Button
                                     size="sm"
                                     className="min-h-full items-center !border-primary-darker text-sm"
-                                    variant={"secondary"}
+                                    variant="secondary"
                                     onClick={copyLink}
                                 >
                                     <span className="flex flex-row gap-2">
@@ -143,29 +143,8 @@ export function ReferralSideModal({ isOpen, onOpenChange }: ReferralModalProps) 
                         <p className="text-base font-thin">Your referrals that joined the Platform</p>
                         <div className="my-4 flex flex-col gap-2">
                             {recentReferrals.length > 0 &&
-                                recentReferrals.map((r, i) => (
-                                    <div
-                                        key={i}
-                                        className="flex w-full flex-row justify-between rounded-2xl border border-refer-border bg-refer-bg px-4 py-2"
-                                    >
-                                        <div className="flex flex-row gap-2">
-                                            <AfroProfile
-                                                score={r.score}
-                                                src={r.image}
-                                                size="sm"
-                                                url={`talents/${r._id}`}
-                                            />
-                                            <span className="my-auto items-center">
-                                                <h3 className="text-lg text-title">{r.name}</h3>
-                                                <p className="text-sm text-title">{r.title}</p>
-                                            </span>
-                                        </div>
-                                        <div className="my-auto flex flex-row gap-2 text-body">
-                                            <Calendar size={24} /> {r.dated}
-                                        </div>
-                                    </div>
-                                ))}
-                            {recentReferrals.length == 0 && (
+                                recentReferrals.map((r, i) => <RecentReferral key={i} referral={r} />)}
+                            {recentReferrals.length === 0 && (
                                 <div className="flex min-h-[139px] items-center rounded-2xl bg-sky-lighter p-4">
                                     <p className="m-auto text-base text-body">Talents you refer will appear here</p>
                                 </div>
@@ -180,7 +159,13 @@ export function ReferralSideModal({ isOpen, onOpenChange }: ReferralModalProps) 
                         Your Invite has been sent. You’ll be notified when a user signs up with your referral link
                     </p>
                     <div className="mx-auto w-1/2">
-                        <Button variant={"primary"} onClick={() => setIsSentEmail(false)} fullWidth>
+                        <Button
+                            variant="primary"
+                            onClick={() => {
+                                setIsSentEmail(false);
+                            }}
+                            fullWidth
+                        >
                             Done
                         </Button>
                     </div>

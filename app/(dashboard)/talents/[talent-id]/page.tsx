@@ -1,16 +1,25 @@
 "use client";
 
-import React from "react";
+/* -------------------------------------------------------------------------- */
+/*                             External Dependency                            */
+/* -------------------------------------------------------------------------- */
+
+import { type ReactElement } from "react";
+import { useParams } from "next/navigation";
+
+/* -------------------------------------------------------------------------- */
+/*                             Internal Dependency                            */
+/* -------------------------------------------------------------------------- */
+
 import { PageError } from "@/components/common/page-error";
 import { PageLoading } from "@/components/common/page-loading";
 import { useGetTalentById, useGetTalentReviewById } from "@/lib/api";
-import { useParams } from "next/navigation";
 import { Achievements } from "@/components/talents/achievement";
 import { Reviews } from "@/components/talents/review";
 import { ProfileHeader } from "@/components/talents/header";
 import { Bio } from "@/components/talents/bio";
 
-export default function TalentDetails() {
+export default function TalentDetailsPage(): ReactElement {
     const params = useParams();
     const talentId = String(params["talent-id"]);
     const talentData = useGetTalentById(talentId, true);
@@ -26,7 +35,7 @@ export default function TalentDetails() {
 
     if (talentData.isError || reviewData.isError) return <PageError />;
 
-    const talent = talentData.data.talent;
+    const { talent } = talentData.data;
     const reviews = reviewData.data;
 
     return (
@@ -34,8 +43,8 @@ export default function TalentDetails() {
             <ProfileHeader
                 _id={talent._id}
                 name={`${talent.firstName} ${talent.lastName}`}
-                position={talent.profile.bio?.title ?? ""}
-                score={talent.score}
+                position={talent.profile?.bio?.title ?? ""}
+                score={talent.score as number}
                 skills={
                     talent?.profile?.talent?.tagsIds?.map((t) => ({ name: t.name, backgroundColor: t.color })) ?? []
                 }
@@ -43,13 +52,13 @@ export default function TalentDetails() {
             />
 
             <div className="flex w-full gap-6">
-                <Bio body={talent.profile.bio?.description ?? ""} />
+                <Bio body={talent.profile?.bio?.description ?? ""} />
                 <Achievements
                     achievements={talentData.data.talent.achievements?.map(({ total, type, value }) => ({
                         type,
                         title: type,
                         total: Number(total),
-                        value: parseInt(value),
+                        value: parseInt(value, 10),
                     }))}
                 />
             </div>
@@ -65,7 +74,7 @@ export default function TalentDetails() {
                                 _id: a.owner._id,
                                 afroScore: a.owner.score,
                                 name: `${a.owner.firstName}${a.owner.lastName}`,
-                                title: a.owner.profile.bio?.title || "",
+                                title: a.owner.profile?.bio?.title ?? "",
                                 avatar: a.owner.profileImage?.url ?? "",
                             },
                         })) ?? []

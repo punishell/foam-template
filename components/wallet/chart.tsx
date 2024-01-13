@@ -1,23 +1,30 @@
+"use client";
+
+/* -------------------------------------------------------------------------- */
+/*                             External Dependency                            */
+/* -------------------------------------------------------------------------- */
+
 import * as Tabs from "@radix-ui/react-tabs";
+
+/* -------------------------------------------------------------------------- */
+/*                             Internal Dependency                            */
+/* -------------------------------------------------------------------------- */
+
 import { Chart } from "@/components/common/chart";
 
-const CHART_DATA = [
-    { amt: 0, date: "Sunday" },
-    { amt: 0, date: "Monday" },
-    { amt: 2400, date: "Tuesday" },
-    { amt: 3000, date: "Wednesday" },
-    { amt: 1400, date: "Thursday" },
-    { amt: 5000, date: "Friday" },
-    { amt: 2400, date: "Saturday" },
-];
-
-export interface chartDataProps {
-    weekly: [{ amt: number; date: string }] | [];
-    monthly: [{ amt: number; date: string }] | [];
-    yearly: [{ amt: number; date: string }] | [];
+export interface TransformedData {
+    date: string;
+    amt: number;
+    [key: string]: string | number;
 }
 
-export const WalletBalanceChart = ({ data }: { data: chartDataProps }) => {
+export interface ChartDataProps {
+    weekly: TransformedData[] | [];
+    monthly: TransformedData[] | [];
+    yearly: TransformedData[] | [];
+}
+
+export const WalletBalanceChart = ({ data }: { data: ChartDataProps }): React.JSX.Element => {
     return (
         <Tabs.Root defaultValue="week" className="flex flex-col gap-2 rounded-lg border border-line bg-white p-2">
             <div className="flex items-center justify-between gap-2">
@@ -46,7 +53,7 @@ export const WalletBalanceChart = ({ data }: { data: chartDataProps }) => {
             </div>
             <div className="h-full">
                 <Tabs.Content value="week" className="h-full">
-                    <Chart data={data["weekly"]} dataKey="amt" xAxisKey="date" height="md" />
+                    <Chart data={data.weekly} dataKey="amt" xAxisKey="date" height="md" />
                 </Tabs.Content>
                 <Tabs.Content value="month" className="h-full">
                     <Chart data={data.monthly} dataKey="amt" xAxisKey="date" height="md" />
