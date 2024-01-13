@@ -1,36 +1,59 @@
 "use client";
 
-import React, { useEffect, useMemo } from "react";
+/* -------------------------------------------------------------------------- */
+/*                             External Dependency                            */
+/* -------------------------------------------------------------------------- */
 
+import type React from "react";
+import { useEffect, useMemo, useState } from "react";
 import dayjs from "dayjs";
 import Image from "next/image";
 import { Button } from "pakt-ui";
+import { type PaginationState } from "@tanstack/react-table";
 
-import { chartDataProps, WalletBalanceChart } from "@/components/wallet/chart";
+/* -------------------------------------------------------------------------- */
+/*                             Internal Dependency                            */
+/* -------------------------------------------------------------------------- */
+
+import { type TransformedData, WalletBalanceChart, type ChartDataProps } from "@/components/wallet/chart";
 import { WalletTransactions } from "@/components/wallet/transactions";
-import { WithdrawalModal } from "@/components/wallet/withdrawalModal";
+import { WithdrawalModal } from "@/components/wallet/withdrawal-modal";
 import { fetchWalletStats, useGetActiveRPC, useGetWalletDetails, useGetWalletTxs } from "@/lib/api/wallet";
 import { formatUsd } from "@/lib/utils";
-import { PaginationState } from "@tanstack/react-table";
 
 const dateFormat = "DD/MM/YYYY";
 const MAX = 20;
 
-export default function Wallet() {
-    const [isOpen, setIsOpen] = React.useState(false);
-    const [limit, _setLimit] = React.useState(10);
-    const [{ pageIndex, pageSize }, setPagination] = React.useState<PaginationState>({
+interface ChartData {
+    date: string;
+    amount: number;
+}
+
+interface TransactionProps {
+    createdAt: string;
+    type: "withdrawal" | "deposit";
+    amount: string;
+    description: string;
+    currency: string;
+    usdValue: number;
+    status: "processing" | "pending" | "completed" | "failed" | "reprocessing";
+}
+
+export default function WalletPage(): React.JSX.Element {
+    const [isOpen, setIsOpen] = useState(false);
+    // const [limit, _setLimit] = useState(10);
+    const [{ pageIndex, pageSize }, setPagination] = useState<PaginationState>({
         pageIndex: 1,
         pageSize: 6,
     });
-    const [statData, setStatData] = React.useState<chartDataProps>({ weekly: [], monthly: [], yearly: [] });
+    const [statData, setStatData] = useState<ChartDataProps>({ weekly: [], monthly: [], yearly: [] });
     const { data: walletData } = useGetWalletDetails();
     const wallets = walletData?.data.data.wallets ?? [];
     const totalWalletBalance = walletData?.data.data.totalWalletBalance ?? "0.00";
     const {
         data: walletTx,
         refetch: fetchWalletTx,
-        isLoading,
+        // isLoading,
         isFetched: walletFetched,
         isFetching: walletIsFetching,
     } = useGetWalletTxs({
@@ -38,67 +61,70 @@ export default function Wallet() {
         page: pageIndex,
         filters: { status: ["processing", "completed", "reprocessing"] },
     });
-    const { data: rpcData, isLoading: rpcLoading } = useGetActiveRPC();
+    const { data: rpcData } = useGetActiveRPC();
 
     const chainName = rpcData?.rpcName ?? "";
 
     const walletTransactions = useMemo(
         () =>
             (walletTx?.data?.data.transactions ?? [])
-                .map((tx: any) => ({
+                .map((tx: TransactionProps) => ({
                     date: dayjs(tx.createdAt).format(dateFormat),
                     type: tx.type,
-                    amount: tx.amount,
+                    amount: String(tx.amount),
                     description:
                         tx.description && tx.description?.length > MAX
-                            ? tx.description.slice(0, MAX) + "..."
+                            ? `${tx.description.slice(0, MAX)}...`
                             : tx.description,
                     coin: tx.currency.toUpperCase(),
                     usdValue: formatUsd(tx.usdValue),
                     status: tx.status,
                 }))
-                // @ts-ignore
-                .sort((a, b) => new Date(b?.createdAt).getTime() - new Date(a?.createdAt).getTime()),
+                .sort((a, b) => new Date(b?.date).getTime() - new Date(a?.date).getTime()),
         [walletTx?.data?.data],
     );
 
-    const getChartData = async () => {
+    const getChartData = async (): Promise<void> => {
         const response = await Promise.all([
             fetchWalletStats({ format: "weekly" }),
             fetchWalletStats({ format: "monthly" }),
             fetchWalletStats({ format: "yearly" }),
         ]);
 
-        const weeklyStats = response[0].chart.map((c: any) => {
+        const weeklyStats: TransformedData[] = response[0].chart.map((c: ChartData) => {
             return {
                 date: String(dayjs(c.date).format("ddd")),
                 amt: c.amount,
             };
         });
 
-        const monthlyStats = () => {
-            const data = response[1].chart;
+        const monthlyStats = (): TransformedData[] => {
+            const data: ChartData[] = response[1].chart;
             const n = 3;
-            const mainData = [];
+            const mainData: TransformedData[] = [];
             let amt = 0;
-            for (var i = 0, j = 0; i < data.length; i++) {
+            for (let i = 0, j = 0; i < data.length; i++) {
                 const c = data[i];
-                const date = String(dayjs(c.date).format("DD MMM"));
-                amt += c.amount;
-                if (i >= n && i % n === 0) {
-                    // push to array
-                    mainData.push({
-                        date,
-                        amt,
-                    });
-                    amt = 0;
-                    j++;
+                if (c) {
+                    // Check if c is not undefined
+                    const date = String(dayjs(c.date).format("DD MMM"));
+                    amt += c.amount;
+                    if (i >= n && i % n === 0) {
+                        // push to array
+                        mainData.push({
+                            date,
+                            amt,
+                        });
+                        amt = 0;
+                        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                        j++;
+                    }
                 }
             }
-            return mainData as any;
+            return mainData;
         };
 
-        const yearlyStats = response[2].chart.map((c: any) => {
+        const yearlyStats = response[2].chart.map((c: ChartData) => {
             return {
                 date: String(dayjs(c.date).format("MMM YY")),
                 amt: c.amount,
@@ -114,19 +140,27 @@ export default function Wallet() {
         setStatData(chartData);
     };
 
-    const loadPage = async () => {
-        return await Promise.all([fetchWalletTx(), getChartData()]);
+    const loadPage = async (): Promise<void> => {
+        await Promise.all([fetchWalletTx(), getChartData()]);
     };
 
     useEffect(() => {
-        loadPage();
+        void loadPage();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     useEffect(() => {
-        fetchWalletTx();
+        void fetchWalletTx();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [pageIndex, pageSize]);
 
-    const getWalletIcon = (wallet: any) => {
+    const getWalletIcon = (wallet: {
+        _id: string;
+        amount: number;
+        usdValue: number;
+        coin: string;
+        icon?: string;
+    }): string => {
         return wallet.icon ?? "/icons/usdc-logo.svg";
     };
 
@@ -142,7 +176,12 @@ export default function Wallet() {
                                     {formatUsd(parseFloat(totalWalletBalance) ?? 0.0)}
                                 </span>
                             </div>
-                            <Button size="md" onClick={() => setIsOpen(true)}>
+                            <Button
+                                size="md"
+                                onClick={() => {
+                                    setIsOpen(true);
+                                }}
+                            >
                                 Withdraw
                             </Button>
                             <WithdrawalModal
@@ -158,8 +197,8 @@ export default function Wallet() {
                                     key={i}
                                     className="flex h-full w-full items-center gap-2 rounded-lg border border-[#5538EE] bg-[#F9F6FE] p-4"
                                     style={{
-                                        background: w.coin == "avax" ? "#FEF4E3" : "#F9F6FE",
-                                        borderColor: w.coin == "avax" ? "#A05E03" : "#5538EE",
+                                        background: w.coin === "avax" ? "#FEF4E3" : "#F9F6FE",
+                                        borderColor: w.coin === "avax" ? "#A05E03" : "#5538EE",
                                     }}
                                 >
                                     <Image src={getWalletIcon(w)} width={75} height={75} alt="" />
@@ -182,9 +221,9 @@ export default function Wallet() {
                 <div className="h-full grow">
                     <WalletTransactions
                         data={walletTransactions}
-                        page={parseInt(walletTx?.data.data.page || "1")}
-                        limit={parseInt(walletTx?.data?.data?.limit || "10")}
-                        pageSize={parseInt(walletTx?.data?.data?.pages || "1")}
+                        page={parseInt(walletTx?.data?.data?.page ?? "1", 10)}
+                        limit={parseInt(walletTx?.data?.data?.limit ?? "10", 10)}
+                        pageSize={parseInt(walletTx?.data?.data?.pages ?? "1", 10)}
                         onPageChange={setPagination}
                         loading={!walletFetched && walletIsFetching}
                     />

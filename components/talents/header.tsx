@@ -1,7 +1,7 @@
 "use client";
 
 /* -------------------------------------------------------------------------- */
-/*                             Eternal Dependency                            */
+/*                             External Dependency                            */
 /* -------------------------------------------------------------------------- */
 
 import React from "react";
@@ -10,7 +10,7 @@ import { Briefcase, Edit } from "lucide-react";
 import Link from "next/link";
 
 /* -------------------------------------------------------------------------- */
-/*                             Inernal Dependency                            */
+/*                             Internal Dependency                            */
 /* -------------------------------------------------------------------------- */
 
 import { getAvatarColor } from "@/lib/utils";

@@ -1,84 +1,23 @@
-import { ColumnDef, PaginationState } from "@tanstack/react-table";
-import { Spinner } from "@/components/common";
+"use client";
+
+/* -------------------------------------------------------------------------- */
+/*                             External Dependency                            */
+/* -------------------------------------------------------------------------- */
+
+import { type ColumnDef, type PaginationState } from "@tanstack/react-table";
 import { ArrowUpRight, ArrowDownLeft, Circle } from "lucide-react";
+
+/* -------------------------------------------------------------------------- */
+/*                             Internal Dependency                            */
+/* -------------------------------------------------------------------------- */
+
 import { Table } from "@/components/common/table";
 
-type TransactionType = "withdrawal" | "deposit";
-type TransactionStatus = "processing" | "pending" | "completed" | "failed" | "reprocessing";
-interface WalletTransactions {
-    date: string;
-    amount: string;
-    description: string;
-    coin: string;
-    usdValue: string;
-    type: TransactionType;
-    status: TransactionStatus;
-}
+type TransactionTypeProps = "withdrawal" | "deposit";
 
-const TABLE_COLUMNS: ColumnDef<WalletTransactions>[] = [
-    {
-        header: "Date",
-        accessorFn: (data) => data.date,
-    },
-    {
-        header: "Type",
-        accessorFn: (data) => data.type,
-        cell: ({ getValue }) => <TransactionType type={getValue<TransactionType>()} />,
-    },
-    {
-        header: "Amount",
-        accessorFn: (data) => data.amount,
-    },
-    {
-        header: "Description",
-        accessorFn: (data) => data.description,
-    },
-    {
-        header: "Coin",
-        accessorFn: (data) => data.coin,
-    },
-    {
-        header: "USD Value",
-        accessorFn: (data) => data.usdValue,
-    },
-    {
-        header: "Status",
-        accessorFn: (data) => data.status,
-        cell: ({ getValue }) => <TransactionStatus status={getValue<TransactionStatus>()} />,
-    },
-];
+type TransactionStatusProps = "processing" | "pending" | "completed" | "failed" | "reprocessing";
 
-export const WalletTransactions = ({
-    data,
-    page,
-    limit,
-    pageSize,
-    loading,
-    onPageChange,
-}: {
-    data: WalletTransactions[];
-    page: number;
-    limit: number;
-    pageSize: number;
-    loading: boolean;
-    onPageChange: React.Dispatch<React.SetStateAction<PaginationState>>;
-}) => {
-    return (
-        <div className="flex h-[450px] w-full max-w-full flex-col gap-4 rounded-lg border border-line bg-white px-6 py-6">
-            <h3 className="text-base font-semibold">Wallet Transactions</h3>
-            <Table
-                data={data}
-                columns={TABLE_COLUMNS}
-                pageCount={pageSize}
-                setPagination={onPageChange}
-                pagination={{ pageIndex: page, pageSize }}
-                loading={loading}
-            />
-        </div>
-    );
-};
-
-type TransactionStatusColors = { [key in TransactionStatus]: { bgColor: string; textColor: string } };
+type TransactionStatusColors = { [key in TransactionStatusProps]: { bgColor: string; textColor: string } };
 
 const TRANSACTION_STATUS_COLORS: TransactionStatusColors = {
     failed: { bgColor: "bg-danger", textColor: "text-danger" },
@@ -88,7 +27,7 @@ const TRANSACTION_STATUS_COLORS: TransactionStatusColors = {
     reprocessing: { bgColor: "bg-yellow-dark", textColor: "text-yellow" },
 };
 
-const TransactionStatus = ({ status }: { status: TransactionStatus }) => (
+const TransactionStatus = ({ status }: { status: TransactionStatusProps }): React.JSX.Element => (
     <div
         className={`${
             TRANSACTION_STATUS_COLORS[status].bgColor || "bg-gray-300"
@@ -98,7 +37,7 @@ const TransactionStatus = ({ status }: { status: TransactionStatus }) => (
     </div>
 );
 
-const TransactionType = ({ type }: { type: TransactionType }) => {
+const TransactionType = ({ type }: { type: TransactionTypeProps }): React.JSX.Element => {
     let color: string;
     let Icon: React.ElementType;
 
@@ -123,6 +62,80 @@ const TransactionType = ({ type }: { type: TransactionType }) => {
                 <Icon className={`text-${color}`} size={12} />
             </div>
             <span className="text-sm capitalize">{type}</span>
+        </div>
+    );
+};
+
+interface WalletTransactionsProps {
+    date: string;
+    amount: string;
+    description: string;
+    coin: string;
+    usdValue: string;
+    type: TransactionTypeProps;
+    status: TransactionStatusProps;
+}
+
+const TABLE_COLUMNS: Array<ColumnDef<WalletTransactionsProps>> = [
+    {
+        header: "Date",
+        accessorFn: (data) => data.date,
+    },
+    {
+        header: "Type",
+        accessorFn: (data) => data.type,
+        cell: ({ getValue }) => <TransactionType type={getValue<TransactionTypeProps>()} />,
+    },
+    {
+        header: "Amount",
+        accessorFn: (data) => data.amount,
+    },
+    {
+        header: "Description",
+        accessorFn: (data) => data.description,
+    },
+    {
+        header: "Coin",
+        accessorFn: (data) => data.coin,
+    },
+    {
+        header: "USD Value",
+        accessorFn: (data) => data.usdValue,
+    },
+    {
+        header: "Status",
+        accessorFn: (data) => data.status,
+        cell: ({ getValue }) => <TransactionStatus status={getValue<TransactionStatusProps>()} />,
+    },
+];
+
+export const WalletTransactions = ({
+    data,
+    page,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    limit,
+    pageSize,
+    loading,
+    onPageChange,
+}: {
+    data: WalletTransactionsProps[];
+    page: number;
+    limit: number;
+    pageSize: number;
+    loading: boolean;
+    onPageChange: React.Dispatch<React.SetStateAction<PaginationState>>;
+}): React.JSX.Element => {
+    return (
+        <div className="flex h-[450px] w-full max-w-full flex-col gap-4 rounded-lg border border-line bg-white px-6 py-6">
+            <h3 className="text-base font-semibold">Wallet Transactions</h3>
+            <Table
+                data={data}
+                columns={TABLE_COLUMNS}
+                pageCount={pageSize}
+                setPagination={onPageChange}
+                pagination={{ pageIndex: page, pageSize }}
+                loading={loading}
+            />
         </div>
     );
 };

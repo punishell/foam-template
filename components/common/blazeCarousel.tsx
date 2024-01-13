@@ -1,7 +1,7 @@
 "use client";
 
 /* -------------------------------------------------------------------------- */
-/*                             Eternal Dependency                            */
+/*                             External Dependency                            */
 /* -------------------------------------------------------------------------- */
 
 import React, { useEffect, useRef, useState } from "react";

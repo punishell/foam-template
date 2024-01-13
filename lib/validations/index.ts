@@ -81,3 +81,13 @@ export const changePasswordFormSchema = z
         message: "Passwords don't match",
         path: ["confirmNewPassword"],
     });
+
+export const withdrawFormSchema = z.object({
+    coin: z.string().min(1, "Password is required"),
+    address: z.string().min(1, "Address is required"),
+    amount: z.number().min(1, "$100 is the minimum required amount for withdrawal"),
+    password: z.string().min(1, "password is required"),
+    confirm: z.literal(true, {
+        errorMap: () => ({ message: "You must accept Terms and Conditions" }),
+    }),
+});
