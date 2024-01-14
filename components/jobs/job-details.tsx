@@ -1,8 +1,19 @@
-import Image from "next/image";
+"use client";
+
+/* -------------------------------------------------------------------------- */
+/*                             External Dependency                            */
+/* -------------------------------------------------------------------------- */
+
+import { type ReactElement } from "react";
 import { format } from "date-fns";
 import { Calendar, Tag } from "lucide-react";
-import { AfroScore, AfroProfile } from "@/components/common/afro-profile";
-import { DefaultAvatar } from "@/components/common/default-avatar";
+
+/* -------------------------------------------------------------------------- */
+/*                             Internal Dependency                            */
+/* -------------------------------------------------------------------------- */
+
+import { AfroProfile } from "@/components/common/afro-profile";
+
 interface JobHeaderProps {
     title: string;
     price: number;
@@ -15,7 +26,7 @@ interface JobHeaderProps {
     };
 }
 
-export const JobHeader: React.FC<JobHeaderProps> = ({ title, price, dueDate, creator }) => {
+export const JobHeader = ({ title, price, dueDate, creator }: JobHeaderProps): ReactElement => {
     return (
         <div className="flex items-center justify-between gap-4 rounded-t-xl bg-primary-gradient p-4">
             <div className="flex h-full w-full max-w-2xl flex-col gap-6">
@@ -34,7 +45,7 @@ export const JobHeader: React.FC<JobHeaderProps> = ({ title, price, dueDate, cre
                     </span>
                 </div>
             </div>
-            {creator && creator._id && (
+            {creator?._id && (
                 <div className="flex flex-col items-center gap-0 text-center">
                     <AfroProfile
                         src={creator.avatar}
@@ -53,7 +64,7 @@ interface JobDescriptionProps {
     description: string;
 }
 
-export const JobDescription: React.FC<JobDescriptionProps> = ({ description }) => {
+export const JobDescription = ({ description }: JobDescriptionProps): ReactElement => {
     return (
         <div className="flex w-full flex-col gap-2">
             <h3 className="text-lg font-bold text-title">Job Description</h3>
@@ -65,10 +76,10 @@ export const JobDescription: React.FC<JobDescriptionProps> = ({ description }) =
 };
 
 interface JobSkillsProps {
-    skills: { name: string; color: string }[];
+    skills: Array<{ name: string; color: string }>;
 }
 
-export const JobSkills: React.FC<JobSkillsProps> = ({ skills }) => {
+export const JobSkills = ({ skills }: JobSkillsProps): ReactElement => {
     return (
         <div className="flex w-full flex-col gap-2 rounded-2xl bg-white pb-4">
             <h3 className="text-lg font-bold text-title">Preferred Skills</h3>
@@ -91,7 +102,7 @@ interface DeliverablesProps {
     deliverables: string[];
 }
 
-export const JobDeliverables: React.FC<DeliverablesProps> = ({ deliverables }) => {
+export const JobDeliverables = ({ deliverables }: DeliverablesProps): ReactElement => {
     return (
         <div className="flex h-full w-full flex-col gap-2 rounded-2xl bg-white py-4">
             <h3 className="text-lg font-bold text-title">Deliverables</h3>

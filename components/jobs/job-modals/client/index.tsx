@@ -1,14 +1,26 @@
-import React, { useEffect } from "react";
+"use client";
+
+/* -------------------------------------------------------------------------- */
+/*                             External Dependency                            */
+/* -------------------------------------------------------------------------- */
+
+import { type FC, useState } from "react";
+import Lottie from "lottie-react";
+
+/* -------------------------------------------------------------------------- */
+/*                             Internal Dependency                            */
+/* -------------------------------------------------------------------------- */
+
 import { useGetJobById } from "@/lib/api/job";
 import { isJobCancellation } from "@/lib/types";
 import { PageError } from "@/components/common/page-error";
 import { PageLoading } from "@/components/common/page-loading";
 import { JobUpdates } from "./job-update";
-import Lottie from "lottie-react";
 import warning from "@/lottiefiles/warning.json";
-import { ReviewTalent } from "./review";
-import { RequestJobCancellation, JobCancellationRequest, JobCancellationSuccessRequested } from "./cancellation";
-import { QueryClient } from "@tanstack/react-query";
+import { ReviewTalent } from "./review/review-talent";
+import { JobCancellationRequest } from "./cancellation/job-cancellation-request";
+import { RequestJobCancellation } from "./cancellation/request-job-cancellation";
+import { JobCancellationSuccessRequested } from "./cancellation/job-cancellation-success-requested";
 
 interface ClientJobModalProps {
     jobId: string;
@@ -17,23 +29,27 @@ interface ClientJobModalProps {
     extras?: string;
 }
 
-export const ClientJobModal: React.FC<ClientJobModalProps> = ({ jobId, talentId, closeModal, extras }) => {
+export const ClientJobModal: FC<ClientJobModalProps> = ({ jobId, talentId, closeModal, extras }) => {
     const query = useGetJobById({ jobId, extras });
-    const [isRequestingJobCancellation, setIsRequestingJobCancellation] = React.useState(false);
+    const [isRequestingJobCancellation, setIsRequestingJobCancellation] = useState(false);
 
     if (isRequestingJobCancellation) {
         return (
             <RequestJobCancellation
                 jobId={jobId}
-                closeModal={() => setIsRequestingJobCancellation(false)}
-                cancelJobCancellationRequest={() => setIsRequestingJobCancellation(false)}
+                closeModal={() => {
+                    setIsRequestingJobCancellation(false);
+                }}
+                cancelJobCancellationRequest={() => {
+                    setIsRequestingJobCancellation(false);
+                }}
                 talentId={talentId}
             />
         );
     }
     if (query.isError) return <PageError className="absolute inset-0" />;
 
-    if (query.isLoading) return <PageLoading className="absolute inset-0" />;
+    if (query.isLoading) return <PageLoading className="absolute inset-0" color="#007C5B" />;
 
     const job = query.data;
 
@@ -53,7 +69,14 @@ export const ClientJobModal: React.FC<ClientJobModalProps> = ({ jobId, talentId,
     }
 
     if (jobCancellation && talentRequestedCancellation) {
-        return <JobCancellationRequest job={job} closeModal={() => setIsRequestingJobCancellation(false)} />;
+        return (
+            <JobCancellationRequest
+                job={job}
+                closeModal={() => {
+                    setIsRequestingJobCancellation(false);
+                }}
+            />
+        );
     }
 
     if (jobCancellation && clientRequestedCancellation) {
@@ -64,5 +87,12 @@ export const ClientJobModal: React.FC<ClientJobModalProps> = ({ jobId, talentId,
         return <ReviewTalent job={job} closeModal={closeModal} />;
     }
 
-    return <JobUpdates job={job} requestJobCancellation={() => setIsRequestingJobCancellation(true)} />;
+    return (
+        <JobUpdates
+            job={job}
+            requestJobCancellation={() => {
+                setIsRequestingJobCancellation(true);
+            }}
+        />
+    );
 };

@@ -1,5 +1,11 @@
+"use client";
+
+/* -------------------------------------------------------------------------- */
+/*                             External Dependency                            */
+/* -------------------------------------------------------------------------- */
+
 import React from "react";
-import { Plus, Trash, Trash2, X } from "lucide-react";
+import { Plus, Trash2 } from "lucide-react";
 
 interface DeliverablesProps {
     deliverables: string[];
@@ -10,20 +16,20 @@ export const DeliverablesInput: React.FC<DeliverablesProps> = ({ deliverables, s
     const MAX_DELIVERABLES = 5;
     const deliverableListRef = React.useRef<HTMLDivElement>(null);
 
-    const addDeliverable = () => {
+    const addDeliverable = (): void => {
         setDeliverables([...deliverables, ""]);
     };
 
-    const deleteDeliverable = (deliverableIndex: number) => {
+    const deleteDeliverable = (deliverableIndex: number): void => {
         setDeliverables(deliverables.filter((d, index) => index !== deliverableIndex));
     };
 
-    const editDeliverable = (deliverableIndex: number, newDeliverable: string) => {
+    const editDeliverable = (deliverableIndex: number, newDeliverable: string): void => {
         const updatedDeliverables = deliverables.map((d, index) => (index === deliverableIndex ? newDeliverable : d));
         setDeliverables(updatedDeliverables);
     };
 
-    const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>): void => {
         if (e.key === "Enter" && deliverables.length < MAX_DELIVERABLES) {
             addDeliverable();
 
@@ -32,7 +38,7 @@ export const DeliverablesInput: React.FC<DeliverablesProps> = ({ deliverables, s
                 // wait for the new deliverable to be rendered
                 setTimeout(() => {
                     const newDeliverableInput =
-                        deliverableListRef.current?.children[newDeliverableIndex].querySelector("textarea");
+                        deliverableListRef.current?.children[newDeliverableIndex]?.querySelector("textarea");
                     newDeliverableInput?.focus();
                 }, 1);
             }
@@ -52,7 +58,9 @@ export const DeliverablesInput: React.FC<DeliverablesProps> = ({ deliverables, s
                                     key={index}
                                     value={deliverable}
                                     onKeyDown={handleKeyDown}
-                                    onChange={(e) => editDeliverable(index, e.target.value)}
+                                    onChange={(e) => {
+                                        editDeliverable(index, e.target.value);
+                                    }}
                                     maxLength={120}
                                     className="w-full resize-none rounded-lg px-4 py-2 outline-none focus-within:border-secondary"
                                 />
@@ -62,8 +70,11 @@ export const DeliverablesInput: React.FC<DeliverablesProps> = ({ deliverables, s
                             </div>
                             <button
                                 type="button"
-                                onClick={() => deleteDeliverable(index)}
+                                onClick={() => {
+                                    deleteDeliverable(index);
+                                }}
                                 className="flex shrink-0 basis-[50px] items-center justify-center rounded-lg border border-line bg-slate-50 duration-200 hover:bg-gray-100"
+                                aria-label="Delete Deliverable"
                             >
                                 <Trash2 size={20} strokeWidth={2} className="text-danger" />
                             </button>

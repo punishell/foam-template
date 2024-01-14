@@ -1,5 +1,16 @@
-import React from "react";
+"use client";
+
+/* -------------------------------------------------------------------------- */
+/*                             External Dependency                            */
+/* -------------------------------------------------------------------------- */
+
+import { type FC } from "react";
 import { format } from "date-fns";
+
+/* -------------------------------------------------------------------------- */
+/*                             Internal Dependency                            */
+/* -------------------------------------------------------------------------- */
+
 import type { UserProfile } from "@/lib/types";
 import { AfroProfile } from "@/components/common/afro-profile";
 
@@ -9,13 +20,13 @@ interface Props {
     deliveryDate: string;
     paymentFee: number;
     profile: UserProfile;
-    tags: {
+    tags: Array<{
         color: string;
         name: string;
-    }[];
+    }>;
 }
 
-export const JobUpdateHeader: React.FC<Props> = ({
+export const JobUpdateHeader: FC<Props> = ({
     createdAt,
     profile,
     deliveryDate,
@@ -89,7 +100,7 @@ export const JobUpdateHeader: React.FC<Props> = ({
                             return (
                                 <span
                                     key={name}
-                                    className={`rounded-full px-4 py-0.5 capitalize`}
+                                    className="rounded-full px-4 py-0.5 capitalize"
                                     style={{
                                         backgroundColor: color,
                                     }}

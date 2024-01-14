@@ -1,35 +1,42 @@
-import React, { useState } from "react";
+"use client";
 
+/* -------------------------------------------------------------------------- */
+/*                             External Dependency                            */
+/* -------------------------------------------------------------------------- */
+
+import React, { type ReactElement, useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useDebounce } from "usehooks-ts";
 
+/* -------------------------------------------------------------------------- */
+/*                             Internal Dependency                            */
+/* -------------------------------------------------------------------------- */
+
 import { NumericInput } from "@/components/common/numeric-input";
-import { PageEmpty } from "@/components/common/page-empty";
 import { PageError } from "@/components/common/page-error";
 import { PageLoading } from "@/components/common/page-loading";
-import { Pagination } from "@/components/common/pagination";
 import { Tabs } from "@/components/common/tabs";
-import { OpenJobCard } from "@/components/jobs/job-cards/open-job";
 import { useGetBookmarks } from "@/lib/api/bookmark";
 import { useGetJobs } from "@/lib/api/job";
-import type { Bookmark, Job } from "@/lib/types";
-import { createQueryStrings2, paginate } from "@/lib/utils";
+import { createQueryStrings2 } from "@/lib/utils";
+import { AllJobs } from "./all-jobs";
+import { SavedJobs } from "./saved-jobs";
 
-export const OpenJobs = () => {
+export const OpenJobs = (): ReactElement | null => {
     const router = useRouter();
     const pathname = usePathname();
     const searchParams = useSearchParams();
 
-    const [searchQuery, setSearchQuery] = useState(searchParams.get("search") || "");
+    const [searchQuery, setSearchQuery] = useState(searchParams.get("search") ?? "");
     const debouncedSearchQuery = useDebounce(searchQuery, 300);
 
-    const [skillsQuery, setSkillsQuery] = useState(searchParams.get("skills") || "");
+    const [skillsQuery, setSkillsQuery] = useState(searchParams.get("skills") ?? "");
     const debouncedSkillsQuery = useDebounce(skillsQuery, 300);
 
-    const [minimumPriceQuery, setMinimumPriceQuery] = useState(searchParams.get("range")?.split(",")[0] || 0);
+    const [minimumPriceQuery, setMinimumPriceQuery] = useState(searchParams.get("range")?.split(",")[0] ?? 0);
     const debouncedMinimumPriceQuery = useDebounce(minimumPriceQuery, 300);
 
-    const [maximumPriceQuery, setMaximumPriceQuery] = useState(searchParams.get("range")?.split(",")[1] || 100);
+    const [maximumPriceQuery, setMaximumPriceQuery] = useState(searchParams.get("range")?.split(",")[1] ?? 100);
     const debouncedMaximumPriceQuery = useDebounce(maximumPriceQuery, 300);
 
     React.useEffect(() => {
@@ -49,11 +56,11 @@ export const OpenJobs = () => {
         debouncedMaximumPriceQuery,
     ]);
 
-    const queryParams = new URLSearchParams(searchParams as any);
-    const searchQ = queryParams.get("search") || "";
-    const skillQ = queryParams.get("skills") || "";
-    const rangeQ = queryParams.get("range") || "";
-    console.log(searchQ, skillQ, rangeQ);
+    const queryParams = new URLSearchParams(searchParams);
+    const searchQ = queryParams.get("search") ?? "";
+    const skillQ = queryParams.get("skills") ?? "";
+    const rangeQ = queryParams.get("range") ?? "";
+    // console.log(searchQ, skillQ, rangeQ);
     const jobsData = useGetJobs({
         category: "open",
         status: "pending",
@@ -72,7 +79,7 @@ export const OpenJobs = () => {
         return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
     });
 
-    const onRefresh = async () => {
+    const onRefresh = async (): Promise<void> => {
         await Promise.all([jobsData.refetch(), bookmarkData.refetch()]);
     };
 
@@ -87,7 +94,9 @@ export const OpenJobs = () => {
                         type="text"
                         value={searchQuery}
                         placeholder="Name, Category, etc."
-                        onChange={(e) => setSearchQuery(e.target.value)}
+                        onChange={(e) => {
+                            setSearchQuery(e.target.value);
+                        }}
                         className="h-11 rounded-lg border border-line bg-gray-50 px-3 focus:outline-none"
                     />
                 </div>
@@ -99,7 +108,9 @@ export const OpenJobs = () => {
                         type="text"
                         value={skillsQuery}
                         placeholder="Java, Solidity, etc."
-                        onChange={(e) => setSkillsQuery(e.target.value)}
+                        onChange={(e) => {
+                            setSkillsQuery(e.target.value);
+                        }}
                         className="h-11 rounded-lg border border-line bg-gray-50 px-3 focus:outline-none"
                     />
                 </div>
@@ -112,7 +123,9 @@ export const OpenJobs = () => {
                             type="text"
                             value={minimumPriceQuery}
                             placeholder="From"
-                            onChange={(e) => setMinimumPriceQuery(e.target.value)}
+                            onChange={(e) => {
+                                setMinimumPriceQuery(e.target.value);
+                            }}
                             className="grow bg-transparent px-3 placeholder:text-sm focus:outline-none"
                         />
                         <div className="border-r border-line" />
@@ -120,7 +133,9 @@ export const OpenJobs = () => {
                             type="text"
                             placeholder="To"
                             value={maximumPriceQuery}
-                            onChange={(e) => setMaximumPriceQuery(e.target.value)}
+                            onChange={(e) => {
+                                setMaximumPriceQuery(e.target.value);
+                            }}
                             className="grow bg-transparent px-3 placeholder:text-sm focus:outline-none"
                         />
                     </div>
@@ -151,95 +166,6 @@ export const OpenJobs = () => {
                     ]}
                 />
             </div>
-        </div>
-    );
-};
-
-interface AllJobsProps {
-    jobs: Job[];
-    onRefresh?: () => void;
-}
-
-const AllJobs: React.FC<AllJobsProps> = ({ jobs, onRefresh }) => {
-    const itemsPerPage = 6;
-    const [currentPage, setCurrentPage] = React.useState(1);
-    const totalPages = Math.ceil(jobs.length / itemsPerPage);
-    const paginatedJobs = paginate(jobs, itemsPerPage, currentPage);
-
-    if (!jobs.length)
-        return <PageEmpty label="No open jobs yet." className="h-[70vh] rounded-2xl border border-line" />;
-
-    return (
-        <div className="xh-full flex min-h-[70vh] flex-col gap-2 pb-2">
-            <div className="grid grid-cols-2 gap-4 overflow-y-auto ">
-                {paginatedJobs.map(({ _id, paymentFee, name, tags, creator, isBookmarked, bookmarkId }) => {
-                    return (
-                        <OpenJobCard
-                            id={_id}
-                            key={_id}
-                            price={paymentFee}
-                            title={name}
-                            skills={tags}
-                            creator={{
-                                _id: creator._id,
-                                paktScore: creator.score,
-                                avatar: creator.profileImage?.url,
-                                name: `${creator.firstName} ${creator.lastName}`,
-                            }}
-                            isBookmarked={isBookmarked}
-                            bookmarkId={bookmarkId ?? ""}
-                            onRefresh={onRefresh}
-                        />
-                    );
-                })}
-            </div>
-            <div className="mt-auto">
-                <Pagination currentPage={currentPage} totalPages={totalPages} setCurrentPage={setCurrentPage} />
-            </div>
-        </div>
-    );
-};
-
-interface SavedJobsProps {
-    isError: boolean;
-    isLoading: boolean;
-    jobs: Bookmark[];
-    onRefresh?: () => void;
-}
-
-const SavedJobs: React.FC<SavedJobsProps> = ({ jobs, isError, isLoading, onRefresh }) => {
-    if (isError) return <PageError />;
-    if (isLoading) return <PageLoading />;
-    if (!jobs.length)
-        return (
-            <PageEmpty
-                label="Your saved jobs will appear here."
-                className="h-full rounded-lg border border-line py-6"
-            />
-        );
-
-    return (
-        <div className="grid grid-cols-2 gap-4 overflow-y-auto pb-20">
-            {jobs.map(({ _id: bookmarkId, data: { _id, paymentFee, name, tags, creator } }) => {
-                return (
-                    <OpenJobCard
-                        id={_id}
-                        key={_id}
-                        price={paymentFee}
-                        title={name}
-                        skills={tags}
-                        creator={{
-                            _id: creator._id,
-                            paktScore: creator.score,
-                            avatar: creator.profileImage?.url,
-                            name: `${creator.firstName} ${creator.lastName}`,
-                        }}
-                        isBookmarked={true}
-                        bookmarkId={bookmarkId ?? _id}
-                        onRefresh={onRefresh}
-                    />
-                );
-            })}
         </div>
     );
 };

@@ -1,16 +1,27 @@
 "use client";
+
+/* -------------------------------------------------------------------------- */
+/*                             External Dependency                            */
+/* -------------------------------------------------------------------------- */
+
+import { type FC } from "react";
 import Image from "next/image";
 import { Button } from "pakt-ui";
 import { format } from "date-fns";
-import { type Job } from "@/lib/types";
 import { useRouter } from "next/navigation";
+
+/* -------------------------------------------------------------------------- */
+/*                             Internal Dependency                            */
+/* -------------------------------------------------------------------------- */
+
+import { type Job } from "@/lib/types";
 import { isJobApplicant } from "@/lib/types";
 
 interface UnAssignedJobCardProps {
     job: Job;
 }
 
-export const UnAssignedJobCard: React.FC<UnAssignedJobCardProps> = ({ job }) => {
+export const UnAssignedJobCard: FC<UnAssignedJobCardProps> = ({ job }) => {
     const router = useRouter();
 
     const { createdAt, _id, collections, tagsData, name, paymentFee, invite, isPrivate } = job;
@@ -28,7 +39,7 @@ export const UnAssignedJobCard: React.FC<UnAssignedJobCardProps> = ({ job }) => 
                 <div className="flex grow flex-col gap-2">
                     <div className="flex items-center justify-between gap-2">
                         <div className="flex items-center gap-2">
-                            {<span className="text-lg text-body">{creationDate}</span>}
+                            <span className="text-lg text-body">{creationDate}</span>
                         </div>
 
                         <span className="inline-flex rounded-full border border-green-200 bg-[#B2E9AA66] px-3 text-lg text-title">

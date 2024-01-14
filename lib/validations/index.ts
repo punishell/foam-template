@@ -91,3 +91,24 @@ export const withdrawFormSchema = z.object({
         errorMap: () => ({ message: "You must accept Terms and Conditions" }),
     }),
 });
+
+export const createJobSchema = z.object({
+    due: z.date({
+        required_error: "Due date is required",
+    }),
+    visibility: z.string().nonempty({ message: "Required" }),
+    thirdSkill: z.string().optional().default(""),
+    secondSkill: z.string().optional().default(""),
+    firstSkill: z.string().nonempty({ message: "At least, one skill is required" }),
+    budget: z.coerce.number().min(100, { message: "Budget must be at least $100" }),
+    title: z.string().nonempty({ message: "Job title is required" }),
+    description: z.string().nonempty({ message: "Job description is required" }),
+    category: z.string().nonempty({ message: "Required" }),
+    deliverables: z
+        .array(z.string(), {
+            required_error: "At least, one deliverable is required",
+        })
+        .max(5, {
+            message: "You can add up to 5 deliverables",
+        }),
+});
