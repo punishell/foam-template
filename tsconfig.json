@@ -56,7 +56,7 @@
         "next.config.js",
         ".eslintrc.cjs",
         "postcss.config.js",
-        "tailwind.config.js",
+        "tailwind.config.ts",
         "lint-staged.config.ts"
     ],
     "exclude": ["node_modules"]
