@@ -36,7 +36,6 @@ function ResetPasswordForm({
     token: string;
 }): React.JSX.Element {
     const changePassword = useResetPassword();
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [isCompleted, _setIsCompleted] = useState(false);
     const loading = changePassword.isLoading;
     const router = useRouter();

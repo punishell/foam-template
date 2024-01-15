@@ -95,9 +95,9 @@ async function acceptInvite({ id }: { id: string }): Promise<AcceptInviteRespons
     return res.data.data;
 }
 
-// export function useAcceptInvite({ jobCreator, jobId }: { jobCreator: string; jobId: string }) {
-export function useAcceptInvite(): UseMutationResult<AcceptInviteResponse, ApiError, { id: string }, unknown> {
+export function useAcceptInvite(): UseMutationResult<AcceptInviteResponse, ApiError, unknown> {
     // const createFeed = useCreateFeed();
+    // @ts-expect-error ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
     return useMutation({
         mutationFn: acceptInvite,
         mutationKey: ["invite-call-action"],

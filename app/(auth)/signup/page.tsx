@@ -23,7 +23,6 @@ import SignupForm from "@/components/forms/signup";
 export default function SignupPage(): React.JSX.Element {
     // const validateRef = useValidateReferral();
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [isLoading, _setIsLoading] = useState(false);
     const [errorMsg, _setErrorMsg] = useState(true);
     const { data: systemSetting, isLoading: settingsLoading } = useGetSetting();

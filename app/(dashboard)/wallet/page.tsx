@@ -116,7 +116,6 @@ export default function WalletPage(): React.JSX.Element {
                             amt,
                         });
                         amt = 0;
-                        // eslint-disable-next-line @typescript-eslint/no-unused-vars
                         j++;
                     }
                 }

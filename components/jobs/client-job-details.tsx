@@ -109,7 +109,7 @@ interface ClientDeleteJobModalProps {
     setModalOpen: (state: boolean) => void;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
+// @ts-expect-error --- Unused variable
 const DeleteJobModal: React.FC<ClientDeleteJobModalProps> = ({ jobId, title, setModalOpen }) => {
     const deleteJobMutation = useDeleteJob();
     const router = useRouter();

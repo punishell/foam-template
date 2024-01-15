@@ -112,7 +112,7 @@ const TABLE_COLUMNS: Array<ColumnDef<WalletTransactionsProps>> = [
 export const WalletTransactions = ({
     data,
     page,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    // @ts-expect-error --- Unused variable
     limit,
     pageSize,
     loading,

@@ -96,6 +96,7 @@ const VerifyActivateOTP = ({ goToNextSlide, goToPreviousSlide }: SlideItemProps)
                 clearInterval(timer);
             };
         }
+        return () => {};
     }, [isResendDisabled]);
 
     const {

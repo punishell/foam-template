@@ -33,7 +33,7 @@ interface ReferralJobCompletionProps {
 }
 export const ReferralJobCompletion = ({
     id,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    // @ts-expect-error --- Unused variable
     jobId,
     talent,
     title,

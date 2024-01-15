@@ -41,10 +41,11 @@ interface TalentPrivateJobCtasProps {
     jobCreator: string;
 }
 
+// @ts-expect-error unused variable
 const TalentPrivateJobCtas: React.FC<TalentPrivateJobCtasProps> = ({ inviteId, hasBeenInvited, jobId, jobCreator }) => {
     const router = useRouter();
-    const acceptInvite = useAcceptInvite({ jobCreator, jobId });
-    const declineInvite = useDeclineInvite({ jobCreator, jobId });
+    const acceptInvite = useAcceptInvite();
+    const declineInvite = useDeclineInvite();
 
     if (inviteId == null || !hasBeenInvited) return null;
 

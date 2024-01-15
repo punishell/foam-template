@@ -21,6 +21,7 @@ export const DeliverablesInput: React.FC<DeliverablesProps> = ({ deliverables, s
     };
 
     const deleteDeliverable = (deliverableIndex: number): void => {
+        // @ts-expect-error Unused variable
         setDeliverables(deliverables.filter((d, index) => index !== deliverableIndex));
     };
 

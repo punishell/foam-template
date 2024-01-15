@@ -41,13 +41,13 @@ interface PaymentReleasedProps {
 }
 export const PaymentReleased = ({
     id,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    // @ts-expect-error --- Unused variable
     jobId,
     talent,
     creator,
     title,
     amount,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    // @ts-expect-error --- Unused variable
     description,
     bookmarked,
     bookmarkId,

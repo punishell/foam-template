@@ -1,17 +1,19 @@
 interface BadgeProps {
     title?: string;
     value?: string;
-    total?: string;
+    total?: number;
     textColor?: string;
     bgColor?: string;
+    // type?: string;
 }
 
 export const Badge = ({
     title = "",
     value = "",
-    total = "",
+    total = 0,
     textColor = "",
     bgColor = "",
+    // type = "",
 }: BadgeProps): JSX.Element => {
     return (
         <div

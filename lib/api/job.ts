@@ -617,7 +617,7 @@ async function postApplyToOpenJob(params: ApplyToOpenJobParams): Promise<Job> {
 
 export function useApplyToOpenJob({
     jobCreator,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    // @ts-expect-error --- Unused variable
     jobId,
 }: {
     jobCreator: string;

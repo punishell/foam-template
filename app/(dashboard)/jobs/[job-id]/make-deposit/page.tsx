@@ -67,6 +67,7 @@ export default function MakeDepositPage({ params }: Props): JSX.Element {
     const mutation = usePostJobPaymentDetails();
     const [paymentCoin, setPaymentCoin] = useState<SUPPORTED_COINS_TYPES>();
     const [contractAddress, setContractAddress] = useState<string>();
+    // @ts-expect-error --- Unused variable
     const { data: paymentCoinsData, isLoading: paymentCoinsLoading } = useGetPaymentCoins();
 
     const selectPaymentCoin = (coin: SUPPORTED_COINS_TYPES): void => {

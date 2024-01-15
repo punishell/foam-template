@@ -21,9 +21,9 @@ import { FEED_TYPES } from "@/lib/utils";
 
 export const Feeds = (): ReactElement => {
     const { _id: loggedInUser } = useUserState();
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    // @ts-expect-error --- Unused variable
     const [currentPage, setCurrentPage] = useState(1);
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    // @ts-expect-error --- Unused variable
     const [prevPage, setPrevPage] = useState(0);
     const [currentData, setCurrentData] = useState([]);
     const [observe, setObserve] = useState(false);

@@ -166,7 +166,7 @@ export const MessagingProvider = ({ children }: { children: React.ReactNode }): 
     const [socket, setSocket] = useState<Socket | null>(null);
     const [currentConversation, setCurrentConversation] = useState<ConversationProps | null>(null);
     const [conversations, setConversations] = useState<ConversationProps[]>([]);
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    // @ts-expect-error --- Unused variable
     const [status, setStatus] = useState<string>("pending");
     const [loadingChats, setLoadingChats] = useState<boolean>(true);
     const [socketReconnect, setSocketReconnect] = useState<boolean>(false);
