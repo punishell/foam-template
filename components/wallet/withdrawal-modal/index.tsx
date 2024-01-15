@@ -93,13 +93,13 @@ export const WithdrawalModal = ({
     return (
         <SideModal isOpen={isOpen} onOpenChange={onChange} className="gap-6">
             <div className="flex items-center gap-2 bg-primary-gradient px-4 py-6 text-white">
-                {/* eslint-disable-next-line jsx-a11y/control-has-associated-label */}
                 <button
                     className="flex h-10 w-10 items-center justify-center rounded-lg border border-white border-opacity-25 bg-white bg-opacity-10"
                     onClick={() => {
                         onChange(false);
                     }}
                     type="button"
+                    aria-label="Close Modal"
                 >
                     <X
                         size={24}

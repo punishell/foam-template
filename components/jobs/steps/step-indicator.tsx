@@ -1,12 +1,24 @@
+"use client";
+
+/* -------------------------------------------------------------------------- */
+/*                             External Dependency                            */
+/* -------------------------------------------------------------------------- */
+
+import { type ReactElement } from "react";
+import { Checkbox } from "pakt-ui";
+
+/* -------------------------------------------------------------------------- */
+/*                             Internal Dependency                            */
+/* -------------------------------------------------------------------------- */
+
 import { cn } from "@/lib/utils";
-import { Checkbox, Button } from "pakt-ui";
 
 interface StepIndicatorProps {
     isComplete?: boolean;
     children: React.ReactNode;
 }
 
-export const StepIndicator: React.FC<StepIndicatorProps> = ({ children, isComplete }) => {
+export const StepIndicator = ({ children, isComplete }: StepIndicatorProps): ReactElement | null => {
     return (
         <label
             className={cn(

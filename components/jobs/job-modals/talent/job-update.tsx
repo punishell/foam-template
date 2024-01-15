@@ -1,17 +1,27 @@
-import React from "react";
+"use client";
+
+/* -------------------------------------------------------------------------- */
+/*                             External Dependency                            */
+/* -------------------------------------------------------------------------- */
+
+import { type FC } from "react";
 import { MoreVertical } from "lucide-react";
+
+/* -------------------------------------------------------------------------- */
+/*                             Internal Dependency                            */
+/* -------------------------------------------------------------------------- */
+
 import { JobUpdateHeader } from "../job-update-header";
 import { isJobDeliverable, type Job } from "@/lib/types";
 import { DeliverablesStepper } from "@/components/jobs/deliverables-stepper";
 import { Popover, PopoverTrigger, PopoverContent } from "@/components/common/popover";
-import { useUserState } from "@/lib/store/account";
 
 interface JobUpdatesProps {
     job: Job;
     requestJobCancellation: () => void;
 }
 
-export const JobUpdates: React.FC<JobUpdatesProps> = ({ job, requestJobCancellation }) => {
+export const JobUpdates: FC<JobUpdatesProps> = ({ job, requestJobCancellation }) => {
     const {
         name,
         owner,
@@ -28,12 +38,12 @@ export const JobUpdates: React.FC<JobUpdatesProps> = ({ job, requestJobCancellat
     const deliverables = collections.filter(isJobDeliverable);
 
     return (
-        <React.Fragment>
+        <>
             <div className="flex items-start justify-between bg-primary-gradient px-4 py-6 text-3xl font-bold text-white">
                 <div className="max-w-[90%] break-words">{name}</div>
                 <Popover>
                     <PopoverTrigger asChild>
-                        <button>
+                        <button aria-label="more" type="button">
                             <MoreVertical />
                         </button>
                     </PopoverTrigger>
@@ -41,6 +51,7 @@ export const JobUpdates: React.FC<JobUpdatesProps> = ({ job, requestJobCancellat
                         <button
                             className="px-4 py-2 text-left duration-200 hover:bg-red-100"
                             onClick={requestJobCancellation}
+                            type="button"
                         >
                             Cancel Job
                         </button>
@@ -73,8 +84,9 @@ export const JobUpdates: React.FC<JobUpdatesProps> = ({ job, requestJobCancellat
                             jobProgress={progress}
                             talentId={String(owner?._id)}
                             jobCreator={creator?._id}
+                            // eslint-disable-next-line @typescript-eslint/no-shadow
                             deliverables={deliverables.map(({ _id, name, progress, updatedAt, meta }) => ({
-                                jobId: jobId,
+                                jobId,
                                 jobCreator: creator?._id,
                                 progress,
                                 updatedAt,
@@ -86,6 +98,6 @@ export const JobUpdates: React.FC<JobUpdatesProps> = ({ job, requestJobCancellat
                     </div>
                 </div>
             </div>
-        </React.Fragment>
+        </>
     );
 };

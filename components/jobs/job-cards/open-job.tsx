@@ -1,6 +1,16 @@
 "use client";
-import React from "react";
+
+/* -------------------------------------------------------------------------- */
+/*                             External Dependency                            */
+/* -------------------------------------------------------------------------- */
+
+import type React from "react";
 import Link from "next/link";
+
+/* -------------------------------------------------------------------------- */
+/*                             Internal Dependency                            */
+/* -------------------------------------------------------------------------- */
+
 import { AfroProfile } from "@/components/common/afro-profile";
 import { RenderBookMark } from "./render-bookmark";
 
@@ -14,11 +24,11 @@ interface OpenJobProps {
         avatar?: string;
         paktScore: number;
     };
-    skills: {
+    skills: Array<{
         type: "tags";
         name: string;
         color: string;
-    }[];
+    }>;
     isBookmarked?: boolean;
     bookmarkId: string;
     onRefresh?: () => void;
@@ -56,7 +66,7 @@ export const OpenJobCard: React.FC<OpenJobProps> = ({
                     {skills.slice(0, 3).map((skill) => (
                         <span
                             key={skill.name}
-                            className={`rounded-full bg-slate-100 px-4 py-0.5 capitalize`}
+                            className="rounded-full bg-slate-100 px-4 py-0.5 capitalize"
                             style={{ background: skill.color }}
                         >
                             {skill.name}

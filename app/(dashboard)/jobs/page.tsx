@@ -1,10 +1,18 @@
 "use client";
 
+/* -------------------------------------------------------------------------- */
+/*                             External Dependency                            */
+/* -------------------------------------------------------------------------- */
+
 import { useCallback, useEffect, useState } from "react";
 import { Button } from "pakt-ui";
 import * as RadixTabs from "@radix-ui/react-tabs";
 import { Plus } from "lucide-react";
 import { usePathname, useSearchParams, useRouter } from "next/navigation";
+
+/* -------------------------------------------------------------------------- */
+/*                             Internal Dependency                            */
+/* -------------------------------------------------------------------------- */
 
 import { OpenJobs } from "@/components/jobs/open-jobs";
 import { CreatedJobs } from "@/components/jobs/created-jobs";
@@ -26,7 +34,7 @@ function TabTrigger({ label, value }: TabTriggerProps): React.JSX.Element {
     );
 }
 
-export default function Jobs(): React.JSX.Element {
+export default function JobsPage(): React.JSX.Element {
     const router = useRouter();
     const pathname = usePathname();
 

@@ -1,21 +1,30 @@
 "use client";
 
-import type React from "react";
-import { useState } from "react";
+/* -------------------------------------------------------------------------- */
+/*                             External Dependency                            */
+/* -------------------------------------------------------------------------- */
+
+import { type ReactElement, useState } from "react";
 import { Button, Slider } from "pakt-ui";
 import { XCircle } from "lucide-react";
+
+/* -------------------------------------------------------------------------- */
+/*                             Internal Dependency                            */
+/* -------------------------------------------------------------------------- */
+
 import { Spinner } from "@/components/common";
 import { TagInput } from "@/components/common/tag-input";
 import { AfroScore } from "@/components/common/afro-profile";
 import { useGetConnectionPreference, useUpdateConnectionPreference } from "@/lib/api/connection";
 import { useMessaging } from "@/providers/socketProvider";
-import { ChatList, ChatListSearch } from "@/components/messaging/chatlist";
+import { ChatList } from "@/components/messaging/chat-list/chatlist";
+import { ChatListSearch } from "@/components/messaging/chat-list/chat-list-search";
 
 interface Props {
     children: React.ReactNode;
 }
 
-export default function MessagesLayout({ children }: Props): React.JSX.Element {
+export default function MessagesLayout({ children }: Props): ReactElement {
     // const [settingsModalOpen, setSettingsModalOpen] = React.useState(false);
     const { conversations, loadingChats } = useMessaging();
 

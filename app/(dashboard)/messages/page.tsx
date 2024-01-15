@@ -1,12 +1,21 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+/* -------------------------------------------------------------------------- */
+/*                             External Dependency                            */
+/* -------------------------------------------------------------------------- */
+
+import { type ReactElement, useEffect, useRef } from "react";
 import { MessageCircle } from "lucide-react";
 import { useSearchParams } from "next/navigation";
+
+/* -------------------------------------------------------------------------- */
+/*                             Internal Dependency                            */
+/* -------------------------------------------------------------------------- */
+
 import { useMessaging } from "@/providers/socketProvider";
 import { PageLoading } from "@/components/common/page-loading";
 
-export default function Messages(): React.JSX.Element {
+export default function MessagesPage(): ReactElement {
     const { startUserInitializeConversation, startingNewChat } = useMessaging();
     const searchParams = useSearchParams();
     const queryParams = new URLSearchParams(searchParams as unknown as string);

@@ -15,9 +15,10 @@ import { cn } from "@/lib/utils";
 
 interface Props {
     className?: string;
+    color?: string;
 }
 
-export const PageLoading = ({ className }: Props): React.JSX.Element => {
+export const PageLoading = ({ className, color }: Props): React.JSX.Element => {
     useEffect(() => {
         async function getLoader(): Promise<void> {
             try {
@@ -37,7 +38,7 @@ export const PageLoading = ({ className }: Props): React.JSX.Element => {
                 bg-opacity="0.1"
                 speed="1.4"
                 // color="#007C5B"
-                color="#ffffff"
+                color={color ?? "#ffffff"}
             />
         </div>
     );
