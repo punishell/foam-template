@@ -1,6 +1,15 @@
-import React from "react";
-import { cn } from "@/lib/utils";
+/* -------------------------------------------------------------------------- */
+/*                             External Dependency                            */
+/* -------------------------------------------------------------------------- */
+
+import { type FC, useState } from "react";
 import { X } from "lucide-react";
+
+/* -------------------------------------------------------------------------- */
+/*                             Internal Dependency                            */
+/* -------------------------------------------------------------------------- */
+
+import { cn } from "@/lib/utils";
 
 interface TagInputProps {
     tags: string[];
@@ -9,10 +18,10 @@ interface TagInputProps {
     placeholder?: string;
 }
 
-export const TagInput: React.FC<TagInputProps> = ({ tags, setTags, className, placeholder }) => {
-    const [inputValue, setInputValue] = React.useState("");
+export const TagInput: FC<TagInputProps> = ({ tags, setTags, className, placeholder }) => {
+    const [inputValue, setInputValue] = useState("");
 
-    const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>): void => {
         if (event.key === "Enter" && inputValue.trim() !== "") {
             event.preventDefault();
             setTags([...tags, inputValue.trim()]);
@@ -39,7 +48,10 @@ export const TagInput: React.FC<TagInputProps> = ({ tags, setTags, className, pl
                     <button
                         type="button"
                         className="text-[#198155]"
-                        onClick={() => setTags(tags.filter((t) => t !== tag))}
+                        onClick={() => {
+                            setTags(tags.filter((t) => t !== tag));
+                        }}
+                        aria-label="Close"
                     >
                         <X size={16} strokeWidth={1} />
                     </button>
@@ -48,9 +60,11 @@ export const TagInput: React.FC<TagInputProps> = ({ tags, setTags, className, pl
             <input
                 type="text"
                 className="peer flex-grow outline-none"
-                placeholder={placeholder || "Add skills"}
+                placeholder={placeholder ?? "Add skills"}
                 value={inputValue}
-                onChange={(event) => setInputValue(event.target.value)}
+                onChange={(event) => {
+                    setInputValue(event.target.value);
+                }}
                 onKeyDown={handleKeyDown}
             />
         </div>

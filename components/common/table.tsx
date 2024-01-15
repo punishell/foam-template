@@ -1,16 +1,31 @@
 "use client";
 
-import React from "react";
+/* -------------------------------------------------------------------------- */
+/*                             External Dependency                            */
+/* -------------------------------------------------------------------------- */
+
+import type React from "react";
 import Image from "next/image";
 import { Text } from "pakt-ui";
-import { ChevronLeft, ChevronRight } from "lucide-react";
-import { ColumnDef, PaginationState, flexRender, getCoreRowModel, useReactTable } from "@tanstack/react-table";
+import {
+    type ColumnDef,
+    type PaginationState,
+    flexRender,
+    getCoreRowModel,
+    useReactTable,
+} from "@tanstack/react-table";
+
+/* -------------------------------------------------------------------------- */
+/*                             Internal Dependency                            */
+/* -------------------------------------------------------------------------- */
+
 import { Pagination } from "./pagination";
 import { Spinner } from "./loader";
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 interface TableProps<T extends Record<string, any>> {
     data?: T[];
-    columns: ColumnDef<T>[];
+    columns: Array<ColumnDef<T>>;
     pagination?: PaginationState;
     setPagination: React.Dispatch<React.SetStateAction<PaginationState>>;
     pageCount: number;
@@ -26,7 +41,7 @@ export const Table = <T extends object>({
     setPagination,
     emptyStateMessage,
     loading,
-}: TableProps<T>) => {
+}: TableProps<T>): React.JSX.Element => {
     const table = useReactTable({
         data,
         columns,
@@ -40,7 +55,7 @@ export const Table = <T extends object>({
         onPaginationChange: setPagination,
     });
 
-    const setCurrentPage = (page: number) => {
+    const setCurrentPage = (page: number): void => {
         console.log(page);
         setPagination((prev) => {
             console.log({ ...prev, pageIndex: page });
@@ -63,8 +78,9 @@ export const Table = <T extends object>({
                     <div className="max-w-[100px]">
                         <Image src="/images/empty-table.svg" width={200} height={200} alt="" />
                     </div>
+                    {/* eslint-disable-next-line react/jsx-pascal-case */}
                     <Text.h3 size="xs" className="text-center font-normal text-[#6C757D]">
-                        {emptyStateMessage || "Table Content Will Appear Here"}
+                        {emptyStateMessage ?? "Table Content Will Appear Here"}
                     </Text.h3>
                 </div>
             </div>
@@ -100,31 +116,26 @@ export const Table = <T extends object>({
                                     ))}
                                 </thead>
 
-                                {
-                                    <tbody className="divide-y divide-line border-t border-line">
-                                        {table.getRowModel().rows.map((row) => {
-                                            return (
-                                                <tr key={row.id} className="hover:bg-app relative duration-200">
-                                                    {row.getVisibleCells().map((cell) => {
-                                                        return (
-                                                            <td
-                                                                key={cell.id}
-                                                                className="w-fit text-base text-[#787389]"
-                                                            >
-                                                                <div className="overflow-hidden overflow-ellipsis whitespace-nowrap px-3 py-2">
-                                                                    {flexRender(
-                                                                        cell.column.columnDef.cell,
-                                                                        cell.getContext(),
-                                                                    )}
-                                                                </div>
-                                                            </td>
-                                                        );
-                                                    })}
-                                                </tr>
-                                            );
-                                        })}
-                                    </tbody>
-                                }
+                                <tbody className="divide-y divide-line border-t border-line">
+                                    {table.getRowModel().rows.map((row) => {
+                                        return (
+                                            <tr key={row.id} className="hover:bg-app relative duration-200">
+                                                {row.getVisibleCells().map((cell) => {
+                                                    return (
+                                                        <td key={cell.id} className="w-fit text-base text-[#787389]">
+                                                            <div className="overflow-hidden overflow-ellipsis whitespace-nowrap px-3 py-2">
+                                                                {flexRender(
+                                                                    cell.column.columnDef.cell,
+                                                                    cell.getContext(),
+                                                                )}
+                                                            </div>
+                                                        </td>
+                                                    );
+                                                })}
+                                            </tr>
+                                        );
+                                    })}
+                                </tbody>
                             </table>
                         </div>
                     </div>

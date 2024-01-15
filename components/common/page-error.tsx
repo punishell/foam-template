@@ -1,12 +1,21 @@
-import React from "react";
-import { cn } from "@/lib/utils";
+/* -------------------------------------------------------------------------- */
+/*                             External Dependency                            */
+/* -------------------------------------------------------------------------- */
+
 import { AlertCircle } from "lucide-react";
+import { type FC } from "react";
+
+/* -------------------------------------------------------------------------- */
+/*                             Internal Dependency                            */
+/* -------------------------------------------------------------------------- */
+
+import { cn } from "@/lib/utils";
 
 interface Props {
     className?: string;
 }
 
-export const PageError: React.FC<Props> = ({ className }) => {
+export const PageError: FC<Props> = ({ className }) => {
     return (
         <div
             aria-live="polite"

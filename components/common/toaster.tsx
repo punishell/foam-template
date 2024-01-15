@@ -1,10 +1,17 @@
 "use client";
-import Image from "next/image";
+
+/* -------------------------------------------------------------------------- */
+/*                             External Dependency                            */
+/* -------------------------------------------------------------------------- */
+
 import toastPrimitive from "react-hot-toast";
 import { CheckCircle2, XCircle } from "lucide-react";
-import { UserAvatar } from "./user-avatar";
-import { AfroProfile, AfroScore } from "./afro-profile";
-import { DefaultAvatar } from "./default-avatar";
+
+/* -------------------------------------------------------------------------- */
+/*                             Internal Dependency                            */
+/* -------------------------------------------------------------------------- */
+
+import { AfroProfile } from "./afro-profile";
 
 export const toast = {
     error: (message: string) =>

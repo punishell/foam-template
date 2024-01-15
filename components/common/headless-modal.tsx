@@ -1,7 +1,16 @@
 "use client";
 
-import React from "react";
+/* -------------------------------------------------------------------------- */
+/*                             External Dependency                            */
+/* -------------------------------------------------------------------------- */
+
+import { type FC, Fragment } from "react";
 import { Dialog, Transition } from "@headlessui/react";
+
+/* -------------------------------------------------------------------------- */
+/*                             Internal Dependency                            */
+/* -------------------------------------------------------------------------- */
+
 import { cn } from "@/lib/utils";
 
 interface ModalProps {
@@ -12,9 +21,9 @@ interface ModalProps {
     disableClickOutside?: boolean;
 }
 
-export const Modal: React.FC<ModalProps> = ({ children, isOpen, closeModal, className, disableClickOutside }) => {
+export const Modal: FC<ModalProps> = ({ children, isOpen, closeModal, className, disableClickOutside }) => {
     return (
-        <Transition appear show={isOpen} as={React.Fragment}>
+        <Transition appear show={isOpen} as={Fragment}>
             <Dialog
                 as="div"
                 className="relative z-10"
@@ -25,7 +34,7 @@ export const Modal: React.FC<ModalProps> = ({ children, isOpen, closeModal, clas
                 }}
             >
                 <Transition.Child
-                    as={React.Fragment}
+                    as={Fragment}
                     enter="ease-out duration-300"
                     enterFrom="opacity-0"
                     enterTo="opacity-100"
@@ -39,7 +48,7 @@ export const Modal: React.FC<ModalProps> = ({ children, isOpen, closeModal, clas
                 <div className="fixed inset-0 overflow-y-auto">
                     <div className="flex min-h-full items-center justify-center p-4 text-center">
                         <Transition.Child
-                            as={React.Fragment}
+                            as={Fragment}
                             enter="ease-out duration-300"
                             enterFrom="opacity-0 scale-95"
                             enterTo="opacity-100 scale-100"

@@ -1,4 +1,13 @@
-import { useQuery, type QueryKey, type UseQueryOptions } from "@tanstack/react-query";
+/* -------------------------------------------------------------------------- */
+/*                             External Dependency                            */
+/* -------------------------------------------------------------------------- */
+
+import { useQuery, type QueryKey, type UseQueryOptions, type UseQueryResult } from "@tanstack/react-query";
+
+/* -------------------------------------------------------------------------- */
+/*                             Internal Dependency                            */
+/* -------------------------------------------------------------------------- */
+
 import { axios, type ApiError } from "@/lib/axios";
 import { type Review, type User } from "@/lib/types";
 import { toast } from "@/components/common/toaster";
@@ -46,7 +55,11 @@ async function getTalentReview(userId: string, page: string, limit: string): Pro
     return review.data.data;
 }
 
-export const useGetTalents = ({ limit, page, filter }: talentFetchParams) => {
+export const useGetTalents = ({
+    limit,
+    page,
+    filter,
+}: talentFetchParams): UseQueryResult<talentListResponse, GetTalentFetchDetailsError> => {
     const getQueryKey: QueryKey = [`talents_${limit}_${page}_${JSON.stringify(filter)}`];
     const options: UseQueryOptions<talentListResponse, GetTalentFetchDetailsError> = {
         queryFn: async () => {
@@ -62,7 +75,15 @@ export const useGetTalents = ({ limit, page, filter }: talentFetchParams) => {
     return useQuery(getQueryKey, options);
 };
 
-export const useGetTalentById = (id: string, enabled: boolean = false) => {
+export const useGetTalentById = (
+    id: string,
+    enabled: boolean = false,
+): UseQueryResult<
+    {
+        talent: User;
+    },
+    GetTalentFetchDetailsError
+> => {
     const getQueryIdKey = [`talent_id_${id}`];
     return useQuery({
         queryFn: async () => {
@@ -77,7 +98,12 @@ export const useGetTalentById = (id: string, enabled: boolean = false) => {
     });
 };
 
-export const useGetTalentReviewById = (id: string, page: string, limit: string, enabled = false) => {
+export const useGetTalentReviewById = (
+    id: string,
+    page: string,
+    limit: string,
+    enabled = false,
+): UseQueryResult<reviewResponse, GetTalentFetchDetailsError> => {
     const getQueryIdReview = [`talent_review_${id}_${page}_${limit}`];
     return useQuery({
         queryFn: async () => {

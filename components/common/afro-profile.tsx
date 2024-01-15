@@ -1,8 +1,17 @@
-import React from "react";
+/* -------------------------------------------------------------------------- */
+/*                             External Dependency                            */
+/* -------------------------------------------------------------------------- */
+
+import { type FC, useId, useRef, useState } from "react";
 import { arc } from "d3-shape";
 import Image from "next/image";
-import { DefaultAvatar } from "@/components/common/default-avatar";
 import Link from "next/link";
+
+/* -------------------------------------------------------------------------- */
+/*                             Internal Dependency                            */
+/* -------------------------------------------------------------------------- */
+
+import { DefaultAvatar } from "@/components/common/default-avatar";
 
 type Size = "sm" | "md" | "2md" | "lg" | "xl" | "2xl" | "3xl";
 
@@ -22,26 +31,28 @@ interface AfroScoreProps {
     children?: React.ReactNode;
 }
 
-const progressToColor = (progress: number) => {
+const progressToColor = (progress: number): string => {
     if (progress <= 24) {
         return "#fa0832";
-    } else if (progress <= 49) {
-        return "#ffbf04";
-    } else if (progress <= 74) {
-        return "#649ff9";
-    } else {
-        return "#17a753";
     }
+    if (progress <= 49) {
+        return "#ffbf04";
+    }
+    if (progress <= 74) {
+        return "#649ff9";
+    }
+    return "#17a753";
 };
 
-export const AfroScore: React.FC<AfroScoreProps> = ({ size, score: initialScore = 63, children }) => {
-    const id = React.useId();
-    const svgRef = React.useRef<SVGSVGElement>(null);
+export const AfroScore: FC<AfroScoreProps> = ({ size, score: initialScore = 63, children }) => {
+    const id = useId();
+    const svgRef = useRef<SVGSVGElement>(null);
     const sizeInPx = SIZE_TO_PX[size];
     const thickness = sizeInPx / 11;
     const knobRadius = thickness * 1.2;
     const radius = (sizeInPx - thickness) / 2;
-    const [score, setScore] = React.useState(initialScore);
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const [score, setScore] = useState(initialScore);
     const progressAngle = (score / 100) * 2 * Math.PI;
 
     const bgArcGenerator = arc()
@@ -57,33 +68,34 @@ export const AfroScore: React.FC<AfroScoreProps> = ({ size, score: initialScore 
         .innerRadius(radius - thickness)
         .cornerRadius(666);
 
-    // @ts-ignore
+    // @ts-expect-error Expects 1 arguments, but got 0.
     const bgArcPath = bgArcGenerator();
-    // @ts-ignore
+    // @ts-expect-error Expects 1 arguments, but got 0.
     const progressArcPath = progressArcGenerator();
 
     // Add a knob to the progress arc
     const knobX = (radius - thickness / 2) * Math.cos(progressAngle - Math.PI / 2);
     const knobY = (radius - thickness / 2) * Math.sin(progressAngle - Math.PI / 2);
 
-    const [knobPosition, setKnobPosition] = React.useState({ x: knobX, y: knobY });
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const [knobPosition, setKnobPosition] = useState({ x: knobX, y: knobY });
 
-    const onDrag = (event: MouseEvent) => {
-        if (!svgRef.current) return;
-        const svgRect = svgRef.current.getBoundingClientRect();
+    // const onDrag = (event: MouseEvent): void => {
+    //     if (!svgRef.current) return;
+    //     const svgRect = svgRef.current.getBoundingClientRect();
 
-        const newKnobPosition = {
-            x: event.clientX - svgRect.left - radius,
-            y: event.clientY - svgRect.top - radius,
-        };
+    //     const newKnobPosition = {
+    //         x: event.clientX - svgRect.left - radius,
+    //         y: event.clientY - svgRect.top - radius,
+    //     };
 
-        setKnobPosition(newKnobPosition);
+    //     setKnobPosition(newKnobPosition);
 
-        // Calculate the new score based on the knob position
-        const angle = Math.atan2(newKnobPosition.y, newKnobPosition.x);
-        let newScore = (((angle + Math.PI) % (2 * Math.PI)) / (2 * Math.PI)) * 100;
-        setScore(newScore);
-    };
+    //     // Calculate the new score based on the knob position
+    //     const angle = Math.atan2(newKnobPosition.y, newKnobPosition.x);
+    //     const newScore = (((angle + Math.PI) % (2 * Math.PI)) / (2 * Math.PI)) * 100;
+    //     setScore(newScore);
+    // };
 
     return (
         <div className="relative flex items-center justify-center">
@@ -173,7 +185,7 @@ export const AfroScore: React.FC<AfroScoreProps> = ({ size, score: initialScore 
                         r={knobRadius}
                         fill={progressToColor(score)}
                         transform={`translate(${(sizeInPx + knobRadius) / 2}, ${(sizeInPx + knobRadius) / 2})`}
-                    ></circle>
+                    />
 
                     <text
                         className="select-none"
@@ -204,9 +216,9 @@ type AfroProfileProps = Omit<AfroScoreProps, "children"> & {
     url?: string;
 };
 
-export const AfroProfile: React.FC<AfroProfileProps> = ({ size, score, src, url }) => {
+export const AfroProfile: FC<AfroProfileProps> = ({ size, score, src, url }) => {
     return (
-        <Link href={url || ""} className="relative flex items-center justify-center">
+        <Link href={url ?? ""} className="relative flex items-center justify-center">
             <AfroScore score={score} size={size}>
                 {src ? (
                     <Image

@@ -1,8 +1,17 @@
-import { useCallback, useState } from "react";
-import { GallerySvg } from "./gallery-svg";
+/* -------------------------------------------------------------------------- */
+/*                             External Dependency                            */
+/* -------------------------------------------------------------------------- */
+
+import { type FC, useCallback, useState } from "react";
 import { useDropzone } from "react-dropzone";
-import { useUploadImage } from "@/lib/api/upload";
 import Image from "next/image";
+
+/* -------------------------------------------------------------------------- */
+/*                             Internal Dependency                            */
+/* -------------------------------------------------------------------------- */
+
+import { GallerySvg } from "./gallery-svg";
+import { useUploadImage } from "@/lib/api/upload";
 import { toast } from "./toaster";
 
 type Size = "xs" | "sm" | "md" | "lg" | "xl";
@@ -27,11 +36,13 @@ interface Props {
     size?: Size;
     image?: string;
     score?: number;
+    // eslint-disable-next-line react/no-unused-prop-types
     useUpload?: boolean;
+    // eslint-disable-next-line react/no-unused-prop-types, @typescript-eslint/no-explicit-any
     onUploadComplete?: (response: any) => void;
 }
 
-function getAvatarColor(paktScore: number) {
+function getAvatarColor(paktScore: number): string {
     if (paktScore <= 20) {
         return "bg-red-gradient";
     }
@@ -47,14 +58,15 @@ function getAvatarColor(paktScore: number) {
     return "bg-green-gradient";
 }
 
-const sizes: Record<string, any> = {
+const sizes: Record<string, unknown> = {
     xs: 20,
     md: 30,
 };
 
-const getSizes = (size: string) => sizes[size] || 30;
+const getSizes = (size: string): number => (sizes[size] as number) || 30;
 
-export const UserAvatar: React.FC<Props> = ({ image, score = 0, size = "md" }) => {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export const UserAvatar: FC<Props> = ({ image, score = 0, size = "md" }) => {
     return (
         <div
             className={`${getAvatarColor(
@@ -79,30 +91,47 @@ export const UserAvatar: React.FC<Props> = ({ image, score = 0, size = "md" }) =
                     width: sizesToPx[size],
                     height: sizesToPx[size],
                 }}
-            ></div>
+            />
         </div>
     );
 };
 
-export const UserAvatar2: React.FC<Props> = ({ image, size = "md", useUpload = false, onUploadComplete }) => {
+export const UserAvatar2: FC<Props> = ({ image, size = "md", useUpload = false, onUploadComplete }) => {
     const [showUpload, setShowUpload] = useState(false);
     const [uploadProgress, setUploadProgress] = useState(0);
     const uploadImage = useUploadImage();
     const [imageFile, setImageFile] = useState<{ file: File; preview: string } | null>(null);
 
-    const onEnterLeave = (e: React.MouseEvent<HTMLDivElement, MouseEvent>, value: boolean) => {
+    const onEnterLeave = (e: React.MouseEvent<HTMLDivElement, MouseEvent>, value: boolean): void => {
         e.preventDefault();
-        if (!useUpload) return setShowUpload(false);
+        if (!useUpload) {
+            setShowUpload(false);
+            return;
+        }
         setShowUpload(value);
     };
 
+    const handleUpload = async (file: File): Promise<void> => {
+        if (!file) return;
+        uploadImage.mutate(
+            { file, onProgress: setUploadProgress },
+            {
+                onSuccess: (data) => {
+                    toast.success("Avatar uploaded successfully");
+                    return onUploadComplete?.(data);
+                },
+            },
+        );
+    };
+
     const onDrop = useCallback(async (acceptedFiles: File[]) => {
-        const file = acceptedFiles[0];
+        const file = acceptedFiles[0] as File;
         setImageFile({
             file,
             preview: URL.createObjectURL(file),
         });
-        handleUpload(file);
+        void handleUpload(file);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const { getRootProps, getInputProps } = useDropzone({
@@ -114,19 +143,6 @@ export const UserAvatar2: React.FC<Props> = ({ image, size = "md", useUpload = f
         },
     });
 
-    const handleUpload = async (file: File) => {
-        if (!file) return;
-        uploadImage.mutate(
-            { file: file, onProgress: setUploadProgress },
-            {
-                onSuccess: (data) => {
-                    toast.success("Avatar uploaded successfully");
-                    return onUploadComplete && onUploadComplete(data);
-                },
-            },
-        );
-    };
-
     const h = size === "sm" ? 80 : size === "md" ? 120 : 150;
     const w = size === "sm" ? 80 : size === "md" ? 120 : 150;
     const iconSize = size === "sm" ? 10 : size === "md" ? 30 : 30;
@@ -135,10 +151,14 @@ export const UserAvatar2: React.FC<Props> = ({ image, size = "md", useUpload = f
 
     return (
         <div
-            className={`relative flex cursor-pointer items-center justify-center overflow-hidden rounded-full border bg-lime-50 text-white duration-200`}
+            className="relative flex cursor-pointer items-center justify-center overflow-hidden rounded-full border bg-lime-50 text-white duration-200"
             style={{ height: h, width: w }}
-            onMouseEnter={(e) => onEnterLeave(e, true)}
-            onMouseLeave={(e) => onEnterLeave(e, false)}
+            onMouseEnter={(e) => {
+                onEnterLeave(e, true);
+            }}
+            onMouseLeave={(e) => {
+                onEnterLeave(e, false);
+            }}
         >
             <div className="absolute inset-0 flex items-center justify-center">
                 {PreviewImg ? (

@@ -1,3 +1,13 @@
+/* -------------------------------------------------------------------------- */
+/*                             External Dependency                            */
+/* -------------------------------------------------------------------------- */
+
+import { type FC } from "react";
+
+/* -------------------------------------------------------------------------- */
+/*                             Internal Dependency                            */
+/* -------------------------------------------------------------------------- */
+
 import { cn } from "@/lib/utils";
 
 interface Props {
@@ -7,7 +17,7 @@ interface Props {
     percentageProgress: number;
 }
 
-const InProgress: React.FC<BarProps> = ({ isCancelled }) => (
+const InProgress: FC<BarProps> = ({ isCancelled }) => (
     <div
         className="h-2 flex-1 basis-0 rounded-full"
         style={{
@@ -19,7 +29,8 @@ const InProgress: React.FC<BarProps> = ({ isCancelled }) => (
 interface BarProps {
     isCancelled?: boolean;
 }
-const Completed: React.FC<BarProps> = ({ isCancelled }) => (
+
+const Completed: FC<BarProps> = ({ isCancelled }) => (
     <div
         className="h-2 flex-1 basis-0 rounded-full"
         style={{
@@ -28,7 +39,7 @@ const Completed: React.FC<BarProps> = ({ isCancelled }) => (
     />
 );
 
-export const DeliverableProgressBar: React.FC<Props> = ({
+export const DeliverableProgressBar: FC<Props> = ({
     percentageProgress,
     totalDeliverables,
     isCancelled,

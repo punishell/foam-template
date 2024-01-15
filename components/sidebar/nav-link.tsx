@@ -1,5 +1,10 @@
 "use client";
 
+/* -------------------------------------------------------------------------- */
+/*                             External Dependency                            */
+/* -------------------------------------------------------------------------- */
+
+import { type FC } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -8,7 +13,7 @@ interface Props {
     children: React.ReactNode;
 }
 
-export const NavLink: React.FC<Props> = ({ href, children }) => {
+export const NavLink: FC<Props> = ({ href, children }) => {
     const pathname = usePathname();
     const parentPath = pathname.split("/")[1];
     const isActive = href.startsWith(`/${parentPath}`);

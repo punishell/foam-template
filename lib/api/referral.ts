@@ -1,8 +1,16 @@
-import { User } from "@/lib/types";
-import { ApiError, axios } from "@/lib/axios";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* -------------------------------------------------------------------------- */
+/*                             External Dependency                            */
+/* -------------------------------------------------------------------------- */
+
+import { useQuery, useMutation, type UseQueryResult, type UseMutationResult } from "@tanstack/react-query";
+
+/* -------------------------------------------------------------------------- */
+/*                             Internal Dependency                            */
+/* -------------------------------------------------------------------------- */
+
+import { type ApiError, axios } from "@/lib/axios";
 import { toast } from "@/components/common/toaster";
-import { useQuery, useMutation } from "@tanstack/react-query";
-import { useUserState } from "../store/account";
 
 interface GetReferrals {
     data: any[];
@@ -47,7 +55,17 @@ async function validateReferral({ token }: { token: string }): Promise<any> {
     return res.data.data;
 }
 
-export const useGetReferral = ({ page, limit, filter }: FetchParams) => {
+export const useGetReferral = ({
+    page,
+    limit,
+    filter,
+}: FetchParams): UseQueryResult<
+    {
+        referrals: GetReferrals;
+        stats: GetReferralStat;
+    },
+    ApiError
+> => {
     return useQuery({
         queryFn: async () => {
             const response = await Promise.all([fetchReferrals({ page, limit, filter }), fetchReferralStats()]);
@@ -55,7 +73,7 @@ export const useGetReferral = ({ page, limit, filter }: FetchParams) => {
         },
         queryKey: [`get-bookmark_req_${page}`, filter],
         onError: (error: ApiError) => {
-            toast.error(error?.response?.data.message || "An error occurred");
+            toast.error(error?.response?.data.message ?? "An error occurred");
         },
         onSuccess: (data) => {
             return data;
@@ -63,17 +81,24 @@ export const useGetReferral = ({ page, limit, filter }: FetchParams) => {
     });
 };
 
-export function useSendReferralInvite() {
+export function useSendReferralInvite(): UseMutationResult<any, ApiError, SendReferralInviteParams, unknown> {
     return useMutation({
         mutationFn: postReferralInvite,
         mutationKey: ["send_referral_invite"],
         onError: (error: ApiError) => {
-            toast.error(error?.response?.data.message || "An error occurred");
+            toast.error(error?.response?.data.message ?? "An error occurred");
         },
     });
 }
 
-export function useValidateReferral() {
+export function useValidateReferral(): UseMutationResult<
+    any,
+    unknown,
+    {
+        token: string;
+    },
+    unknown
+> {
     return useMutation({
         mutationFn: validateReferral,
         mutationKey: ["validateReferral"],

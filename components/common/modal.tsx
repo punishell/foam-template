@@ -1,6 +1,15 @@
-import React from "react";
-import { cn } from "@/lib/utils";
+/* -------------------------------------------------------------------------- */
+/*                             External Dependency                            */
+/* -------------------------------------------------------------------------- */
+
+import { type FC } from "react";
 import * as Dialog from "@radix-ui/react-dialog";
+
+/* -------------------------------------------------------------------------- */
+/*                             Internal Dependency                            */
+/* -------------------------------------------------------------------------- */
+
+import { cn } from "@/lib/utils";
 
 interface Props {
     isOpen: boolean;
@@ -10,7 +19,7 @@ interface Props {
     disableClickOutside?: boolean;
 }
 
-export const Modal: React.FC<Props> = ({ children, isOpen, onOpenChange, className, disableClickOutside }) => {
+export const Modal: FC<Props> = ({ children, isOpen, onOpenChange, className, disableClickOutside }) => {
     return (
         <Dialog.Root open={isOpen} onOpenChange={onOpenChange}>
             <Dialog.Portal>

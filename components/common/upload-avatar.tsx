@@ -1,13 +1,39 @@
-import React from "react";
+/* -------------------------------------------------------------------------- */
+/*                             External Dependency                            */
+/* -------------------------------------------------------------------------- */
+
+import { type FC, useState, useEffect, useCallback } from "react";
 import Image from "next/image";
-import { Button } from "pakt-ui";
+import { useDropzone } from "react-dropzone";
+import { FileWarning } from "lucide-react";
+
+/* -------------------------------------------------------------------------- */
+/*                             Internal Dependency                            */
+/* -------------------------------------------------------------------------- */
+
 import { useUploadImage } from "@/lib/api/upload";
 import { useUpdateAccount } from "@/lib/api/account";
-import { useDropzone } from "react-dropzone";
-import { Edit3, AlertCircle, FileWarning } from "lucide-react";
 import { GallerySvg } from "@/components/common/gallery-svg";
 import { DefaultAvatar } from "./default-avatar";
-import { toast } from "@/components/common/toaster";
+
+interface UploadProgressProps {
+    progress: number;
+}
+
+const UploadProgress: FC<UploadProgressProps> = ({ progress }) => {
+    return (
+        <div className="flex h-[28px] w-full items-center justify-center rounded-lg border border-primary bg-green-200 px-2">
+            <div className="h-[8px] w-full overflow-hidden rounded-full bg-green-100">
+                <div
+                    className="h-full rounded-full bg-primary-gradient"
+                    style={{
+                        width: `${progress}%`,
+                    }}
+                />
+            </div>
+        </div>
+    );
+};
 
 interface Props {
     size?: number;
@@ -18,21 +44,21 @@ interface Props {
 const MB_IN_BYTES = 1024 * 1024;
 const maxSize = 2 * MB_IN_BYTES; // 2MB
 
-export const UploadAvatar: React.FC<Props> = ({ image, size: previewImageSize = 180, onUploadComplete }) => {
+export const UploadAvatar: FC<Props> = ({ image, size: previewImageSize = 180, onUploadComplete }) => {
     const uploadImage = useUploadImage();
     const updateAccount = useUpdateAccount();
-    const [uploadProgress, setUploadProgress] = React.useState(0);
-    const [previewImage, setPreviewImage] = React.useState<{ file: File; preview: string } | null>();
+    const [uploadProgress, setUploadProgress] = useState(0);
+    const [previewImage, setPreviewImage] = useState<{ file: File; preview: string } | null>();
 
-    const onDrop = React.useCallback(async (acceptedFiles: File[]) => {
-        const file = acceptedFiles[0];
+    const onDrop = useCallback(async (acceptedFiles: File[]) => {
+        const file = acceptedFiles[0] as File;
         setPreviewImage({
             file,
             preview: window.URL.createObjectURL(file),
         });
     }, []);
 
-    React.useEffect(() => {
+    useEffect(() => {
         return () => {
             if (previewImage) {
                 URL.revokeObjectURL(previewImage.preview);
@@ -47,14 +73,14 @@ export const UploadAvatar: React.FC<Props> = ({ image, size: previewImageSize = 
         maxFiles: 1,
 
         accept: {
-            ["image/png"]: [],
-            ["image/jpg"]: [],
-            ["image/jpeg"]: [],
+            "image/png": [],
+            "image/jpg": [],
+            "image/jpeg": [],
         },
     });
-    const isFileTooLarge = fileRejections.length > 0 && fileRejections[0].file.size > maxSize;
+    const isFileTooLarge = fileRejections.length > 0 && fileRejections[0] && fileRejections[0].file.size > maxSize;
 
-    const handleUpload = async () => {
+    const handleUpload = async (): Promise<void> => {
         if (!previewImage) return;
         uploadImage.mutate(
             { file: previewImage.file, onProgress: setUploadProgress },
@@ -66,13 +92,14 @@ export const UploadAvatar: React.FC<Props> = ({ image, size: previewImageSize = 
                         },
                         {
                             onSuccess: () => {
-                                onUploadComplete && onUploadComplete();
+                                onUploadComplete?.();
                             },
                         },
                     );
                     setPreviewImage(null);
                 },
-                onError: (err) => {
+                onError: (err): void => {
+                    console.error(err);
                     setPreviewImage(null);
                 },
             },
@@ -129,6 +156,7 @@ export const UploadAvatar: React.FC<Props> = ({ image, size: previewImageSize = 
 
             {previewImage && !uploadImage.isLoading && !isFileTooLarge && (
                 <button
+                    type="button"
                     onClick={handleUpload}
                     className="h-[28px] w-full rounded-lg border border-primary bg-green-200 px-2 text-xs font-medium capitalize text-green-700 duration-200 hover:bg-opacity-50"
                 >
@@ -146,25 +174,6 @@ export const UploadAvatar: React.FC<Props> = ({ image, size: previewImageSize = 
                     <span>Please upload a picture smaller than 2 MB</span>
                 </div>
             )}
-        </div>
-    );
-};
-
-interface UploadProgressProps {
-    progress: number;
-}
-
-const UploadProgress: React.FC<UploadProgressProps> = ({ progress }) => {
-    return (
-        <div className="flex h-[28px] w-full items-center justify-center rounded-lg border border-primary bg-green-200 px-2">
-            <div className="h-[8px] w-full overflow-hidden rounded-full bg-green-100">
-                <div
-                    className="h-full rounded-full bg-primary-gradient"
-                    style={{
-                        width: `${progress}%`,
-                    }}
-                ></div>
-            </div>
         </div>
     );
 };

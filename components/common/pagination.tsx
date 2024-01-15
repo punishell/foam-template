@@ -1,3 +1,8 @@
+/* -------------------------------------------------------------------------- */
+/*                             External Dependency                            */
+/* -------------------------------------------------------------------------- */
+
+import { type FC } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
 interface PaginationProps {
@@ -6,13 +11,13 @@ interface PaginationProps {
     setCurrentPage: (page: number) => void;
 }
 
-export const Pagination: React.FC<PaginationProps> = ({ currentPage, setCurrentPage, totalPages }) => {
+export const Pagination: FC<PaginationProps> = ({ currentPage, setCurrentPage, totalPages }) => {
     const BOUNDARY = 3;
     const MIN_PAGE = 1;
     const MAX_PAGE = Math.max(MIN_PAGE, totalPages);
 
-    let leftPages: number[] = [];
-    let rightPages: number[] = [];
+    const leftPages: number[] = [];
+    const rightPages: number[] = [];
 
     for (let i = Math.max(MIN_PAGE, currentPage - BOUNDARY); i < currentPage; i++) {
         leftPages.push(i);
@@ -27,22 +32,28 @@ export const Pagination: React.FC<PaginationProps> = ({ currentPage, setCurrentP
             <div>{/* Page {currentPage} of {totalPages} */}</div>
 
             <div className="flex items-center gap-2">
-                {
-                    <button
-                        className="rounded-lg p-1 px-2 text-primary hover:bg-[#007C5B1A]"
-                        onClick={() => setCurrentPage(currentPage - 1)}
-                        disabled={currentPage === 1}
-                    >
-                        <ChevronLeft strokeWidth={1.5} size={20} />
-                    </button>
-                }
+                <button
+                    className="rounded-lg p-1 px-2 text-primary hover:bg-[#007C5B1A]"
+                    onClick={() => {
+                        setCurrentPage(currentPage - 1);
+                    }}
+                    disabled={currentPage === 1}
+                    aria-label="Back"
+                    type="button"
+                >
+                    <ChevronLeft strokeWidth={1.5} size={20} />
+                </button>
 
                 {leftPages.length > 0 &&
                     leftPages.map((page) => (
                         <button
                             key={page}
                             className="rounded-lg bg-white p-1 px-3 text-sm text-primary hover:bg-[#007C5B1A]"
-                            onClick={() => setCurrentPage(page)}
+                            onClick={() => {
+                                setCurrentPage(page);
+                            }}
+                            aria-label="Back"
+                            type="button"
                         >
                             {page}
                         </button>
@@ -55,21 +66,27 @@ export const Pagination: React.FC<PaginationProps> = ({ currentPage, setCurrentP
                             className={`rounded-lg p-1 px-3  text-sm text-primary hover:bg-[#007C5B1A] ${
                                 currentPage === page ? "bg-[#007C5B1A]" : "bg-white"
                             }`}
-                            onClick={() => setCurrentPage(page)}
+                            onClick={() => {
+                                setCurrentPage(page);
+                            }}
+                            aria-label="Back"
+                            type="button"
                         >
                             {page}
                         </button>
                     ))}
 
-                {
-                    <button
-                        className="rounded-lg p-1 px-2 text-primary hover:bg-[#007C5B1A]"
-                        onClick={() => setCurrentPage(currentPage + 1)}
-                        disabled={currentPage === totalPages}
-                    >
-                        <ChevronRight strokeWidth={1.5} size={20} />
-                    </button>
-                }
+                <button
+                    className="rounded-lg p-1 px-2 text-primary hover:bg-[#007C5B1A]"
+                    onClick={() => {
+                        setCurrentPage(currentPage + 1);
+                    }}
+                    disabled={currentPage === totalPages}
+                    aria-label="Back"
+                    type="button"
+                >
+                    <ChevronRight strokeWidth={1.5} size={20} />
+                </button>
             </div>
         </div>
     );
