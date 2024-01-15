@@ -99,13 +99,13 @@ export function useCreateJob(): UseMutationResult<Job, ApiError, CreateJobParams
             toast.error(error?.response?.data.message ?? "An error occurred");
         },
         onSuccess: async ({ _id, name, isPrivate, description, creator }, { deliverables = [] }) => {
-            await assignJobDeliverables.mutate({
+            assignJobDeliverables.mutate({
                 jobId: _id,
                 deliverables,
             });
             // create feed is isPrivate is false
             if (!isPrivate) {
-                await createFeed.mutate({
+                createFeed.mutate({
                     owners: [creator?._id],
                     title: name,
                     description,
@@ -275,7 +275,7 @@ export function useToggleDeliverableCompletion({
             ]);
             // if (isComplete) {
             const completedD = isComplete ? completedDeliverables + 1 : completedDeliverables - 1;
-            await createFeed.mutate({
+            createFeed.mutate({
                 type: FEED_TYPES.JOB_DELIVERABLE_UPDATE,
                 owners: [jobCreator],
                 title: "New Job Deliverable Update",
@@ -324,7 +324,7 @@ export function useUpdateJobProgress({
         onSuccess: async (_, { jobId, progress }) => {
             await Promise.all([jobsQuery.refetch(), queryClient.refetchQueries(["get-job-by-id", { jobId }])]);
             if (creatorId && progress === 100) {
-                await createFeed.mutate({
+                createFeed.mutate({
                     owners: [creatorId],
                     title: "Talent Completed Job",
                     description: "Talent Completed Job",
@@ -353,10 +353,10 @@ async function postMarkJobAsComplete(params: MarkJobAsCompleteParams): Promise<A
     return res.data.data;
 }
 
-export function useMarkJobAsComplete() {
+export function useMarkJobAsComplete(): UseMutationResult<ApiResponse, ApiError, MarkJobAsCompleteParams, unknown> {
     const queryClient = useQueryClient();
     const jobsQuery = useGetJobs({ category: "assigned" });
-    const createFeed = useCreateFeed();
+    // const createFeed = useCreateFeed();
 
     return useMutation({
         mutationFn: postMarkJobAsComplete,
@@ -365,8 +365,8 @@ export function useMarkJobAsComplete() {
             toast.error(error?.response?.data.message ?? "Marking job as complete failed");
         },
         onSuccess: async (_, { jobId }) => {
-            jobsQuery.refetch();
-            queryClient.refetchQueries(["get-job-by-id", { jobId }]);
+            await jobsQuery.refetch();
+            await queryClient.refetchQueries(["get-job-by-id", { jobId }]);
             toast.success("Job marked as completed");
         },
     });
@@ -390,17 +390,17 @@ async function postCreateJobReview(params: CreateJobReviewParams): Promise<ApiRe
     return res.data.data;
 }
 
-export function useCreateJobReview() {
+export function useCreateJobReview(): UseMutationResult<ApiResponse, ApiError, CreateJobReviewParams, unknown> {
     const queryClient = useQueryClient();
     const createFeed = useCreateFeed();
     return useMutation({
         mutationFn: postCreateJobReview,
         mutationKey: ["create-job-review"],
         onError: (error: ApiError) => {
-            toast.error(error?.response?.data.message || "An error occurred");
+            toast.error(error?.response?.data.message ?? "An error occurred");
         },
         onSuccess: (_, { jobId, recipientId, review, rating }) => {
-            queryClient.refetchQueries(["get-job-by-id", { jobId }]);
+            void queryClient.refetchQueries(["get-job-by-id", { jobId }]);
             createFeed.mutate({
                 title: "Job Review",
                 description: review,
@@ -432,7 +432,7 @@ async function postReleaseJobPayment(params: ReleaseJobPaymentParams): Promise<A
     return res.data.data;
 }
 
-export function useReleaseJobPayment() {
+export function useReleaseJobPayment(): UseMutationResult<ApiResponse, ApiError, ReleaseJobPaymentParams, unknown> {
     const queryClient = useQueryClient();
     const jobsQuery = useGetJobs({ category: "assigned" });
     const createFeed = useCreateFeed();
@@ -441,11 +441,11 @@ export function useReleaseJobPayment() {
         mutationFn: postReleaseJobPayment,
         mutationKey: ["release-job-payment"],
         onError: (error: ApiError) => {
-            toast.error(error?.response?.data.message || "An error occurred");
+            toast.error(error?.response?.data.message ?? "An error occurred");
         },
         onSuccess: (_, { jobId, owner }) => {
-            jobsQuery.refetch();
-            queryClient.refetchQueries(["get-job-by-id", { jobId }]);
+            void jobsQuery.refetch();
+            void queryClient.refetchQueries(["get-job-by-id", { jobId }]);
             if (owner) {
                 createFeed.mutate({
                     title: "Job Payment",
@@ -475,21 +475,27 @@ async function postInviteTalentToJob(params: InviteTalentToJobParams): Promise<A
     return res.data.data;
 }
 
-export function useInviteTalentToJob({ talentId, job }: { talentId: string; job: Job }) {
+export function useInviteTalentToJob({
+    talentId,
+    job,
+}: {
+    talentId: string;
+    job: Job;
+}): UseMutationResult<ApiResponse, ApiError, InviteTalentToJobParams, unknown> {
     const createFeed = useCreateFeed();
     return useMutation({
         mutationFn: postInviteTalentToJob,
         mutationKey: ["invite-talent-to-private-job"],
         onError: (error: ApiError) => {
-            toast.error(error?.response?.data.message || "An error occurred inviting talent");
+            toast.error(error?.response?.data.message ?? "An error occurred inviting talent");
         },
         onSuccess: () => {
             if (!job.isPrivate) {
                 // create job filled notification for public job applicants
                 const applicants = job.collections
-                    .filter((a) => a.type == "application")
+                    .filter((a) => a.type === "application")
                     .map((a) => a.creator._id)
-                    .filter((a) => a != talentId);
+                    .filter((a) => a !== talentId);
                 if (applicants.length > 0) {
                     createFeed.mutate({
                         owners: [...applicants],
@@ -517,16 +523,16 @@ async function postCancelJobInvite(params: CancelJobInviteParams): Promise<ApiRe
     return res.data.data;
 }
 
-export function useCancelJobInvite() {
+export function useCancelJobInvite(): UseMutationResult<ApiResponse, ApiError, CancelJobInviteParams, unknown> {
     const queryClient = useQueryClient();
     return useMutation({
         mutationFn: postCancelJobInvite,
         mutationKey: ["cancel-job-invite"],
         onError: (error: ApiError) => {
-            toast.error(error?.response?.data.message || "An error occurred");
+            toast.error(error?.response?.data.message ?? "An error occurred");
         },
         onSuccess: () => {
-            queryClient.refetchQueries(["get-job-by-id"]);
+            void queryClient.refetchQueries(["get-job-by-id"]);
             toast.success("Invite cancelled successfully");
         },
     });
@@ -542,12 +548,17 @@ async function postAcceptPrivateJobInvite(params: AcceptPrivateJobInviteParams):
     return res.data.data;
 }
 
-export function useAcceptPrivateJobInvite() {
+export function useAcceptPrivateJobInvite(): UseMutationResult<
+    ApiResponse,
+    ApiError,
+    AcceptPrivateJobInviteParams,
+    unknown
+> {
     return useMutation({
         mutationFn: postAcceptPrivateJobInvite,
         mutationKey: ["accept-private-job-invite"],
         onError: (error: ApiError) => {
-            toast.error(error?.response?.data.message || "An error occurred");
+            toast.error(error?.response?.data.message ?? "An error occurred");
         },
         onSuccess: () => {
             toast.success("Invite accepted successfully");
@@ -565,12 +576,17 @@ async function postDeclinePrivateJobInvite(params: DeclinePrivateJobInviteParams
     return res.data.data;
 }
 
-export function useDeclinePrivateJobInvite() {
+export function useDeclinePrivateJobInvite(): UseMutationResult<
+    ApiResponse,
+    ApiError,
+    DeclinePrivateJobInviteParams,
+    unknown
+> {
     return useMutation({
         mutationFn: postDeclinePrivateJobInvite,
         mutationKey: ["decline-private-job-invite"],
         onError: (error: ApiError) => {
-            toast.error(error?.response?.data.message || "An error occurred");
+            toast.error(error?.response?.data.message ?? "An error occurred");
         },
         onSuccess: () => {
             toast.success("Invite declined successfully");
@@ -599,14 +615,21 @@ async function postApplyToOpenJob(params: ApplyToOpenJobParams): Promise<Job> {
     return res.data.data;
 }
 
-export function useApplyToOpenJob({ jobCreator, jobId }: { jobCreator: string; jobId: string }) {
+export function useApplyToOpenJob({
+    jobCreator,
+    // @ts-expect-error --- Unused variable
+    jobId,
+}: {
+    jobCreator: string;
+    jobId: string;
+}): UseMutationResult<Job, ApiError, ApplyToOpenJobParams, unknown> {
     const createFeed = useCreateFeed();
 
     return useMutation({
         mutationFn: postApplyToOpenJob,
         mutationKey: ["apply-to-open-job"],
         onError: (error: ApiError) => {
-            toast.error(error?.response?.data.message || "An error occurred");
+            toast.error(error?.response?.data.message ?? "An error occurred");
         },
         onSuccess: (data) => {
             // create new job application feed for job owner
@@ -650,7 +673,12 @@ async function postJobPaymentDetails(params: PostJobPaymentDetailsParams): Promi
     return res.data.data;
 }
 
-export function usePostJobPaymentDetails() {
+export function usePostJobPaymentDetails(): UseMutationResult<
+    PostJobPaymentDetailsResponse,
+    ApiError,
+    PostJobPaymentDetailsParams,
+    unknown
+> {
     return useMutation({
         mutationFn: postJobPaymentDetails,
         mutationKey: ["get-job-payment-details"],
@@ -668,14 +696,16 @@ interface ConfirmJobPaymentParams {
 }
 
 async function postConfirmJobPayment(params: ConfirmJobPaymentParams): Promise<ApiResponse> {
-    await new Promise((resolve) => setTimeout(resolve, params.delay ?? 0));
+    await new Promise((resolve): void => {
+        setTimeout(resolve, params.delay ?? 0);
+    });
     const res = await axios.post(`/payment/validate`, {
         collection: params.jobId,
     });
     return res.data.data;
 }
 
-export function useConfirmJobPayment() {
+export function useConfirmJobPayment(): UseMutationResult<ApiResponse, ApiError, ConfirmJobPaymentParams, unknown> {
     return useMutation({
         mutationFn: postConfirmJobPayment,
         mutationKey: ["confirm-job-payment"],
@@ -696,7 +726,7 @@ async function postDeleteJob(params: DeleteJobParams): Promise<Job> {
     return res.data.data;
 }
 
-export function useDeleteJob() {
+export function useDeleteJob(): UseMutationResult<Job, ApiError, DeleteJobParams, unknown> {
     return useMutation({
         mutationFn: postDeleteJob,
         mutationKey: ["delete-job"],
@@ -728,7 +758,11 @@ async function requestJobCancellation(params: RequestJobCancellationParams): Pro
     return res.data.data;
 }
 
-export function useRequestJobCancellation({ talentId }: { talentId: string }) {
+export function useRequestJobCancellation({
+    talentId,
+}: {
+    talentId: string;
+}): UseMutationResult<ApiResponse, ApiError, RequestJobCancellationParams, unknown> {
     const queryClient = useQueryClient();
     const createFeed = useCreateFeed();
 
@@ -739,7 +773,7 @@ export function useRequestJobCancellation({ talentId }: { talentId: string }) {
             toast.error(error?.response?.data.message ?? "Error requesting job cancellation");
         },
         onSuccess: (_, { jobId }) => {
-            queryClient.refetchQueries({ queryKey: ["get-job-by-id", { jobId }] });
+            void queryClient.refetchQueries({ queryKey: ["get-job-by-id", { jobId }] });
             createFeed.mutate({
                 title: "Job Cancel Request",
                 description: "Job Cancel Request",
@@ -785,7 +819,12 @@ async function acceptJobCancellation(params: AcceptJobCancellationParams): Promi
     return res.data.data;
 }
 
-export function useAcceptJobCancellation() {
+export function useAcceptJobCancellation(): UseMutationResult<
+    ApiResponse,
+    ApiError,
+    AcceptJobCancellationParams,
+    unknown
+> {
     const queryClient = useQueryClient();
     const createFeed = useCreateFeed();
 
@@ -796,22 +835,29 @@ export function useAcceptJobCancellation() {
             toast.error(error?.response?.data.message ?? "Error accepting job cancellation");
         },
         onSuccess: async (_, { jobId, recipientId, rating, review }) => {
-            await Promise.all([
-                queryClient.refetchQueries({ queryKey: ["get-job-by-id", { jobId }] }),
-                // create feeds
-                createFeed.mutate({
-                    title: "Job Cancel Accepted",
-                    description: "Job Cancel Accepted",
-                    owners: [recipientId],
-                    data: jobId,
-                    type: FEED_TYPES.JOB_CANCELLED_ACCEPTED,
-                    isPublic: false,
-                    meta: {
-                        value: rating,
-                        review,
+            const jobRefetch = queryClient.refetchQueries({ queryKey: ["get-job-by-id", { jobId }] });
+
+            const feedCreation = new Promise((resolve, reject) => {
+                createFeed.mutate(
+                    {
+                        title: "Job Cancel Accepted",
+                        description: "Job Cancel Accepted",
+                        owners: [recipientId],
+                        data: jobId,
+                        type: FEED_TYPES.JOB_CANCELLED_ACCEPTED,
+                        isPublic: false,
+                        meta: {
+                            value: rating,
+                            review,
+                        },
                     },
-                }),
-            ]);
+                    {
+                        onSuccess: resolve,
+                        onError: reject,
+                    },
+                );
+            });
+            await Promise.all([jobRefetch, feedCreation]);
             toast.success(`Job cancellation accepted successfully`);
         },
     });
@@ -836,7 +882,11 @@ async function requestReviewChange(params: RequestReviewChangeParams): Promise<A
     return res.data.data;
 }
 
-export function useRequestReviewChange({ recipientId }: { recipientId: string }) {
+export function useRequestReviewChange({
+    recipientId,
+}: {
+    recipientId: string;
+}): UseMutationResult<ApiResponse, ApiError, RequestReviewChangeParams, unknown> {
     const queryClient = useQueryClient();
     const createFeed = useCreateFeed();
 
@@ -846,8 +896,8 @@ export function useRequestReviewChange({ recipientId }: { recipientId: string })
         onError: (error: ApiError) => {
             toast.error(error?.response?.data.message ?? "Error requesting review change");
         },
-        onSuccess: (_, { jobId }) => {
-            queryClient.refetchQueries({ queryKey: ["get-job-by-id", { jobId }] });
+        onSuccess: async (_, { jobId }) => {
+            await queryClient.refetchQueries({ queryKey: ["get-job-by-id", { jobId }] });
             // create feeds
             createFeed.mutate({
                 title: "Request Review Change",
@@ -894,7 +944,13 @@ async function acceptReviewChange(params: AcceptReviewChangeParams): Promise<Api
     return res.data.data;
 }
 
-export function useAcceptReviewChange({ jobId, recipientId }: { jobId: string; recipientId: string }) {
+export function useAcceptReviewChange({
+    jobId,
+    recipientId,
+}: {
+    jobId: string;
+    recipientId: string;
+}): UseMutationResult<ApiResponse, ApiError, AcceptReviewChangeParams, unknown> {
     const queryClient = useQueryClient();
     const createFeed = useCreateFeed();
 
@@ -904,8 +960,8 @@ export function useAcceptReviewChange({ jobId, recipientId }: { jobId: string; r
         onError: (error: ApiError) => {
             toast.error(error?.response?.data.message ?? "Error accepting review change");
         },
-        onSuccess: () => {
-            queryClient.refetchQueries({ queryKey: ["get-job-by-id", { jobId }] });
+        onSuccess: async () => {
+            await queryClient.refetchQueries({ queryKey: ["get-job-by-id", { jobId }] });
             // create feeds
             createFeed.mutate({
                 title: "Review Change Accepted",
@@ -934,7 +990,13 @@ async function declineReviewChange(params: DeclineReviewChangeParams): Promise<A
     return res.data.data;
 }
 
-export function useDeclineReviewChange({ jobId, recipientId }: { jobId: string; recipientId: string }) {
+export function useDeclineReviewChange({
+    jobId,
+    recipientId,
+}: {
+    jobId: string;
+    recipientId: string;
+}): UseMutationResult<ApiResponse, ApiError, DeclineReviewChangeParams, unknown> {
     const queryClient = useQueryClient();
     const createFeed = useCreateFeed();
 
@@ -944,8 +1006,8 @@ export function useDeclineReviewChange({ jobId, recipientId }: { jobId: string; 
         onError: (error: ApiError) => {
             toast.error(error?.response?.data.message ?? "Error declining review change");
         },
-        onSuccess: () => {
-            queryClient.refetchQueries({ queryKey: ["get-job-by-id", { jobId }] });
+        onSuccess: async () => {
+            await queryClient.refetchQueries({ queryKey: ["get-job-by-id", { jobId }] });
             // create feeds
             createFeed.mutate({
                 title: "Review Change Accepted",

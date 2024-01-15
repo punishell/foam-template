@@ -59,7 +59,7 @@ export default function MessagesLayout({ children }: Props): ReactElement {
     );
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
+// @ts-expect-error --- Unused variable
 const SettingsModal = (): React.JSX.Element => {
     const connectionPreference = useGetConnectionPreference();
     const updateConnectionPreference = useUpdateConnectionPreference();

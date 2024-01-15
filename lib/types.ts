@@ -183,7 +183,7 @@ export interface ImageUp {
 export interface AchievementProps {
     type: string;
     value: string;
-    total: string;
+    total: number;
 }
 export interface DataFeedResponse {
     closed: boolean;

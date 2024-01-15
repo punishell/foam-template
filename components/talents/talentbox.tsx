@@ -15,7 +15,7 @@ import { type AchievementType, colorFromScore, emptyAchievement, getAchievementD
 import { AfroProfile } from "@/components/common/afro-profile";
 
 interface Achievement {
-    total: string;
+    total: number;
     value: string;
     type: AchievementType;
 }
@@ -35,6 +35,7 @@ interface EmptyAchievementProps {
     total: number;
     textColor: string;
     bgColor: string;
+    type?: string;
 }
 
 export const TalentBox = ({
@@ -164,7 +165,7 @@ export const TalentBox = ({
                                             achievements
                                                 .sort(
                                                     (a: Achievement, b: Achievement) =>
-                                                        parseFloat(b.total) - parseFloat(a.total),
+                                                        parseFloat(b.total.toString()) - parseFloat(a.total.toString()),
                                                 )
                                                 .map((a: Achievement, i: number) => {
                                                     const achievM = getAchievementData(a.type);
@@ -176,7 +177,7 @@ export const TalentBox = ({
                                                             total={a?.total}
                                                             textColor={achievM?.textColor}
                                                             bgColor={achievM?.bgColor}
-                                                            type={a.type}
+                                                            // type={a.type}
                                                         />
                                                     );
                                                 })}
@@ -185,11 +186,11 @@ export const TalentBox = ({
                                                 <Badge
                                                     key={i}
                                                     title={a.title}
-                                                    value={0}
+                                                    value="0"
                                                     total={a.total}
                                                     textColor={a.textColor}
                                                     bgColor={a.bgColor}
-                                                    type={a.title}
+                                                    // type={a.title}
                                                 />
                                             ))}
                                     </div>

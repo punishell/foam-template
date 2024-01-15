@@ -76,6 +76,7 @@ const SignupVerificationForm = (): React.JSX.Element => {
                 onSuccess: (data) => {
                     setCookie(AUTH_TOKEN_KEY, data.token);
 
+                    // @ts-expect-error TODO: Fix this
                     setUser(data);
                     router.push("/onboarding");
                 },

@@ -45,6 +45,7 @@
         "dayjs": "^1.11.9",
         "framer-motion": "^10.16.4",
         "keen-slider": "^6.8.6",
+        "ldrs": "^1.0.1",
         "lottie-react": "^2.4.0",
         "lucide-react": "^0.263.1",
         "next": "^14.0.4",

@@ -37,7 +37,7 @@ const securityQuestionsSchema = z
 
 type SecurityQuestionFormValues = z.infer<typeof securityQuestionsSchema>;
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
+// @ts-expect-error --- Unused variable
 const InitiateActivateSecurityQuestion = ({ goToNextSlide }: SlideItemProps): React.JSX.Element => {
     const { closeModal } = useSecurityQuestion2FAState();
     const { isLoading } = useInitialize2FA();

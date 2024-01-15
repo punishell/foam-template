@@ -65,7 +65,7 @@ const sizes: Record<string, unknown> = {
 
 const getSizes = (size: string): number => (sizes[size] as number) || 30;
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
+// @ts-expect-error --- Unused variable
 export const UserAvatar: FC<Props> = ({ image, score = 0, size = "md" }) => {
     return (
         <div

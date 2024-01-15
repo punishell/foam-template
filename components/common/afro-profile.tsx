@@ -51,7 +51,7 @@ export const AfroScore: FC<AfroScoreProps> = ({ size, score: initialScore = 63, 
     const thickness = sizeInPx / 11;
     const knobRadius = thickness * 1.2;
     const radius = (sizeInPx - thickness) / 2;
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    // @ts-expect-error --- Unused variable
     const [score, setScore] = useState(initialScore);
     const progressAngle = (score / 100) * 2 * Math.PI;
 
@@ -77,7 +77,7 @@ export const AfroScore: FC<AfroScoreProps> = ({ size, score: initialScore = 63, 
     const knobX = (radius - thickness / 2) * Math.cos(progressAngle - Math.PI / 2);
     const knobY = (radius - thickness / 2) * Math.sin(progressAngle - Math.PI / 2);
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    // @ts-expect-error --- Unused variable
     const [knobPosition, setKnobPosition] = useState({ x: knobX, y: knobY });
 
     // const onDrag = (event: MouseEvent): void => {

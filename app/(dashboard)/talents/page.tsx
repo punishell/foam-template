@@ -33,7 +33,7 @@ interface TalentProps {
     profileImage?: {
         url: string;
     };
-    achievements: Array<{ total: string; value: string; type: AchievementType }>;
+    achievements: Array<{ total: number; value: string; type: AchievementType }>;
 }
 
 interface MappedTalent {
@@ -43,7 +43,7 @@ interface MappedTalent {
     score: string;
     image: string;
     skills: Array<{ name: string; color: string }>;
-    achievements: Array<{ total: string; value: string; type: AchievementType }>;
+    achievements: Array<{ total: number; value: string; type: AchievementType }>;
 }
 
 export default function TalentsPage(): ReactElement {
