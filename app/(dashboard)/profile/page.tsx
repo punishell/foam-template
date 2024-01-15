@@ -57,7 +57,7 @@ export default function ProfilePage(): ReactElement | null {
     return (
         <div className="grid h-fit grid-cols-1 items-start gap-6 overflow-y-auto pb-4">
             <ProfileHeader
-                _id={talent.id as string}
+                _id={talent.id}
                 name={talent.name}
                 position={talent.position}
                 score={talent.score}

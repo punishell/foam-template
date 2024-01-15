@@ -20,7 +20,7 @@ import { hasFiveStarReview } from "@/lib/types";
 export const Header = (): ReactElement => {
     const [referOpen, _setReferOpen] = useState(false);
     const { _id, firstName } = useUserState();
-    const { data: reviewData, refetch, isLoading } = useGetTalentReviewById(_id as string, "1", "100");
+    const { data: reviewData, refetch, isLoading } = useGetTalentReviewById(_id, "1", "100");
 
     // checking refer availability
     useEffect(() => {

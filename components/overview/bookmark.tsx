@@ -30,12 +30,7 @@ export const FeedsBookmark = (): ReactElement => {
     const bookmarks = useMemo(
         () =>
             (bookmarkData?.data ?? []).map((feed, i) =>
-                ParseFeedView(
-                    { ...feed.feed, bookmarkId: feed._id, isBookmarked: true },
-                    loggedInUser as string,
-                    i,
-                    refetch,
-                ),
+                ParseFeedView({ ...feed.feed, bookmarkId: feed._id, isBookmarked: true }, loggedInUser, i, refetch),
             ),
         // eslint-disable-next-line react-hooks/exhaustive-deps
         [bookmarkData?.data],
