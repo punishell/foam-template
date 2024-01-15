@@ -1,8 +1,11 @@
+/* -------------------------------------------------------------------------- */
+/*                             External Dependency                            */
+/* -------------------------------------------------------------------------- */
+
 import { type ClassValue, clsx } from "clsx";
-import { create } from "domain";
 import { twMerge } from "tailwind-merge";
 
-export function decodeBase64URL(value: string) {
+export function decodeBase64URL(value: string): string {
     try {
         // atob is present in all browsers and nodejs >= 16
         // but if it is not it will throw a ReferenceError in which case we can try to use Buffer
@@ -26,7 +29,7 @@ export function decodeBase64URL(value: string) {
 }
 
 // Taken from: https://stackoverflow.com/questions/38552003/how-to-decode-jwt-token-in-javascript-without-using-a-library
-export function decodeJWTPayload(token: string) {
+export function decodeJWTPayload(token: string): Record<string, unknown> {
     const parts = token.split(".");
 
     if (parts.length !== 3) {
@@ -34,30 +37,43 @@ export function decodeJWTPayload(token: string) {
     }
 
     const base64Url = parts[1];
-    return JSON.parse(decodeBase64URL(base64Url));
+    const decodedPayload = decodeBase64URL(base64Url as string);
+    try {
+        return JSON.parse(decodedPayload);
+    } catch (e) {
+        throw new Error("Invalid JWT: Payload is not valid JSON");
+    }
 }
 
-export function cn(...inputs: ClassValue[]) {
+export function cn(...inputs: ClassValue[]): string {
     return twMerge(clsx(inputs));
 }
 
-export function getInitials(name: string) {
+export function getInitials(name: string): string {
     const names = name.split(" ");
-    const firstName = names[0];
-    const lastName = names[names.length - 1];
+    const firstName = names[0] ?? "";
+    const lastName = names[names.length - 1] ?? "";
 
     return firstName.charAt(0) + lastName.charAt(0);
 }
 
-export function sentenceCase(str: string) {
+export function sentenceCase(str: string): string {
     return str.charAt(0).toUpperCase() + str.slice(1);
 }
 
-export function formatUsd(value: number) {
+export function formatUsd(value: number): string {
     return new Intl.NumberFormat("en-US", {
         style: "currency",
         currency: "USD",
     }).format(value);
+}
+
+interface EmptyAchievementProps {
+    id: string;
+    title: string;
+    total: number;
+    textColor: string;
+    bgColor: string;
 }
 
 export const emptyAchievement = [
@@ -69,11 +85,16 @@ export const emptyAchievement = [
 
 export type AchievementType = "review" | "referral" | "five-star" | "squad";
 
-export const getAchievementData = (type: AchievementType) => {
-    return emptyAchievement.find(({ id }) => id == type);
+export const getAchievementData = (type: AchievementType): EmptyAchievementProps | undefined => {
+    return emptyAchievement.find(({ id }) => id === type);
 };
 
-export const colorFromScore = (score: number) => {
+interface ColorResult {
+    circleColor: string;
+    bgColor: string;
+}
+
+export const colorFromScore = (score: number): ColorResult => {
     if (score >= 0 && score <= 20)
         return { circleColor: "linear-gradient(149deg, #FA042F 0%, #FF6A84 100%)", bgColor: "#FFF8F8" };
     if (score >= 21 && score <= 35)
@@ -85,10 +106,10 @@ export const colorFromScore = (score: number) => {
     return { circleColor: "linear-gradient(145deg, #05BD2F 0%, #0FF143 100%)", bgColor: "#ECFCE5" };
 };
 
-export const limitString = (str: string, limit: number = 10) =>
+export const limitString = (str: string, limit: number = 10): string =>
     str.length > limit ? `${str.slice(0, limit)}...` : str;
 
-export const createQueryString = (name: string, value: string) => {
+export const createQueryString = (name: string, value: string): string => {
     const params = new URLSearchParams();
     params.set(name, value);
     return params.toString();
@@ -96,7 +117,7 @@ export const createQueryString = (name: string, value: string) => {
 
 type CreateQueryStringsParams = Array<{ name: string; value: string }>;
 
-export const createQueryStrings = (opts: CreateQueryStringsParams) => {
+export const createQueryStrings = (opts: CreateQueryStringsParams): string => {
     const params = new URLSearchParams();
     opts.forEach((opt) => {
         params.set(opt.name, opt.value);
@@ -106,28 +127,32 @@ export const createQueryStrings = (opts: CreateQueryStringsParams) => {
 
 type CreateQueryStringsOpts = Record<string, string>;
 
-export const createQueryStrings2 = (opts: CreateQueryStringsOpts) => {
+export const createQueryStrings2 = (opts: CreateQueryStringsOpts): string => {
     const params = new URLSearchParams();
     Object.keys(opts).forEach((key) => {
-        params.set(key, opts[key]);
+        const value = opts[key];
+        if (value !== undefined) {
+            params.set(key, value);
+        }
     });
     return params.toString();
 };
 
-export const parseFilterObjectToString = (filterData: Record<string, any>) => {
+export const parseFilterObjectToString = (filterData: Record<string, unknown>): string => {
     let qString = "";
     let prev = "";
     const newData = filterData;
-    Object.keys(newData).map((key, i) => {
-        if (!["", undefined, null].includes(newData[key])) {
-            if (qString != "") prev = "&";
-            qString += `${prev}${createQueryString(key, newData[key])}`;
+    Object.keys(newData).forEach((key) => {
+        const value = newData[key];
+        if (value !== undefined && value !== null && typeof value === "string" && value !== "") {
+            if (qString !== "") prev = "&";
+            qString += `${prev}${createQueryString(key, value)}`;
         }
     });
     return qString;
 };
 
-export const formatCountdown = (counter: number) => {
+export const formatCountdown = (counter: number): string => {
     const minutes = Math.floor(counter / 60);
     const seconds = counter % 60;
 
@@ -179,7 +204,7 @@ export const FEED_TYPES = {
     JOB_PAYMENT_RELEASED: "a_payment_released",
 };
 
-export function getAvatarColor(paktScore: number) {
+export function getAvatarColor(paktScore: number): string {
     if (paktScore <= 20) {
         return "#DC3545";
     }
@@ -196,7 +221,7 @@ export function getAvatarColor(paktScore: number) {
 }
 
 // from https://stackoverflow.com/questions/15900485/correct-way-to-convert-size-in-bytes-to-kb-mb-gb-in-javascript
-export function formatBytes(bytes: number, decimals = 2) {
+export function formatBytes(bytes: number, decimals = 2): string {
     if (!+bytes) return "0 Bytes";
 
     const k = 1024;
@@ -210,7 +235,12 @@ export function formatBytes(bytes: number, decimals = 2) {
 
 const allowedFileTypes = ["pdf", "doc", "ai", "avi", "docx", "csv", "ppt", "zip", "rar"];
 
-export function getPreviewByType(file: File) {
+interface PreviewResult {
+    preview: string;
+    type: string;
+}
+
+export function getPreviewByType(file: File): PreviewResult {
     const { type } = file;
     let preview;
     if (type.includes("image/")) {
@@ -224,9 +254,9 @@ export function getPreviewByType(file: File) {
     return { preview, type };
 }
 
-export function getPreviewByTypeUrl(url: string, type: string) {
+export function getPreviewByTypeUrl(url: string, type: string): PreviewResult {
     let preview;
-    if (type.includes("image/") || type == "image") {
+    if (type.includes("image/") || type === "image") {
         preview = url;
     } else {
         const typP = type.split("/")[1];
@@ -236,15 +266,16 @@ export function getPreviewByTypeUrl(url: string, type: string) {
     return { preview, type };
 }
 
-export const CopyText = async (text: string) => navigator.clipboard.writeText(text);
+export const CopyText = async (text: string): Promise<void> => navigator.clipboard.writeText(text);
 
+// eslint-disable-next-line no-useless-escape
 export const spChars = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/;
 
 export const paginate = <T>(array: T[], itemsPerPage: number, currentPage: number): T[] => {
     return array.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 };
 
-export const truncate = (str: string, n: number) => {
+export const truncate = (str: string, n: number): string => {
     return str.length > n ? `${str.slice(0, n - 1)}...` : str;
 };
 

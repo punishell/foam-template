@@ -1,5 +1,8 @@
-/* eslint-disable react/display-name */
-import React from "react";
+/* -------------------------------------------------------------------------- */
+/*                             External Dependency                            */
+/* -------------------------------------------------------------------------- */
+
+import { type FC } from "react";
 import ReactOtpInput from "react-otp-input";
 
 interface OtpInputProps {
@@ -8,11 +11,10 @@ interface OtpInputProps {
     onChange: (otp: string) => void;
 }
 
-export const OtpInput = React.forwardRef<any, any>(({ numInputs, onChange, value, ...props }, ref) => {
+export const OtpInput: FC<OtpInputProps> = ({ numInputs, onChange, value, ...props }) => {
     return (
         <ReactOtpInput
             numInputs={numInputs}
-            ref={ref}
             onChange={onChange}
             value={value}
             containerStyle="gap-4 flex"
@@ -22,11 +24,7 @@ export const OtpInput = React.forwardRef<any, any>(({ numInputs, onChange, value
                 borderRadius: "10px",
                 border: "1px solid #D0DDD5",
             }}
-            focusStyle={{
-                border: "1px solid #19A966",
-                outline: "none",
-            }}
-            renderInput={(inputProps, index) => {
+            renderInput={(inputProps) => {
                 return (
                     <input
                         {...inputProps}
@@ -44,4 +42,6 @@ export const OtpInput = React.forwardRef<any, any>(({ numInputs, onChange, value
             {...props}
         />
     );
-});
+};
+
+OtpInput.displayName = "OtpInput";

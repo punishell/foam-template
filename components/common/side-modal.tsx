@@ -1,6 +1,15 @@
-import React from "react";
-import { cn } from "@/lib/utils";
+/* -------------------------------------------------------------------------- */
+/*                             External Dependency                            */
+/* -------------------------------------------------------------------------- */
+
+import { type FC } from "react";
 import * as Dialog from "@radix-ui/react-dialog";
+
+/* -------------------------------------------------------------------------- */
+/*                             Internal Dependency                            */
+/* -------------------------------------------------------------------------- */
+
+import { cn } from "@/lib/utils";
 
 interface Props {
     isOpen: boolean;
@@ -9,7 +18,7 @@ interface Props {
     onOpenChange: (open: boolean) => void;
 }
 
-export const SideModal: React.FC<Props> = ({ children, isOpen, onOpenChange, className }) => {
+export const SideModal: FC<Props> = ({ children, isOpen, onOpenChange, className }) => {
     return (
         <Dialog.Root open={isOpen} onOpenChange={onOpenChange}>
             <Dialog.Portal>

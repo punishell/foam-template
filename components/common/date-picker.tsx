@@ -1,14 +1,40 @@
 "use client";
-import * as React from "react";
-import { cn } from "@/lib/utils";
+
+/* -------------------------------------------------------------------------- */
+/*                             External Dependency                            */
+/* -------------------------------------------------------------------------- */
+
+import type * as React from "react";
 import { format } from "date-fns";
-import { DayPicker, DayPickerSingleProps } from "react-day-picker";
+import { DayPicker, type DayPickerSingleProps } from "react-day-picker";
 import { Calendar as CalendarIcon, ChevronRight, ChevronLeft } from "lucide-react";
+
+/* -------------------------------------------------------------------------- */
+/*                             Internal Dependency                            */
+/* -------------------------------------------------------------------------- */
+
+import { cn } from "@/lib/utils";
 import { Popover, PopoverTrigger, PopoverContent } from "@/components/common/popover";
 
-export type CalendarProps = React.ComponentProps<typeof DayPicker>;
+export type CalendarProps = React.ComponentProps<typeof DayPicker> & {
+    showOutsideDays?: boolean;
+    className?: string;
+    classNames?: Record<string, string>;
+    mode?: "single" | "range";
+    selected?: Date | Date[];
+    initialFocus?: boolean;
+    // ...p
+};
 
-export const Calendar = ({ className, classNames, showOutsideDays = true, ...props }: CalendarProps) => {
+const IconLeft = (): React.JSX.Element => <ChevronLeft className="h-4 w-4" />;
+const IconRight = (): React.JSX.Element => <ChevronRight className="h-4 w-4" />;
+
+export const Calendar = ({
+    className,
+    classNames,
+    showOutsideDays = true,
+    ...props
+}: CalendarProps): React.JSX.Element => {
     return (
         <DayPicker
             showOutsideDays={showOutsideDays}
@@ -46,8 +72,8 @@ export const Calendar = ({ className, classNames, showOutsideDays = true, ...pro
                 ...classNames,
             }}
             components={{
-                IconLeft: () => <ChevronLeft className="h-4 w-4" />,
-                IconRight: () => <ChevronRight className="h-4 w-4" />,
+                IconLeft,
+                IconRight,
             }}
             {...props}
         />
@@ -67,6 +93,7 @@ export const DatePicker: React.FC<DatePickerProps> = ({ selected, onSelect, clas
                         "flex w-full items-center gap-2 rounded-lg border border-line px-4 py-3 text-body outline-none focus-within:border-secondary hover:border-secondary hover:duration-200",
                         className,
                     )}
+                    type="button"
                 >
                     <CalendarIcon className="h-5 w-5" />
 
@@ -74,7 +101,7 @@ export const DatePicker: React.FC<DatePickerProps> = ({ selected, onSelect, clas
                         {selected ? (
                             <span>{format(selected, "PPP")}</span>
                         ) : (
-                            <span className="">{placeholder || "Select a date"}</span>
+                            <span className="">{placeholder ?? "Select a date"}</span>
                         )}
                     </span>
                 </button>

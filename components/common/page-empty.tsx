@@ -1,6 +1,15 @@
-import React from "react";
-import { cn } from "@/lib/utils";
+/* -------------------------------------------------------------------------- */
+/*                             External Dependency                            */
+/* -------------------------------------------------------------------------- */
+
+import { type FC } from "react";
 import Lottie from "lottie-react";
+
+/* -------------------------------------------------------------------------- */
+/*                             Internal Dependency                            */
+/* -------------------------------------------------------------------------- */
+
+import { cn } from "@/lib/utils";
 import empty from "@/lottiefiles/empty.json";
 
 interface Props {
@@ -9,7 +18,7 @@ interface Props {
     children?: React.ReactNode;
 }
 
-export const PageEmpty: React.FC<Props> = ({ className, label, children }) => {
+export const PageEmpty: FC<Props> = ({ className, label, children }) => {
     return (
         <div
             aria-live="polite"
@@ -20,7 +29,7 @@ export const PageEmpty: React.FC<Props> = ({ className, label, children }) => {
                 <div className="flex w-full max-w-[250px] items-center justify-center">
                     <Lottie animationData={empty} loop={false} />
                 </div>
-                <span className="max-w-md text-center text-lg text-body">{label || "Nothing to show yet."}</span>
+                <span className="max-w-md text-center text-lg text-body">{label ?? "Nothing to show yet."}</span>
                 {children}
             </div>
         </div>

@@ -1,18 +1,26 @@
-import { ApiError, axios } from "@/lib/axios";
+/* -------------------------------------------------------------------------- */
+/*                             External Dependency                            */
+/* -------------------------------------------------------------------------- */
+
+import { type UseMutationResult, useMutation, useQuery, type UseQueryResult } from "@tanstack/react-query";
+
+/* -------------------------------------------------------------------------- */
+/*                             Internal Dependency                            */
+/* -------------------------------------------------------------------------- */
+
+import { type ApiError, axios } from "@/lib/axios";
 import { toast } from "@/components/common/toaster";
-import { useMutation, useQuery } from "@tanstack/react-query";
-import { useCreateFeed } from "./feed";
-import { FEED_TYPES } from "../utils";
+// import { useCreateFeed } from "./feed";
 
 // Get Invites
 interface getInviteParams {
     page?: number;
     limit?: number;
-    filter?: Record<string, any>;
+    filter?: Record<string, unknown>;
 }
 
 interface GetInviteResponse {
-    data: {
+    data: Array<{
         status: "pending" | "accepted" | "rejected";
         _id: string;
         createdAt: string;
@@ -43,7 +51,7 @@ interface GetInviteResponse {
                 };
             };
         };
-    }[];
+    }>;
     page: number;
     limit: number;
     total: number;
@@ -61,12 +69,16 @@ async function getInvites({ page = 1, limit = 10, filter }: getInviteParams): Pr
     return res.data.data;
 }
 
-export const useGetInvites = ({ page, limit, filter }: getInviteParams) => {
+export const useGetInvites = ({
+    page,
+    limit,
+    filter,
+}: getInviteParams): UseQueryResult<GetInviteResponse, ApiError> => {
     return useQuery({
-        queryFn: async () => await getInvites({ page, limit, filter }),
-        queryKey: [`get_invites_${page}_${limit}_${filter}`],
+        queryFn: async () => getInvites({ page, limit, filter }),
+        queryKey: [`get_invites_${page}_${limit}_${JSON.stringify(filter)}`],
         onError: (error: ApiError) => {
-            toast.error(error?.response?.data.message || "An error occurred");
+            toast.error(error?.response?.data.message ?? "An error occurred");
         },
     });
 };
@@ -83,8 +95,9 @@ async function acceptInvite({ id }: { id: string }): Promise<AcceptInviteRespons
     return res.data.data;
 }
 
-export function useAcceptInvite({ jobCreator, jobId }: { jobCreator: string; jobId: string }) {
-    const createFeed = useCreateFeed();
+// export function useAcceptInvite({ jobCreator, jobId }: { jobCreator: string; jobId: string }) {
+export function useAcceptInvite(): UseMutationResult<AcceptInviteResponse, ApiError, { id: string }, unknown> {
+    // const createFeed = useCreateFeed();
     return useMutation({
         mutationFn: acceptInvite,
         mutationKey: ["invite-call-action"],
@@ -101,7 +114,7 @@ export function useAcceptInvite({ jobCreator, jobId }: { jobCreator: string; job
             toast.success("Invite Accepted successfully");
         },
         onError: (error: ApiError) => {
-            toast.error(error?.response?.data.message || "An error occurred");
+            toast.error(error?.response?.data.message ?? "An error occurred");
         },
     });
 }
@@ -118,8 +131,21 @@ async function declineInvite({ id }: { id: string }): Promise<DeclineInviteRespo
     return res.data.data;
 }
 
-export function useDeclineInvite({ jobCreator, jobId }: { jobCreator: string; jobId: string }) {
-    const createFeed = useCreateFeed();
+// interface DeclineInviteParams {
+//     JobCreator: string;
+//     jobId: string;
+// }
+
+// export function useDeclineInvite({ jobCreator, jobId }: DeclineInviteParams): UseMutationResult<
+//     DeclineInviteResponse,
+//     ApiError,
+//     {
+//         id: string;
+//     },
+//     unknown
+// > {
+export function useDeclineInvite(): UseMutationResult<DeclineInviteResponse, ApiError, { id: string }, unknown> {
+    // const createFeed = useCreateFeed();
     return useMutation({
         mutationFn: declineInvite,
         mutationKey: ["invite-call-action"],
@@ -136,7 +162,7 @@ export function useDeclineInvite({ jobCreator, jobId }: { jobCreator: string; jo
             toast.success("Invite Declined successfully");
         },
         onError: (error: ApiError) => {
-            toast.error(error?.response?.data.message || "An error occurred");
+            toast.error(error?.response?.data.message ?? "An error occurred");
         },
     });
 }

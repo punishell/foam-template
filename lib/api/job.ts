@@ -1,10 +1,70 @@
-import { toast } from "@/components/common/toaster";
-import { ApiError, ApiResponse, axios } from "@/lib/axios";
-import type { Job } from "@/lib/types";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* -------------------------------------------------------------------------- */
+/*                             External Dependency                            */
+/* -------------------------------------------------------------------------- */
 
+import {
+    type UseMutationResult,
+    useMutation,
+    useQuery,
+    useQueryClient,
+    type UseQueryResult,
+} from "@tanstack/react-query";
+
+/* -------------------------------------------------------------------------- */
+/*                             Internal Dependency                            */
+/* -------------------------------------------------------------------------- */
+
+import { toast } from "@/components/common/toaster";
+import { type ApiError, type ApiResponse, axios } from "@/lib/axios";
+import type { Job } from "@/lib/types";
 import { FEED_TYPES } from "../utils";
 import { useCreateFeed } from "./feed";
+
+// Attach Deliverables to Job
+
+interface AttachDeliverablesToJobParams {
+    jobId: string;
+    replace?: boolean;
+    deliverables: string[];
+}
+
+async function postAttachDeliverablesToJob(params: AttachDeliverablesToJobParams): Promise<unknown> {
+    const deliverables = params.deliverables.map((deliverable) => ({
+        name: deliverable,
+        description: deliverable,
+    }));
+
+    const res = await axios.post(`/collection/many`, {
+        parent: params.jobId,
+        type: "deliverable",
+        replace: params.replace,
+        collections: deliverables,
+    });
+    return res.data.data;
+}
+
+export function useAttachDeliverablesToJob(): UseMutationResult<
+    unknown,
+    ApiError,
+    AttachDeliverablesToJobParams,
+    unknown
+> {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: postAttachDeliverablesToJob,
+        mutationKey: ["assign-job-deliverables"],
+        onError: (error: ApiError) => {
+            toast.error(error?.response?.data.message ?? "Assigning deliverables failed");
+        },
+        onSuccess: (_, { jobId }) => {
+            void queryClient.refetchQueries({
+                queryKey: ["get-job-by-id", { jobId }],
+            });
+        },
+    });
+}
 
 // Create Job
 interface CreateJobParams {
@@ -28,7 +88,7 @@ async function postCreateJob(params: CreateJobParams): Promise<Job> {
     return res.data.data;
 }
 
-export function useCreateJob() {
+export function useCreateJob(): UseMutationResult<Job, ApiError, CreateJobParams, unknown> {
     const assignJobDeliverables = useAttachDeliverablesToJob();
     const createFeed = useCreateFeed();
 
@@ -36,7 +96,7 @@ export function useCreateJob() {
         mutationFn: postCreateJob,
         mutationKey: ["create-job"],
         onError: (error: ApiError) => {
-            toast.error(error?.response?.data.message || "An error occurred");
+            toast.error(error?.response?.data.message ?? "An error occurred");
         },
         onSuccess: async ({ _id, name, isPrivate, description, creator }, { deliverables = [] }) => {
             await assignJobDeliverables.mutate({
@@ -46,17 +106,15 @@ export function useCreateJob() {
             // create feed is isPrivate is false
             if (!isPrivate) {
                 await createFeed.mutate({
-                    //@ts-ignore
                     owners: [creator?._id],
                     title: name,
-                    description: description,
+                    description,
                     data: _id,
                     isPublic: true,
                     type: FEED_TYPES.PUBLIC_JOB_CREATED,
                 });
             }
             toast.success(`Job ${name} posted successfully`);
-            return;
         },
     });
 }
@@ -92,12 +150,12 @@ async function getJobs(params: GetJobsParams): Promise<GetJobsResponse> {
     return res.data.data;
 }
 
-export function useGetJobs(params: GetJobsParams) {
+export function useGetJobs(params: GetJobsParams): UseQueryResult<GetJobsResponse, ApiError> {
     return useQuery({
-        queryFn: () => getJobs(params),
+        queryFn: async () => getJobs(params),
         queryKey: ["get-jobs", params],
         onError: (error: ApiError) => {
-            toast.error(error?.response?.data.message || "An error occurred");
+            toast.error(error?.response?.data.message ?? "An error occurred");
         },
     });
 }
@@ -116,9 +174,9 @@ async function getJobById(params: GetJobByIdParams): Promise<GetJobByIdResponse>
     return res.data.data;
 }
 
-export function useGetJobById(params: GetJobByIdParams) {
+export function useGetJobById(params: GetJobByIdParams): UseQueryResult<GetJobByIdResponse, ApiError> {
     return useQuery({
-        queryFn: () => getJobById(params),
+        queryFn: async () => getJobById(params),
         queryKey: ["get-job-by-id", params],
         onError: (error: ApiError) => {
             toast.error(error?.response?.data.message ?? "An error occurred");
@@ -150,7 +208,7 @@ async function postUpdateJob(params: UpdateJobParams): Promise<Job> {
     return res.data.data;
 }
 
-export function useUpdateJob() {
+export function useUpdateJob(): UseMutationResult<Job, ApiError, UpdateJobParams, unknown> {
     const updateJobDeliverables = useAttachDeliverablesToJob();
 
     return useMutation({
@@ -177,46 +235,6 @@ export function useUpdateJob() {
     });
 }
 
-// Attach Deliverables to Job
-
-interface AttachDeliverablesToJobParams {
-    jobId: string;
-    replace?: boolean;
-    deliverables: string[];
-}
-
-async function postAttachDeliverablesToJob(params: AttachDeliverablesToJobParams): Promise<any> {
-    const deliverables = params.deliverables.map((deliverable) => ({
-        name: deliverable,
-        description: deliverable,
-    }));
-
-    const res = await axios.post(`/collection/many`, {
-        parent: params.jobId,
-        type: "deliverable",
-        replace: params.replace,
-        collections: deliverables,
-    });
-    return res.data.data;
-}
-
-export function useAttachDeliverablesToJob() {
-    const queryClient = useQueryClient();
-
-    return useMutation({
-        mutationFn: postAttachDeliverablesToJob,
-        mutationKey: ["assign-job-deliverables"],
-        onError: (error: ApiError) => {
-            toast.error(error?.response?.data.message || "Assigning deliverables failed");
-        },
-        onSuccess: (_, { jobId }) => {
-            queryClient.refetchQueries({
-                queryKey: ["get-job-by-id", { jobId }],
-            });
-        },
-    });
-}
-
 // Mark Deliverable as Complete
 interface MarkDeliverableAsCompleteParams {
     jobId: string;
@@ -236,7 +254,11 @@ async function postToggleDeliverableCompletion(params: MarkDeliverableAsComplete
     return res.data;
 }
 
-export function useToggleDeliverableCompletion({ description }: { description: string }) {
+export function useToggleDeliverableCompletion({
+    description,
+}: {
+    description: string;
+}): UseMutationResult<ApiResponse, ApiError, MarkDeliverableAsCompleteParams, unknown> {
     const createFeed = useCreateFeed();
     const queryClient = useQueryClient();
 
@@ -257,7 +279,7 @@ export function useToggleDeliverableCompletion({ description }: { description: s
                 type: FEED_TYPES.JOB_DELIVERABLE_UPDATE,
                 owners: [jobCreator],
                 title: "New Job Deliverable Update",
-                description: description,
+                description,
                 data: jobId,
                 isPublic: false,
                 meta: {
@@ -284,7 +306,11 @@ async function postUpdateJobProgress(params: UpdateJobProgressParams): Promise<A
     return res.data.data;
 }
 
-export function useUpdateJobProgress({ creatorId }: { creatorId: string }) {
+export function useUpdateJobProgress({
+    creatorId,
+}: {
+    creatorId: string;
+}): UseMutationResult<ApiResponse, ApiError, UpdateJobProgressParams, unknown> {
     const queryClient = useQueryClient();
     const jobsQuery = useGetJobs({ category: "assigned" });
     const createFeed = useCreateFeed();
@@ -297,7 +323,7 @@ export function useUpdateJobProgress({ creatorId }: { creatorId: string }) {
         },
         onSuccess: async (_, { jobId, progress }) => {
             await Promise.all([jobsQuery.refetch(), queryClient.refetchQueries(["get-job-by-id", { jobId }])]);
-            if (creatorId && progress == 100) {
+            if (creatorId && progress === 100) {
                 await createFeed.mutate({
                     owners: [creatorId],
                     title: "Talent Completed Job",
@@ -383,7 +409,7 @@ export function useCreateJobReview() {
                 owners: [recipientId],
                 type: FEED_TYPES.JOB_REVIEW,
                 meta: {
-                    rating: rating,
+                    rating,
                 },
             });
             toast.success("Your review has been submitted successfully");
@@ -782,7 +808,7 @@ export function useAcceptJobCancellation() {
                     isPublic: false,
                     meta: {
                         value: rating,
-                        review: review,
+                        review,
                     },
                 }),
             ]);

@@ -1,8 +1,18 @@
 "use client";
+
+/* -------------------------------------------------------------------------- */
+/*                             External Dependency                            */
+/* -------------------------------------------------------------------------- */
+
 import React from "react";
-import { cn } from "@/lib/utils";
 import { Check, ChevronDown } from "lucide-react";
 import * as SelectPrimitive from "@radix-ui/react-select";
+
+/* -------------------------------------------------------------------------- */
+/*                             Internal Dependency                            */
+/* -------------------------------------------------------------------------- */
+
+import { cn } from "@/lib/utils";
 
 export const Select = SelectPrimitive.Root;
 export const SelectValue = SelectPrimitive.Value;
@@ -11,7 +21,7 @@ export const SelectGroup = SelectPrimitive.Group;
 type SelectTriggerRef = React.ElementRef<typeof SelectPrimitive.Trigger>;
 type SelectTriggerProps = React.ComponentProps<typeof SelectPrimitive.Trigger>;
 
-export const SelectTrigger = React.forwardRef<SelectTriggerRef, SelectTriggerProps>(
+export const SelectTrigger = React.forwardRef<SelectTriggerRef, SelectTriggerProps & { className?: string }>(
     ({ className, children, ...props }, forwardedRef) => (
         <SelectPrimitive.Trigger
             className={cn(
@@ -35,7 +45,7 @@ SelectTrigger.displayName = "SelectTrigger";
 type SelectContentRef = React.ElementRef<typeof SelectPrimitive.Content>;
 type SelectContentProps = React.ComponentProps<typeof SelectPrimitive.Content>;
 
-export const SelectContent = React.forwardRef<SelectContentRef, SelectContentProps>(
+export const SelectContent = React.forwardRef<SelectContentRef, SelectContentProps & { className?: string }>(
     ({ className, children, ...props }, forwardedRef) => (
         <SelectPrimitive.Content
             {...props}
@@ -62,30 +72,35 @@ SelectContent.displayName = "SelectContent";
 type SelectItemRef = React.ElementRef<typeof SelectPrimitive.Item>;
 type SelectItemProps = React.ComponentProps<typeof SelectPrimitive.Item>;
 
-export const SelectItem = React.forwardRef<SelectItemRef, SelectItemProps>(({ className, children, ...props }, ref) => (
-    <SelectPrimitive.Item
-        ref={ref}
-        className={cn(
-            "relative flex w-full cursor-default select-none items-center rounded-sm py-1.5 pl-2 pr-8 text-sm outline-none data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
-            className,
-        )}
-        {...props}
-    >
-        <span className="absolute right-2 flex h-3.5 w-3.5 items-center justify-center">
-            <SelectPrimitive.ItemIndicator>
-                <Check className="h-4 w-4" />
-            </SelectPrimitive.ItemIndicator>
-        </span>
-        <SelectPrimitive.ItemText>{children}</SelectPrimitive.ItemText>
-    </SelectPrimitive.Item>
-));
+export const SelectItem = React.forwardRef<SelectItemRef, SelectItemProps & { className?: string }>(
+    ({ className, children, ...props }, ref) => (
+        <SelectPrimitive.Item
+            ref={ref}
+            className={cn(
+                "relative flex w-full cursor-default select-none items-center rounded-sm py-1.5 pl-2 pr-8 text-sm outline-none data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
+                className,
+            )}
+            {...props}
+        >
+            <span className="absolute right-2 flex h-3.5 w-3.5 items-center justify-center">
+                <SelectPrimitive.ItemIndicator>
+                    <Check className="h-4 w-4" />
+                </SelectPrimitive.ItemIndicator>
+            </span>
+            <SelectPrimitive.ItemText>{children}</SelectPrimitive.ItemText>
+        </SelectPrimitive.Item>
+    ),
+);
+
 SelectItem.displayName = SelectPrimitive.Item.displayName;
 
 type SelectLabelRef = React.ElementRef<typeof SelectPrimitive.Label>;
 type SelectLabelProps = React.ComponentPropsWithoutRef<typeof SelectPrimitive.Label>;
 
-export const SelectGroupLabel = React.forwardRef<SelectLabelRef, SelectLabelProps>(({ className, ...props }, ref) => (
-    <SelectPrimitive.Label ref={ref} className={cn("px-2 py-1.5 text-sm font-semibold", className)} {...props} />
-));
+export const SelectGroupLabel = React.forwardRef<SelectLabelRef, SelectLabelProps & { className?: string }>(
+    ({ className, ...props }, ref) => (
+        <SelectPrimitive.Label ref={ref} className={cn("px-2 py-1.5 text-sm font-semibold", className)} {...props} />
+    ),
+);
 
 SelectGroupLabel.displayName = SelectPrimitive.Label.displayName;

@@ -1,8 +1,15 @@
+/* -------------------------------------------------------------------------- */
+/*                             External Dependency                            */
+/* -------------------------------------------------------------------------- */
+
 import { type UseMutationResult, useMutation } from "@tanstack/react-query";
+
+/* -------------------------------------------------------------------------- */
+/*                             Internal Dependency                            */
+/* -------------------------------------------------------------------------- */
 
 import { toast } from "@/components/common/toaster";
 import { type ApiError, axios } from "@/lib/axios";
-
 import { useUserState } from "../store/account";
 import { useWalletState } from "../store/wallet";
 
@@ -113,6 +120,7 @@ interface LoginResponse {
         status: true;
         type: string;
     };
+    _id: string;
 }
 
 interface LoginParams {

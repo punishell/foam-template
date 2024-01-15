@@ -1,7 +1,16 @@
-import { ApiError, axios } from "@/lib/axios";
+/* -------------------------------------------------------------------------- */
+/*                             External Dependency                            */
+/* -------------------------------------------------------------------------- */
+
+import { type UseMutationResult, useMutation, useQueryClient } from "@tanstack/react-query";
+
+/* -------------------------------------------------------------------------- */
+/*                             Internal Dependency                            */
+/* -------------------------------------------------------------------------- */
+
+import { type ApiError, axios } from "@/lib/axios";
 import { toast } from "@/components/common/toaster";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useGetWalletDetails, useGetWalletTxs } from "./wallet";
+import { useGetWalletDetails } from "./wallet";
 
 interface WithdrawalParams {
     address: string;
@@ -11,12 +20,12 @@ interface WithdrawalParams {
     otp?: string;
 }
 
-async function postWithdrawalRequest(payload: WithdrawalParams): Promise<any> {
+async function postWithdrawalRequest(payload: WithdrawalParams): Promise<WithdrawalParams> {
     const res = await axios.post(`/withdrawals`, payload);
     return res.data.data;
 }
 
-export function useWithdraw() {
+export function useWithdraw(): UseMutationResult<WithdrawalParams, ApiError, WithdrawalParams, unknown> {
     const queryClient = useQueryClient();
     const { refetch } = useGetWalletDetails();
     return useMutation({
@@ -30,7 +39,7 @@ export function useWithdraw() {
             return data;
         },
         onError: (error: ApiError) => {
-            toast.error(error?.response?.data.message || "An error occurred");
+            toast.error(error?.response?.data.message ?? "An error occurred");
         },
     });
 }

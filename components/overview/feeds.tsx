@@ -125,8 +125,7 @@ export const Feeds = (): ReactElement => {
     }, [timelineData, timelineData?.pages]);
 
     const timelineFeeds = useMemo(
-        () =>
-            (currentData || []).map((feed, i) => ParseFeedView(feed, loggedInUser as string, i, callback, dismissByID)),
+        () => (currentData || []).map((feed, i) => ParseFeedView(feed, loggedInUser, i, callback, dismissByID)),
         // eslint-disable-next-line react-hooks/exhaustive-deps
         [currentData],
     );

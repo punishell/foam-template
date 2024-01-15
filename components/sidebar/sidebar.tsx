@@ -1,22 +1,31 @@
-import React from "react";
+/* -------------------------------------------------------------------------- */
+/*                             External Dependency                            */
+/* -------------------------------------------------------------------------- */
+
+import { type ReactElement } from "react";
 import Image from "next/image";
+import { LayoutDashboard, Users, LayoutList, Wallet, MessageSquare, Settings } from "lucide-react";
+import Link from "next/link";
+
+/* -------------------------------------------------------------------------- */
+/*                             Internal Dependency                            */
+/* -------------------------------------------------------------------------- */
+
 import { LogOut } from "./logout";
 import { NavLink } from "./nav-link";
 import { UserProfile } from "@/components/sidebar/user-profile";
-import { LayoutDashboard, Users, LayoutList, Briefcase, Wallet, MessageSquare, Settings } from "lucide-react";
 import { useMessaging } from "@/providers/socketProvider";
-import Link from "next/link";
 
-export const Sidebar = () => {
+export const Sidebar = (): ReactElement => {
     const { unreadChatCount } = useMessaging();
     return (
         <div className="px flex h-screen shrink-0 basis-[280px] flex-col gap-6 overflow-y-auto bg-sidebar-gradient px-6 pb-4 pt-6 text-white">
             <div className="flex w-full flex-col items-center">
-                <Link href={"/profile"}>
+                <Link href="/profile">
                     <UserProfile />
                 </Link>
             </div>
-            <div className="border-b border-line opacity-20"></div>
+            <div className="border-b border-line opacity-20" />
 
             <div className="mx-auto flex w-fit flex-col gap-4">
                 <NavLink href="/overview">
@@ -63,7 +72,7 @@ export const Sidebar = () => {
             <div className="mx-auto mt-auto">
                 <LogOut />
             </div>
-            <div className="border-b border-line opacity-20"></div>
+            <div className="border-b border-line opacity-20" />
             <Image src="/images/logo.svg" alt="Logo" width={250} height={60} className="mx-auto max-w-[80%]" />
         </div>
     );

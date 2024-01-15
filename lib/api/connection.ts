@@ -1,6 +1,15 @@
-import { axios, ApiError } from "@/lib/axios";
+/* -------------------------------------------------------------------------- */
+/*                             External Dependency                            */
+/* -------------------------------------------------------------------------- */
+
+import { useMutation, type UseMutationResult, type UseQueryResult, useQuery } from "@tanstack/react-query";
+
+/* -------------------------------------------------------------------------- */
+/*                             	Internal Dependency                            */
+/* -------------------------------------------------------------------------- */
+
+import { axios, type ApiError } from "@/lib/axios";
 import { toast } from "@/components/common/toaster";
-import { useMutation, useQuery } from "@tanstack/react-query";
 
 // UPDATE Connection Preference
 
@@ -23,12 +32,17 @@ async function postUpdateConnectionPreference(
     return res.data.data;
 }
 
-export function useUpdateConnectionPreference() {
+export function useUpdateConnectionPreference(): UseMutationResult<
+    UpdateConnectionPreferenceResponse,
+    ApiError,
+    UpdateConnectionPreferenceParams,
+    unknown
+> {
     return useMutation({
         mutationFn: postUpdateConnectionPreference,
         mutationKey: ["update-connection-preference"],
         onError: (error: ApiError) => {
-            toast.error(error?.response?.data.message || "An error occurred");
+            toast.error(error?.response?.data.message ?? "An error occurred");
         },
         onSuccess: () => {
             toast.success("Connection preference updated successfully");
@@ -49,12 +63,12 @@ async function getConnectionPreference(): Promise<GetConnectionPreferenceRespons
     return res.data.data;
 }
 
-export function useGetConnectionPreference() {
+export function useGetConnectionPreference(): UseQueryResult<GetConnectionPreferenceResponse, ApiError> {
     return useQuery({
         queryFn: getConnectionPreference,
         queryKey: ["get-connection-preference"],
         onError: (error: ApiError) => {
-            toast.error(error?.response?.data.message || "An error occurred");
+            toast.error(error?.response?.data.message ?? "An error occurred");
         },
     });
 }

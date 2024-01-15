@@ -1,14 +1,24 @@
 "use client";
-import React from "react";
+
+/* -------------------------------------------------------------------------- */
+/*                             External Dependency                            */
+/* -------------------------------------------------------------------------- */
+
+import { type ReactElement } from "react";
+
+/* -------------------------------------------------------------------------- */
+/*                             Internal Dependency                            */
+/* -------------------------------------------------------------------------- */
+
 import { AfroProfile } from "@/components/common/afro-profile";
 import { useUserState } from "@/lib/store/account";
 
-export const UserProfile = () => {
+export const UserProfile = (): ReactElement => {
     const account = useUserState();
 
     return (
         <div className="flex flex-col items-center gap-2">
-            <AfroProfile score={account?.score ?? 0} size="2xl" src={account?.profileImage?.url} url={`/profile`} />
+            <AfroProfile score={account?.score ?? 0} size="2xl" src={account?.profileImage?.url} url="/profile" />
 
             <div className="flex flex-col gap-0 text-center">
                 <span className="text-lg">

@@ -1,7 +1,22 @@
-import { ApiError, axios } from "@/lib/axios";
+/* -------------------------------------------------------------------------- */
+/*                             External Dependency                            */
+/* -------------------------------------------------------------------------- */
+
+import {
+    type UseMutationResult,
+    type UseQueryResult,
+    useMutation,
+    useQuery,
+    useQueryClient,
+} from "@tanstack/react-query";
+
+/* -------------------------------------------------------------------------- */
+/*                             Internal Dependency                            */
+/* -------------------------------------------------------------------------- */
+
+import { type ApiError, axios } from "@/lib/axios";
 import { toast } from "@/components/common/toaster";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Bookmark } from "../types";
+import { type Bookmark } from "../types";
 
 interface GetBookMarkResponse {
     data: Bookmark[];
@@ -12,7 +27,7 @@ interface GetBookMarkResponse {
 interface timelineFetchParams {
     page: number;
     limit: number;
-    filter: Record<string, any>;
+    filter: Record<string, unknown>;
 }
 
 async function getBookmarks({ page, limit, filter }: timelineFetchParams): Promise<GetBookMarkResponse> {
@@ -26,22 +41,16 @@ async function getBookmarks({ page, limit, filter }: timelineFetchParams): Promi
     return res.data.data;
 }
 
-async function addToBookmark({ reference, type }: { reference: string; type: string }): Promise<any> {
-    const res = await axios.post(`/bookmark`, { reference, type });
-    return res.data.data;
-}
-
-async function removeFromBookmark({ id }: { id: string }): Promise<any> {
-    const res = await axios.delete(`/bookmark/${id}`);
-    return res.data.data;
-}
-
-export const useGetBookmarks = ({ page, limit, filter }: timelineFetchParams) => {
+export const useGetBookmarks = ({
+    page,
+    limit,
+    filter,
+}: timelineFetchParams): UseQueryResult<GetBookMarkResponse, ApiError> => {
     return useQuery({
-        queryFn: async () => await getBookmarks({ page, limit, filter }),
+        queryFn: async () => getBookmarks({ page, limit, filter }),
         queryKey: [`get-bookmark_req_${page}`],
         onError: (error: ApiError) => {
-            toast.error(error?.response?.data.message || "An error occurred");
+            toast.error(error?.response?.data.message ?? "An error occurred");
         },
         onSuccess: (data: GetBookMarkResponse) => {
             return data;
@@ -49,7 +58,21 @@ export const useGetBookmarks = ({ page, limit, filter }: timelineFetchParams) =>
     });
 };
 
-export function useSaveToBookmark(callBack?: () => void) {
+// ===
+
+interface AddToBookmarkParams {
+    reference: string;
+    type: string;
+}
+
+async function addToBookmark({ reference, type }: AddToBookmarkParams): Promise<AddToBookmarkParams> {
+    const res = await axios.post(`/bookmark`, { reference, type });
+    return res.data.data;
+}
+
+export function useSaveToBookmark(
+    callBack?: () => void,
+): UseMutationResult<AddToBookmarkParams, ApiError, AddToBookmarkParams, unknown> {
     const queryClient = useQueryClient();
     return useMutation({
         mutationFn: addToBookmark,
@@ -58,17 +81,31 @@ export function useSaveToBookmark(callBack?: () => void) {
             await Promise.all([
                 queryClient.refetchQueries([`get-bookmark_req_1`]),
                 queryClient.refetchQueries(["get-timeline"]),
-                callBack && callBack(),
+                callBack?.(),
             ]);
             toast.success("Saved to bookmark successfully");
         },
         onError: (error: ApiError) => {
-            toast.error(error?.response?.data.message || "An error occurred");
+            toast.error(error?.response?.data.message ?? "An error occurred");
         },
     });
 }
 
-export function useRemoveFromBookmark(callBack?: () => void) {
+// ===
+
+interface BookmarkParams {
+    id: string;
+    // add other properties here if needed
+}
+
+async function removeFromBookmark({ id }: BookmarkParams): Promise<BookmarkParams> {
+    const res = await axios.delete(`/bookmark/${id}`);
+    return res.data.data;
+}
+
+export function useRemoveFromBookmark(
+    callBack?: () => void,
+): UseMutationResult<BookmarkParams, ApiError, BookmarkParams, unknown> {
     const queryClient = useQueryClient();
     return useMutation({
         mutationFn: removeFromBookmark,
@@ -77,12 +114,12 @@ export function useRemoveFromBookmark(callBack?: () => void) {
             await Promise.all([
                 queryClient.refetchQueries([`get-bookmark_req_1`]),
                 queryClient.refetchQueries(["get-timeline"]),
-                callBack && callBack(),
+                callBack?.(),
             ]);
             toast.success("Removed From bookmark successfully");
         },
         onError: (error: ApiError) => {
-            toast.error(error?.response?.data.message || "An error occurred");
+            toast.error(error?.response?.data.message ?? "An error occurred");
         },
     });
 }

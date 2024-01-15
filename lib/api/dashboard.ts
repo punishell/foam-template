@@ -1,15 +1,24 @@
-import { ApiError, axios } from "@/lib/axios";
-import { toast } from "@/components/common/toaster";
-import { QueryClient, useInfiniteQuery, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { DataFeedResponse } from "../types";
+/* -------------------------------------------------------------------------- */
+/*                             External Dependency                            */
+/* -------------------------------------------------------------------------- */
 
-interface CreatorData {
-    _id: string;
-    firstName: string;
-    lastName: string;
-    score: number;
-    profileImage?: { url: string };
-}
+import {
+    type UseMutationResult,
+    type UseQueryResult,
+    useInfiniteQuery,
+    useMutation,
+    useQuery,
+    useQueryClient,
+    type UseInfiniteQueryResult,
+} from "@tanstack/react-query";
+
+/* -------------------------------------------------------------------------- */
+/*                             Internal Dependency                            */
+/* -------------------------------------------------------------------------- */
+
+import { type ApiError, axios } from "@/lib/axios";
+import { toast } from "@/components/common/toaster";
+import { type DataFeedResponse } from "../types";
 
 interface GetFeedsResponse {
     data: DataFeedResponse[] | [];
@@ -19,14 +28,10 @@ interface GetFeedsResponse {
     total: number;
 }
 
-interface GetTimelineResponse {
-    data: CreatorData[];
-}
-
 interface timelineFetchParams {
     page: number;
     limit: number;
-    filter: Record<string, any>;
+    filter: Record<string, unknown>;
 }
 
 async function getTimelineFeeds({ page, limit, filter }: timelineFetchParams): Promise<GetFeedsResponse> {
@@ -40,22 +45,11 @@ async function getTimelineFeeds({ page, limit, filter }: timelineFetchParams): P
     return res.data.data;
 }
 
-async function getLeaderBoard(): Promise<GetTimelineResponse> {
-    const res = await axios.get(`/account/user?limit=10&sort=score&range=1,100`);
-    return res.data.data;
-}
-
-async function dismissFeed(id: string): Promise<any> {
-    const res = await axios.put(`/feeds/${id}/dismiss`);
-    return res.data.data;
-}
-
-async function dismissAllFeed(): Promise<any> {
-    const res = await axios.put(`/feeds/dismiss/all`);
-    return res.data.data;
-}
-
-export const useGetTimeline = ({ page, limit, filter }: timelineFetchParams) => {
+export const useGetTimeline = ({
+    page,
+    limit,
+    filter,
+}: timelineFetchParams): UseInfiniteQueryResult<[] | DataFeedResponse[], unknown> => {
     return useInfiniteQuery(
         [`get-timeline_${page}_${limit}`],
         async ({ pageParam = 1 }) => (await getTimelineFeeds({ page: pageParam, limit, filter })).data,
@@ -77,12 +71,31 @@ export const useGetTimeline = ({ page, limit, filter }: timelineFetchParams) => 
     // });
 };
 
-export const useGetLeaderBoard = () => {
+// ===
+
+interface CreatorData {
+    _id: string;
+    firstName: string;
+    lastName: string;
+    score: number;
+    profileImage?: { url: string };
+}
+
+interface GetTimelineResponse {
+    data: CreatorData[];
+}
+
+async function getLeaderBoard(): Promise<GetTimelineResponse> {
+    const res = await axios.get(`/account/user?limit=10&sort=score&range=1,100`);
+    return res.data.data;
+}
+
+export const useGetLeaderBoard = (): UseQueryResult<GetTimelineResponse, ApiError> => {
     return useQuery({
-        queryFn: async () => await getLeaderBoard(),
+        queryFn: async () => getLeaderBoard(),
         queryKey: ["get-leader-board"],
         onError: (error: ApiError) => {
-            toast.error(error?.response?.data.message || "An error occurred");
+            toast.error(error?.response?.data.message ?? "An error occurred");
         },
         onSuccess: (data: GetTimelineResponse) => {
             return data;
@@ -90,7 +103,14 @@ export const useGetLeaderBoard = () => {
     });
 };
 
-export function useDismissFeed() {
+// ===
+
+async function dismissFeed(id: string): Promise<void> {
+    const res = await axios.put(`/feeds/${id}/dismiss`);
+    return res.data.data;
+}
+
+export function useDismissFeed(): UseMutationResult<void, ApiError, string, unknown> {
     const queryClient = useQueryClient();
     return useMutation({
         mutationFn: dismissFeed,
@@ -102,12 +122,19 @@ export function useDismissFeed() {
             toast.success("Feed Dismissed successfully");
         },
         onError: (error: ApiError) => {
-            toast.error(error?.response?.data.message || "An error occurred");
+            toast.error(error?.response?.data.message ?? "An error occurred");
         },
     });
 }
 
-export function useDismissAllFeed() {
+// ===
+
+async function dismissAllFeed(): Promise<void> {
+    const res = await axios.put(`/feeds/dismiss/all`);
+    return res.data.data;
+}
+
+export function useDismissAllFeed(): UseMutationResult<void, ApiError, void, unknown> {
     return useMutation({
         mutationFn: dismissAllFeed,
         mutationKey: ["dismiss-all-feed"],
@@ -115,7 +142,7 @@ export function useDismissAllFeed() {
             toast.success("All Feeds Dismissed successfully");
         },
         onError: (error: ApiError) => {
-            toast.error(error?.response?.data.message || "An error occurred");
+            toast.error(error?.response?.data.message ?? "An error occurred");
         },
     });
 }

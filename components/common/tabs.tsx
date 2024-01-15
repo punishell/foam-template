@@ -1,12 +1,18 @@
 "use client";
 
-import React from "react";
-import { useRouter } from "next/navigation";
-import { usePathname } from "next/navigation";
-import { createQueryString } from "@/lib/utils";
-import { useSearchParams } from "next/navigation";
+/* -------------------------------------------------------------------------- */
+/*                             External Dependency                            */
+/* -------------------------------------------------------------------------- */
+
+import React, { type FC, useEffect } from "react";
+import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import * as RadixTabs from "@radix-ui/react-tabs";
-import { cn } from "@/lib/utils";
+
+/* -------------------------------------------------------------------------- */
+/*                             Internal Dependency                            */
+/* -------------------------------------------------------------------------- */
+
+import { createQueryString, cn } from "@/lib/utils";
 
 interface Tab {
     label: string;
@@ -21,23 +27,23 @@ interface Props {
     className?: string;
 }
 
-export const Tabs: React.FC<Props> = ({ tabs, defaultTab, urlKey, className }) => {
+export const Tabs: FC<Props> = ({ tabs, defaultTab, urlKey, className }) => {
     const router = useRouter();
     const pathname = usePathname();
     const searchParams = useSearchParams();
 
-    const urlTab = searchParams.get(urlKey || "tab");
-    const initialTab = urlTab || defaultTab || tabs[0].value;
+    const urlTab = searchParams.get(urlKey ?? "tab");
+    const initialTab = urlTab ?? defaultTab ?? tabs[0]?.value;
     const [activeTab, setActiveTab] = React.useState(initialTab);
 
-    const handleTabChange = (value: string) => {
+    const handleTabChange = (value: string): void => {
         setActiveTab(value);
         // update the URL whenever the tab changes
-        router.push(`${pathname}?${createQueryString(urlKey || "tab", value)}`);
+        router.push(`${pathname}?${createQueryString(urlKey ?? "tab", value)}`);
     };
 
     // update the state whenever the URL changes
-    React.useEffect(() => {
+    useEffect(() => {
         if (urlTab) {
             setActiveTab(urlTab);
         }
