@@ -112,21 +112,20 @@ const TABLE_COLUMNS: Array<ColumnDef<WalletTransactionsProps>> = [
 export const WalletTransactions = ({
     data,
     page,
-    // @ts-expect-error --- Unused variable
-    limit,
+    // limit,
     pageSize,
     loading,
     onPageChange,
 }: {
     data: WalletTransactionsProps[];
     page: number;
-    limit: number;
+    // limit: number;
     pageSize: number;
     loading: boolean;
     onPageChange: React.Dispatch<React.SetStateAction<PaginationState>>;
 }): React.JSX.Element => {
     return (
-        <div className="flex h-[450px] w-full max-w-full flex-col gap-4 rounded-lg border border-line bg-white px-6 py-6">
+        <div className="flex h-[600px] w-full max-w-full flex-col gap-4 rounded-lg border border-line bg-white px-6 py-6">
             <h3 className="text-base font-semibold">Wallet Transactions</h3>
             <Table
                 data={data}
