@@ -23,6 +23,7 @@ import { InputErrorMessage, Modal, OtpInput, type SlideItemProps, Slider, Spinne
 import { useActivate2FA, useDeActivate2FA, useGetAccount, useInitialize2FA } from "@/lib/api/account";
 import { TWO_FA_CONSTANTS } from "@/lib/constants";
 import { toast } from "@/components/common/toaster";
+import { useErrorService } from "@/lib/store/error-service";
 
 interface AuthApp2FAProps {
     isEnabled: boolean;
@@ -33,6 +34,7 @@ interface AuthApp2FAProps {
 const InitiateAuthApp = ({ goToNextSlide }: SlideItemProps): React.JSX.Element => {
     const { mutateAsync, isLoading } = useInitialize2FA();
     const { setSecret, setQrCode, closeModal } = useAuthApp2FAState();
+    const { setErrorMessage } = useErrorService();
 
     const handleInitiateAuthApp = async (): Promise<void> => {
         try {
@@ -44,7 +46,12 @@ const InitiateAuthApp = ({ goToNextSlide }: SlideItemProps): React.JSX.Element =
                 goToNextSlide();
             } else toast.error("An Error Occurred, Try Again!!!");
         } catch (error) {
-            console.log(error);
+            if (error instanceof Error) {
+                setErrorMessage({
+                    title: "handleInitiateAuthApp",
+                    message: error.message,
+                });
+            }
         }
     };
 

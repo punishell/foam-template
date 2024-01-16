@@ -21,6 +21,7 @@ import {
 
 import { Pagination } from "./pagination";
 import { Spinner } from "./loader";
+import { useErrorService } from "@/lib/store/error-service";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 interface TableProps<T extends Record<string, any>> {
@@ -54,11 +55,18 @@ export const Table = <T extends object>({
 
         onPaginationChange: setPagination,
     });
+    const { setErrorMessage } = useErrorService();
 
     const setCurrentPage = (page: number): void => {
-        console.log(page);
+        setErrorMessage({
+            title: "setCurrentPage Function (Page)",
+            message: page,
+        });
         setPagination((prev) => {
-            console.log({ ...prev, pageIndex: page });
+            setErrorMessage({
+                title: "setCurrentPage Function (setPagination)",
+                message: { ...prev, pageIndex: page },
+            });
             return { ...prev, pageIndex: page };
         });
     };

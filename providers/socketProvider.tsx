@@ -23,6 +23,7 @@ import { AUTH_TOKEN_KEY, formatBytes } from "@/lib/utils";
 import { toast } from "@/components/common/toaster";
 import { type ImageUp } from "@/lib/types";
 import { postUploadImages } from "@/lib/api/upload";
+import { useErrorService } from "@/lib/store/error-service";
 
 const MAX_RECONNECT_TIME = 1000;
 
@@ -178,6 +179,8 @@ export const MessagingProvider = ({ children }: { children: React.ReactNode }): 
     const pathname = usePathname();
     const messagingScreen = pathname.includes(prefix);
 
+    const { setErrorMessage } = useErrorService();
+
     const parseMessageAttachments = (attachments: ChatImageProps[]): ChatImageProps[] =>
         // @ts-expect-error --- TODO: Fix this
         attachments && attachments.length > 0
@@ -261,7 +264,7 @@ export const MessagingProvider = ({ children }: { children: React.ReactNode }): 
     const SocketConnection = async (): Promise<void> => {
         if (socket && loggedInUser && !initiated.current) {
             initiated.current = true;
-            socket.on("connect", function () {
+            socket.on("connect", () => {
                 setSocket(socket);
                 socket.emit(
                     conversationEnums.USER_CONNECT,
@@ -283,7 +286,7 @@ export const MessagingProvider = ({ children }: { children: React.ReactNode }): 
                 });
 
                 // notifies if user status is either offline/ online in an active chat
-                socket?.on(conversationEnums.USER_STATUS, function (data: any) {
+                socket?.on(conversationEnums.USER_STATUS, (data: any) => {
                     if (currentConversation && currentConversation._id === data.currentConversation) {
                         if (Array.isArray(currentConversation.recipients)) {
                             const updatedRecipients = currentConversation.recipients.map((r: any) => {
@@ -343,7 +346,10 @@ export const MessagingProvider = ({ children }: { children: React.ReactNode }): 
                 setSocket(newSocket);
                 setSocketReconnect(false);
             } catch (error: any) {
-                console.log("socket--er", error);
+                setErrorMessage({
+                    title: "Socket Connection Error (connectChatInit Function)",
+                    message: error,
+                });
                 Reconnect();
             }
         } else {
@@ -411,7 +417,10 @@ export const MessagingProvider = ({ children }: { children: React.ReactNode }): 
         try {
             setStartingNewChat(true);
             if (!socket) {
-                console.error("Socket is null");
+                setErrorMessage({
+                    title: "Socket Connection Error (startUserInitializeConversation Function)",
+                    message: "Socket is null",
+                });
                 return;
             }
             socket.emit(
@@ -438,7 +447,10 @@ export const MessagingProvider = ({ children }: { children: React.ReactNode }): 
                 },
             );
         } catch (error) {
-            console.log("error", error);
+            setErrorMessage({
+                title: "Socket Connection Error (startUserInitializeConversation Function)",
+                message: error,
+            });
         }
     };
 
@@ -480,7 +492,10 @@ export const MessagingProvider = ({ children }: { children: React.ReactNode }): 
     const markUserMessageAsSeen = async (conversation: string): Promise<null> => {
         try {
             if (!socket) {
-                console.error("Socket is null");
+                setErrorMessage({
+                    title: "Socket Connection Error (markUserMessageAsSeen Function)",
+                    message: "Socket is null",
+                });
                 return null;
             }
             socket.emit(conversationEnums.MARK_MESSAGE_AS_SEEN, {

@@ -19,6 +19,7 @@ import { type ImageUp } from "@/lib/types";
 import { ChatBoxHeader } from "@/components/messaging/chatbox-header";
 import { Messages } from "@/components/messaging/messages";
 import { RenderAttachmentPreviewer } from "@/components/messaging/render-attachment-viewer";
+import { useErrorService } from "@/lib/store/error-service";
 
 interface Props {
     params: {
@@ -30,6 +31,7 @@ export default function ChatPage({ params }: Props): ReactElement {
     const { "message-id": messageId } = params;
     const { currentConversation, loadingChats, setActiveConversation, sendUserMessage, markUserMessageAsSeen } =
         useMessaging();
+    const { setErrorMessage } = useErrorService();
     const [loadingMessage, setLoadingMessages] = useState(true);
     const [text, setText] = useState("");
     const [imageFiles, setImageFiles] = useState<ImageUp[] | []>([]);
@@ -73,7 +75,11 @@ export default function ChatPage({ params }: Props): ReactElement {
     }, []);
 
     const onDropError = React.useCallback(async (data: unknown) => {
-        console.log("Rr-->", data);
+        setErrorMessage({
+            title: "onDropError Function",
+            message: JSON.stringify(data),
+        });
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const { getRootProps, getInputProps, open } = useDropzone({
@@ -111,7 +117,10 @@ export default function ChatPage({ params }: Props): ReactElement {
                 setImageFiles([]);
             } else {
                 // Handle the case where currentConversation or its properties are null or undefined
-                console.error("currentConversation, recipient, or sender is null or undefined");
+                setErrorMessage({
+                    title: "sendMessage Function",
+                    message: "currentConversation, recipient, or sender is null or undefined",
+                });
             }
         }
     };

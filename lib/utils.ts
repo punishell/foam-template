@@ -247,7 +247,6 @@ export function getPreviewByType(file: File): PreviewResult {
         preview = URL.createObjectURL(file);
     } else {
         const typP = type.split("/")[1];
-        console.log(typP);
         if (typP && allowedFileTypes.includes(typP)) preview = `/images/thumbnail/${typP}.png`;
         else preview = "/images/thumbnail/TXT.png";
     }
