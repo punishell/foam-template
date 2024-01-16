@@ -31,6 +31,18 @@ interface ReferralModalProps {
     onOpenChange: (open: boolean) => void;
 }
 
+interface ReferralDataProps {
+    referral: {
+        _id: string;
+        firstName: string;
+        lastName: string;
+        profile: { bio: { title: string } };
+        score: number;
+        profileImage: { url: string };
+    };
+    createdAt: string | number | Date | dayjs.Dayjs | null | undefined;
+}
+
 type LoginFormValues = z.infer<typeof referralSchema>;
 
 export function ReferralSideModal({ isOpen, onOpenChange }: ReferralModalProps): React.ReactElement {
@@ -44,10 +56,10 @@ export function ReferralSideModal({ isOpen, onOpenChange }: ReferralModalProps):
 
     const recentReferrals = useMemo(
         () =>
-            (data?.referrals?.data ?? []).map((u) => ({
-                _id: u?.referral?._id || "",
-                name: `${u?.referral?.firstName} ${u?.referral?.lastName}` || "",
-                title: u?.referral?.profile?.bio?.title || "",
+            (data?.referrals?.data ?? []).map((u: ReferralDataProps) => ({
+                _id: u?.referral?._id ?? "",
+                name: `${u?.referral?.firstName} ${u?.referral?.lastName}` ?? "",
+                title: u?.referral?.profile?.bio?.title ?? "",
                 score: u?.referral?.score,
                 image: u?.referral?.profileImage?.url,
                 dated: dayjs(u?.createdAt).format("DD/MM/YYYY"),
@@ -143,7 +155,19 @@ export function ReferralSideModal({ isOpen, onOpenChange }: ReferralModalProps):
                         <p className="text-base font-thin">Your referrals that joined the Platform</p>
                         <div className="my-4 flex flex-col gap-2">
                             {recentReferrals.length > 0 &&
-                                recentReferrals.map((r, i) => <RecentReferral key={i} referral={r} />)}
+                                recentReferrals.map(
+                                    (
+                                        r: {
+                                            _id: string;
+                                            name: string;
+                                            title: string;
+                                            score: number;
+                                            image: string;
+                                            dated: string;
+                                        },
+                                        i: number,
+                                    ) => <RecentReferral key={i} referral={r} />,
+                                )}
                             {recentReferrals.length === 0 && (
                                 <div className="flex min-h-[139px] items-center rounded-2xl bg-sky-lighter p-4">
                                     <p className="m-auto text-base text-body">Talents you refer will appear here</p>

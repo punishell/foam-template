@@ -548,7 +548,7 @@ export const MessagingProvider = ({ children }: { children: React.ReactNode }): 
                 },
             );
         } catch (error: any) {
-            toast.error(error?.response?.data.message || "Failed to Send Message Try again");
+            toast.error(error?.response?.data.message ?? "Failed to Send Message Try again");
         }
     };
 
