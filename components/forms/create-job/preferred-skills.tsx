@@ -13,6 +13,7 @@ import type * as z from "zod";
 /* -------------------------------------------------------------------------- */
 
 import { type createJobSchema } from "@/lib/validations";
+
 import { SkillInput } from "./skill-input";
 
 type FormValues = z.infer<typeof createJobSchema>;
@@ -31,7 +32,8 @@ const PreferredSkills = ({ form, isEdit }: PreferredSkillsProps): ReactElement =
             </h3>
             <div className="flex items-center justify-start gap-2">
                 <div className="relative">
-                    <SkillInput {...form.register("firstSkill")} />
+                    {/* <SkillInput {...form.register("firstSkill")} /> */}
+                    <SkillInput form={form} name="firstSkill" />
                     <span className="absolute -bottom-6 left-2 flex w-full">
                         {form.formState.errors.firstSkill?.message != null && (
                             <span className="text-sm text-red-500">{form.formState.errors.firstSkill?.message}</span>
@@ -39,7 +41,8 @@ const PreferredSkills = ({ form, isEdit }: PreferredSkillsProps): ReactElement =
                     </span>
                 </div>
                 <div className="flex flex-col">
-                    <SkillInput {...form.register("secondSkill")} />
+                    {/* <SkillInput {...form.register("secondSkill")} /> */}
+                    <SkillInput form={form} name="secondSkill" />
                     <span>
                         {form.formState.errors.secondSkill?.message != null && (
                             <span className="text-sm text-red-500">{form.formState.errors.secondSkill?.message}</span>
@@ -47,7 +50,8 @@ const PreferredSkills = ({ form, isEdit }: PreferredSkillsProps): ReactElement =
                     </span>
                 </div>
                 <div className="relative">
-                    <SkillInput {...form.register("thirdSkill")} />
+                    {/* <SkillInput {...form.register("thirdSkill")} /> */}
+                    <SkillInput form={form} name="thirdSkill" />
                     <span className="absolute bottom-2">
                         {form.formState.errors.thirdSkill?.message != null && (
                             <span className="text-sm text-red-500">{form.formState.errors.thirdSkill?.message}</span>
