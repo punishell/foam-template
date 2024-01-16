@@ -66,6 +66,7 @@ module.exports = {
         "react/no-array-index-key": "off",
         // Temporary rules
         "@typescript-eslint/no-unused-vars": "off",
+        "@typescript-eslint/non-nullable-type-assertion-style": "off",
     },
     settings: {
         react: {
