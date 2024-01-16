@@ -4,7 +4,7 @@
 /*                             Internal Dependency                            */
 /* -------------------------------------------------------------------------- */
 
-import { Spinner } from "../common";
+import { PageLoading } from "../common/page-loading";
 import { Pagination } from "../common/pagination";
 import { TalentBox } from "./talentbox";
 import { type AchievementType } from "@/lib/utils";
@@ -30,7 +30,7 @@ interface TalentListProps {
 const RenderLoading = (): React.JSX.Element => {
     return (
         <div className="z-20 my-auto flex h-full w-full items-center justify-center">
-            <Spinner />
+            <PageLoading color="#007C5B" />
         </div>
     );
 };

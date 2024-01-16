@@ -20,8 +20,8 @@ import {
 /* -------------------------------------------------------------------------- */
 
 import { Pagination } from "./pagination";
-import { Spinner } from "./loader";
 import { useErrorService } from "@/lib/store/error-service";
+import { Skeleton } from "./skeleton";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 interface TableProps<T extends Record<string, any>> {
@@ -73,8 +73,21 @@ export const Table = <T extends object>({
 
     if (loading) {
         return (
-            <div className="flex h-full min-h-[450px] items-center justify-center">
-                <Spinner />
+            <div className="flex h-full min-h-[450px] w-full flex-col items-center justify-center gap-2">
+                {[...Array(10)].map((_, index) => (
+                    <Skeleton
+                        className="flex h-[40px] w-full items-center justify-between gap-2 px-3 py-2 "
+                        key={index}
+                    >
+                        <Skeleton className="h-full w-[64px]" />
+                        <Skeleton className="h-full w-[111px]" />
+                        <Skeleton className="h-full w-[227px]" />
+                        <Skeleton className="h-full w-[239px]" />
+                        <Skeleton className="h-full w-[76px]" />
+                        <Skeleton className="h-full w-[87px]" />
+                        <Skeleton className="h-full w-[124px]" />
+                    </Skeleton>
+                ))}
             </div>
         );
     }

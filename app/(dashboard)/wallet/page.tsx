@@ -221,7 +221,7 @@ export default function WalletPage(): React.JSX.Element {
                     <WalletTransactions
                         data={walletTransactions}
                         page={parseInt(walletTx?.data?.data?.page ?? "1", 10)}
-                        limit={parseInt(walletTx?.data?.data?.limit ?? "10", 10)}
+                        // limit={parseInt(walletTx?.data?.data?.limit ?? "10", 10)}
                         pageSize={parseInt(walletTx?.data?.data?.pages ?? "1", 10)}
                         onPageChange={setPagination}
                         loading={!walletFetched && walletIsFetching}
