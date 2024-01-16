@@ -62,7 +62,7 @@ const ForgotPasswordForm = (): JSX.Element => {
             </div>
 
             <Button fullWidth disabled={!form.formState.isValid || requestPasswordReset.isLoading}>
-                {requestPasswordReset.isLoading ? <Spinner /> : "Send password reset code"}
+                {requestPasswordReset.isLoading ? <Spinner /> : "Reset Password"}
             </Button>
 
             <Link href="/login" className="mt-4 font-sans text-sm text-white">
