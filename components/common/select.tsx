@@ -21,24 +21,26 @@ export const SelectGroup = SelectPrimitive.Group;
 type SelectTriggerRef = React.ElementRef<typeof SelectPrimitive.Trigger>;
 type SelectTriggerProps = React.ComponentProps<typeof SelectPrimitive.Trigger>;
 
-export const SelectTrigger = React.forwardRef<SelectTriggerRef, SelectTriggerProps & { className?: string }>(
-    ({ className, children, ...props }, forwardedRef) => (
-        <SelectPrimitive.Trigger
-            className={cn(
-                "flex h-9 w-full items-center justify-between rounded-md border bg-transparent px-3 py-2 text-sm placeholder:text-gray-300 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50",
-                className,
-            )}
-            {...props}
-            ref={forwardedRef}
-        >
-            {children}
-
+export const SelectTrigger = React.forwardRef<
+    SelectTriggerRef,
+    SelectTriggerProps & { className?: string; noChevron?: boolean }
+>(({ className, children, noChevron, ...props }, forwardedRef) => (
+    <SelectPrimitive.Trigger
+        className={cn(
+            "flex h-9 w-full items-center justify-between rounded-md border bg-transparent px-3 py-2 text-sm placeholder:text-gray-300 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50",
+            className,
+        )}
+        {...props}
+        ref={forwardedRef}
+    >
+        {children}
+        {!noChevron && (
             <SelectPrimitive.Icon asChild>
                 <ChevronDown className="h-4 w-4 opacity-50" />
             </SelectPrimitive.Icon>
-        </SelectPrimitive.Trigger>
-    ),
-);
+        )}
+    </SelectPrimitive.Trigger>
+));
 
 SelectTrigger.displayName = "SelectTrigger";
 

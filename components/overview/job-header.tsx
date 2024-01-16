@@ -55,7 +55,7 @@ export const JobHeader = (): React.JSX.Element => {
             <div className="relative overflow-hidden rounded-2xl border-2 border-primary bg-[#ECFCE5] p-4">
                 <div className="relative z-10 flex flex-col gap-4">
                     <p className="max-w-[300px] text-xl font-bold">
-                        Search Afrofund Talent Pool to find skilled workers.
+                        Create a job to hire skilled workers from the talent pool.
                     </p>
                     <Button
                         size="sm"
