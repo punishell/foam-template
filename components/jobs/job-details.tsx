@@ -13,6 +13,7 @@ import { Calendar, Tag } from "lucide-react";
 /* -------------------------------------------------------------------------- */
 
 import { AfroProfile } from "@/components/common/afro-profile";
+import { sentenceCase } from "@/lib/utils";
 
 interface JobHeaderProps {
     title: string;
@@ -90,7 +91,7 @@ export const JobSkills = ({ skills }: JobSkillsProps): ReactElement => {
                         className="w-fit whitespace-nowrap rounded-full bg-[#F7F9FA] px-4 py-2 text-[#090A0A]"
                         style={{ background: skill.color }}
                     >
-                        {skill.name}
+                        {sentenceCase(skill.name)}
                     </span>
                 ))}
             </div>
