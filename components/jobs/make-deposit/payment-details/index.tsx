@@ -9,8 +9,6 @@ import { AlertCircle } from "lucide-react";
 import Image from "next/image";
 import { Button } from "pakt-ui";
 
-import { RaceBy } from "@uiball/loaders";
-
 /* -------------------------------------------------------------------------- */
 /*                             Internal Dependency                            */
 /* -------------------------------------------------------------------------- */
@@ -20,6 +18,7 @@ import { type PostJobPaymentDetailsResponse } from "@/lib/api/job";
 import { type Job } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import { MakePaymentModal } from "./make-payment-modal";
+import { PageLoading } from "@/components/common/page-loading";
 
 type SUPPORTED_COINS_TYPES = "USDC" | "AVAX";
 
@@ -48,7 +47,7 @@ export const PaymentDetails = ({
     if (isLoading)
         return (
             <div className="flex min-h-[400px] w-full items-center justify-center rounded-xl border border-line bg-slate-50">
-                <RaceBy />
+                <PageLoading />
             </div>
         );
 

@@ -5,7 +5,6 @@
 /* -------------------------------------------------------------------------- */
 
 import { type ReactNode, useState, useEffect } from "react";
-import { RaceBy } from "@uiball/loaders";
 import { getCookie, deleteCookie } from "cookies-next";
 import { useRouter } from "next/navigation";
 import { useIdleTimer } from "react-idle-timer";
@@ -23,11 +22,12 @@ import { MessagingProvider } from "@/providers/socketProvider";
 import { axios } from "@/lib/axios";
 import { Modal } from "@/components/common/headless-modal";
 import { Sidebar } from "@/components/sidebar";
+import { PageLoading } from "@/components/common/page-loading";
 
 function Loader(): React.JSX.Element {
     return (
         <div aria-live="polite" aria-busy="true" className="flex h-screen w-screen items-center justify-center">
-            <RaceBy color="#007C5B" />
+            <PageLoading color="#007C5B" />
         </div>
     );
 }
