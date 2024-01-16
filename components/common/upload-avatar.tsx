@@ -15,6 +15,7 @@ import { useUploadImage } from "@/lib/api/upload";
 import { useUpdateAccount } from "@/lib/api/account";
 import { GallerySvg } from "@/components/common/gallery-svg";
 import { DefaultAvatar } from "./default-avatar";
+import { useErrorService } from "@/lib/store/error-service";
 
 interface UploadProgressProps {
     progress: number;
@@ -49,6 +50,7 @@ export const UploadAvatar: FC<Props> = ({ image, size: previewImageSize = 180, o
     const updateAccount = useUpdateAccount();
     const [uploadProgress, setUploadProgress] = useState(0);
     const [previewImage, setPreviewImage] = useState<{ file: File; preview: string } | null>();
+    const { setErrorMessage } = useErrorService();
 
     const onDrop = useCallback(async (acceptedFiles: File[]) => {
         const file = acceptedFiles[0] as File;
@@ -99,7 +101,10 @@ export const UploadAvatar: FC<Props> = ({ image, size: previewImageSize = 180, o
                     setPreviewImage(null);
                 },
                 onError: (err): void => {
-                    console.error(err);
+                    setErrorMessage({
+                        title: "handleUpload Function",
+                        message: err,
+                    });
                     setPreviewImage(null);
                 },
             },

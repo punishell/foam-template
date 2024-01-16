@@ -18,6 +18,7 @@ import { erc20ABI } from "@wagmi/core";
 import { Spinner } from "@/components/common";
 import { useConfirmJobPayment, useInviteTalentToJob } from "@/lib/api/job";
 import { type Job } from "@/lib/types";
+import { useErrorService } from "@/lib/store/error-service";
 
 interface WalletDepositProps {
     jobId: string;
@@ -46,6 +47,7 @@ export const DepositUSDC = ({
     const inviteTalent = useInviteTalentToJob({ talentId, job });
     const [showReconfirmButton, setShowReconfirmButton] = useState(false);
     const amountToPay = parseUnits(amount.toString(), 6);
+    const { setErrorMessage } = useErrorService();
 
     const { config } = usePrepareContractWrite({
         abi: erc20ABI,
@@ -83,7 +85,10 @@ export const DepositUSDC = ({
             );
         },
         onError(error) {
-            console.error("write error:", error);
+            setErrorMessage({
+                title: "useContractWrite Function",
+                message: error,
+            });
         },
     });
 

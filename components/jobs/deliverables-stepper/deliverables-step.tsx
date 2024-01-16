@@ -13,6 +13,7 @@ import dayjs from "dayjs";
 /* -------------------------------------------------------------------------- */
 
 import { useToggleDeliverableCompletion } from "@/lib/api/job";
+import { useErrorService } from "@/lib/store/error-service";
 
 interface SquareCheckMarkProps {
     isChecked: boolean;
@@ -90,8 +91,16 @@ export const DeliverableStep = ({
 }: DeliverableProps): ReactElement => {
     const mutation = useToggleDeliverableCompletion({ description });
     const [isComplete, setIsComplete] = useState(progress === 100);
+    const { setErrorMessage } = useErrorService();
+
     useEffect(() => {
-        console.log("progress-changed", progress, isComplete);
+        setErrorMessage({
+            title: "progress-changed Function",
+            message: {
+                progress,
+                isComplete,
+            },
+        });
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [progress]);
 

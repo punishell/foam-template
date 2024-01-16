@@ -29,7 +29,7 @@ export const axiosDefault = Axios.create({
 axios.interceptors.response.use(
     (response) => response,
     async (error) => {
-        console.log("status-code==>:", error.response.status, error.response.status === 401);
+        // console.log("status-code==>:", error.response.status, error.response.status === 401);
         if (error.response.status === 401) {
             deleteCookie(AUTH_TOKEN_KEY);
             if (window) {

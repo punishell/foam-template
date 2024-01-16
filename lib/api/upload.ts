@@ -53,7 +53,6 @@ async function postDownloadAttachment(url: string): Promise<void> {
     const mainUrl = String(url);
     return fetch(mainUrl, { mode: "no-cors" })
         .then(async (response) => {
-            console.log(response);
             return response.blob();
         })
         .then((blob) => {

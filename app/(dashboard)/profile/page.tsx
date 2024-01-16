@@ -17,7 +17,7 @@ import { Reviews } from "@/components/talents/review";
 import { useUserState } from "@/lib/store/account";
 import { ProfileHeader } from "@/components/talents/header";
 import { Bio } from "@/components/talents/bio";
-// import { PageLoading } from "@/components/common/page-loading";
+import { PageLoading } from "@/components/common/page-loading";
 
 export default function ProfilePage(): ReactElement | null {
     const router = useRouter();
@@ -52,8 +52,7 @@ export default function ProfilePage(): ReactElement | null {
         [user],
     );
 
-    // if (isLoading) return <PageLoading />;
-    if (isLoading) return <div>lOADDINGM</div>;
+    if (isLoading) return <PageLoading />;
     const reviews = talentReviews?.data ?? [];
     return (
         <div className="grid h-fit grid-cols-1 items-start gap-6 overflow-y-auto pb-4">

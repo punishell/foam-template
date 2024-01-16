@@ -17,6 +17,7 @@ import { usePrepareSendTransaction, useSendTransaction } from "wagmi";
 import { Spinner } from "@/components/common";
 import { useConfirmJobPayment, useInviteTalentToJob } from "@/lib/api/job";
 import { type Job } from "@/lib/types";
+import { useErrorService } from "@/lib/store/error-service";
 
 interface WalletDepositProps {
     jobId: string;
@@ -36,6 +37,7 @@ export const DepositAvax = ({ depositAddress, amount, jobId, job, chainId }: Wal
     const confirmPayment = useConfirmJobPayment();
     const talentId = searchParams.get("talent-id") ?? "";
     const inviteTalent = useInviteTalentToJob({ talentId, job });
+    const { setErrorMessage } = useErrorService();
 
     const { config } = usePrepareSendTransaction({
         chainId,
@@ -68,7 +70,10 @@ export const DepositAvax = ({ depositAddress, amount, jobId, job, chainId }: Wal
             );
         },
         onError(error) {
-            console.error("send transaction error:", error);
+            setErrorMessage({
+                title: "useSendTransaction Function",
+                message: error,
+            });
         },
     });
 
