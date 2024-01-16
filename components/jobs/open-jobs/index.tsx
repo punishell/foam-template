@@ -21,6 +21,7 @@ import { useGetJobs } from "@/lib/api/job";
 import { createQueryStrings2 } from "@/lib/utils";
 import { AllJobs } from "./all-jobs";
 import { SavedJobs } from "./saved-jobs";
+import { JobSkillInput } from "./job-skill-input";
 
 export const OpenJobs = (): ReactElement | null => {
     const router = useRouter();
@@ -104,7 +105,7 @@ export const OpenJobs = (): ReactElement | null => {
                     <label htmlFor="" className="text-sm">
                         Skill
                     </label>
-                    <input
+                    {/* <input
                         type="text"
                         value={skillsQuery}
                         placeholder="Java, Solidity, etc."
@@ -112,6 +113,13 @@ export const OpenJobs = (): ReactElement | null => {
                             setSkillsQuery(e.target.value);
                         }}
                         className="h-11 rounded-lg border border-line bg-gray-50 px-3 focus:outline-none"
+                    /> */}
+                    <JobSkillInput
+                        value={skillsQuery}
+                        // onChange={(e) => {
+                        //     setSkillsQuery(e.target.value);
+                        // }}
+                        onChange={setSkillsQuery}
                     />
                 </div>
                 <div className="relative flex grow flex-col gap-1">
