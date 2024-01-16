@@ -31,7 +31,7 @@ export default function TalentDetailsPage(): ReactElement {
         (!talentData.isFetched && talentData.isFetching) ||
         (!reviewData.isFetched && reviewData.isFetching)
     )
-        return <PageLoading />;
+        return <PageLoading color="#007C5B" />;
 
     if (talentData.isError || reviewData.isError) return <PageError />;
 

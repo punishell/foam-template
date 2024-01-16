@@ -123,7 +123,7 @@ const InviteTalent = ({ talentId }: { talentId: string }): ReactElement | null =
 
     if (jobsData.isError) return <PageError />;
 
-    if (jobsData.isLoading) return <PageLoading />;
+    if (jobsData.isLoading) return <PageLoading color="#007C5B" />;
 
     const jobs = jobsData.data.data;
     const sortedJobs = jobs.sort((a, b) => {

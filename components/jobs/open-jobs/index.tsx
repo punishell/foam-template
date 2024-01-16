@@ -71,7 +71,7 @@ export const OpenJobs = (): ReactElement | null => {
 
     if (jobsData.isError || bookmarkData.isError)
         return <PageError className="h-[85vh] rounded-2xl border border-red-200 bg-red-50" />;
-    if (jobsData.isLoading) return <PageLoading className="h-[85vh] rounded-2xl border border-line" />;
+    if (jobsData.isLoading) return <PageLoading className="h-[85vh] rounded-2xl border border-line" color="#007C5B" />;
 
     const jobs = jobsData.data.data;
 

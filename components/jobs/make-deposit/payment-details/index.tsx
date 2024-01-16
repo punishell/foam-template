@@ -47,7 +47,7 @@ export const PaymentDetails = ({
     if (isLoading)
         return (
             <div className="flex min-h-[400px] w-full items-center justify-center rounded-xl border border-line bg-slate-50">
-                <PageLoading />
+                <PageLoading color="#007C5B" />
             </div>
         );
 

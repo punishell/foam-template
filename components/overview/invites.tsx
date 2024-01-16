@@ -19,7 +19,7 @@ import { JobFeedCard } from "./feed-viewer/feeds/job-feed";
 export const Invites = (): ReactElement => {
     const query = useGetInvites({ filter: { status: "pending" } });
 
-    if (query.isLoading) return <PageLoading className="h-[65vh] rounded-2xl border border-line" />;
+    if (query.isLoading) return <PageLoading className="h-[65vh] rounded-2xl border border-line" color="#007C5B" />;
 
     if (query.isError) return <PageError className="h-[65vh] rounded-2xl border border-red-200" />;
 
