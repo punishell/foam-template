@@ -544,7 +544,10 @@ export const MessagingProvider = ({ children }: { children: React.ReactNode }): 
                 attachments = await UploadFiles(images);
             }
             if (!socket) {
-                console.error("Socket is null");
+                setErrorMessage({
+                    title: "Socket Connection Error (markUserMessageAsSeen Function)",
+                    message: "Socket is null",
+                });
                 return;
             }
             socket.emit(
