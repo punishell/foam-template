@@ -56,7 +56,7 @@ export default function JobApplications({ params }: Props): React.JSX.Element {
     const [currentPage, setCurrentPage] = React.useState(1);
 
     if (jobData.isError) return <PageError className="absolute inset-0" />;
-    if (jobData.isLoading) return <PageLoading className="absolute inset-0" />;
+    if (jobData.isLoading) return <PageLoading className="absolute inset-0" color="#007C5B" />;
 
     const { data: job } = jobData;
     const { data: account } = accountData;

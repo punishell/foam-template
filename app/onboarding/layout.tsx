@@ -7,7 +7,6 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { RaceBy } from "@uiball/loaders";
 import { getCookie } from "cookies-next";
 
 /* -------------------------------------------------------------------------- */
@@ -16,6 +15,7 @@ import { getCookie } from "cookies-next";
 
 import { axios } from "@/lib/axios";
 import { AUTH_TOKEN_KEY } from "@/lib/utils";
+import { PageLoading } from "@/components/common/page-loading";
 
 interface Props {
     children: React.ReactNode;
@@ -24,7 +24,7 @@ interface Props {
 function Loader(): React.JSX.Element {
     return (
         <div aria-live="polite" aria-busy="true" className="flex h-screen w-screen items-center justify-center">
-            <RaceBy color="#007C5B" />
+            <PageLoading color="#007C5B" />
         </div>
     );
 }

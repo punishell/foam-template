@@ -131,7 +131,7 @@ export const Feeds = (): ReactElement => {
     );
 
     if (isLoading && timelineFeeds.length < 1)
-        return <PageLoading className="h-[65vh] rounded-2xl border border-line" />;
+        return <PageLoading className="h-[65vh] rounded-2xl border border-line" color="#007C5B" />;
     if (isError) return <PageError className="h-[65vh] rounded-2xl border border-line" />;
     if (timelineFeeds.length === 0) return <PageEmpty className="h-[65vh] rounded-2xl border border-line" />;
     return (

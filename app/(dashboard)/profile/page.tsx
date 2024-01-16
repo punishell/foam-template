@@ -52,7 +52,7 @@ export default function ProfilePage(): ReactElement | null {
         [user],
     );
 
-    if (isLoading) return <PageLoading />;
+    if (isLoading) return <PageLoading color="#007C5B" />;
     const reviews = talentReviews?.data ?? [];
     return (
         <div className="grid h-fit grid-cols-1 items-start gap-6 overflow-y-auto pb-4">

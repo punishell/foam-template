@@ -51,7 +51,7 @@ export const TalentJobModal: FC<TalentJobModalProps> = ({ jobId, talentId, close
 
     if (query.isError) return <PageError className="absolute inset-0" />;
 
-    if (query.isLoading) return <PageLoading className="absolute inset-0" />;
+    if (query.isLoading) return <PageLoading className="absolute inset-0" color="#007C5B" />;
 
     const job = query.data;
 

@@ -88,7 +88,7 @@ export const ActiveJobs = (): ReactElement => {
         [jobData, loggedInUser],
     );
     if ((!isFetched || !assignedFetched) && (isFetching || assignedFetching))
-        return <PageLoading className="h-[65vh] rounded-2xl border border-line" />;
+        return <PageLoading className="h-[65vh] rounded-2xl border border-line" color="#007C5B" />;
     if (isError || assignedError) return <PageError className="h-[85vh] rounded-2xl border border-red-200" />;
     if (activeJobs.length === 0)
         return (

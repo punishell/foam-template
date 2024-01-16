@@ -4,7 +4,7 @@
 /*                             External Dependency                            */
 /* -------------------------------------------------------------------------- */
 
-import React from "react";
+import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 
 /* -------------------------------------------------------------------------- */
@@ -13,12 +13,12 @@ import { useRouter } from "next/navigation";
 
 import { PageLoading } from "@/components/common/page-loading";
 
-export default function Home(): React.JSX.Element {
+export default function Home(): JSX.Element {
     const router = useRouter();
 
-    React.useEffect(() => {
+    useEffect(() => {
         router.replace("/overview");
     }, [router]);
 
-    return <PageLoading />;
+    return <PageLoading color="#007C5B" />;
 }

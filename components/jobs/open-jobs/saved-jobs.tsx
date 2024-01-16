@@ -25,7 +25,7 @@ interface SavedJobsProps {
 
 export const SavedJobs = ({ jobs, isError, isLoading, onRefresh }: SavedJobsProps): ReactElement | null => {
     if (isError) return <PageError />;
-    if (isLoading) return <PageLoading />;
+    if (isLoading) return <PageLoading color="#007C5B" />;
     if (!jobs.length)
         return (
             <PageEmpty

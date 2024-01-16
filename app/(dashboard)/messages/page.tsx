@@ -30,7 +30,7 @@ export default function MessagesPage(): ReactElement {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [userId]);
 
-    if (startingNewChat) return <PageLoading />;
+    if (startingNewChat) return <PageLoading color="#007C5B" />;
 
     return (
         <div className="flex h-full w-full items-center justify-center bg-white">

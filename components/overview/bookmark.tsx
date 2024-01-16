@@ -36,7 +36,8 @@ export const FeedsBookmark = (): ReactElement => {
         [bookmarkData?.data],
     );
 
-    if (!isFetched && isFetching) return <PageLoading className="h-[65vh] rounded-2xl border border-line" />;
+    if (!isFetched && isFetching)
+        return <PageLoading className="h-[65vh] rounded-2xl border border-line" color="#007C5B" />;
     if (isError) return <PageError className="h-[65vh] rounded-2xl border border-red-200" />;
     if (bookmarks.length === 0)
         return (
