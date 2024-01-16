@@ -102,5 +102,9 @@
         "prettier": "^3.2.2",
         "prettier-plugin-tailwindcss": "^0.5.11",
         "utf-8-validate": "^6.0.3"
+    },
+    "engines": {
+        "node": ">=18.0.0",
+        "yarn": ">=1.22.0"
     }
 }
