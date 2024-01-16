@@ -16,6 +16,8 @@ import { useOnClickOutside } from "usehooks-ts";
 
 import technologyJson from "@/lib/technology.json";
 import { type createJobSchema } from "@/lib/validations";
+import { useGetCategory } from "@/lib/api/category";
+import { useErrorService } from "@/lib/store/error-service";
 
 type FormValues = z.infer<typeof createJobSchema>;
 
@@ -32,6 +34,17 @@ export const SkillInput = ({ form, name }: SkillInputProps): JSX.Element => {
     const [skillValue, setSkillValue] = useState("");
     const ref = useRef<HTMLDivElement | null>(null);
     const inputRef = useRef<HTMLInputElement | null>(null);
+
+    const { data } = useGetCategory();
+    const { setErrorMessage } = useErrorService();
+
+    useEffect(() => {
+        if (data) {
+            // @ts-expect-error ts-migrate(2531) FIXME: Object is possibly 'null'.
+            setErrorMessage(data);
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     const COUNTRY_LIST: Array<{ label: string; value: string }> = (technologyJson || []).map((c) => ({
         label: c.name,
