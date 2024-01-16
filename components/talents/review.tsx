@@ -16,6 +16,7 @@ import { Spinner } from "@/components/common/";
 import { AfroProfile } from "../common/afro-profile";
 import { BlazeCarousel, useBlazeSlider } from "../common/blazeCarousel";
 import { useUserState } from "@/lib/store/account";
+import { sentenceCase } from "@/lib/utils";
 
 interface ReviewProps {
     body: string;
@@ -56,7 +57,7 @@ const Review = ({ body, title, rating, user }: ReviewProps): ReactElement => {
                     </div>
                     <div className="col-span-2 my-auto flex flex-col">
                         <span className="text-sm font-medium text-title">{user.name}</span>
-                        <span className="text-sm text-body">{user.title}</span>
+                        <span className="text-sm text-body">{sentenceCase(user.title)}</span>
                     </div>
                 </div>
                 {/* @ts-expect-error --- Types Error */}
