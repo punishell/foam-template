@@ -37,6 +37,7 @@ interface TransactionProps {
     currency: string;
     usdValue: number;
     status: "processing" | "pending" | "completed" | "failed" | "reprocessing";
+    responseData: string;
 }
 
 export default function WalletPage(): React.JSX.Element {
@@ -79,6 +80,7 @@ export default function WalletPage(): React.JSX.Element {
                     coin: tx.currency.toUpperCase(),
                     usdValue: formatUsd(tx.usdValue),
                     status: tx.status,
+                    transactionHash: JSON.parse(tx.responseData)?.data?.tx?.transactionHash ?? "",
                 }))
                 .sort((a, b) => new Date(b?.date).getTime() - new Date(a?.date).getTime()),
         [walletTx?.data?.data],

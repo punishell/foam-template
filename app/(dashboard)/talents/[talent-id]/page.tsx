@@ -66,18 +66,21 @@ export default function TalentDetailsPage(): ReactElement {
             <div className="w-full">
                 <Reviews
                     reviews={
-                        reviews?.data.map((a) => ({
-                            title: a.data.name,
-                            body: a.review,
-                            rating: a.rating,
-                            user: {
-                                _id: a.owner._id,
-                                afroScore: a.owner.score,
-                                name: `${a.owner.firstName}${a.owner.lastName}`,
-                                title: a.owner.profile?.bio?.title ?? "",
-                                avatar: a.owner.profileImage?.url ?? "",
-                            },
-                        })) ?? []
+                        reviews?.data
+                            .slice()
+                            .reverse()
+                            .map((a) => ({
+                                title: a.data.name,
+                                body: a.review,
+                                rating: a.rating,
+                                user: {
+                                    _id: a.owner._id,
+                                    afroScore: a.owner.score,
+                                    name: `${a.owner.firstName}${a.owner.lastName}`,
+                                    title: a.owner.profile?.bio?.title ?? "",
+                                    avatar: a.owner.profileImage?.url ?? "",
+                                },
+                            })) ?? []
                     }
                     loading={false}
                 />

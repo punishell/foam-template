@@ -76,6 +76,7 @@ const SignupForm = (): React.JSX.Element => {
 
     return (
         <form
+            method="post"
             onSubmit={form.handleSubmit(onSubmit)}
             className="bg-[rgba(0, 124, 91, 0.20)] relative z-[100] mx-auto flex w-full max-w-[600px] flex-col items-center gap-6 rounded-2xl border border-white border-opacity-20 bg-[rgba(0,124,91,0.20)] px-[40px] py-10 backdrop-blur-md"
         >
