@@ -16,9 +16,10 @@ interface TagInputProps {
     setTags: (tags: string[]) => void;
     className?: string;
     placeholder?: string;
+    disabled?: boolean;
 }
 
-export const TagInput: FC<TagInputProps> = ({ tags, setTags, className, placeholder }) => {
+export const TagInput: FC<TagInputProps> = ({ tags, setTags, className, placeholder, disabled }) => {
     const [inputValue, setInputValue] = useState("");
 
     const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>): void => {
@@ -59,13 +60,14 @@ export const TagInput: FC<TagInputProps> = ({ tags, setTags, className, placehol
             ))}
             <input
                 type="text"
-                className="peer flex-grow outline-none"
+                className="peer flex-grow outline-none disabled:!bg-transparent"
                 placeholder={placeholder ?? "Add skills"}
                 value={inputValue}
                 onChange={(event) => {
                     setInputValue(event.target.value);
                 }}
                 onKeyDown={handleKeyDown}
+                disabled={disabled}
             />
         </div>
     );

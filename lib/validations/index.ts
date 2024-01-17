@@ -60,7 +60,11 @@ export const editProfileFormSchema = z.object({
     bio: z.string().min(1, "Bio is required"),
     location: z.string().min(1, "Location is required"),
     country: z.string().min(1, "Country is required"),
-    tags: z.array(z.string()).nonempty({ message: "skills are required" }),
+    tags: z
+        .array(z.string())
+        .min(3, "Minimum of 3 skills are required")
+        .max(10, "Maximum of 10 skills are required")
+        .nonempty({ message: "skills are required" }),
     isPrivate: z.boolean().default(false).optional(),
 });
 

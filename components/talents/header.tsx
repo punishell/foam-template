@@ -38,20 +38,20 @@ export const ProfileHeader: React.FC<Props> = ({ _id, name, position, score, ski
         <>
             <InviteTalentModal isOpen={isModalOpen} setIsOpen={setIsModalOpen} talentId={_id} />
 
-            <div className="relative flex w-full gap-6 rounded-2xl border border-line bg-white pr-4">
-                <div className="absolute top-1/2 h-[2px] w-full" style={{ backgroundColor: borderColor }} />
+            <div className="relative flex w-full gap-6 rounded-2xl border border-line bg-white py-3 pl-1 pr-6">
+                <div className="absolute -left-1 top-1/2 h-[2px] w-full" style={{ backgroundColor: borderColor }} />
 
                 <div>
                     <AfroProfile src={profileImage} score={score} size="xl" />
                 </div>
-                <div className="grid grow grid-cols-1">
+                <div className="grid grow grid-cols-1 gap-5">
                     <div className="flex w-full flex-row justify-between gap-2">
                         <div className="flex w-full flex-row flex-wrap items-center justify-between gap-2">
                             <div className="flex flex-col gap-1">
                                 <h1 className="truncate text-3xl font-bold text-title">{name}</h1>
                                 <div className="flex items-center gap-2 capitalize text-body">
-                                    <Briefcase size={16} />
-                                    <span>{position}</span>
+                                    <Briefcase size={24} />
+                                    <span className="text-lg">{position}</span>
                                 </div>
                             </div>
 
