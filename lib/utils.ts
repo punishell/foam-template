@@ -283,3 +283,7 @@ export function filterEmptyStrings(arr: string[]): string[] {
         return value !== "";
     });
 }
+
+export const lowerCase = (str: string): string => {
+    return str.charAt(0).toLowerCase() + str.slice(1).toLowerCase();
+};
