@@ -27,15 +27,15 @@ interface CategoryResponse {
     data: CategoryData[];
 }
 
-async function getLeaderBoard(): Promise<CategoryResponse> {
-    const res = await axios.get(`/tag-category`);
+async function getLeaderBoard(search: string): Promise<CategoryResponse> {
+    const res = await axios.get(`/tag-category?search=${search}`);
     return res.data.data;
 }
 
-export const useGetCategory = (): UseQueryResult<CategoryResponse, ApiError> => {
+export const useGetCategory = (search: string): UseQueryResult<CategoryResponse, ApiError> => {
     return useQuery({
-        queryFn: async () => getLeaderBoard(),
-        queryKey: ["get-category"],
+        queryFn: async () => getLeaderBoard(search),
+        queryKey: [`category_${JSON.stringify(search)}`],
         onError: (error: ApiError) => {
             toast.error(error?.response?.data.message ?? "An error occurred");
         },
