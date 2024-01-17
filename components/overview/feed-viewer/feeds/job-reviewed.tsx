@@ -7,6 +7,7 @@
 import { type ReactElement, useState } from "react";
 import { X, Briefcase, Star } from "lucide-react";
 import Rating from "react-rating";
+import { Button } from "pakt-ui";
 
 /* -------------------------------------------------------------------------- */
 /*                             Internal Dependency                            */
@@ -98,6 +99,15 @@ export const JobReviewedFeed = ({
                                 readonly
                             />
                         )}
+                        <Button
+                            size="xs"
+                            variant="secondary"
+                            onClick={() => {
+                                setIsModalOpen(true);
+                            }}
+                        >
+                            Review
+                        </Button>
                     </div>
                     <RenderBookMark size={20} isBookmarked={bookmarked} type="feed" id={id} bookmarkId={bookmarkId} />
                 </div>
