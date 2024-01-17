@@ -82,7 +82,7 @@ export const JobCompletionFeed = ({
                                 setIsModalOpen(true);
                             }}
                         >
-                            See Update
+                            Review
                         </Button>
                     </div>
                     <RenderBookMark size={20} isBookmarked={bookmarked} type="feed" id={id} bookmarkId={bookmarkId} />
