@@ -35,6 +35,7 @@
         "avvvatars-react": "^0.4.2",
         "axios": "^1.6.5",
         "blaze-slider": "^1.9.3",
+        "class-variance-authority": "^0.7.0",
         "clsx": "^2.1.0",
         "cmdk": "^0.2.0",
         "conic-gradient": "^1.0.0",
