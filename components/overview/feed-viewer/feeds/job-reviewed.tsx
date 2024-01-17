@@ -90,24 +90,26 @@ export const JobReviewedFeed = ({
 
                 <div className="mt-auto flex items-center justify-between">
                     <div className="flex items-center gap-2">
+                        {!isCreator && (
+                            <Button
+                                size="xs"
+                                variant="secondary"
+                                onClick={() => {
+                                    setIsModalOpen(true);
+                                }}
+                            >
+                                Review
+                            </Button>
+                        )}
                         {rating && (
                             // @ts-expect-error -- Rating' cannot be used as a JSX component. Its type 'typeof Rating' is not a valid JSX element type.ts(2786)
                             <Rating
                                 initialRating={rating}
-                                fullSymbol={<Star fill="#15D28E" color="#15D28E" />}
-                                emptySymbol={<Star fill="transparent" color="#15D28E" />}
+                                fullSymbol={<Star fill="#15D28E" color="#15D28E" className="mt-[4px]" />}
+                                emptySymbol={<Star fill="transparent" color="#15D28E" className="mt-[4px]" />}
                                 readonly
                             />
                         )}
-                        <Button
-                            size="xs"
-                            variant="secondary"
-                            onClick={() => {
-                                setIsModalOpen(true);
-                            }}
-                        >
-                            Review
-                        </Button>
                     </div>
                     <RenderBookMark size={20} isBookmarked={bookmarked} type="feed" id={id} bookmarkId={bookmarkId} />
                 </div>

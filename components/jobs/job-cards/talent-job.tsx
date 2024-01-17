@@ -4,7 +4,7 @@
 /*                             External Dependency                            */
 /* -------------------------------------------------------------------------- */
 
-import { type FC, useState } from "react";
+import { type FC, useState, useEffect } from "react";
 import { Button } from "pakt-ui";
 import { useRouter } from "next/navigation";
 
@@ -17,12 +17,13 @@ import { SideModal } from "@/components/common/side-modal";
 import { AfroProfile } from "@/components/common/afro-profile";
 import { TalentJobModal } from "@/components/jobs/job-modals/talent";
 import { DeliverableProgressBar } from "@/components/common/deliverable-progress-bar";
+import { useErrorService } from "@/lib/store/error-service";
 
 interface TalentJobCardProps {
     jobId: string;
     title: string;
     price: number;
-    status: JobStatus;
+    status?: JobStatus;
     isCompleted?: boolean;
     totalDeliverables: number;
     completedDeliverables: number;
@@ -47,7 +48,15 @@ export const TalentJobCard: FC<TalentJobCardProps> = ({
     const router = useRouter();
     const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
     const progress = Math.floor((completedDeliverables / totalDeliverables) * 100);
+    const { setErrorMessage } = useErrorService();
 
+    useEffect(() => {
+        setErrorMessage({
+            title: "This is a temporary useEffect",
+            message: status,
+        });
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
     return (
         <div className="flex w-full grow flex-col gap-1 rounded-3xl border border-line bg-white p-4 pt-0">
             <div className="flex w-full gap-4">
