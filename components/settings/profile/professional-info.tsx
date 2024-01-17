@@ -24,15 +24,15 @@ interface FormProps {
 
 const ProfessionalInfo = ({ form }: FormProps): ReactElement => {
     return (
-        <div className="mb-4 rounded-lg bg-white p-4">
+        <div className="mb-4 rounded-lg bg-white px-8 py-7">
             <div className="flex h-[50px] flex-row items-center justify-between">
                 <p className="text-lg font-bold text-title">Professional Information</p>
             </div>
             <div className="flex flex-col gap-4">
                 <div className="flex flex-row gap-4">
                     <div className="relative w-1/2">
-                        <p className="text-sm">Skill Sets</p>
-                        <div className="min-h-[186px] rounded-lg border border-primary border-opacity-40 !bg-[#FCFCFD]">
+                        <p className="mb-2 text-[16px]">Skill Sets</p>
+                        <div className="min-h-[186px] rounded-lg border-2 border-[#DFDFE6] border-opacity-40 !bg-[#FCFCFD]">
                             <Controller
                                 name="tags"
                                 control={form.control}
@@ -46,7 +46,7 @@ const ProfessionalInfo = ({ form }: FormProps): ReactElement => {
                                                 ? "Add your top 3 skills first"
                                                 : value?.length > 3 && value?.length === 10
                                                   ? ""
-                                                  : value?.length > 3
+                                                  : value?.length >= 3
                                                     ? `You can add ${10 - value.length} more skill${10 - value.length === 1 ? "" : "s"}`
                                                     : ""
                                         }
@@ -62,10 +62,10 @@ const ProfessionalInfo = ({ form }: FormProps): ReactElement => {
                         </span>
                     </div>
                     <div className="relative w-1/2">
-                        <p className="text-sm">Bio</p>
+                        <p className="mb-2 text-[16px]">Bio</p>
                         <Textarea
                             maxLength={350}
-                            className="!min-h-[186px] w-full !bg-[#FCFCFD]"
+                            className="!min-h-[186px] w-full !border-2 !border-[#dfdfe67a] !bg-[#FCFCFD]"
                             {...form.register("bio")}
                             placeholder="Enter a 350 character about thing"
                         />

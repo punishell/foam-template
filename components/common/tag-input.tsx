@@ -2,14 +2,17 @@
 /*                             External Dependency                            */
 /* -------------------------------------------------------------------------- */
 
-import { type FC, useState } from "react";
-import { X } from "lucide-react";
+import { type FC, useState, useEffect, useRef } from "react";
+import { Check, X } from "lucide-react";
+import { useOnClickOutside } from "usehooks-ts";
 
 /* -------------------------------------------------------------------------- */
 /*                             Internal Dependency                            */
 /* -------------------------------------------------------------------------- */
 
-import { cn } from "@/lib/utils";
+import { cn, sentenceCase } from "@/lib/utils";
+import { useGetCategory } from "@/lib/api/category";
+import { Spinner } from "./loader";
 
 interface TagInputProps {
     tags: string[];
@@ -20,7 +23,9 @@ interface TagInputProps {
 }
 
 export const TagInput: FC<TagInputProps> = ({ tags, setTags, className, placeholder, disabled }) => {
-    const [inputValue, setInputValue] = useState("");
+    const [isOpened, setIsOpened] = useState<boolean>(false);
+    const [inputValue, setInputValue] = useState<string>("");
+    const ref = useRef<HTMLDivElement | null>(null);
 
     const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>): void => {
         if (event.key === "Enter" && inputValue.trim() !== "") {
@@ -32,6 +37,31 @@ export const TagInput: FC<TagInputProps> = ({ tags, setTags, className, placehol
             setTags(tags.slice(0, -1));
         }
     };
+
+    const { data, isFetching, isLoading } = useGetCategory(inputValue);
+    const categories = data?.data ?? [];
+
+    const CATEGORY_LIST: Array<{ label: string; value: string }> = (categories || []).map((c) => ({
+        label: sentenceCase(c.name),
+        value: sentenceCase(c.name),
+    }));
+
+    // Filter with skillValue/inputValue
+    const filteredCategoryList = CATEGORY_LIST.filter((category) => {
+        return category.label.toLowerCase().includes(inputValue.toLowerCase());
+    });
+
+    const handleClickOutside = (): void => {
+        setIsOpened(false);
+    };
+
+    useOnClickOutside(ref, handleClickOutside);
+
+    useEffect(() => {
+        if (filteredCategoryList.length === 0 && !isLoading && !isFetching) {
+            setIsOpened(false);
+        }
+    }, [filteredCategoryList.length, isFetching, isLoading]);
 
     return (
         <div
@@ -58,17 +88,56 @@ export const TagInput: FC<TagInputProps> = ({ tags, setTags, className, placehol
                     </button>
                 </div>
             ))}
-            <input
-                type="text"
-                className="peer flex-grow outline-none disabled:!bg-transparent"
-                placeholder={placeholder ?? "Add skills"}
-                value={inputValue}
-                onChange={(event) => {
-                    setInputValue(event.target.value);
-                }}
-                onKeyDown={handleKeyDown}
-                disabled={disabled}
-            />
+            <div className="relative !w-[200px]">
+                <input
+                    type="text"
+                    className="peer w-full flex-grow !bg-transparent outline-none disabled:!bg-transparent"
+                    placeholder={placeholder ?? "Add skills"}
+                    value={inputValue}
+                    onChange={(event) => {
+                        setInputValue(event.target.value);
+                    }}
+                    onClick={() => {
+                        setIsOpened(true);
+                    }}
+                    onKeyDown={handleKeyDown}
+                    disabled={disabled}
+                />
+                {isOpened && (
+                    <div
+                        className="absolute z-50 max-h-[230px] min-w-[271px] translate-x-1 translate-y-2 gap-4 overflow-hidden overflow-y-auto rounded-lg border border-green-300 bg-white p-4 shadow"
+                        ref={ref}
+                    >
+                        {isFetching || isLoading ? (
+                            <Spinner />
+                        ) : (
+                            <>
+                                {filteredCategoryList.map(({ label, value: v }) => (
+                                    <div
+                                        key={v}
+                                        className="relative flex w-full cursor-pointer select-none items-center rounded p-2 text-base outline-none hover:bg-[#ECFCE5]"
+                                        onClick={() => {
+                                            setIsOpened(false);
+                                            setTags([...tags, label]);
+                                            setInputValue("");
+                                        }}
+                                        onKeyDown={handleKeyDown}
+                                        role="button"
+                                        tabIndex={0}
+                                    >
+                                        {label}
+                                        {label === inputValue && (
+                                            <span className="absolute right-3 flex h-3.5 w-3.5 items-center justify-center">
+                                                <Check className="h-4 w-4" />
+                                            </span>
+                                        )}
+                                    </div>
+                                ))}
+                            </>
+                        )}
+                    </div>
+                )}
+            </div>
         </div>
     );
 };
