@@ -54,6 +54,7 @@ export default function ProfilePage(): ReactElement | null {
 
     if (isLoading) return <PageLoading color="#007C5B" />;
     const reviews = talentReviews?.data ?? [];
+
     return (
         <div className="grid h-fit grid-cols-1 items-start gap-6 overflow-y-auto pb-4">
             <ProfileHeader
@@ -80,18 +81,22 @@ export default function ProfilePage(): ReactElement | null {
             <div className="w-full">
                 <Reviews
                     reviews={
-                        reviews?.map((a) => ({
-                            title: a.data.name,
-                            body: a.review,
-                            rating: a.rating,
-                            user: {
-                                _id: a.owner._id ?? "",
-                                afroScore: a.owner.score,
-                                name: `${a.owner.firstName}${a.owner.lastName}`,
-                                title: a.owner.profile?.bio?.title ?? "",
-                                avatar: a.owner.profileImage?.url ?? "",
-                            },
-                        })) ?? []
+                        reviews
+                            ?.slice()
+                            .reverse()
+                            .map((a) => ({
+                                title: a.data.name,
+                                body: a.review,
+                                rating: a.rating,
+                                date: a.createdAt ?? "",
+                                user: {
+                                    _id: a.owner._id ?? "",
+                                    afroScore: a.owner.score,
+                                    name: `${a.owner.firstName}${a.owner.lastName}`,
+                                    title: a.owner.profile?.bio?.title ?? "",
+                                    avatar: a.owner.profileImage?.url ?? "",
+                                },
+                            })) ?? []
                     }
                     loading={isLoading}
                 />

@@ -36,7 +36,7 @@ export default function TalentDetailsPage(): ReactElement {
     if (talentData.isError || reviewData.isError) return <PageError />;
 
     const { talent } = talentData.data;
-    const reviews = reviewData.data;
+    const reviews = reviewData.data ?? [];
 
     return (
         <div className="grid h-fit grid-cols-1 items-start gap-6 overflow-y-auto pb-4">
@@ -73,6 +73,7 @@ export default function TalentDetailsPage(): ReactElement {
                                 title: a.data.name,
                                 body: a.review,
                                 rating: a.rating,
+                                date: a.createdAt ?? "",
                                 user: {
                                     _id: a.owner._id,
                                     afroScore: a.owner.score,

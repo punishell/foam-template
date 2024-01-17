@@ -7,6 +7,7 @@
 import { type ReactElement } from "react";
 import Rating from "react-rating";
 import { ArrowLeftCircle, ArrowRightCircle, Star } from "lucide-react";
+import { format } from "date-fns";
 
 /* -------------------------------------------------------------------------- */
 /*                             Internal Dependency                            */
@@ -22,6 +23,7 @@ interface ReviewProps {
     body: string;
     title: string;
     rating: number;
+    date: string | undefined;
     user: {
         _id: string | undefined;
         name: string;
@@ -31,19 +33,22 @@ interface ReviewProps {
     };
 }
 
-const Review = ({ body, title, rating, user }: ReviewProps): ReactElement => {
+const Review = ({ body, title, rating, user, date }: ReviewProps): ReactElement => {
     const { _id: loggedInUser } = useUserState();
     const MAX_LEN = 150;
     const navigateUrl = loggedInUser === user._id ? "/profile" : `/talents/${user?._id}`;
     return (
         <div
-            className="flex min-h-full w-full cursor-grab select-none flex-col gap-4 rounded-2xl bg-white p-4"
+            className="flex min-h-full w-full cursor-grab select-none flex-col gap-4 rounded-2xl bg-white p-6"
             style={{ maxWidth: "50%" }}
         >
             <div
                 className="flex max-w-[100%] flex-1 flex-col gap-4 break-all"
                 style={{ wordWrap: "break-word", overflowWrap: "break-word", wordBreak: "break-word" }}
             >
+                <p className="text-xs leading-[18px] tracking-wide text-neutral-400">
+                    {date && format(new Date(date), "dd MMM, yyyy")}
+                </p>
                 <h3 className="text-xl font-medium text-title">{title}</h3>
                 <p className="max-w-fit text-base font-thin text-body">
                     {body.length > MAX_LEN ? `${body.slice(0, 150)}...` : body}
@@ -79,7 +84,7 @@ export const Reviews = ({ reviews, loading }: { reviews: ReviewProps[]; loading:
     const { totalSlides } = sliderInstance;
 
     return (
-        <div className="rounded-4 w-full basis-0 gap-1 rounded-2xl bg-primary-gradient p-4">
+        <div className="rounded-4 w-full basis-0 gap-1 rounded-2xl bg-primary-gradient p-6">
             <div className="mb-4 flex w-full flex-row justify-between">
                 <h3 className="text-2xl font-medium text-white">Reviews</h3>
                 <div className="flex flex-row gap-2">
@@ -116,6 +121,7 @@ export const Reviews = ({ reviews, loading }: { reviews: ReviewProps[]; loading:
                                     body={_review.body}
                                     rating={_review.rating}
                                     user={_review.user}
+                                    date={_review.date}
                                 />
                             ))}
                     </BlazeCarousel>

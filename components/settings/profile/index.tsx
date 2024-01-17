@@ -8,6 +8,7 @@ import { type ReactElement, useMemo } from "react";
 import type * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+import { useRouter } from "next/navigation";
 
 /* -------------------------------------------------------------------------- */
 /*                             Internal Dependency                            */
@@ -24,6 +25,7 @@ export type EditProfileFormValues = z.infer<typeof editProfileFormSchema>;
 export const ProfileView = (): ReactElement => {
     const { data: userAccount, refetch: refetchUser, isLoading: accountIsLoading } = useGetAccount();
     const updateAccount = useUpdateAccount();
+    const router = useRouter();
 
     const userData = useMemo(
         () => ({
@@ -71,6 +73,7 @@ export const ProfileView = (): ReactElement => {
             {
                 onSuccess: () => {
                     void refetchUser();
+                    router.push("/profile");
                 },
             },
         );

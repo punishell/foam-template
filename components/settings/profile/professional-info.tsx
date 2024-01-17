@@ -41,7 +41,16 @@ const ProfessionalInfo = ({ form }: FormProps): ReactElement => {
                                         tags={value}
                                         setTags={onChange}
                                         className="grow items-start border-none bg-transparent"
-                                        placeholder="Add your top 3 skills first"
+                                        placeholder={
+                                            value?.length < 3
+                                                ? "Add your top 3 skills first"
+                                                : value?.length > 3 && value?.length === 10
+                                                  ? ""
+                                                  : value?.length > 3
+                                                    ? `You can add ${10 - value.length} more skill${10 - value.length === 1 ? "" : "s"}`
+                                                    : ""
+                                        }
+                                        disabled={value?.length === 10}
                                     />
                                 )}
                             />
