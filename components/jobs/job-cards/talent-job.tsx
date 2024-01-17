@@ -75,7 +75,7 @@ export const TalentJobCard: FC<TalentJobCardProps> = ({
                                 setIsUpdateModalOpen(true);
                             }}
                         >
-                            {status === "completed" ? "Review" : "Update"}
+                            {progress < 100 ? "Update" : progress === 100 ? "Review" : "Update"}
                         </Button>
                     )}
 

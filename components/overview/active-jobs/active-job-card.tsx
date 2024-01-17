@@ -84,7 +84,11 @@ export const ActiveJobCard = ({
                                     setIsUpdateModalOpen(true);
                                 }}
                             >
-                                {isCreator ? "View Updates" : "Update"}
+                                {isCreator && progress.progress < 100
+                                    ? "View Updates"
+                                    : isCreator && progress.progress === 100
+                                      ? "Review"
+                                      : "Update"}
                             </Button>
                             <Link href={`/messages?userId=${isCreator ? talent._id : creator._id}`}>
                                 <Button size="xs" variant="outline">
