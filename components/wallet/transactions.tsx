@@ -6,6 +6,7 @@
 
 import { type ColumnDef, type PaginationState } from "@tanstack/react-table";
 import { ArrowUpRight, ArrowDownLeft, Circle } from "lucide-react";
+import Link from "next/link";
 
 /* -------------------------------------------------------------------------- */
 /*                             Internal Dependency                            */
@@ -74,6 +75,7 @@ interface WalletTransactionsProps {
     usdValue: string;
     type: TransactionTypeProps;
     status: TransactionStatusProps;
+    transactionHash: string;
 }
 
 const TABLE_COLUMNS: Array<ColumnDef<WalletTransactionsProps>> = [
@@ -87,12 +89,12 @@ const TABLE_COLUMNS: Array<ColumnDef<WalletTransactionsProps>> = [
         cell: ({ getValue }) => <TransactionType type={getValue<TransactionTypeProps>()} />,
     },
     {
-        header: "Amount",
-        accessorFn: (data) => data.amount,
-    },
-    {
         header: "Description",
         accessorFn: (data) => data.description,
+    },
+    {
+        header: "Amount",
+        accessorFn: (data) => data.amount,
     },
     {
         header: "Coin",
@@ -106,6 +108,25 @@ const TABLE_COLUMNS: Array<ColumnDef<WalletTransactionsProps>> = [
         header: "Status",
         accessorFn: (data) => data.status,
         cell: ({ getValue }) => <TransactionStatus status={getValue<TransactionStatusProps>()} />,
+    },
+    {
+        header: " ",
+        accessorFn: (data) => data.transactionHash,
+        cell: ({ getValue }) => {
+            const transactionHash = getValue();
+            return (
+                <Link
+                    href={`${process.env.NEXT_PUBLIC_SNOWTRACE_APP_URL}/tx/${transactionHash as string}`}
+                    target="_blank"
+                    className="inline-flex h-[22px] w-[124.35px] items-center justify-center gap-[6.45px] rounded-lg border bg-violet-100 px-2 py-0.5"
+                >
+                    <span className="shrink grow basis-0 text-center text-xs font-medium leading-[18px] tracking-wide text-indigo-600">
+                        View On-chain
+                    </span>
+                    <ArrowUpRight className="relative h-[12.90px] w-[12.90px] text-indigo-600" />
+                </Link>
+            );
+        },
     },
 ];
 

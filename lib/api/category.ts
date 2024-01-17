@@ -28,7 +28,7 @@ interface CategoryResponse {
 }
 
 async function getLeaderBoard(): Promise<CategoryResponse> {
-    const res = await axios.get(`/categories`);
+    const res = await axios.get(`/tag-category`);
     return res.data.data;
 }
 

@@ -83,7 +83,10 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     });
 
     const stayActive = (): void => {
-        activate();
+        setIsTimeoutModalOpen(false);
+        setTimeout(() => {
+            activate();
+        }, 1000);
     };
 
     const Logout = (): void => {

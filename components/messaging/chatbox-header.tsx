@@ -11,6 +11,7 @@ import { type ReactElement } from "react";
 /* -------------------------------------------------------------------------- */
 
 import { AfroProfile } from "@/components/common/afro-profile";
+import { sentenceCase } from "@/lib/utils";
 
 export const ChatBoxHeader = ({
     _id,
@@ -34,7 +35,7 @@ export const ChatBoxHeader = ({
                 <AfroProfile score={score} src={avatar} size="sm" url={`/talents/${_id}`} />
                 <div className="flex flex-col gap-1">
                     <div className="text-lg font-medium leading-none text-title">{title}</div>
-                    <div className="text-sm leading-none text-body">{description}</div>
+                    <div className="text-sm leading-none text-body">{sentenceCase(description)}</div>
                 </div>
             </div>
             <div>

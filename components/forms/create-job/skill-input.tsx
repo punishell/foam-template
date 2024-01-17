@@ -36,15 +36,18 @@ export const SkillInput = ({ form, name }: SkillInputProps): JSX.Element => {
     const inputRef = useRef<HTMLInputElement | null>(null);
 
     // const { data } = useGetCategory();
-    // const { setErrorMessage } = useErrorService();
+    // const { setErrorMessage, errorMessage } = useErrorService();
 
     // useEffect(() => {
     //     if (data) {
-    //         // @ts-expect-error ts-migrate(2531) FIXME: Object is possibly 'null'.
-    //         setErrorMessage(data);
+    //         setErrorMessage({
+    //             title: "Category",
+    //             message: data,
+    //         });
     //     }
-    //     // eslint-disable-next-line react-hooks/exhaustive-deps
-    // }, []);
+    // }, [data, setErrorMessage]);
+
+    // console.log(errorMessage);
 
     const COUNTRY_LIST: Array<{ label: string; value: string }> = (technologyJson || []).map((c) => ({
         label: c.name,

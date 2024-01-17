@@ -7,7 +7,6 @@
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
-import Image from "next/image";
 import Lottie from "lottie-react";
 
 /* -------------------------------------------------------------------------- */
@@ -55,10 +54,8 @@ export default function SignupReferralPage(): React.JSX.Element {
 
     return (
         <>
-            <Container className="mt-16 flex items-center justify-between">
-                <div className="max-w-[200px]">
-                    <Image src="/images/logo.svg" alt="Logo" width={250} height={60} />
-                </div>
+            <Container className="-mt-[2.7rem] flex items-center justify-between">
+                <div />
 
                 {!isLoading && (
                     <Link

@@ -12,12 +12,12 @@ import Link from "next/link";
 /*                             Internal Dependency                            */
 /* -------------------------------------------------------------------------- */
 
-import { Spinner } from "@/components/common";
 import { Container } from "@/components/common/container";
 import { useGetSetting } from "@/lib/api/setting";
 import { SETTING_CONSTANTS } from "@/lib/constants";
 import warning from "@/lottiefiles/warning-2.json";
 import SignupForm from "@/components/forms/signup";
+import { PageLoading } from "@/components/common/page-loading";
 // import { useValidateReferral } from "@/lib/api/referral";
 
 export default function SignupPage(): React.JSX.Element {
@@ -59,7 +59,7 @@ export default function SignupPage(): React.JSX.Element {
             )}
             {loading && (
                 <div className="flex h-full justify-center text-white">
-                    <Spinner />
+                    <PageLoading />
                 </div>
             )}
             {!loading && errorMsg && (
