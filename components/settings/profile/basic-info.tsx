@@ -16,6 +16,7 @@ import { Select as SelectMain } from "pakt-ui";
 
 import { UploadAvatar } from "@/components/common/upload-avatar";
 import { type editProfileFormSchema } from "@/lib/validations";
+import { sentenceCase } from "@/lib/utils";
 
 const ProfileStates = [
     { label: "Private", value: "true" },
@@ -68,7 +69,7 @@ const BasicInfo = ({ userData, form, toggleUserProfile, refetchUser }: BasicInfo
                 <div className="flex flex-row items-center justify-center text-body">
                     <MapPin className="mr-2" />
                     <p className="text-base font-thin text-body">
-                        {userData?.location}, {userData?.country}
+                        {sentenceCase(userData?.location)}, {sentenceCase(userData?.country)}
                     </p>
                 </div>
                 <div className="mt-4 flex flex-col">
