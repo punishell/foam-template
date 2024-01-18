@@ -39,7 +39,7 @@ const JobVisibility = ({ form }: JobDescriptionProps): ReactElement => {
                                     <SelectItem value="private" className="rounded py-2 hover:bg-[#ECFCE5]">
                                         Private
                                     </SelectItem>
-                                    <SelectItem value="open" className="rounded py-2 hover:bg-[#ECFCE5]">
+                                    <SelectItem value="public" className="rounded py-2 hover:bg-[#ECFCE5]">
                                         Public
                                     </SelectItem>
                                 </SelectContent>
