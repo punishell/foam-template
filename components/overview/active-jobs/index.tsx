@@ -82,6 +82,7 @@ export const ActiveJobs = (): ReactElement => {
                         title={job.name}
                         isCreator={job.creator._id === loggedInUser}
                         // jobId={job._id}
+                        jobProgress={job.progress}
                     />
                 );
             }),
