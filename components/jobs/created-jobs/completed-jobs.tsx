@@ -44,7 +44,6 @@ export const CompletedJobs: React.FC<CompletedJobsProps> = ({ jobs }) => {
                     return (
                         <ClientJobCard
                             jobId={_id}
-                            status={status}
                             isCancelled={status === "cancelled"}
                             isCompleted={(talentHasReviewed && clientHasReviewed) ?? status === "cancelled"}
                             totalDeliverables={

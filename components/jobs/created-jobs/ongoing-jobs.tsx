@@ -37,11 +37,10 @@ export const OngoingJobs: React.FC<OngoingJobsProps> = ({ jobs }) => {
     return (
         <div className="flex h-full min-h-[80vh] flex-col">
             <div className="grid grid-cols-2 gap-4 overflow-y-auto pb-20">
-                {paginatedJobs.map(({ _id, paymentFee, name, collections, status, owner }) => {
+                {paginatedJobs.map(({ _id, paymentFee, name, collections, owner, progress }) => {
                     const reviewRequestChange = collections.find(isReviewChangeRequest);
                     return (
                         <ClientJobCard
-                            status={status}
                             totalDeliverables={
                                 collections.filter((collection) => collection.type === "deliverable").length
                             }
@@ -61,6 +60,7 @@ export const OngoingJobs: React.FC<OngoingJobsProps> = ({ jobs }) => {
                                 avatar: owner?.profileImage?.url,
                                 name: `${owner?.firstName} ${owner?.lastName}`,
                             }}
+                            jobProgress={progress}
                         />
                     );
                 })}

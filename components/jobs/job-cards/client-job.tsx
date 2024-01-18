@@ -12,7 +12,7 @@ import { useRouter } from "next/navigation";
 /*                             Internal Dependency                            */
 /* -------------------------------------------------------------------------- */
 
-import { type JobStatus, type ReviewChangeRequest } from "@/lib/types";
+import { type ReviewChangeRequest } from "@/lib/types";
 import { SideModal } from "@/components/common/side-modal";
 import { AfroProfile } from "@/components/common/afro-profile";
 import { ClientJobModal } from "@/components/jobs/job-modals/client";
@@ -22,7 +22,6 @@ interface ClientJobCardProps {
     jobId: string;
     title: string;
     price: number;
-    status: JobStatus;
     isCompleted?: boolean;
     isCancelled?: boolean;
     totalDeliverables: number;
@@ -34,6 +33,7 @@ interface ClientJobCardProps {
         paktScore: number;
     };
     reviewRequestChange?: ReviewChangeRequest;
+    jobProgress?: number;
 }
 
 export const ClientJobCard: FC<ClientJobCardProps> = ({
@@ -41,12 +41,12 @@ export const ClientJobCard: FC<ClientJobCardProps> = ({
     price,
     title,
     jobId,
-    status,
     isCancelled,
     totalDeliverables,
     completedDeliverables,
     isCompleted,
     reviewRequestChange,
+    jobProgress,
 }) => {
     const router = useRouter();
     const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
@@ -83,7 +83,7 @@ export const ClientJobCard: FC<ClientJobCardProps> = ({
                                 setIsUpdateModalOpen(true);
                             }}
                         >
-                            {status === "completed" ? (reviewRequestChange ? "View Request" : "Review") : "See Updates"}
+                            {jobProgress === 100 ? (reviewRequestChange ? "View Request" : "Review") : "See Updates"}
                         </Button>
                     )}
                     <Button

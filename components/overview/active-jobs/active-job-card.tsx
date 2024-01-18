@@ -44,6 +44,7 @@ interface ActiveJobCardProps {
         total: number;
         progress: number;
     };
+    jobProgress: number;
 }
 
 export const ActiveJobCard = ({
@@ -57,6 +58,7 @@ export const ActiveJobCard = ({
     // bookmarkId,
     // jobId,
     // bookmarked,
+    jobProgress,
 }: ActiveJobCardProps): ReactElement => {
     const { _id: loggedInUser } = useUserState();
     const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
@@ -84,11 +86,13 @@ export const ActiveJobCard = ({
                                     setIsUpdateModalOpen(true);
                                 }}
                             >
-                                {isCreator && progress.progress < 100
+                                {isCreator && jobProgress < 100
                                     ? "View Updates"
-                                    : isCreator && progress.progress === 100
+                                    : isCreator && jobProgress === 100
                                       ? "Review"
-                                      : "Update"}
+                                      : !isCreator && jobProgress === 100
+                                        ? "Review"
+                                        : "Update"}
                             </Button>
                             <Link href={`/messages?userId=${isCreator ? talent._id : creator._id}`}>
                                 <Button size="xs" variant="outline">
