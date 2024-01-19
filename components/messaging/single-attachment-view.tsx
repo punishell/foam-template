@@ -15,11 +15,11 @@ import dayJs from "dayjs";
 
 import { getPreviewByType, getPreviewByTypeUrl } from "@/lib/utils";
 import { useDownloadAttachment } from "@/lib/api/upload";
-import { type AttachmentProps } from "./types";
+import { type AttachmentsProps } from "@/providers/socket-types";
 
 const MAX_LEN = 15;
 
-const SingleAttachmentView = ({ img }: { img: AttachmentProps }): ReactElement => {
+const SingleAttachmentView = ({ img }: { img: AttachmentsProps }): ReactElement => {
     const downloadAttachments = useDownloadAttachment();
     const DownloadAttachment = (url: string): void => {
         downloadAttachments.mutate(url);
@@ -32,7 +32,7 @@ const SingleAttachmentView = ({ img }: { img: AttachmentProps }): ReactElement =
                     src={
                         img?.file
                             ? getPreviewByType(img.file).preview
-                            : getPreviewByTypeUrl(img?.url, img?.type).preview
+                            : getPreviewByTypeUrl(img?.url as string, img?.type).preview
                     }
                     alt="upload-picture"
                     width={38}
@@ -57,7 +57,7 @@ const SingleAttachmentView = ({ img }: { img: AttachmentProps }): ReactElement =
                         size={20}
                         className="cursor-pointer text-primary"
                         onClick={() => {
-                            DownloadAttachment(img?.url);
+                            DownloadAttachment(img?.url as string);
                         }}
                     />
                 )}
@@ -70,7 +70,7 @@ export const RenderAttachmentViewer = ({
     images = [],
     align,
 }: {
-    images: AttachmentProps[];
+    images: AttachmentsProps[];
     align?: "left" | "right";
 }): ReactElement => {
     return (

@@ -15,11 +15,11 @@ import { useDropzone } from "react-dropzone";
 import { MessageTypeEnums, useMessaging } from "@/providers/socketProvider";
 import { Spinner } from "@/components/common";
 import { formatBytes, getPreviewByType } from "@/lib/utils";
-import { type ImageUp } from "@/lib/types";
 import { ChatBoxHeader } from "@/components/messaging/chatbox-header";
 import { Messages } from "@/components/messaging/messages";
 import { RenderAttachmentPreviewer } from "@/components/messaging/render-attachment-viewer";
 import { useErrorService } from "@/lib/store/error-service";
+import { type AttachmentsProps } from "@/providers/socket-types";
 
 interface Props {
     params: {
@@ -34,12 +34,12 @@ export default function ChatPage({ params }: Props): ReactElement {
     const { setErrorMessage } = useErrorService();
     const [loadingMessage, setLoadingMessages] = useState(true);
     const [text, setText] = useState("");
-    const [imageFiles, setImageFiles] = useState<ImageUp[] | []>([]);
+    const [imageFiles, setImageFiles] = useState<AttachmentsProps[] | []>([]);
 
     const loadMessages = async (): Promise<void> => {
         setActiveConversation(messageId);
         setLoadingMessages(false);
-        await markUserMessageAsSeen(messageId);
+        markUserMessageAsSeen(messageId);
     };
 
     const messages = currentConversation?.messages ?? [];
@@ -89,7 +89,8 @@ export default function ChatPage({ params }: Props): ReactElement {
         maxFiles: 5,
         accept: {
             "image/*": [],
-            "application/*": [".pdf", ".doc", ".docx"],
+            "application/pdf": [".pdf"],
+            "application/vnd.openxmlformats-officedocument.wordprocessingml.document": [".docx"],
             "text/*": [".csv"],
         },
         noClick: true,
