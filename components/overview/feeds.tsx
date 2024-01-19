@@ -44,8 +44,9 @@ export const Feeds = (): ReactElement => {
             isPublic: true,
         },
     });
-    const scrollParentRef = useRef(null);
-    const observerTarget = useRef(null);
+
+    const scrollParentRef = useRef<HTMLDivElement | null>(null);
+    const observerTarget = useRef<HTMLDivElement | null>(null);
 
     const callback = async (): Promise<void> => {
         await Promise.all([feedRefetch()]);
@@ -69,22 +70,22 @@ export const Feeds = (): ReactElement => {
     };
 
     useEffect(() => {
-        // console.log(observerTarget);
-        const currentObserverTarget = observerTarget.current;
-        if (!currentObserverTarget) return;
+        const currentTarget = observerTarget.current;
+        if (!currentTarget) return;
         const observer = new IntersectionObserver(
             (entries) => {
-                if (entries[0] && entries[0].isIntersecting) setObserve(true);
+                if (entries[0]?.isIntersecting) setObserve(true);
             },
             { threshold: 0.5 },
         );
 
-        observer.observe(currentObserverTarget);
+        observer.observe(currentTarget);
 
         return () => {
-            observer.unobserve(currentObserverTarget);
+            observer.unobserve(currentTarget);
         };
-    }, []);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [observerTarget.current]);
 
     useEffect(() => {
         if (!isLoading && !isFetchingNextPage && prevPage !== currentPage) {
