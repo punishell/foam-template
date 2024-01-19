@@ -4,12 +4,9 @@
 /*                             External Dependency                            */
 /* -------------------------------------------------------------------------- */
 
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable no-unused-vars */
-/* eslint-disable react-hooks/exhaustive-deps */
 import { getCookie } from "cookies-next";
 import type React from "react";
-import { createContext, useContext, useEffect, useMemo, useRef, useState } from "react";
+import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 import { io, type Socket } from "socket.io-client";
 import { usePathname, useRouter } from "next/navigation";
 import dayjs from "dayjs";
@@ -21,9 +18,23 @@ import dayjs from "dayjs";
 import { useUserState } from "@/lib/store/account";
 import { AUTH_TOKEN_KEY, formatBytes } from "@/lib/utils";
 import { toast } from "@/components/common/toaster";
-import { type ImageUp } from "@/lib/types";
 import { postUploadImages } from "@/lib/api/upload";
 import { useErrorService } from "@/lib/store/error-service";
+import {
+    type SocketResponse,
+    type ConversationProps,
+    type MessageProps,
+    type RecipientProps,
+    type SocketContextType,
+    type UserStatusProps,
+    type Message,
+    type ParseMessagesProps,
+    type AttachmentsProps,
+    type ParseUserChatProps,
+    type PopUpMessageProps,
+    type InitializeMessageProps,
+    type AttachmentsResponseProps,
+} from "./socket-types";
 
 const MAX_RECONNECT_TIME = 1000;
 
@@ -49,130 +60,131 @@ export const conversationEnums = {
     USER_STATUS: "USER_STATUS",
 };
 
-interface RecipientProps {
-    _id?: string;
-    firstName?: string;
-    lastName?: string;
-    profile?: {
-        bio?: {
-            title: string;
-        };
-    };
-    profileImage?: {
-        url: string;
-    };
-    score: number;
-    title: string;
-    description: string;
-    avatar: string;
-    user?: string;
-}
-
-interface ChatImageProps {
-    type: string;
-    url: string;
-    _id: string;
-    id?: string; // Optional
-    file: File;
-    preview: string;
-    // id: string;
-    name: string;
-    size: string;
-}
-
-interface MessageProps {
-    content: string;
-    isSent?: boolean;
-    sending?: boolean;
-    attachments: ChatImageProps[];
-    readBy?: string[];
-    user?: string;
-    createdAt?: string;
-    isRead?: boolean;
-}
-
-interface ConversationProps {
-    _id?: string;
-    id?: string; // Optional
-    messages: MessageProps[];
-    sender?: RecipientProps | undefined;
-    recipient?: RecipientProps | undefined;
-    recipients?: RecipientProps[];
-    createdAt: string;
-    type: string;
-    unreadcount?: number;
-    lastMessage?: string | null;
-    lastMessageTime?: string | null;
-    title?: string | null;
-    description?: string | null;
-    header?: RecipientProps;
-    currentMessage?: MessageProps | null | undefined;
-}
-
-export interface SocketContextType {
-    currentConversation: ConversationProps | null;
-    loadingChats: boolean;
-    status: string;
-    conversations: any;
-    socket: Socket | null;
-    startingNewChat: boolean;
-    fetchUserChats: () => any;
-    startUserInitializeConversation: (recipientId: string) => Promise<any>;
-    sendUserMessage: (
-        sender: string,
-        recipient: string,
-        type: string,
-        message: string,
-        conversation: string,
-        images: ImageUp[],
-    ) => Promise<any>;
-    markUserMessageAsSeen: (conversation: string) => Promise<any>;
-    getConversationById: (id: string) => Promise<any>;
-    setActiveConversation: (id: string) => void;
-    unreadChatCount: number;
-}
-
 const MIN_LEN = 25;
 
 const SOCKET_URL = process.env.NEXT_PUBLIC_SOCKET_URL;
 
-export const SocketContext = createContext<SocketContextType>({
+const defaultContext: SocketContextType = {
     currentConversation: null,
     loadingChats: true,
     status: "pending",
-    conversations: [],
+    conversations: [
+        {
+            createdAt: new Date().toISOString(),
+            header:
+                {
+                    _id: "",
+                    title: "",
+                    description: "",
+                    avatar: "",
+                    score: 0,
+                } || "",
+            id: "",
+            lastMessage: "",
+            lastMessageTime: "",
+            messages: [
+                {
+                    content: "",
+                    isSent: false,
+                    isRead: false,
+                    attachments: [],
+                },
+            ],
+            recipient: {
+                profile: {
+                    bio: {
+                        title: "",
+                        description: "",
+                    },
+                },
+                socket: {
+                    status: "",
+                },
+                _id: "",
+                firstName: "",
+                lastName: "",
+                score: 0,
+                profileImage: {
+                    _id: "",
+                    url: "",
+                },
+            },
+            recipients: [
+                {
+                    profile: {
+                        bio: {
+                            title: "",
+                            description: "",
+                        },
+                    },
+                    socket: {
+                        status: "",
+                    },
+                    _id: "",
+                    firstName: "",
+                    lastName: "",
+                    score: 0,
+                    profileImage: {
+                        _id: "",
+                        url: "",
+                    },
+                },
+            ],
+            sender: {
+                profile: {
+                    bio: {
+                        title: "",
+                        description: "",
+                    },
+                },
+                socket: {
+                    status: "",
+                },
+                _id: "",
+                firstName: "",
+                lastName: "",
+                score: 0,
+                profileImage: {
+                    _id: "",
+                    url: "",
+                },
+            },
+            type: "",
+            unreadcount: 0,
+        },
+    ] as ParseUserChatProps[],
     socket: null,
     startingNewChat: false,
     fetchUserChats: () => {},
     startUserInitializeConversation: async () => Promise.resolve(),
     sendUserMessage: async () => Promise.resolve(),
-    markUserMessageAsSeen: async () => Promise.resolve(),
-    getConversationById: async () => Promise.resolve(),
+    markUserMessageAsSeen: async () => {},
+    getConversationById: async () => {},
     setActiveConversation: async () => {},
     unreadChatCount: 0,
-});
+};
 
-interface SocketResponse<T> {
-    error: boolean;
-    statusCode: number;
-    message: string;
-    data: T;
-}
+export const SocketContext = createContext<SocketContextType>(defaultContext);
 
 const prefix = "messaging";
 
 export const MessagingProvider = ({ children }: { children: React.ReactNode }): React.JSX.Element => {
     const authToken = getCookie(AUTH_TOKEN_KEY);
-    const { _id: loggedInUser } = useUserState();
     const [socket, setSocket] = useState<Socket | null>(null);
-    const [currentConversation, setCurrentConversation] = useState<ConversationProps | null>(null);
-    const [conversations, setConversations] = useState<ConversationProps[]>([]);
+
+    const [socketReconnect, setSocketReconnect] = useState<boolean>(false);
+
+    const { _id: loggedInUser } = useUserState();
+
+    const [currentConversation, setCurrentConversation] = useState<ParseUserChatProps | null>(null);
+    const [conversations, setConversations] = useState<ParseUserChatProps[]>([]);
+
     // @ts-expect-error --- Unused variable
     const [status, setStatus] = useState<string>("pending");
     const [loadingChats, setLoadingChats] = useState<boolean>(true);
-    const [socketReconnect, setSocketReconnect] = useState<boolean>(false);
     const [unreadChatCount, setUnreadChatCount] = useState<number>(0);
     const [startingNewChat, setStartingNewChat] = useState(false);
+
     const router = useRouter();
     const initiated = useRef(false);
 
@@ -181,8 +193,49 @@ export const MessagingProvider = ({ children }: { children: React.ReactNode }): 
 
     const { setErrorMessage } = useErrorService();
 
-    const parseMessageAttachments = (attachments: ChatImageProps[]): ChatImageProps[] =>
-        // @ts-expect-error --- TODO: Fix this
+    const getSender = (recipients: RecipientProps[] = []): RecipientProps | undefined => {
+        return recipients.find((r: RecipientProps) => r._id !== loggedInUser);
+    };
+    const getRecipient = (recipients: RecipientProps[] = []): RecipientProps | undefined => {
+        return recipients.find((r: RecipientProps) => r._id === loggedInUser);
+    };
+
+    const getUnreadCount = (messages: Message[]): number =>
+        messages.filter((r: Message) => !(r.readBy && !!r.readBy.includes(loggedInUser)) && r.user !== loggedInUser)
+            .length;
+
+    const getLastMessage = (messages: Message[]): string | null => {
+        const lastMessage = messages[messages.length - 1];
+        return lastMessage ? lastMessage.content : null;
+    };
+
+    const getLastMessageTime = (messages: Message[]): string | null => {
+        const lastMessage = messages[messages.length - 1];
+        return lastMessage ? dayjs(lastMessage.createdAt).format("HH:ss A") : null;
+    };
+
+    const setUnreadChats = (convo: ParseUserChatProps[]): void => {
+        const unread = convo?.reduce((a, b) => a + b.unreadcount, 0);
+        setUnreadChatCount(unread);
+    };
+
+    const getConversationById = useCallback(
+        (id: string): ParseUserChatProps | undefined => {
+            const convo = conversations.find((c: ParseUserChatProps) => c.id === id);
+            return convo;
+        },
+        [conversations],
+    );
+
+    const setActiveConversation = useCallback(
+        (_id: string): void => {
+            const conversation = getConversationById(_id);
+            setCurrentConversation(conversation ?? null);
+        },
+        [getConversationById],
+    );
+
+    const parseMessageAttachments = (attachments: AttachmentsResponseProps[]): AttachmentsResponseProps[] =>
         attachments && attachments.length > 0
             ? attachments.map((a) => ({
                   size: formatBytes(Number(a.size), 0),
@@ -192,22 +245,31 @@ export const MessagingProvider = ({ children }: { children: React.ReactNode }): 
               }))
             : [];
 
-    const parseMessages = (messages: MessageProps[]): MessageProps[] =>
-        messages.map((m: any) => ({
+    const parseMessages = (messages: Message[]): ParseMessagesProps[] =>
+        messages.map((m: Message) => ({
             content: m.content,
             isSent: m.user === loggedInUser,
             isRead: !!m.readBy?.includes(loggedInUser),
             attachments: parseMessageAttachments(m.attachments),
         }));
 
-    const getSender = (recipients: RecipientProps[] = []): RecipientProps | undefined => {
-        return recipients.find((r: any) => r._id !== loggedInUser);
-    };
-    const getRecipient = (recipients: RecipientProps[] = []): RecipientProps | undefined => {
-        return recipients.find((r: any) => r._id === loggedInUser);
-    };
-
-    const getConversationHeader = (conversation: ConversationProps): RecipientProps => {
+    const getConversationHeader = (
+        conversation: ConversationProps,
+    ):
+        | {
+              _id: string | undefined;
+              title: string;
+              description: string;
+              avatar: string;
+              score: number;
+          }
+        | {
+              title: string | undefined;
+              description: string | undefined;
+              score: number;
+              avatar: string;
+              _id?: undefined;
+          } => {
         const sender = conversation.recipients?.find((r: RecipientProps) => r._id !== loggedInUser);
         return conversation.type === "DIRECT"
             ? {
@@ -218,148 +280,246 @@ export const MessagingProvider = ({ children }: { children: React.ReactNode }): 
                   score: sender?.score ?? 0,
               }
             : {
-                  title: conversation.title as string,
-                  description: conversation.description as string,
+                  title: conversation.title,
+                  description: conversation.description,
                   score: 0,
                   avatar: "",
               };
     };
 
-    const getUnreadCount = (messages: MessageProps[]): number =>
-        messages.filter((r: any) => !(r.readBy && !!r.readBy.includes(loggedInUser)) && r.user !== loggedInUser).length;
+    const parseUserChats = useCallback(
+        (payload: ConversationProps[]) =>
+            payload.map(
+                (c: ConversationProps): ParseUserChatProps => ({
+                    id: c._id,
+                    messages: parseMessages(c.messages),
+                    sender: getSender(c.recipients),
+                    recipient: getRecipient(c.recipients),
+                    recipients: c.recipients,
+                    header: getConversationHeader(c),
+                    createdAt: dayjs(c.createdAt).format("MMMM D, YYYY"),
+                    type: c.type,
+                    unreadcount: getUnreadCount(c.messages),
+                    lastMessage: getLastMessage(c.messages),
+                    lastMessageTime: getLastMessageTime(c.messages),
+                }),
+            ),
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        [],
+    );
 
-    const getLastMessage = (messages: MessageProps[]): string | null => {
-        const lastMessage = messages[messages.length - 1];
-        return lastMessage ? lastMessage.content : null;
-    };
-
-    const getLastMessageTime = (messages: MessageProps[]): string | null => {
-        const lastMessage = messages[messages.length - 1];
-        return lastMessage ? dayjs(lastMessage.createdAt).format("HH:ss A") : null;
-    };
-
-    const parseUserChats = (payload: ConversationProps[]): ConversationProps[] =>
-        payload.map((c: ConversationProps) => ({
-            id: c._id,
-            messages: parseMessages(c.messages),
-            sender: getSender(c.recipients),
-            recipient: getRecipient(c.recipients),
-            recipients: c.recipients,
-            header: getConversationHeader(c),
-            createdAt: dayjs(c.createdAt).format("MMMM D, YYYY"),
-            type: c.type,
-            unreadcount: getUnreadCount(c.messages),
-            lastMessage: getLastMessage(c.messages),
-            lastMessageTime: getLastMessageTime(c.messages),
-        }));
-
-    const setUnreadChats = (convo: ConversationProps[]): void => {
-        const unread = convo.reduce((a: any, b) => a + b.unreadcount, 0);
-        setUnreadChatCount(unread);
-    };
-
-    const cleanupSocketConnection = (): void => {
-        socket?.off();
-    };
-    const SocketConnection = async (): Promise<void> => {
-        if (socket && loggedInUser && !initiated.current) {
-            initiated.current = true;
-            socket.on("connect", () => {
-                setSocket(socket);
-                socket.emit(
-                    conversationEnums.USER_CONNECT,
-                    { userId: loggedInUser },
-                    (response: SocketResponse<any>) => {
-                        if (!response.error) {
-                            const parsedConversation = parseUserChats(response.data.messages);
-                            setConversations(parsedConversation);
-                            setLoadingChats(false);
-                            setUnreadChats(parsedConversation);
-                        }
-                    },
-                );
-
-                // Join Old Conversation If any
-                socket?.emit(conversationEnums.JOIN_OLD_CONVERSATIONS, { userId: loggedInUser }, () => {});
-                socket?.on("disconnect", () => {
-                    // TODO:: Perform Disconnect Function
-                });
-
-                // notifies if user status is either offline/ online in an active chat
-                socket?.on(conversationEnums.USER_STATUS, (data: any) => {
-                    if (currentConversation && currentConversation._id === data.currentConversation) {
-                        if (Array.isArray(currentConversation.recipients)) {
-                            const updatedRecipients = currentConversation.recipients.map((r: any) => {
-                                if (typeof r === "string" && r === data.user) return data;
-                                if (typeof r === "object" && r.user === data.user) return data;
-                                return r;
-                            });
-                            currentConversation.recipients = updatedRecipients;
-                        }
-                    }
-                });
-            });
-            cleanupSocketConnection();
-        }
-    };
-
-    const fetchUserChats = async (currentConversationId?: string): Promise<void> => {
-        if (socket) {
+    const fetchUserChats = useCallback(
+        async (currentConversationId?: string): Promise<void> => {
+            if (!socket) {
+                return;
+            }
             socket.emit(
                 conversationEnums.GET_ALL_CONVERSATIONS,
                 { userId: loggedInUser },
-                (response: SocketResponse<any>) => {
+                (response: SocketResponse<MessageProps>) => {
                     if (!response.error) {
-                        const payload = response?.data?.messages;
+                        const payload: ConversationProps[] = response?.data?.messages;
                         const parsedConversation = parseUserChats(payload);
                         setConversations(parsedConversation);
                         setLoadingChats(false);
                         setUnreadChats(parsedConversation);
                         if (currentConversationId) {
                             const cOV = parsedConversation.find(
-                                (c: ConversationProps) => c.id === currentConversationId,
+                                (c: ParseUserChatProps) => c.id === currentConversationId,
                             );
                             setCurrentConversation(cOV ?? null);
                         }
-                        return payload.messages;
+                        return payload.map((c: ConversationProps) => c.messages);
                     }
+                    return null;
                 },
             );
-        }
-    };
+        },
+        [loggedInUser, parseUserChats, socket],
+    );
 
-    const Reconnect = (): void => {
-        setTimeout(() => {
-            setSocketReconnect(true);
-        }, MAX_RECONNECT_TIME);
-    };
-
-    const connectChatInit = async (): Promise<void> => {
-        const isSocketConnected = socket?.connected;
-        if (loggedInUser && !isSocketConnected && authToken) {
+    const startUserInitializeConversation = useCallback(
+        async (recipientId: string): Promise<void> => {
             try {
-                const newSocket = io(SOCKET_URL as string, {
-                    extraHeaders: {
-                        "authorization": `Bearer ${authToken}`,
+                setStartingNewChat(true);
+                if (!socket) {
+                    setErrorMessage({
+                        title: "Socket Connection Error (startUserInitializeConversation Function)",
+                        message: "Socket is null",
+                    });
+                    return;
+                }
+                socket.emit(
+                    conversationEnums.INITIALIZE_CONVERSATION,
+                    {
+                        senderId: loggedInUser,
+                        recipientId,
+                        type: "DIRECT",
                     },
-                });
-                setSocket(newSocket);
-                setSocketReconnect(false);
-            } catch (error: any) {
+                    async (response: SocketResponse<InitializeMessageProps>) => {
+                        if (response.error) {
+                            toast.error(response.message);
+                            router.push("/messages");
+                            return;
+                        }
+                        const { conversation } = response.data;
+                        await fetchUserChats(conversation._id);
+                        setStartingNewChat(false);
+                        if (response.error) {
+                            router.back();
+                            return;
+                        }
+                        router.push(`/messages/${conversation._id}`);
+                    },
+                );
+            } catch (error) {
                 setErrorMessage({
-                    title: "Socket Connection Error (connectChatInit Function)",
+                    title: "Socket Connection Error (startUserInitializeConversation Function)",
                     message: error,
                 });
-                Reconnect();
             }
-        } else {
-            Reconnect();
-        }
-    };
+        },
+        [fetchUserChats, loggedInUser, router, setErrorMessage, socket],
+    );
 
+    const UploadFiles = useCallback(async (images: AttachmentsProps[]): Promise<string[]> => {
+        const uploadFll: Array<{ file: File; onProgress: (progress: number) => void }> = [];
+        const currentMessage = currentConversation?.messages
+            ? currentConversation.messages.find((m: ParseMessagesProps) => !!m.sending)
+            : null;
+        const updateProgress = (id: string, progress: number): void => {
+            // set upload progress for images
+            if (currentMessage) {
+                // update progress with value
+                const currentImage = currentMessage?.attachments?.find(
+                    (img: AttachmentsResponseProps) => img._id === id,
+                );
+                if (currentImage) {
+                    const imgData = { ...currentImage, progress };
+                    currentMessage.attachments = [
+                        ...(currentMessage.attachments as AttachmentsResponseProps[]),
+                        imgData,
+                    ];
+                }
+            }
+        };
+        // create
+        for (let i = 0; i < images.length; i++) {
+            const em = images[i];
+            if (em) {
+                const callbackFunc = (progress: number): void => {
+                    updateProgress(em.id, progress);
+                };
+                uploadFll.push({
+                    file: em.file,
+                    onProgress: callbackFunc,
+                });
+            }
+        }
+        const resp = await postUploadImages(uploadFll);
+        return resp.map((r: AttachmentsResponseProps) => {
+            return r._id as string;
+        });
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
+    const markUserMessageAsSeen = useCallback(
+        async (conversation: string): Promise<null> => {
+            try {
+                if (!socket) {
+                    setErrorMessage({
+                        title: "Socket Connection Error (markUserMessageAsSeen Function)",
+                        message: "Socket is null",
+                    });
+                    return null;
+                }
+                socket.emit(conversationEnums.MARK_MESSAGE_AS_SEEN, {
+                    conversationId: conversation,
+                    recipientId: loggedInUser,
+                    seen: new Date(),
+                });
+                await fetchUserChats();
+                return null;
+            } catch (e) {
+                return null;
+            }
+        },
+        [fetchUserChats, loggedInUser, setErrorMessage, socket],
+    );
+
+    const sendUserMessage = useCallback(
+        async (
+            sender: string,
+            recipient: string,
+            // eslint-disable-next-line @typescript-eslint/default-param-last
+            type: string = MessageTypeEnums.TEXT,
+            message: string,
+            conversation: string,
+            images: AttachmentsProps[],
+        ): Promise<void> => {
+            let attachments: string[] = [];
+            try {
+                await markUserMessageAsSeen(conversation);
+                const currentConv = getConversationById(conversation);
+
+                if (!currentConv) {
+                    // Handle the case where currentConv is undefined
+                    return undefined;
+                }
+
+                setCurrentConversation({
+                    ...currentConv,
+                    messages: [
+                        ...(currentConv.messages ?? []),
+                        { content: message, isSent: true, sending: true, attachments: images },
+                    ],
+                });
+                if (images.length > 0) {
+                    // perform image Uploads first before sending message
+                    attachments = await UploadFiles(images);
+                }
+                if (!socket) {
+                    setErrorMessage({
+                        title: "Socket Connection Error (markUserMessageAsSeen Function)",
+                        message: "Socket is null",
+                    });
+                    return;
+                }
+                socket.emit(
+                    conversationEnums.SEND_MESSAGE,
+                    {
+                        senderId: sender,
+                        recipientId: recipient,
+                        type,
+                        message,
+                        conversationId: conversation,
+                        attachments,
+                    },
+                    async () => {
+                        const currentConversationId = currentConversation?.id;
+                        await fetchUserChats(currentConversationId);
+                    },
+                );
+            } catch (error) {
+                // @ts-expect-error --- TODO: Fix this
+                toast.error(error?.response?.data.message ?? "Failed to Send Message Try again");
+            }
+        },
+        [
+            UploadFiles,
+            currentConversation?.id,
+            fetchUserChats,
+            getConversationById,
+            markUserMessageAsSeen,
+            setErrorMessage,
+            socket,
+        ],
+    );
+
+    // LISTEN TO POPUP EVENTS
     useEffect(() => {
         // Here we listen to popup events
-        socket?.on(conversationEnums.POPUP_MESSAGE, async (response: SocketResponse<ConversationProps>) => {
+        socket?.on(conversationEnums.POPUP_MESSAGE, async (response: SocketResponse<PopUpMessageProps>) => {
             const c = response.data;
             if (c.currentMessage) {
                 const messageContent =
@@ -387,190 +547,103 @@ export const MessagingProvider = ({ children }: { children: React.ReactNode }): 
         return () => {
             socket?.off(conversationEnums.POPUP_MESSAGE);
         };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [socket]);
+
+    // =========== Establish Connection to the WebSocket Server =========== //
+
+    const SocketConnection = async (): Promise<(() => void) | null> => {
+        if (socket && loggedInUser && !initiated.current) {
+            initiated.current = true;
+            socket.on("connect", () => {
+                setSocket(socket);
+                socket.emit(
+                    conversationEnums.USER_CONNECT,
+                    { userId: loggedInUser },
+                    (response: SocketResponse<MessageProps>) => {
+                        if (!response.error) {
+                            const parsedConversation = parseUserChats(response.data.messages);
+                            setConversations(parsedConversation);
+                            setLoadingChats(false);
+                            setUnreadChats(parsedConversation);
+                        }
+                    },
+                );
+
+                // Join Old Conversation If any
+                socket?.emit(conversationEnums.JOIN_OLD_CONVERSATIONS, { userId: loggedInUser }, () => {});
+                socket?.on("disconnect", () => {
+                    // TODO:: Perform Disconnect Function
+                });
+
+                // notifies if user status is either offline/ online in an active chat
+                socket?.on(conversationEnums.USER_STATUS, (data: UserStatusProps) => {
+                    if (currentConversation && currentConversation.id === data.currentConversation) {
+                        if (Array.isArray(currentConversation.recipients)) {
+                            const updatedRecipients = currentConversation.recipients.map((r: RecipientProps) => {
+                                if (typeof r === "string" && r === data.user) return data;
+                                if (typeof r === "object" && r.user === data.user) return data;
+                                return r;
+                            });
+                            currentConversation.recipients = updatedRecipients;
+                        }
+                    }
+                });
+            });
+            return () => socket?.off();
+        }
+        return null;
+    };
 
     // listen to notification to broadcast to app
     useEffect(() => {
         void SocketConnection();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [socket]);
+
+    const Reconnect = (): void => {
+        setTimeout(() => {
+            setSocketReconnect(true);
+        }, MAX_RECONNECT_TIME);
+    };
+
+    const connectChatInit = async (): Promise<void> => {
+        const isSocketConnected = socket?.connected;
+        if (loggedInUser && !isSocketConnected && authToken) {
+            try {
+                const newSocket = io(SOCKET_URL as string, {
+                    extraHeaders: {
+                        "authorization": `Bearer ${authToken}`,
+                    },
+                });
+                setSocket(newSocket);
+                setSocketReconnect(false);
+            } catch (error: unknown) {
+                setErrorMessage({
+                    title: "Socket Connection Error (connectChatInit Function)",
+                    message: error,
+                });
+                Reconnect();
+            }
+        } else {
+            Reconnect();
+        }
+    };
 
     // connect to chat socket
     useEffect(() => {
         void connectChatInit();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [loggedInUser]);
 
+    // reconnect to chat socket
     useEffect(() => {
         if (socketReconnect) {
             void connectChatInit();
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [socketReconnect]);
 
-    const getConversationById = (id: string): ConversationProps | undefined =>
-        conversations.find((c: any) => c.id === id);
-
-    const setActiveConversation = (_id: string): void => {
-        const conversation = getConversationById(_id);
-        setCurrentConversation(conversation ?? null);
-    };
-
-    const startUserInitializeConversation = async (recipientId: string): Promise<void> => {
-        try {
-            setStartingNewChat(true);
-            if (!socket) {
-                setErrorMessage({
-                    title: "Socket Connection Error (startUserInitializeConversation Function)",
-                    message: "Socket is null",
-                });
-                return;
-            }
-            socket.emit(
-                conversationEnums.INITIALIZE_CONVERSATION,
-                {
-                    senderId: loggedInUser,
-                    recipientId,
-                    type: "DIRECT",
-                },
-                async (response: SocketResponse<any>) => {
-                    if (response.error) {
-                        toast.error(response.message);
-                        router.push("/messages");
-                        return;
-                    }
-                    const { conversation } = response.data;
-                    await fetchUserChats(conversation._id);
-                    setStartingNewChat(false);
-                    if (conversation.error) {
-                        router.back();
-                        return;
-                    }
-                    router.push(`/messages/${conversation._id}`);
-                },
-            );
-        } catch (error) {
-            setErrorMessage({
-                title: "Socket Connection Error (startUserInitializeConversation Function)",
-                message: error,
-            });
-        }
-    };
-
-    const UploadFiles = async (images: ImageUp[]): Promise<string[]> => {
-        const uploadFll: Array<{ file: File; onProgress: (progress: number) => void }> = [];
-        const updateProgress = (id: string, progress: number): void => {
-            // set upload progress for images
-            if (currentConversation) {
-                const currentMessage = currentConversation.messages
-                    ? currentConversation.messages.find((m: any) => !!m.sending)
-                    : null;
-                if (currentMessage) {
-                    // update progress with value
-                    const currentImage = currentMessage.attachments.find((img: ChatImageProps) => img.id === id);
-                    if (currentImage) {
-                        const imgData = { ...currentImage, progress };
-                        currentMessage.attachments = [...currentMessage.attachments, imgData];
-                    }
-                }
-            }
-        };
-        // create
-        for (let i = 0; i < images.length; i++) {
-            const em = images[i];
-            if (em) {
-                const callbackFunc = (progress: number): void => {
-                    updateProgress(em.id, progress);
-                };
-                uploadFll.push({
-                    file: em.file,
-                    onProgress: callbackFunc,
-                });
-            }
-        }
-        const resp = await postUploadImages(uploadFll);
-        return resp.map((r: any) => r._id);
-    };
-
-    const markUserMessageAsSeen = async (conversation: string): Promise<null> => {
-        try {
-            if (!socket) {
-                setErrorMessage({
-                    title: "Socket Connection Error (markUserMessageAsSeen Function)",
-                    message: "Socket is null",
-                });
-                return null;
-            }
-            socket.emit(conversationEnums.MARK_MESSAGE_AS_SEEN, {
-                conversationId: conversation,
-                recipientId: loggedInUser,
-                seen: new Date(),
-            });
-            await fetchUserChats();
-            return null;
-        } catch (e) {
-            return null;
-        }
-    };
-
-    const sendUserMessage = async (
-        sender: string,
-        recipient: string,
-        // eslint-disable-next-line @typescript-eslint/default-param-last
-        type: string = MessageTypeEnums.TEXT,
-        message: string,
-        conversation: string,
-        images: ImageUp[],
-    ): Promise<void> => {
-        let attachments: string[] = [];
-        try {
-            await markUserMessageAsSeen(conversation);
-            const currentConv = getConversationById(conversation);
-
-            setCurrentConversation({
-                ...currentConv,
-                messages: [
-                    // @ts-expect-error --- TODO: Fix this
-                    ...(currentConv?.messages ?? []),
-                    // @ts-expect-error --- TODO: Fix this
-                    { content: message, isSent: true, sending: true, attachments: images },
-                ],
-                createdAt: dayjs(currentConv?.createdAt).format("MMMM D, YYYY"),
-                type: currentConv?.type as string,
-                unreadcount: currentConv?.unreadcount,
-                lastMessage: currentConv?.lastMessage,
-                lastMessageTime: currentConv?.lastMessageTime,
-                header: currentConv?.header,
-            });
-            if (images.length > 0) {
-                // perform image Uploads first before sending message
-                attachments = await UploadFiles(images);
-            }
-            if (!socket) {
-                setErrorMessage({
-                    title: "Socket Connection Error (markUserMessageAsSeen Function)",
-                    message: "Socket is null",
-                });
-                return;
-            }
-            socket.emit(
-                conversationEnums.SEND_MESSAGE,
-                {
-                    senderId: sender,
-                    recipientId: recipient,
-                    type,
-                    message,
-                    conversationId: conversation,
-                    attachments,
-                },
-                async () => {
-                    const currentConversationId = currentConversation?.id;
-                    await fetchUserChats(currentConversationId);
-                },
-            );
-        } catch (error: any) {
-            toast.error(error?.response?.data.message ?? "Failed to Send Message Try again");
-        }
-    };
-
-    // @ts-expect-error --- TODO: Fix this
     const SocketServer: SocketContextType = useMemo(
         () => ({
             currentConversation,
@@ -587,7 +660,21 @@ export const MessagingProvider = ({ children }: { children: React.ReactNode }): 
             getConversationById,
             setActiveConversation,
         }),
-        [currentConversation, loadingChats, status, conversations, socket, unreadChatCount, startingNewChat],
+        [
+            currentConversation,
+            loadingChats,
+            status,
+            conversations,
+            socket,
+            unreadChatCount,
+            startingNewChat,
+            fetchUserChats,
+            startUserInitializeConversation,
+            sendUserMessage,
+            markUserMessageAsSeen,
+            getConversationById,
+            setActiveConversation,
+        ],
     );
 
     return <SocketContext.Provider value={SocketServer}>{children}</SocketContext.Provider>;
