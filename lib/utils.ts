@@ -287,3 +287,11 @@ export function filterEmptyStrings(arr: string[]): string[] {
 export const lowerCase = (str: string): string => {
     return str.charAt(0).toLowerCase() + str.slice(1).toLowerCase();
 };
+
+export const titleCase = (str: string): string => {
+    return str
+        .toLowerCase()
+        .split(" ")
+        .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(" ");
+};

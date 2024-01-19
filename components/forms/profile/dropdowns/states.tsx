@@ -16,7 +16,7 @@ import { ScrollArea, ScrollBar } from "@/components/common/scroll-area";
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem } from "@/components/common/command";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/common/popover";
 
-import { cn, lowerCase, sentenceCase } from "@/lib/utils";
+import { cn, lowerCase, titleCase } from "@/lib/utils";
 import states from "@/lib/states.json";
 import { useDropdownStore } from "@/lib/store/dropdown";
 
@@ -32,7 +32,7 @@ const StateDropdown = ({ onChange, value, countryValue }: StateDropdownProps): R
     const { openStateDropdown, setOpenStateDropdown } = useDropdownStore();
 
     const SD = states as StateProps[];
-    const S = SD.filter((state) => state.country_name === sentenceCase(countryValue));
+    const S = SD.filter((state) => state.country_name === titleCase(countryValue));
 
     return (
         <Popover open={openStateDropdown} onOpenChange={setOpenStateDropdown}>
