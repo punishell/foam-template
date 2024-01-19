@@ -129,7 +129,7 @@ const ProfileForm = ({ form, updateAccountFunc }: FormProps): ReactElement => {
                                     render={({ field: { onChange, value } }) => {
                                         return (
                                             <div className="flex w-full flex-col gap-2">
-                                                <label> Country</label>
+                                                <label>Country</label>
                                                 <CountryDropdown onChange={onChange} value={value} />
                                             </div>
                                         );
@@ -151,7 +151,7 @@ const ProfileForm = ({ form, updateAccountFunc }: FormProps): ReactElement => {
                                     render={({ field: { onChange, value } }) => {
                                         return (
                                             <div className="flex w-full flex-col gap-2">
-                                                <label> City</label>
+                                                <label>Region</label>
                                                 <StateDropdown
                                                     onChange={onChange}
                                                     value={value}
