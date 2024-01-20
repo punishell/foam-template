@@ -152,7 +152,8 @@ async function getJobs(params: GetJobsParams): Promise<GetJobsResponse> {
 
 export function useGetJobs(params: GetJobsParams): UseQueryResult<GetJobsResponse, ApiError> {
     return useQuery({
-        queryFn: async () => getJobs(params),
+        // eslint-disable-next-line @typescript-eslint/promise-function-async
+        queryFn: () => getJobs(params),
         queryKey: ["get-jobs", params],
         onError: (error: ApiError) => {
             toast.error(error?.response?.data.message ?? "An error occurred");
