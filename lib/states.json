@@ -53240,17 +53240,6 @@
         "longitude": "-149.49367330"
     },
     {
-        "id": 1424,
-        "name": "American Samoa",
-        "country_id": 233,
-        "country_code": "US",
-        "country_name": "United States",
-        "state_code": "AS",
-        "type": "outlying area",
-        "latitude": "-14.27097200",
-        "longitude": "-170.13221700"
-    },
-    {
         "id": 1434,
         "name": "Arizona",
         "country_id": 233,
@@ -53271,17 +53260,6 @@
         "type": "state",
         "latitude": "35.20105000",
         "longitude": "-91.83183340"
-    },
-    {
-        "id": 1402,
-        "name": "Baker Island",
-        "country_id": 233,
-        "country_code": "US",
-        "country_name": "United States",
-        "state_code": "UM-81",
-        "type": "islands / groups of islands",
-        "latitude": "0.19362660",
-        "longitude": "-176.47690800"
     },
     {
         "id": 1416,
@@ -53328,17 +53306,6 @@
         "longitude": "-75.52766990"
     },
     {
-        "id": 1437,
-        "name": "District of Columbia",
-        "country_id": 233,
-        "country_code": "US",
-        "country_name": "United States",
-        "state_code": "DC",
-        "type": "district",
-        "latitude": "38.90719230",
-        "longitude": "-77.03687070"
-    },
-    {
         "id": 1436,
         "name": "Florida",
         "country_id": 233,
@@ -53361,17 +53328,6 @@
         "longitude": "-82.90007510"
     },
     {
-        "id": 1412,
-        "name": "Guam",
-        "country_id": 233,
-        "country_code": "US",
-        "country_name": "United States",
-        "state_code": "GU",
-        "type": "outlying area",
-        "latitude": "13.44430400",
-        "longitude": "144.79373100"
-    },
-    {
         "id": 1411,
         "name": "Hawaii",
         "country_id": 233,
@@ -53381,17 +53337,6 @@
         "type": "state",
         "latitude": "19.89676620",
         "longitude": "-155.58278180"
-    },
-    {
-        "id": 1398,
-        "name": "Howland Island",
-        "country_id": 233,
-        "country_code": "US",
-        "country_name": "United States",
-        "state_code": "UM-84",
-        "type": "islands / groups of islands",
-        "latitude": "0.81132190",
-        "longitude": "-176.61827360"
     },
     {
         "id": 1460,
@@ -53438,28 +53383,6 @@
         "longitude": "-93.09770200"
     },
     {
-        "id": 1410,
-        "name": "Jarvis Island",
-        "country_id": 233,
-        "country_code": "US",
-        "country_name": "United States",
-        "state_code": "UM-86",
-        "type": "islands / groups of islands",
-        "latitude": "-0.37435030",
-        "longitude": "-159.99672060"
-    },
-    {
-        "id": 1428,
-        "name": "Johnston Atoll",
-        "country_id": 233,
-        "country_code": "US",
-        "country_name": "United States",
-        "state_code": "UM-67",
-        "type": "islands / groups of islands",
-        "latitude": "16.72950350",
-        "longitude": "-169.53364770"
-    },
-    {
         "id": 1406,
         "name": "Kansas",
         "country_id": 233,
@@ -53480,17 +53403,6 @@
         "type": "state",
         "latitude": "37.83933320",
         "longitude": "-84.27001790"
-    },
-    {
-        "id": 1403,
-        "name": "Kingman Reef",
-        "country_id": 233,
-        "country_code": "US",
-        "country_name": "United States",
-        "state_code": "UM-89",
-        "type": "islands / groups of islands",
-        "latitude": "6.38333300",
-        "longitude": "-162.41666700"
     },
     {
         "id": 1457,
@@ -53548,17 +53460,6 @@
         "longitude": "-85.60236430"
     },
     {
-        "id": 1438,
-        "name": "Midway Atoll",
-        "country_id": 233,
-        "country_code": "US",
-        "country_name": "United States",
-        "state_code": "UM-71",
-        "type": "islands / groups of islands",
-        "latitude": "28.20721680",
-        "longitude": "-177.37349260"
-    },
-    {
         "id": 1420,
         "name": "Minnesota",
         "country_id": 233,
@@ -53601,17 +53502,6 @@
         "type": "state",
         "latitude": "46.87968220",
         "longitude": "-110.36256580"
-    },
-    {
-        "id": 1439,
-        "name": "Navassa Island",
-        "country_id": 233,
-        "country_code": "US",
-        "country_name": "United States",
-        "state_code": "UM-76",
-        "type": "islands / groups of islands",
-        "latitude": "18.41006890",
-        "longitude": "-75.01146120"
     },
     {
         "id": 1408,
@@ -53702,17 +53592,6 @@
         "longitude": "-101.00201190"
     },
     {
-        "id": 1431,
-        "name": "Northern Mariana Islands",
-        "country_id": 233,
-        "country_code": "US",
-        "country_name": "United States",
-        "state_code": "MP",
-        "type": "outlying area",
-        "latitude": "15.09790000",
-        "longitude": "145.67390000"
-    },
-    {
         "id": 4851,
         "name": "Ohio",
         "country_id": 233,
@@ -53746,17 +53625,6 @@
         "longitude": "-120.55420120"
     },
     {
-        "id": 1448,
-        "name": "Palmyra Atoll",
-        "country_id": 233,
-        "country_code": "US",
-        "country_name": "United States",
-        "state_code": "UM-95",
-        "type": "islands / groups of islands",
-        "latitude": "5.88850260",
-        "longitude": "-162.07866560"
-    },
-    {
         "id": 1422,
         "name": "Pennsylvania",
         "country_id": 233,
@@ -53766,17 +53634,6 @@
         "type": "state",
         "latitude": "41.20332160",
         "longitude": "-77.19452470"
-    },
-    {
-        "id": 1449,
-        "name": "Puerto Rico",
-        "country_id": 233,
-        "country_code": "US",
-        "country_name": "United States",
-        "state_code": "PR",
-        "type": "outlying area",
-        "latitude": "18.22083300",
-        "longitude": "-66.59014900"
     },
     {
         "id": 1461,
@@ -53834,28 +53691,6 @@
         "longitude": "-99.90181310"
     },
     {
-        "id": 1432,
-        "name": "United States Minor Outlying Islands",
-        "country_id": 233,
-        "country_code": "US",
-        "country_name": "United States",
-        "state_code": "UM",
-        "type": "outlying area",
-        "latitude": "19.28231920",
-        "longitude": "166.64704700"
-    },
-    {
-        "id": 1413,
-        "name": "United States Virgin Islands",
-        "country_id": 233,
-        "country_code": "US",
-        "country_name": "United States",
-        "state_code": "VI",
-        "type": "outlying area",
-        "latitude": "18.33576500",
-        "longitude": "-64.89633500"
-    },
-    {
         "id": 1414,
         "name": "Utah",
         "country_id": 233,
@@ -53887,17 +53722,6 @@
         "type": "state",
         "latitude": "37.43157340",
         "longitude": "-78.65689420"
-    },
-    {
-        "id": 1405,
-        "name": "Wake Island",
-        "country_id": 233,
-        "country_code": "US",
-        "country_name": "United States",
-        "state_code": "UM-79",
-        "type": "islands / groups of islands",
-        "latitude": "19.27961900",
-        "longitude": "166.64993480"
     },
     {
         "id": 1462,
