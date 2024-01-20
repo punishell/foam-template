@@ -15,13 +15,15 @@ import { Pagination } from "@/components/common/pagination";
 import { OpenJobCard } from "@/components/jobs/job-cards/open-job";
 import type { Job } from "@/lib/types";
 import { paginate } from "@/lib/utils";
+import { PageLoading } from "@/components/common/page-loading";
 
 interface AllJobsProps {
     jobs: Job[];
     onRefresh?: () => void;
+    loading?: boolean;
 }
 
-export const AllJobs = ({ jobs, onRefresh }: AllJobsProps): ReactElement | null => {
+export const AllJobs = ({ jobs, onRefresh, loading }: AllJobsProps): ReactElement | null => {
     const itemsPerPage = 6;
     const [currentPage, setCurrentPage] = React.useState(1);
     const totalPages = Math.ceil(jobs.length / itemsPerPage);
@@ -29,6 +31,8 @@ export const AllJobs = ({ jobs, onRefresh }: AllJobsProps): ReactElement | null 
 
     if (!jobs.length)
         return <PageEmpty label="No open jobs yet." className="h-[70vh] rounded-2xl border border-line" />;
+
+    if (loading) return <PageLoading className="h-[85vh] rounded-2xl border border-line" color="#007C5B" />;
 
     return (
         <div className="xh-full flex min-h-[70vh] flex-col gap-2 pb-2">

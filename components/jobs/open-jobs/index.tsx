@@ -14,7 +14,7 @@ import { useDebounce } from "usehooks-ts";
 
 import { NumericInput } from "@/components/common/numeric-input";
 import { PageError } from "@/components/common/page-error";
-import { PageLoading } from "@/components/common/page-loading";
+// import { PageLoading } from "@/components/common/page-loading";
 import { Tabs } from "@/components/common/tabs";
 import { useGetBookmarks } from "@/lib/api/bookmark";
 import { useGetJobs } from "@/lib/api/job";
@@ -34,7 +34,7 @@ export const OpenJobs = (): ReactElement | null => {
     const [skillsQuery, setSkillsQuery] = useState(searchParams.get("skills") ?? "");
     const debouncedSkillsQuery = useDebounce(skillsQuery, 300);
 
-    const [minimumPriceQuery, setMinimumPriceQuery] = useState(searchParams.get("range")?.split(",")[0] ?? 0);
+    const [minimumPriceQuery, setMinimumPriceQuery] = useState(searchParams.get("range")?.split(",")[0] ?? "");
     const debouncedMinimumPriceQuery = useDebounce(minimumPriceQuery, 300);
 
     const [maximumPriceQuery, setMaximumPriceQuery] = useState(searchParams.get("range")?.split(",")[1] ?? 100);
@@ -61,23 +61,23 @@ export const OpenJobs = (): ReactElement | null => {
     const searchQ = queryParams.get("search") ?? "";
     const skillQ = queryParams.get("skills") ?? "";
     const rangeQ = queryParams.get("range") ?? "";
-    // console.log(searchQ, skillQ, rangeQ);
+
     const jobsData = useGetJobs({
         category: "open",
         status: "pending",
-        filter: { search: searchQ, tags: skillQ, range: rangeQ },
+        filter: { search: searchQ, tags: skillQ, range: searchQuery ? rangeQ : "" },
     });
 
     const bookmarkData = useGetBookmarks({ page: 1, limit: 5, filter: { type: "collection" } });
 
     if (jobsData.isError || bookmarkData.isError)
         return <PageError className="h-[85vh] rounded-2xl border border-red-200 bg-red-50" />;
-    if (jobsData.isLoading) return <PageLoading className="h-[85vh] rounded-2xl border border-line" color="#007C5B" />;
+    // if (jobsData.isLoading) return <PageLoading className="h-[85vh] rounded-2xl border border-line" color="#007C5B" />;
 
-    const jobs = jobsData.data.data;
+    const jobs = jobsData.data?.data ?? [];
 
     // sort jobs by latest first
-    const sortedJobs = jobs.sort((a, b) => {
+    const sortedJobs = jobs?.sort((a, b) => {
         return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
     });
 
@@ -151,7 +151,7 @@ export const OpenJobs = (): ReactElement | null => {
                         {
                             label: "All",
                             value: "all",
-                            content: <AllJobs jobs={sortedJobs} onRefresh={onRefresh} />,
+                            content: <AllJobs jobs={sortedJobs} onRefresh={onRefresh} loading={jobsData?.isLoading} />,
                         },
                         {
                             label: "Saved",
