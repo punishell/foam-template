@@ -11,10 +11,10 @@ import { type ReactElement } from "react";
 /* -------------------------------------------------------------------------- */
 
 import { RenderAttachmentViewer } from "@/components/messaging/single-attachment-view";
-import { type AttachmentsProps, type ParseMessagesProps } from "@/providers/socket-types";
+import { type ConversationMessage } from "@/providers/socket-types";
 
 interface MessagesProps {
-    messages: ParseMessagesProps[];
+    messages: ConversationMessage[];
 }
 
 export const Messages = ({ messages }: MessagesProps): ReactElement => {
@@ -26,10 +26,8 @@ export const Messages = ({ messages }: MessagesProps): ReactElement => {
                         <div className="w-full" key={i}>
                             {!message.isSent ? (
                                 <div className="mr-auto flex w-fit max-w-[37.5rem] flex-col gap-2 px-5">
-                                    <RenderAttachmentViewer
-                                        images={message.attachments as AttachmentsProps[]}
-                                        align="right"
-                                    />
+                                    {/* @ts-expect-error --- */}
+                                    <RenderAttachmentViewer images={message.attachments} align="right" />
                                     {message.content && (
                                         <div className="mr-auto w-fit max-w-[37.5rem] whitespace-pre-line break-words rounded-r-[1.875rem] rounded-tl-[1.875rem] bg-[#ECFCE5] px-5 py-2 text-title">
                                             {message.content}
@@ -38,10 +36,8 @@ export const Messages = ({ messages }: MessagesProps): ReactElement => {
                                 </div>
                             ) : (
                                 <div className="ml-auto flex w-fit max-w-[37.5rem] flex-col gap-2 px-5">
-                                    <RenderAttachmentViewer
-                                        images={message.attachments as AttachmentsProps[]}
-                                        align="left"
-                                    />
+                                    {/* @ts-expect-error --- */}
+                                    <RenderAttachmentViewer images={message.attachments} align="left" />
                                     {message.content && (
                                         <div className="ml-auto w-fit max-w-[37.5rem] whitespace-pre-line break-words rounded-l-[1.875rem] rounded-tr-[1.875rem] bg-[#007C5B] px-5  py-2 text-white">
                                             {message.content}

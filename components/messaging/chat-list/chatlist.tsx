@@ -12,10 +12,10 @@ import { type ReactElement } from "react";
 
 import { Spinner } from "../../common";
 import { ChatListItem } from "./chat-list-item";
-import { type ParseUserChatProps } from "@/providers/socket-types";
+import { type ConversationProps } from "@/providers/socket-types";
 
 interface ChatListProps {
-    conversations: ParseUserChatProps[];
+    conversations: ConversationProps[];
     loading: boolean;
 }
 
@@ -23,17 +23,17 @@ export const ChatList = ({ conversations, loading }: ChatListProps): ReactElemen
     return (
         <div className="flex w-full grow flex-col divide-line overflow-y-auto border-t">
             {loading && <Spinner />}
-            {conversations.map((c: ParseUserChatProps, i: number) => (
+            {conversations.map((c: ConversationProps, i: number) => (
                 <ChatListItem
                     key={i}
-                    chatId={c?.id as string}
-                    _id={c.sender?._id as string}
+                    chatId={c?.id}
+                    _id={c.sender?._id}
                     name={`${c?.sender?.firstName} ${c?.sender?.lastName}`}
                     avatar={c?.sender?.profileImage?.url}
                     score={c?.sender?.score}
                     unreadCount={c?.unreadcount}
                     lastMessage={c?.lastMessage ?? ""}
-                    time={c?.lastMessageTime as string}
+                    time={c?.lastMessageTime}
                 />
             ))}
         </div>

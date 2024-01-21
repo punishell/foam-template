@@ -20,20 +20,25 @@ import { AUTH_TOKEN_KEY, formatBytes } from "@/lib/utils";
 import { toast } from "@/components/common/toaster";
 import { postUploadImages } from "@/lib/api/upload";
 import { useErrorService } from "@/lib/store/error-service";
+
 import {
-    type SocketResponse,
-    type ConversationProps,
-    type MessageProps,
-    type RecipientProps,
-    type SocketContextType,
-    type UserStatusProps,
-    type Message,
-    type ParseMessagesProps,
-    type AttachmentsProps,
-    type ParseUserChatProps,
-    type PopUpMessageProps,
     type InitializeMessageProps,
+    type SocketResponse,
+    type ParsedMessagesProps,
     type AttachmentsResponseProps,
+    type ConversationResponseProps,
+    type GetAllChatsResponseProps,
+    type MessageResponseProps,
+    type ParsedAttachmentProps,
+    type PopUpConversationDataProps,
+    type RecipientResponseProps,
+    type SendAttachmentsProps,
+    type ConversationProps,
+    type SocketContextType,
+    type ConversationHeaderProps,
+    type ConversationUserProps,
+    type ConversationMessage,
+    type PopUpRecipientProps,
 } from "./socket-types";
 
 const MAX_RECONNECT_TIME = 1000;
@@ -44,19 +49,19 @@ export const MessageTypeEnums = {
 };
 
 export const conversationEnums = {
+    INITIALIZE_CONVERSATION: "INITIALIZE_CONVERSATION",
     USER_CONNECT: "USER_CONNECT",
     GET_ALL_CONVERSATIONS: "GET_ALL_CONVERSATIONS",
     JOIN_OLD_CONVERSATIONS: "JOIN_OLD_CONVERSATIIONS",
     GET_ALL_USERS: "GET_ALL_USERS",
-    INITIALIZE_CONVERSATION: "INITIALIZE_CONVERSATION",
     FETCH_CONVERSATION_MESSAGES: "FETCH_CONVERSATION_MESSAGES",
     SEND_MESSAGE: "SEND_MESSAGE",
-    CURRENT_RECIPIENT: "CURRENT_RECIPIENT",
     USER_TYPING: "USER_TYPING",
     SENDER_IS_TYPING: "SENDER_IS_TYPING",
     SENDER_STOPS_TYPING: "SENDER_STOPS_TYPING",
     POPUP_MESSAGE: "POPUP_MESSAGE",
     MARK_MESSAGE_AS_SEEN: "MARK_MESSAGE_AS_SEEN",
+    // CURRENT_RECIPIENT: "CURRENT_RECIPIENT",
     USER_STATUS: "USER_STATUS",
 };
 
@@ -68,91 +73,7 @@ const defaultContext: SocketContextType = {
     currentConversation: null,
     loadingChats: true,
     status: "pending",
-    conversations: [
-        {
-            createdAt: new Date().toISOString(),
-            header:
-                {
-                    _id: "",
-                    title: "",
-                    description: "",
-                    avatar: "",
-                    score: 0,
-                } || "",
-            id: "",
-            lastMessage: "",
-            lastMessageTime: "",
-            messages: [
-                {
-                    content: "",
-                    isSent: false,
-                    isRead: false,
-                    attachments: [],
-                },
-            ],
-            recipient: {
-                profile: {
-                    bio: {
-                        title: "",
-                        description: "",
-                    },
-                },
-                socket: {
-                    status: "",
-                },
-                _id: "",
-                firstName: "",
-                lastName: "",
-                score: 0,
-                profileImage: {
-                    _id: "",
-                    url: "",
-                },
-            },
-            recipients: [
-                {
-                    profile: {
-                        bio: {
-                            title: "",
-                            description: "",
-                        },
-                    },
-                    socket: {
-                        status: "",
-                    },
-                    _id: "",
-                    firstName: "",
-                    lastName: "",
-                    score: 0,
-                    profileImage: {
-                        _id: "",
-                        url: "",
-                    },
-                },
-            ],
-            sender: {
-                profile: {
-                    bio: {
-                        title: "",
-                        description: "",
-                    },
-                },
-                socket: {
-                    status: "",
-                },
-                _id: "",
-                firstName: "",
-                lastName: "",
-                score: 0,
-                profileImage: {
-                    _id: "",
-                    url: "",
-                },
-            },
-            type: "",
-            unreadcount: 0,
-        },
-    ] as ParseUserChatProps[],
+    conversations: [],
     socket: null,
     startingNewChat: false,
     fetchUserChats: () => {},
@@ -166,7 +87,7 @@ const defaultContext: SocketContextType = {
 
 export const SocketContext = createContext<SocketContextType>(defaultContext);
 
-const prefix = "messaging";
+const prefix = "messages";
 
 export const MessagingProvider = ({ children }: { children: React.ReactNode }): React.JSX.Element => {
     const authToken = getCookie(AUTH_TOKEN_KEY);
@@ -176,8 +97,8 @@ export const MessagingProvider = ({ children }: { children: React.ReactNode }): 
 
     const { _id: loggedInUser } = useUserState();
 
-    const [currentConversation, setCurrentConversation] = useState<ParseUserChatProps | null>(null);
-    const [conversations, setConversations] = useState<ParseUserChatProps[]>([]);
+    const [currentConversation, setCurrentConversation] = useState<ConversationProps | null>(null);
+    const [conversations, setConversations] = useState<ConversationProps[]>([]);
 
     // @ts-expect-error --- Unused variable
     const [status, setStatus] = useState<string>("pending");
@@ -193,35 +114,36 @@ export const MessagingProvider = ({ children }: { children: React.ReactNode }): 
 
     const { setErrorMessage } = useErrorService();
 
-    const getSender = (recipients: RecipientProps[] = []): RecipientProps | undefined => {
-        return recipients.find((r: RecipientProps) => r._id !== loggedInUser);
+    const getSender = (recipients: RecipientResponseProps[] = []): RecipientResponseProps | undefined => {
+        return recipients.find((r: RecipientResponseProps) => r._id !== loggedInUser);
     };
-    const getRecipient = (recipients: RecipientProps[] = []): RecipientProps | undefined => {
-        return recipients.find((r: RecipientProps) => r._id === loggedInUser);
+    const getRecipient = (recipients: RecipientResponseProps[] = []): RecipientResponseProps | undefined => {
+        return recipients.find((r: RecipientResponseProps) => r._id === loggedInUser);
     };
 
-    const getUnreadCount = (messages: Message[]): number =>
-        messages.filter((r: Message) => !(r.readBy && !!r.readBy.includes(loggedInUser)) && r.user !== loggedInUser)
-            .length;
+    const getUnreadCount = (messages: MessageResponseProps[]): number =>
+        messages.filter(
+            (r: MessageResponseProps) => !(r.readBy && !!r.readBy.includes(loggedInUser)) && r.user !== loggedInUser,
+        ).length;
 
-    const getLastMessage = (messages: Message[]): string | null => {
+    const getLastMessage = (messages: MessageResponseProps[]): string | null => {
         const lastMessage = messages[messages.length - 1];
         return lastMessage ? lastMessage.content : null;
     };
 
-    const getLastMessageTime = (messages: Message[]): string | null => {
+    const getLastMessageTime = (messages: MessageResponseProps[]): string | null => {
         const lastMessage = messages[messages.length - 1];
         return lastMessage ? dayjs(lastMessage.createdAt).format("HH:ss A") : null;
     };
 
-    const setUnreadChats = (convo: ParseUserChatProps[]): void => {
+    const setUnreadChats = (convo: ConversationProps[]): void => {
         const unread = convo?.reduce((a, b) => a + b.unreadcount, 0);
         setUnreadChatCount(unread);
     };
 
     const getConversationById = useCallback(
-        (id: string): ParseUserChatProps | undefined => {
-            const convo = conversations.find((c: ParseUserChatProps) => c.id === id);
+        (id: string): ConversationProps | undefined => {
+            const convo = conversations.find((c: ConversationProps) => c.id === id);
             return convo;
         },
         [conversations],
@@ -230,14 +152,16 @@ export const MessagingProvider = ({ children }: { children: React.ReactNode }): 
     const setActiveConversation = useCallback(
         (_id: string): void => {
             const conversation = getConversationById(_id);
+
             setCurrentConversation(conversation ?? null);
         },
         [getConversationById],
     );
 
-    const parseMessageAttachments = (attachments: AttachmentsResponseProps[]): AttachmentsResponseProps[] =>
+    const parseMessageAttachments = (attachments: AttachmentsResponseProps[]): ParsedAttachmentProps[] =>
         attachments && attachments.length > 0
-            ? attachments.map((a) => ({
+            ? attachments.map((a: AttachmentsResponseProps) => ({
+                  _id: a._id,
                   size: formatBytes(Number(a.size), 0),
                   type: a.type,
                   name: a.name,
@@ -245,8 +169,8 @@ export const MessagingProvider = ({ children }: { children: React.ReactNode }): 
               }))
             : [];
 
-    const parseMessages = (messages: Message[]): ParseMessagesProps[] =>
-        messages.map((m: Message) => ({
+    const parseMessages = (messages: MessageResponseProps[]): ParsedMessagesProps[] =>
+        messages.map((m: MessageResponseProps) => ({
             content: m.content,
             isSent: m.user === loggedInUser,
             isRead: !!m.readBy?.includes(loggedInUser),
@@ -254,7 +178,7 @@ export const MessagingProvider = ({ children }: { children: React.ReactNode }): 
         }));
 
     const getConversationHeader = (
-        conversation: ConversationProps,
+        conversation: ConversationResponseProps,
     ):
         | {
               _id: string | undefined;
@@ -270,7 +194,8 @@ export const MessagingProvider = ({ children }: { children: React.ReactNode }): 
               avatar: string;
               _id?: undefined;
           } => {
-        const sender = conversation.recipients?.find((r: RecipientProps) => r._id !== loggedInUser);
+        const sender = conversation.recipients?.find((r: RecipientResponseProps) => r._id !== loggedInUser);
+
         return conversation.type === "DIRECT"
             ? {
                   _id: sender?._id,
@@ -288,140 +213,107 @@ export const MessagingProvider = ({ children }: { children: React.ReactNode }): 
     };
 
     const parseUserChats = useCallback(
-        (payload: ConversationProps[]) =>
+        (payload: ConversationResponseProps[]) =>
             payload.map(
-                (c: ConversationProps): ParseUserChatProps => ({
+                (c: ConversationResponseProps): ConversationProps => ({
                     id: c._id,
-                    messages: parseMessages(c.messages),
-                    sender: getSender(c.recipients),
-                    recipient: getRecipient(c.recipients),
+                    messages: parseMessages(c.messages) as ConversationMessage[],
+                    sender: getSender(c.recipients) as ConversationUserProps,
+                    recipient: getRecipient(c.recipients) as ConversationUserProps,
                     recipients: c.recipients,
-                    header: getConversationHeader(c),
+                    header: getConversationHeader(c) as ConversationHeaderProps,
                     createdAt: dayjs(c.createdAt).format("MMMM D, YYYY"),
                     type: c.type,
                     unreadcount: getUnreadCount(c.messages),
-                    lastMessage: getLastMessage(c.messages),
-                    lastMessageTime: getLastMessageTime(c.messages),
+                    lastMessage: getLastMessage(c.messages) as string,
+                    lastMessageTime: getLastMessageTime(c.messages) as string,
                 }),
             ),
         // eslint-disable-next-line react-hooks/exhaustive-deps
         [],
     );
-
+    const activeConversationId = pathname.includes(prefix) ? pathname.split("/")[2] : null;
+    // Fetch Updated Chats
     const fetchUserChats = useCallback(
         async (currentConversationId?: string): Promise<void> => {
             if (!socket) {
                 return;
             }
+
             socket.emit(
                 conversationEnums.GET_ALL_CONVERSATIONS,
                 { userId: loggedInUser },
-                (response: SocketResponse<MessageProps>) => {
+                (response: SocketResponse<GetAllChatsResponseProps>) => {
                     if (!response.error) {
-                        const payload: ConversationProps[] = response?.data?.messages;
+                        const payload = response?.data?.messages;
                         const parsedConversation = parseUserChats(payload);
                         setConversations(parsedConversation);
                         setLoadingChats(false);
                         setUnreadChats(parsedConversation);
-                        if (currentConversationId) {
+                        if (currentConversationId && activeConversationId === currentConversationId) {
                             const cOV = parsedConversation.find(
-                                (c: ParseUserChatProps) => c.id === currentConversationId,
+                                (c: ConversationProps) => c.id === currentConversationId,
                             );
                             setCurrentConversation(cOV ?? null);
+                            // eslint-disable-next-line @typescript-eslint/no-use-before-define
+                            void markUserMessageAsSeen(currentConversationId);
                         }
-                        return payload.map((c: ConversationProps) => c.messages);
+                        return payload.map((c: ConversationResponseProps) => c.messages);
                     }
                     return null;
                 },
             );
         },
-        [loggedInUser, parseUserChats, socket],
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        [loggedInUser, parseUserChats, socket, activeConversationId],
     );
 
-    const startUserInitializeConversation = useCallback(
-        async (recipientId: string): Promise<void> => {
-            try {
-                setStartingNewChat(true);
-                if (!socket) {
-                    setErrorMessage({
-                        title: "Socket Connection Error (startUserInitializeConversation Function)",
-                        message: "Socket is null",
-                    });
-                    return;
+    const UploadFiles = useCallback(
+        async (images: SendAttachmentsProps[]): Promise<string[]> => {
+            const uploadFll: Array<{ file: File; onProgress: (progress: number) => void }> = [];
+
+            const currentMessage = currentConversation?.messages
+                ? currentConversation.messages.find((m) => !!m.sending)
+                : null;
+
+            const updateProgress = (id: string, progress: number): void => {
+                // set upload progress for images
+                if (currentMessage) {
+                    const attachments = currentMessage.attachments ?? [];
+                    const index = attachments.findIndex((img) => img._id === id);
+                    if (index !== -1) {
+                        attachments[index] = {
+                            ...attachments[index],
+                            _id: attachments[index]?._id ?? "",
+                            progress,
+                        };
+                    }
                 }
-                socket.emit(
-                    conversationEnums.INITIALIZE_CONVERSATION,
-                    {
-                        senderId: loggedInUser,
-                        recipientId,
-                        type: "DIRECT",
-                    },
-                    async (response: SocketResponse<InitializeMessageProps>) => {
-                        if (response.error) {
-                            toast.error(response.message);
-                            router.push("/messages");
-                            return;
-                        }
-                        const { conversation } = response.data;
-                        await fetchUserChats(conversation._id);
-                        setStartingNewChat(false);
-                        if (response.error) {
-                            router.back();
-                            return;
-                        }
-                        router.push(`/messages/${conversation._id}`);
-                    },
-                );
+            };
+            // create
+            for (let i = 0; i < images.length; i++) {
+                const em = images[i];
+                if (em) {
+                    const callbackFunc = (progress: number): void => {
+                        updateProgress(em._id, progress);
+                    };
+                    uploadFll.push({
+                        file: em.file,
+                        onProgress: callbackFunc,
+                    });
+                }
+            }
+            try {
+                const resp = await postUploadImages(uploadFll);
+                return resp.map((r: AttachmentsResponseProps) => r._id);
             } catch (error) {
-                setErrorMessage({
-                    title: "Socket Connection Error (startUserInitializeConversation Function)",
-                    message: error,
-                });
+                // Handle the error appropriately
+                // Maybe return an empty array or throw the error further
+                return [];
             }
         },
-        [fetchUserChats, loggedInUser, router, setErrorMessage, socket],
+        [currentConversation],
     );
-
-    const UploadFiles = useCallback(async (images: AttachmentsProps[]): Promise<string[]> => {
-        const uploadFll: Array<{ file: File; onProgress: (progress: number) => void }> = [];
-        const currentMessage = currentConversation?.messages
-            ? currentConversation.messages.find((m: ParseMessagesProps) => !!m.sending)
-            : null;
-        const updateProgress = (id: string, progress: number): void => {
-            // set upload progress for images
-            if (currentMessage) {
-                // update progress with value
-                const currentImage = currentMessage?.attachments?.find(
-                    (img: AttachmentsResponseProps) => img._id === id,
-                );
-                if (currentImage) {
-                    const imgData = { ...currentImage, progress };
-                    currentMessage.attachments = [
-                        ...(currentMessage.attachments as AttachmentsResponseProps[]),
-                        imgData,
-                    ];
-                }
-            }
-        };
-        // create
-        for (let i = 0; i < images.length; i++) {
-            const em = images[i];
-            if (em) {
-                const callbackFunc = (progress: number): void => {
-                    updateProgress(em.id, progress);
-                };
-                uploadFll.push({
-                    file: em.file,
-                    onProgress: callbackFunc,
-                });
-            }
-        }
-        const resp = await postUploadImages(uploadFll);
-        return resp.map((r: AttachmentsResponseProps) => {
-            return r._id as string;
-        });
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
 
     const markUserMessageAsSeen = useCallback(
         async (conversation: string): Promise<null> => {
@@ -455,7 +347,7 @@ export const MessagingProvider = ({ children }: { children: React.ReactNode }): 
             type: string = MessageTypeEnums.TEXT,
             message: string,
             conversation: string,
-            images: AttachmentsProps[],
+            images: SendAttachmentsProps[],
         ): Promise<void> => {
             let attachments: string[] = [];
             try {
@@ -466,11 +358,10 @@ export const MessagingProvider = ({ children }: { children: React.ReactNode }): 
                     // Handle the case where currentConv is undefined
                     return undefined;
                 }
-
                 setCurrentConversation({
                     ...currentConv,
                     messages: [
-                        ...(currentConv.messages ?? []),
+                        ...currentConv.messages,
                         { content: message, isSent: true, sending: true, attachments: images },
                     ],
                 });
@@ -516,42 +407,52 @@ export const MessagingProvider = ({ children }: { children: React.ReactNode }): 
         ],
     );
 
-    // LISTEN TO POPUP EVENTS
-    useEffect(() => {
-        // Here we listen to popup events
-        socket?.on(conversationEnums.POPUP_MESSAGE, async (response: SocketResponse<PopUpMessageProps>) => {
-            const c = response.data;
-            if (c.currentMessage) {
-                const messageContent =
-                    c.currentMessage.content?.length > MIN_LEN
-                        ? `${c.currentMessage.content.slice(0, MIN_LEN)}...`
-                        : c.currentMessage.content;
-                if (messageContent) {
-                    await fetchUserChats(c._id);
-                    // notify user
-                    const messageSender = c.recipients?.find((r: RecipientProps) => r._id !== loggedInUser);
-                    if (messageSender) {
-                        const messageTitle = `${messageSender.firstName} ${messageSender.lastName}`;
-                        const senderImage = messageSender?.profileImage?.url;
-                        const senderScore = messageSender?.score ?? 0;
-                        const senderId = messageSender._id as string;
-                        // show toast if not on messaging screen
-                        if (!messagingScreen) {
-                            toast.message(messageTitle, messageContent, senderId, senderImage, senderScore);
-                        }
-                    }
+    // =========== Initialize User Conversation e.g when user clicks on a user to chat from profile or for the first time
+    const startUserInitializeConversation = useCallback(
+        async (recipientId: string): Promise<void> => {
+            try {
+                setStartingNewChat(true);
+                if (!socket) {
+                    setErrorMessage({
+                        title: "Socket Connection Error (startUserInitializeConversation Function)",
+                        message: "Socket is null",
+                    });
+                    return;
                 }
+                socket.emit(
+                    conversationEnums.INITIALIZE_CONVERSATION,
+                    {
+                        senderId: loggedInUser,
+                        recipientId,
+                        type: "DIRECT",
+                    },
+                    async (response: SocketResponse<InitializeMessageProps>) => {
+                        if (response.error) {
+                            toast.error(response.message);
+                            router.push("/messages");
+                            return;
+                        }
+                        const { conversation } = response.data;
+                        await fetchUserChats(conversation._id);
+                        setStartingNewChat(false);
+                        if (response.error) {
+                            router.back();
+                            return;
+                        }
+                        router.push(`/messages/${conversation._id}`);
+                    },
+                );
+            } catch (error) {
+                setErrorMessage({
+                    title: "Socket Connection Error (startUserInitializeConversation Function)",
+                    message: error,
+                });
             }
-        });
-
-        return () => {
-            socket?.off(conversationEnums.POPUP_MESSAGE);
-        };
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [socket]);
+        },
+        [fetchUserChats, loggedInUser, router, setErrorMessage, socket],
+    );
 
     // =========== Establish Connection to the WebSocket Server =========== //
-
     const SocketConnection = async (): Promise<(() => void) | null> => {
         if (socket && loggedInUser && !initiated.current) {
             initiated.current = true;
@@ -560,7 +461,7 @@ export const MessagingProvider = ({ children }: { children: React.ReactNode }): 
                 socket.emit(
                     conversationEnums.USER_CONNECT,
                     { userId: loggedInUser },
-                    (response: SocketResponse<MessageProps>) => {
+                    (response: SocketResponse<GetAllChatsResponseProps>) => {
                         if (!response.error) {
                             const parsedConversation = parseUserChats(response.data.messages);
                             setConversations(parsedConversation);
@@ -571,24 +472,24 @@ export const MessagingProvider = ({ children }: { children: React.ReactNode }): 
                 );
 
                 // Join Old Conversation If any
-                socket?.emit(conversationEnums.JOIN_OLD_CONVERSATIONS, { userId: loggedInUser }, () => {});
-                socket?.on("disconnect", () => {
-                    // TODO:: Perform Disconnect Function
-                });
+                // socket?.emit(conversationEnums.JOIN_OLD_CONVERSATIONS, { userId: loggedInUser }, () => {});
+                // socket?.on("disconnect", () => {
+                //     // TODO:: Perform Disconnect Function
+                // });
 
                 // notifies if user status is either offline/ online in an active chat
-                socket?.on(conversationEnums.USER_STATUS, (data: UserStatusProps) => {
-                    if (currentConversation && currentConversation.id === data.currentConversation) {
-                        if (Array.isArray(currentConversation.recipients)) {
-                            const updatedRecipients = currentConversation.recipients.map((r: RecipientProps) => {
-                                if (typeof r === "string" && r === data.user) return data;
-                                if (typeof r === "object" && r.user === data.user) return data;
-                                return r;
-                            });
-                            currentConversation.recipients = updatedRecipients;
-                        }
-                    }
-                });
+                // socket?.on(conversationEnums.USER_STATUS, (data: UserStatusProps) => {
+                //     if (currentConversation && currentConversation.id === data.currentConversation) {
+                //         if (Array.isArray(currentConversation.recipients)) {
+                //             const updatedRecipients = currentConversation.recipients.map((r: RecipientProps) => {
+                //                 if (typeof r === "string" && r === data.user) return data;
+                //                 if (typeof r === "object" && r.user === data.user) return data;
+                //                 return r;
+                //             });
+                //             currentConversation.recipients = updatedRecipients;
+                //         }
+                //     }
+                // });
             });
             return () => socket?.off();
         }
@@ -643,6 +544,44 @@ export const MessagingProvider = ({ children }: { children: React.ReactNode }): 
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [socketReconnect]);
+
+    // ===========  LISTEN TO POPUP EVENTS =========== //
+    useEffect(() => {
+        // Here we listen to popup events
+        socket?.on(conversationEnums.POPUP_MESSAGE, async (response: SocketResponse<PopUpConversationDataProps>) => {
+            const c = response.data;
+            if (c.currentMessage) {
+                const messageContent =
+                    c.currentMessage.content?.length > MIN_LEN
+                        ? `${c.currentMessage.content.slice(0, MIN_LEN)}...`
+                        : c.currentMessage.content;
+                if (messageContent) {
+                    await fetchUserChats(c._id);
+
+                    // notify user
+                    const messageSender = c.recipients?.find((r: PopUpRecipientProps) => r._id !== loggedInUser);
+                    if (messageSender) {
+                        const messageTitle = `${messageSender.firstName} ${messageSender.lastName}`;
+                        const senderImage = messageSender?.profileImage?.url;
+                        const senderScore = messageSender?.score ?? 0;
+                        const senderId = messageSender._id;
+                        const messageId = c._id;
+                        const audio = new Audio("/sound/notification.mp3");
+                        void audio.play();
+                        // show toast if not on messaging screen
+                        if (!messagingScreen) {
+                            // Play notification sound
+                            toast.message(messageTitle, messageContent, senderId, senderImage, senderScore, messageId);
+                        }
+                    }
+                }
+            }
+        });
+
+        return () => {
+            socket?.off(conversationEnums.POPUP_MESSAGE);
+        };
+    }, [fetchUserChats, loggedInUser, messagingScreen, pathname, socket]);
 
     const SocketServer: SocketContextType = useMemo(
         () => ({

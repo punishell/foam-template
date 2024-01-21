@@ -15,11 +15,11 @@ import dayJs from "dayjs";
 
 import { getPreviewByType, getPreviewByTypeUrl } from "@/lib/utils";
 import { useDownloadAttachment } from "@/lib/api/upload";
-import { type AttachmentsProps } from "@/providers/socket-types";
+import { type AttachmentsSendingProps } from "@/providers/socket-types";
 
 const MAX_LEN = 15;
 
-const SingleAttachmentView = ({ img }: { img: AttachmentsProps }): ReactElement => {
+const SingleAttachmentView = ({ img }: { img: AttachmentsSendingProps }): ReactElement => {
     const downloadAttachments = useDownloadAttachment();
     const DownloadAttachment = (url: string): void => {
         downloadAttachments.mutate(url);
@@ -70,7 +70,7 @@ export const RenderAttachmentViewer = ({
     images = [],
     align,
 }: {
-    images: AttachmentsProps[];
+    images: AttachmentsSendingProps[];
     align?: "left" | "right";
 }): ReactElement => {
     return (
