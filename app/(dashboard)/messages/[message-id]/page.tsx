@@ -4,7 +4,7 @@
 /*                             External Dependency                            */
 /* -------------------------------------------------------------------------- */
 
-import React, { type ReactElement, useEffect, useState } from "react";
+import React, { type ReactElement, useEffect, useState, useCallback } from "react";
 import { SendHorizonal, Paperclip } from "lucide-react";
 import { useDropzone } from "react-dropzone";
 
@@ -19,7 +19,7 @@ import { ChatBoxHeader } from "@/components/messaging/chatbox-header";
 import { Messages } from "@/components/messaging/messages";
 import { RenderAttachmentPreviewer } from "@/components/messaging/render-attachment-viewer";
 import { useErrorService } from "@/lib/store/error-service";
-import { type AttachmentsProps } from "@/providers/socket-types";
+import { type SendAttachmentsProps } from "@/providers/socket-types";
 
 interface Props {
     params: {
@@ -34,7 +34,7 @@ export default function ChatPage({ params }: Props): ReactElement {
     const { setErrorMessage } = useErrorService();
     const [loadingMessage, setLoadingMessages] = useState(true);
     const [text, setText] = useState("");
-    const [imageFiles, setImageFiles] = useState<AttachmentsProps[] | []>([]);
+    const [imageFiles, setImageFiles] = useState<SendAttachmentsProps[] | []>([]);
 
     const loadMessages = async (): Promise<void> => {
         setActiveConversation(messageId);
@@ -67,14 +67,14 @@ export default function ChatPage({ params }: Props): ReactElement {
             file: f,
             preview: getPreviewByType(f).preview,
             type: getPreviewByType(f).type,
-            id: String(i),
+            _id: String(i),
             name: f.name,
             size: formatBytes(f.size, 0),
         }));
         setImageFiles(files);
     }, []);
 
-    const onDropError = React.useCallback(async (data: unknown) => {
+    const onDropError = useCallback(async (data: unknown) => {
         setErrorMessage({
             title: "onDropError Function",
             message: JSON.stringify(data),
@@ -127,7 +127,7 @@ export default function ChatPage({ params }: Props): ReactElement {
     };
 
     const removeImg = (id: string): void => {
-        const newImages = imageFiles.filter((f) => f.id !== id);
+        const newImages = imageFiles.filter((f) => f._id !== id);
         setImageFiles(newImages);
     };
 

@@ -12,13 +12,13 @@ import Image from "next/image";
 /*                             Internal Dependency                            */
 /* -------------------------------------------------------------------------- */
 
-import { type ImageUp } from "@/lib/types";
+import { type SendAttachmentsProps } from "@/providers/socket-types";
 
 export const RenderAttachmentPreviewer = ({
     images,
     removeImage,
 }: {
-    images: ImageUp[];
+    images: SendAttachmentsProps[];
     removeImage: (id: string) => void;
 }): ReactElement | boolean => {
     // eslint-disable-next-line @typescript-eslint/no-shadow
@@ -27,15 +27,15 @@ export const RenderAttachmentPreviewer = ({
         images.length > 0 && (
             <div className="flex h-fit flex-row gap-4 overflow-x-auto py-4">
                 {images.map((img) => (
-                    <div key={img.id} className="relative flex flex-row gap-2 rounded-lg border p-2">
+                    <div key={img._id} className="relative flex flex-row gap-2 rounded-lg border p-2">
                         <span
                             className="absolute -right-3 -top-3 h-fit w-fit cursor-pointer rounded-full bg-[#CDCFD0] p-1"
                             onClick={() => {
-                                removeImage(img.id);
+                                removeImage(img._id);
                             }}
                             role="button"
                             onKeyDown={() => {
-                                removeImage(img.id);
+                                removeImage(img._id);
                             }}
                             tabIndex={0}
                         >
