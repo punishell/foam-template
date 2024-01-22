@@ -29,8 +29,14 @@ interface Props {
 
 export default function ChatPage({ params }: Props): ReactElement {
     const { "message-id": messageId } = params;
-    const { currentConversation, loadingChats, setActiveConversation, sendUserMessage, markUserMessageAsSeen } =
-        useMessaging();
+    const {
+        currentConversation,
+        loadingChats,
+        setActiveConversation,
+        sendUserMessage,
+        markUserMessageAsSeen,
+        // handleTyping,
+    } = useMessaging();
     const { setErrorMessage } = useErrorService();
     const [loadingMessage, setLoadingMessages] = useState(true);
     const [text, setText] = useState("");
@@ -132,6 +138,7 @@ export default function ChatPage({ params }: Props): ReactElement {
     };
 
     const onKeyDownPress = async (e: React.KeyboardEvent<HTMLTextAreaElement>): Promise<void> => {
+        // handleTyping();
         if (e.which === 13 && !e.shiftKey) {
             e.preventDefault();
             return sendMessage();
