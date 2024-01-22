@@ -75,6 +75,7 @@ export interface Job {
     collections: Collection[];
     parent?: Collection;
     payoutStatus: "pending" | "ongoing" | "completed" | "waiting" | "cancelled";
+    type?: string;
 }
 
 export interface UserProfile {

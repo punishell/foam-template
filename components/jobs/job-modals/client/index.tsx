@@ -33,6 +33,12 @@ export const ClientJobModal: FC<ClientJobModalProps> = ({ jobId, talentId, close
     const query = useGetJobById({ jobId, extras });
     const [isRequestingJobCancellation, setIsRequestingJobCancellation] = useState(false);
 
+    if (query.isError) return <PageError className="absolute inset-0" />;
+
+    if (query.isLoading) return <PageLoading className="absolute inset-0" color="#007C5B" />;
+
+    const job = query.data;
+
     if (isRequestingJobCancellation) {
         return (
             <RequestJobCancellation
@@ -44,14 +50,10 @@ export const ClientJobModal: FC<ClientJobModalProps> = ({ jobId, talentId, close
                     setIsRequestingJobCancellation(false);
                 }}
                 talentId={talentId}
+                type={job.type as string}
             />
         );
     }
-    if (query.isError) return <PageError className="absolute inset-0" />;
-
-    if (query.isLoading) return <PageLoading className="absolute inset-0" color="#007C5B" />;
-
-    const job = query.data;
 
     const jobCancellation = job.collections.find(isJobCancellation);
     const talentRequestedCancellation = jobCancellation?.creator._id === job.owner?._id;

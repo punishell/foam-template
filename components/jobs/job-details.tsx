@@ -28,6 +28,7 @@ interface JobHeaderProps {
 }
 
 export const JobHeader = ({ title, price, dueDate, creator }: JobHeaderProps): ReactElement => {
+    // console.log(dueDate);
     return (
         <div className="flex items-center justify-between gap-4 rounded-t-xl bg-primary-gradient p-4">
             <div className="flex h-full w-full max-w-2xl flex-col gap-6">

@@ -23,6 +23,7 @@ interface RequestJobCancellationProps {
     closeModal: () => void;
     cancelJobCancellationRequest: () => void;
     talentId: string;
+    type: string;
 }
 
 export const RequestJobCancellation: FC<RequestJobCancellationProps> = ({
@@ -30,6 +31,7 @@ export const RequestJobCancellation: FC<RequestJobCancellationProps> = ({
     cancelJobCancellationRequest,
     closeModal,
     talentId,
+    type,
 }) => {
     const requestJobCancellationMutation = useRequestJobCancellation({ talentId });
 
@@ -134,6 +136,7 @@ export const RequestJobCancellation: FC<RequestJobCancellationProps> = ({
                         onClick={() => {
                             requestJobCancellationMutation.mutate(
                                 {
+                                    type,
                                     jobId,
                                     reason,
                                     explanation,
