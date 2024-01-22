@@ -10,6 +10,7 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useRef, use
 import { io, type Socket } from "socket.io-client";
 import { usePathname, useRouter } from "next/navigation";
 import dayjs from "dayjs";
+// import { useDebounce } from "usehooks-ts";
 
 /* -------------------------------------------------------------------------- */
 /*                             Internal Dependency                            */
@@ -49,20 +50,23 @@ export const MessageTypeEnums = {
 };
 
 export const conversationEnums = {
-    INITIALIZE_CONVERSATION: "INITIALIZE_CONVERSATION",
     USER_CONNECT: "USER_CONNECT",
     GET_ALL_CONVERSATIONS: "GET_ALL_CONVERSATIONS",
     JOIN_OLD_CONVERSATIONS: "JOIN_OLD_CONVERSATIIONS",
     GET_ALL_USERS: "GET_ALL_USERS",
+    INITIALIZE_CONVERSATION: "INITIALIZE_CONVERSATION",
     FETCH_CONVERSATION_MESSAGES: "FETCH_CONVERSATION_MESSAGES",
     SEND_MESSAGE: "SEND_MESSAGE",
+    // CURRENT_RECIPIENT: "CURRENT_RECIPIENT",
     USER_TYPING: "USER_TYPING",
     SENDER_IS_TYPING: "SENDER_IS_TYPING",
     SENDER_STOPS_TYPING: "SENDER_STOPS_TYPING",
     POPUP_MESSAGE: "POPUP_MESSAGE",
     MARK_MESSAGE_AS_SEEN: "MARK_MESSAGE_AS_SEEN",
-    // CURRENT_RECIPIENT: "CURRENT_RECIPIENT",
     USER_STATUS: "USER_STATUS",
+    // BROADCAST_MESSAGE: "BROADCAST_MESSAGE",
+    // DELETE_CONVERSATION: "DELETE_CONVERSATION",
+    // DELETE_MESSAGE: "DELETE_MESSAGE",
 };
 
 const MIN_LEN = 25;
@@ -105,6 +109,13 @@ export const MessagingProvider = ({ children }: { children: React.ReactNode }): 
     const [loadingChats, setLoadingChats] = useState<boolean>(true);
     const [unreadChatCount, setUnreadChatCount] = useState<number>(0);
     const [startingNewChat, setStartingNewChat] = useState(false);
+
+    // const [isUserTyping, setIsUserTyping] = useState<boolean>(false);
+    // const [isSenderTyping, setIsSenderTyping] = useState<boolean>(false);
+
+    // const debouncedIsTyping = useDebounce(isUserTyping, 500);
+
+    // const typingTimer = useRef<string | number | undefined | null>(null);
 
     const router = useRouter();
     const initiated = useRef(false);
@@ -583,6 +594,31 @@ export const MessagingProvider = ({ children }: { children: React.ReactNode }): 
         };
     }, [fetchUserChats, loggedInUser, messagingScreen, pathname, socket]);
 
+    // const handleTyping = useCallback(() => {
+    //     setIsUserTyping(true);
+    //     socket?.emit(conversationEnums.USER_TYPING, {
+    //         isTyping: true,
+    //         senderId: loggedInUser,
+    //         recipientId: currentConversation?.sender?._id,
+    //     });
+    // }, [currentConversation?.sender?._id, loggedInUser, socket]);
+
+    // useEffect(() => {
+    //     // Listen for when user stops typing
+    //     socket?.on(conversationEnums.SENDER_IS_TYPING, (data: { isTyping: boolean }) => {
+    //         console.log(data);
+    //         setIsSenderTyping(data.isTyping);
+    //     });
+
+    //     // Listen for when user stops typing
+    //     socket?.on(conversationEnums.SENDER_STOPS_TYPING, (data: { isTyping: boolean }) => {
+    //         console.log(data);
+    //         setIsSenderTyping(data.isTyping);
+    //     });
+
+    //     // eslint-disable-next-line react-hooks/exhaustive-deps
+    // }, [socket]);
+
     const SocketServer: SocketContextType = useMemo(
         () => ({
             currentConversation,
@@ -598,6 +634,7 @@ export const MessagingProvider = ({ children }: { children: React.ReactNode }): 
             markUserMessageAsSeen,
             getConversationById,
             setActiveConversation,
+            // handleTyping,
         }),
         [
             currentConversation,
@@ -613,6 +650,7 @@ export const MessagingProvider = ({ children }: { children: React.ReactNode }): 
             markUserMessageAsSeen,
             getConversationById,
             setActiveConversation,
+            // handleTyping,
         ],
     );
 

@@ -25,8 +25,8 @@ const dateFormat = "DD/MM/YYYY";
 const MAX = 20;
 
 interface ChartData {
-    date: string;
-    amount: number;
+    _id: string;
+    count: number;
 }
 
 interface TransactionProps {
@@ -95,49 +95,29 @@ export default function WalletPage(): React.JSX.Element {
             fetchWalletStats({ format: "monthly" }),
             fetchWalletStats({ format: "yearly" }),
         ]);
-
-        const weeklyStats: TransformedData[] = response[0].chart.map((c: ChartData) => {
+        const weeklyStats: TransformedData[] = response[0].map((c: ChartData) => {
             return {
-                date: String(dayjs(c.date).format("ddd")),
-                amt: c.amount,
+                date: String(dayjs(c._id).format("ddd")),
+                amt: c.count,
             };
         });
 
-        const monthlyStats = (): TransformedData[] => {
-            const data: ChartData[] = response[1].chart;
-            const n = 3;
-            const mainData: TransformedData[] = [];
-            let amt = 0;
-            for (let i = 0, j = 0; i < data.length; i++) {
-                const c = data[i];
-                if (c) {
-                    // Check if c is not undefined
-                    const date = String(dayjs(c.date).format("DD MMM"));
-                    amt += c.amount;
-                    if (i >= n && i % n === 0) {
-                        // push to array
-                        mainData.push({
-                            date,
-                            amt,
-                        });
-                        amt = 0;
-                        j++;
-                    }
-                }
-            }
-            return mainData;
-        };
-
-        const yearlyStats = response[2].chart.map((c: ChartData) => {
+        const monthlyStats = response[1].map((c: ChartData) => {
             return {
-                date: String(dayjs(c.date).format("MMM YY")),
-                amt: c.amount,
+                date: String(dayjs(c._id).format("DD MMM")),
+                amt: c.count,
+            };
+        });
+        const yearlyStats = response[2].map((c: ChartData) => {
+            return {
+                date: String(dayjs(c._id).format("MMM YY")),
+                amt: c.count,
             };
         });
 
         const chartData = {
             weekly: weeklyStats,
-            monthly: monthlyStats(),
+            monthly: monthlyStats,
             yearly: yearlyStats,
         };
 
