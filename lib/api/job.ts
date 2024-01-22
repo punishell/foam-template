@@ -743,6 +743,7 @@ export function useDeleteJob(): UseMutationResult<Job, ApiError, DeleteJobParams
 // Request Job Cancellation
 
 interface RequestJobCancellationParams {
+    type: string;
     jobId: string;
     reason: string;
     explanation?: string;
@@ -750,7 +751,7 @@ interface RequestJobCancellationParams {
 
 async function requestJobCancellation(params: RequestJobCancellationParams): Promise<ApiResponse> {
     const res = await axios.post(`/collection`, {
-        type: "cancellation",
+        type: params.type,
         name: params.reason,
         parent: params.jobId,
         description: params.explanation,
