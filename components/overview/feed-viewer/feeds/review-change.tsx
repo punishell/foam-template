@@ -6,7 +6,7 @@
 
 import React, { type ReactElement } from "react";
 import { Button } from "pakt-ui";
-import { X, Briefcase, Star } from "lucide-react";
+import { Briefcase, Star } from "lucide-react";
 import Rating from "react-rating";
 
 /* -------------------------------------------------------------------------- */
@@ -41,7 +41,7 @@ interface ReviewChangeProps {
     isAccepted: boolean;
     isCreator: boolean;
     rating?: number;
-    close?: (id: string) => void;
+    // close?: (id: string) => void;
 }
 export const ReviewChangeCard = ({
     id,
@@ -55,9 +55,10 @@ export const ReviewChangeCard = ({
     isCreator,
     isAccepted,
     rating,
-    close,
+    // close,
 }: ReviewChangeProps): ReactElement => {
     const [isModalOpen, setIsModalOpen] = React.useState(false);
+
     return (
         <div className="relative z-10 flex h-[174px] w-full gap-4 overflow-hidden rounded-2xl border border-[#FF5247] bg-[#FFF4F4] p-4">
             <AfroProfile
@@ -69,7 +70,7 @@ export const ReviewChangeCard = ({
             <div className="flex w-full flex-col gap-4">
                 <div className="flex items-center justify-between">
                     <h3 className="text-xl font-bold text-title">{title}</h3>
-                    {close && (
+                    {/* {close && (
                         <X
                             size={20}
                             className="cursor-pointer"
@@ -77,7 +78,7 @@ export const ReviewChangeCard = ({
                                 close(id);
                             }}
                         />
-                    )}
+                    )} */}
                 </div>
 
                 <p className="text-body">{description}</p>

@@ -130,7 +130,6 @@ export const Feeds = (): ReactElement => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
         [currentData],
     );
-
     if (isLoading && timelineFeeds.length < 1)
         return <PageLoading className="h-[65vh] rounded-2xl border border-line" color="#007C5B" />;
     if (isError) return <PageError className="h-[65vh] rounded-2xl border border-line" />;

@@ -275,7 +275,7 @@ export const ParseFeedView = (
                     creator={inviter}
                     jobId={feed?.data?._id}
                     isCreator={feed?.data?.creator?._id === loggedInUser}
-                    close={dismissFeed}
+                    // close={dismissFeed}
                     bookmarked={isBookmarked}
                     bookmarkId={bookmarkId}
                     title={
@@ -297,7 +297,7 @@ export const ParseFeedView = (
                     creator={inviter}
                     jobId={feed?.data?._id}
                     isCreator={feed?.data?.creator?._id === loggedInUser}
-                    close={dismissFeed}
+                    // close={dismissFeed}
                     bookmarked={isBookmarked}
                     bookmarkId={bookmarkId}
                     title={`${talent.name} submitted a redo request`}

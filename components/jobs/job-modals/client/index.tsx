@@ -92,9 +92,9 @@ export const ClientJobModal: FC<ClientJobModalProps> = ({ jobId, talentId, close
     return (
         <JobUpdates
             job={job}
-            requestJobCancellation={() => {
-                setIsRequestingJobCancellation(true);
-            }}
+            // requestJobCancellation={() => {
+            //     setIsRequestingJobCancellation(true);
+            // }}
         />
     );
 };
