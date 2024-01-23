@@ -64,8 +64,8 @@ export const ReviewChangeCard = ({
     return (
         <div className="relative z-10 flex h-[174px] w-full gap-4 overflow-hidden rounded-2xl border border-[#FF5247] bg-[#FFF4F4] p-4">
             <AfroProfile
-                src={!isCreator ? talent.avatar : creator.avatar}
-                score={!isCreator ? talent.score : creator.score}
+                src={isCreator ? talent.avatar : creator.avatar}
+                score={isCreator ? talent.score : creator.score}
                 size="lg"
                 url={`/talents/${isCreator ? talent._id : creator._id}`}
             />
