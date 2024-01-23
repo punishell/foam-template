@@ -57,8 +57,11 @@ export const TalentJobCard: FC<TalentJobCardProps> = ({
         });
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
+
     return (
-        <div className="flex w-full grow flex-col gap-1 rounded-3xl border border-line bg-white p-4 pt-0">
+        <div
+            className={`flex w-full grow flex-col gap-1 rounded-3xl border  p-4 pt-0 ${status === "cancelled" ? "border-[#FF5247] bg-[#FFF4F4]" : "border-line bg-white"}`}
+        >
             <div className="flex w-full gap-4">
                 <div className="-ml-3">
                     <AfroProfile score={client.paktScore} size="2md" src={client.avatar} />
@@ -79,12 +82,19 @@ export const TalentJobCard: FC<TalentJobCardProps> = ({
                     {!isCompleted && (
                         <Button
                             size="xs"
-                            variant="secondary"
+                            variant={status === "cancelled" ? "danger" : "secondary"}
                             onClick={() => {
                                 setIsUpdateModalOpen(true);
                             }}
+                            disabled={status === "cancelled"}
                         >
-                            {progress < 100 ? "Update" : progress === 100 ? "Review" : "Update"}
+                            {status === "cancelled"
+                                ? "Cancelled"
+                                : progress < 100
+                                  ? "Update"
+                                  : progress === 100
+                                    ? "Review"
+                                    : "Update"}
                         </Button>
                     )}
 

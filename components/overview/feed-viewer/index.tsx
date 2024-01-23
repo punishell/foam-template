@@ -281,7 +281,7 @@ export const ParseFeedView = (
                     title={
                         feed?.type === FEED_TYPES.JOB_CANCELLED_ACCEPTED
                             ? feed?.data?.name
-                            : `${talent.name} requested to cancel a job`
+                            : `${inviter.name} requested to cancel a job`
                     }
                     description={feed?.description}
                     isAccepted={feed?.type === FEED_TYPES.JOB_CANCELLED_ACCEPTED}
