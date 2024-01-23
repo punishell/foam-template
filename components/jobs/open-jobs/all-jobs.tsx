@@ -29,10 +29,9 @@ export const AllJobs = ({ jobs, onRefresh, loading }: AllJobsProps): ReactElemen
     const totalPages = Math.ceil(jobs.length / itemsPerPage);
     const paginatedJobs = paginate(jobs, itemsPerPage, currentPage);
 
+    if (loading) return <PageLoading className="h-[85vh] rounded-2xl border border-line" color="#007C5B" />;
     if (!jobs.length)
         return <PageEmpty label="No open jobs yet." className="h-[70vh] rounded-2xl border border-line" />;
-
-    if (loading) return <PageLoading className="h-[85vh] rounded-2xl border border-line" color="#007C5B" />;
 
     return (
         <div className="xh-full flex min-h-[70vh] flex-col gap-2 pb-2">

@@ -70,10 +70,6 @@ export const OpenJobs = (): ReactElement | null => {
 
     const bookmarkData = useGetBookmarks({ page: 1, limit: 5, filter: { type: "collection" } });
 
-    if (jobsData.isError || bookmarkData.isError)
-        return <PageError className="h-[85vh] rounded-2xl border border-red-200 bg-red-50" />;
-    // if (jobsData.isLoading) return <PageLoading className="h-[85vh] rounded-2xl border border-line" color="#007C5B" />;
-
     const jobs = jobsData.data?.data ?? [];
 
     // sort jobs by latest first
@@ -84,6 +80,10 @@ export const OpenJobs = (): ReactElement | null => {
     const onRefresh = async (): Promise<void> => {
         await Promise.all([jobsData.refetch(), bookmarkData.refetch()]);
     };
+
+    if (jobsData.isError || bookmarkData.isError)
+        return <PageError className="h-[85vh] rounded-2xl border border-red-200 bg-red-50" />;
+    // if (jobsData.isLoading) return <PageLoading className="h-[85vh] rounded-2xl border border-line" color="#007C5B" />;
 
     return (
         <div className="flex h-full flex-col gap-6">
