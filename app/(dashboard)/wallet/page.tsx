@@ -29,6 +29,11 @@ interface ChartData {
     count: number;
 }
 
+interface DataItem {
+    date: string;
+    amt: number;
+}
+
 interface TransactionProps {
     createdAt: string;
     type: "withdrawal" | "deposit";
@@ -89,18 +94,71 @@ export default function WalletPage(): React.JSX.Element {
         [walletTx?.data?.data],
     );
 
+    // Function to remove duplicates
+    const removeDuplicates = (array: DataItem[]): DataItem[] => {
+        return array.filter(
+            (item, index, self) => index === self.findIndex((t) => t.date === item.date && t.amt === item.amt),
+        );
+    };
     const getChartData = async (): Promise<void> => {
         const response = await Promise.all([
             fetchWalletStats({ format: "weekly" }),
             fetchWalletStats({ format: "monthly" }),
             fetchWalletStats({ format: "yearly" }),
         ]);
-        const weeklyStats: TransformedData[] = response[0].map((c: ChartData) => {
+
+        // ===== Weekly ===== //
+        const weeklyData: TransformedData[] = response[0].map((c: ChartData) => {
             return {
                 date: String(dayjs(c._id).format("ddd")),
                 amt: c.count,
             };
         });
+
+        function completeAndCarryOverWeekDataFromStartDay(data: DataItem[]): DataItem[] {
+            const dayOrder = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+            const extendedDayOrder: DataItem[] = [];
+            const resultMap: Record<string, number> = {};
+            let lastAmount: number = 0;
+
+            // Find the starting day from the data
+            const startDay = data[0]?.date as string;
+
+            // Reorder the dayOrder array to start from the startDay
+            const startIndex = dayOrder.indexOf(startDay);
+            const reorderedDayOrder = [...dayOrder.slice(startIndex), ...dayOrder.slice(0, startIndex)];
+
+            // Extend the reorderedDayOrder array to include duplicates from the data
+            reorderedDayOrder.forEach((day) => {
+                const occurrences = data.filter((item) => item.date === day);
+                if (occurrences.length > 0) {
+                    occurrences.forEach((occurrence) => extendedDayOrder.push({ date: day, amt: occurrence.amt }));
+                } else {
+                    extendedDayOrder.push({ date: day, amt: 0 });
+                }
+            });
+
+            // Update resultMap with data and carry over the last known balance
+            extendedDayOrder.forEach((item) => {
+                if (item.amt !== 0) {
+                    lastAmount = item.amt;
+                }
+                resultMap[item.date] = lastAmount;
+            });
+
+            // Convert the resultMap to an array
+            return Object.keys(resultMap).map((day) => ({
+                date: day,
+                amt: resultMap[day] as number,
+            }));
+        }
+
+        const rdWeeklyStats = removeDuplicates(weeklyData);
+        const weeklyStats = completeAndCarryOverWeekDataFromStartDay(rdWeeklyStats);
+
+        // ===== Weekly ===== //
+
+        // ===== Monthly ===== //
 
         const monthlyStats = response[1].map((c: ChartData) => {
             return {
@@ -108,6 +166,8 @@ export default function WalletPage(): React.JSX.Element {
                 amt: c.count,
             };
         });
+
+        // ===== Monthly ===== //
         const yearlyStats = response[2].map((c: ChartData) => {
             return {
                 date: String(dayjs(c._id).format("MMM YY")),

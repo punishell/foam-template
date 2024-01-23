@@ -15,13 +15,13 @@ import { Chart } from "@/components/common/chart";
 export interface TransformedData {
     date: string;
     amt: number;
-    [key: string]: string | number;
+    // [key: string]: string | number;
 }
 
 export interface ChartDataProps {
-    weekly: TransformedData[] | [];
-    monthly: TransformedData[] | [];
-    yearly: TransformedData[] | [];
+    weekly: TransformedData[];
+    monthly: TransformedData[];
+    yearly: TransformedData[];
 }
 
 export const WalletBalanceChart = ({ data }: { data: ChartDataProps }): React.JSX.Element => {

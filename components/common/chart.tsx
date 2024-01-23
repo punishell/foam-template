@@ -9,7 +9,7 @@ import { CartesianGrid, Line, LineChart, ResponsiveContainer, XAxis, YAxis } fro
 interface TransformedData {
     date: string;
     amt: number;
-    [key: string]: string | number; // Add this line
+    // [key: string]: string | number; // Add this line
 }
 
 interface ChartProps {
@@ -38,6 +38,7 @@ export const Chart = ({ data, dataKey, xAxisKey, height = "sm" }: ChartProps): R
                     }}
                     axisLine={false}
                     stroke="#E8E8E8"
+                    allowDuplicatedCategory={false}
                 />
                 <YAxis
                     width={40}

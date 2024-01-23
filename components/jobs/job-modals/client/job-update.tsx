@@ -5,7 +5,7 @@
 /* -------------------------------------------------------------------------- */
 
 import { type FC } from "react";
-// import { MoreVertical } from "lucide-react";
+import { MoreVertical } from "lucide-react";
 
 /* -------------------------------------------------------------------------- */
 /*                             Internal Dependency                            */
@@ -13,15 +13,15 @@ import { type FC } from "react";
 
 import { isJobDeliverable, type Job } from "@/lib/types";
 import { DeliverablesStepper } from "@/components/jobs/deliverables-stepper";
-// import { Popover, PopoverTrigger, PopoverContent } from "@/components/common/popover";
+import { Popover, PopoverTrigger, PopoverContent } from "@/components/common/popover";
 import { JobUpdateHeader } from "../job-update-header";
 
 interface JobUpdatesProps {
     job: Job;
-    // requestJobCancellation: () => void;
+    requestJobCancellation: () => void;
 }
 
-export const JobUpdates: FC<JobUpdatesProps> = ({ job }) => {
+export const JobUpdates: FC<JobUpdatesProps> = ({ job, requestJobCancellation }) => {
     const {
         name,
         tags,
@@ -41,7 +41,7 @@ export const JobUpdates: FC<JobUpdatesProps> = ({ job }) => {
         <>
             <div className="flex items-start justify-between bg-primary-gradient px-4 py-6 text-3xl font-bold text-white">
                 <div className="max-w-[90%] break-words">{name}</div>
-                {/* <Popover>
+                <Popover>
                     <PopoverTrigger asChild>
                         <button type="button" aria-label="More">
                             <MoreVertical />
@@ -55,9 +55,10 @@ export const JobUpdates: FC<JobUpdatesProps> = ({ job }) => {
                         >
                             Cancel Job
                         </button>
-                        // Comment <button className="px-4 py-2 hover:bg-red-100 duration-200 text-left">Report an Issue</button>
+                        {/* // Comment{" "} */}
+                        {/* <button className="px-4 py-2 text-left duration-200 hover:bg-red-100">Report an Issue</button> */}
                     </PopoverContent>
-                </Popover> */}
+                </Popover>
             </div>
             <div className="flex h-full grow flex-col gap-6 px-4 py-6">
                 <JobUpdateHeader

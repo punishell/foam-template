@@ -18,13 +18,18 @@ import { formatBytes, getPreviewByType } from "@/lib/utils";
 import { ChatBoxHeader } from "@/components/messaging/chatbox-header";
 import { Messages } from "@/components/messaging/messages";
 import { RenderAttachmentPreviewer } from "@/components/messaging/render-attachment-viewer";
-import { useErrorService } from "@/lib/store/error-service";
 import { type SendAttachmentsProps } from "@/providers/socket-types";
+import { toast } from "@/components/common/toaster";
 
 interface Props {
     params: {
         "message-id": string;
     };
+}
+
+interface FileProps {
+    file: File;
+    errors: Array<{ code: string; message: string }>;
 }
 
 export default function ChatPage({ params }: Props): ReactElement {
@@ -37,7 +42,7 @@ export default function ChatPage({ params }: Props): ReactElement {
         markUserMessageAsSeen,
         // handleTyping,
     } = useMessaging();
-    const { setErrorMessage } = useErrorService();
+
     const [loadingMessage, setLoadingMessages] = useState(true);
     const [text, setText] = useState("");
     const [imageFiles, setImageFiles] = useState<SendAttachmentsProps[] | []>([]);
@@ -80,24 +85,33 @@ export default function ChatPage({ params }: Props): ReactElement {
         setImageFiles(files);
     }, []);
 
-    const onDropError = useCallback(async (data: unknown) => {
-        setErrorMessage({
-            title: "onDropError Function",
-            message: JSON.stringify(data),
+    const onDropError = useCallback((data: FileProps[]) => {
+        const rejectedFiles = data.map((f: FileProps) => ({
+            file: f.file,
+            errors: f.errors[0],
+        }));
+
+        rejectedFiles.forEach((f) => {
+            toast.error(`${f.file.name}: ${f.errors?.message}`);
         });
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const { getRootProps, getInputProps, open } = useDropzone({
         onDrop,
-        onError: onDropError,
-        maxSize: 2000000,
+        onDropRejected: onDropError,
+        // maxSize: 2000000,
+        maxSize: 500 * 1024,
         maxFiles: 5,
         accept: {
             "image/*": [],
             "application/pdf": [".pdf"],
             "application/vnd.openxmlformats-officedocument.wordprocessingml.document": [".docx"],
             "text/*": [".csv"],
+            "application/vnd.ms-excel": [".csv"],
+            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": [".xlsx"],
+            "image/avif": [".avif"],
+            "image/webp": [".webp"],
         },
         noClick: true,
     });
@@ -124,10 +138,7 @@ export default function ChatPage({ params }: Props): ReactElement {
                 setImageFiles([]);
             } else {
                 // Handle the case where currentConversation or its properties are null or undefined
-                setErrorMessage({
-                    title: "sendMessage Function",
-                    message: "currentConversation, recipient, or sender is null or undefined",
-                });
+                toast.error("currentConversation, recipient, or sender is null or undefined");
             }
         }
     };
@@ -144,6 +155,7 @@ export default function ChatPage({ params }: Props): ReactElement {
             return sendMessage();
         }
     };
+    console.log("currentConversation", currentConversation);
     return (
         <div className="flex h-full flex-col">
             <ChatBoxHeader
