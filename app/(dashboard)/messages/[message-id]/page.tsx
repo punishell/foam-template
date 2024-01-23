@@ -155,7 +155,7 @@ export default function ChatPage({ params }: Props): ReactElement {
             return sendMessage();
         }
     };
-    console.log("currentConversation", currentConversation);
+
     return (
         <div className="flex h-full flex-col">
             <ChatBoxHeader
