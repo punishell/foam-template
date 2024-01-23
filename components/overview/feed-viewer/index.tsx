@@ -66,6 +66,7 @@ export const ParseFeedView = (
         name: `${feed?.data?.owner?.firstName ?? ""} ${feed?.data?.owner?.lastName ?? ""}`,
         score: feed?.data?.owner?.score ?? 0,
     };
+
     // console.log(feed?.data);
     const deliverableTotal = (feed?.data?.collections ?? []).filter((f) => f.type === "deliverable").length;
     const currentProgress = feed?.meta?.value;
@@ -266,7 +267,6 @@ export const ParseFeedView = (
                 />
             );
         case FEED_TYPES.JOB_CANCELLED_REQUEST:
-        case FEED_TYPES.JOB_CANCELLED_ACCEPTED:
             return (
                 <ReviewChangeCard
                     key={key}
@@ -281,10 +281,32 @@ export const ParseFeedView = (
                     title={
                         feed?.type === FEED_TYPES.JOB_CANCELLED_ACCEPTED
                             ? feed?.data?.name
-                            : `${inviter.name} requested to cancel a job`
+                            : `${talent.name} requested to cancel a job`
                     }
                     description={feed?.description}
                     isAccepted={feed?.type === FEED_TYPES.JOB_CANCELLED_ACCEPTED}
+                    rating={feed?.meta?.value}
+                />
+            );
+        case FEED_TYPES.JOB_CANCELLED_ACCEPTED:
+            return (
+                <ReviewChangeCard
+                    key={key}
+                    id={feed?._id}
+                    talent={talent}
+                    creator={inviter}
+                    jobId={feed?.data?._id}
+                    isCreator={feed?.data?.creator?._id === loggedInUser}
+                    // close={dismissFeed}
+                    bookmarked={isBookmarked}
+                    bookmarkId={bookmarkId}
+                    title={
+                        feed?.type === FEED_TYPES.JOB_CANCELLED_REQUEST
+                            ? feed?.data?.name
+                            : `${talent.name} requested to cancel a job`
+                    }
+                    description={feed?.description}
+                    isAccepted={feed?.type === FEED_TYPES.JOB_CANCELLED_REQUEST}
                     rating={feed?.meta?.value}
                 />
             );

@@ -18,6 +18,7 @@ import { AfroProfile } from "@/components/common/afro-profile";
 import { ClientJobModal } from "@/components/jobs/job-modals/client";
 import { SideModal } from "@/components/common/side-modal";
 import { TalentJobModal } from "@/components/jobs/job-modals/talent";
+// import { useUserState } from "@/lib/store/account";
 
 interface ReviewChangeProps {
     id: string;
@@ -58,12 +59,13 @@ export const ReviewChangeCard = ({
     // close,
 }: ReviewChangeProps): ReactElement => {
     const [isModalOpen, setIsModalOpen] = React.useState(false);
-
+    // const { _id: loggedInUser } = useUserState();
+    // console.log("isCreator", isCreator, loggedInUser);
     return (
         <div className="relative z-10 flex h-[174px] w-full gap-4 overflow-hidden rounded-2xl border border-[#FF5247] bg-[#FFF4F4] p-4">
             <AfroProfile
-                src={isCreator ? talent.avatar : creator.avatar}
-                score={isCreator ? talent.score : creator.score}
+                src={!isCreator ? talent.avatar : creator.avatar}
+                score={!isCreator ? talent.score : creator.score}
                 size="lg"
                 url={`/talents/${isCreator ? talent._id : creator._id}`}
             />
