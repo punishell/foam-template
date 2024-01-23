@@ -114,7 +114,7 @@ const TABLE_COLUMNS: Array<ColumnDef<WalletTransactionsProps>> = [
         accessorFn: (data) => data.transactionHash,
         cell: ({ getValue }) => {
             const transactionHash = getValue();
-            return transactionHash === "" ? (
+            return transactionHash !== "" ? (
                 <Link
                     href={`${process.env.NEXT_PUBLIC_SNOWTRACE_APP_URL}/tx/${transactionHash as string}`}
                     target="_blank"
