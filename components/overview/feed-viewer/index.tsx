@@ -267,6 +267,7 @@ export const ParseFeedView = (
                 />
             );
         case FEED_TYPES.JOB_CANCELLED_REQUEST:
+        case FEED_TYPES.JOB_CANCELLED_ACCEPTED:
             return (
                 <ReviewChangeCard
                     key={key}
@@ -285,28 +286,6 @@ export const ParseFeedView = (
                     }
                     description={feed?.description}
                     isAccepted={feed?.type === FEED_TYPES.JOB_CANCELLED_ACCEPTED}
-                    rating={feed?.meta?.value}
-                />
-            );
-        case FEED_TYPES.JOB_CANCELLED_ACCEPTED:
-            return (
-                <ReviewChangeCard
-                    key={key}
-                    id={feed?._id}
-                    talent={talent}
-                    creator={inviter}
-                    jobId={feed?.data?._id}
-                    isCreator={feed?.data?.creator?._id === loggedInUser}
-                    // close={dismissFeed}
-                    bookmarked={isBookmarked}
-                    bookmarkId={bookmarkId}
-                    title={
-                        feed?.type === FEED_TYPES.JOB_CANCELLED_REQUEST
-                            ? feed?.data?.name
-                            : `${talent.name} requested to cancel a job`
-                    }
-                    description={feed?.description}
-                    isAccepted={feed?.type === FEED_TYPES.JOB_CANCELLED_REQUEST}
                     rating={feed?.meta?.value}
                 />
             );
