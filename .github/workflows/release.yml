@@ -2,10 +2,8 @@ name: Production Web Deployment
 
 on:
     push:
-        branches:
-            - development
-            # tags:
-            #     - "**"
+        tags:
+            - "**"
 
 env:
     ECR_REPOSITORY: ${{ secrets.ECR_REPO }}
