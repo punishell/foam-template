@@ -18,7 +18,7 @@ import { type z } from "zod";
 /* -------------------------------------------------------------------------- */
 
 import email from "@/lottiefiles/email.json";
-import { TagInput } from "../../common/tag-input";
+import { TagInput2 } from "../../common/tag-input";
 import { useGetReferral, useSendReferralInvite } from "@/lib/api/referral";
 import { SideModal } from "../../common/side-modal";
 import { Spinner } from "../../common";
@@ -105,7 +105,7 @@ export function ReferralSideModal({ isOpen, onOpenChange }: ReferralModalProps):
                                     name="emails"
                                     control={form.control}
                                     render={({ field: { onChange, value = [] } }) => (
-                                        <TagInput
+                                        <TagInput2
                                             tags={value}
                                             setTags={onChange}
                                             className="items-start border border-none"
