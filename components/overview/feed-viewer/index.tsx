@@ -275,7 +275,7 @@ export const ParseFeedView = (
                     talent={talent}
                     creator={inviter}
                     jobId={feed?.data?._id}
-                    isCreator={feed?.creator?._id === loggedInUser}
+                    isCreator={feed?.data?.creator?._id === loggedInUser}
                     // close={dismissFeed}
                     bookmarked={isBookmarked}
                     bookmarkId={bookmarkId}
