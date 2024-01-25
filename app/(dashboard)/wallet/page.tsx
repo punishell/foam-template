@@ -45,6 +45,14 @@ interface TransactionProps {
     responseData: string;
 }
 
+interface WalletProps {
+    _id: string;
+    amount: number;
+    usdValue: number;
+    coin: string;
+    icon: string;
+}
+
 export default function WalletPage(): React.JSX.Element {
     const [isOpen, setIsOpen] = useState(false);
     // const [limit, _setLimit] = useState(10);
@@ -54,7 +62,7 @@ export default function WalletPage(): React.JSX.Element {
     });
     const [statData, setStatData] = useState<ChartDataProps>({ weekly: [], monthly: [], yearly: [] });
     const { data: walletData } = useGetWalletDetails();
-    const wallets = walletData?.data.data.wallets ?? [];
+    const wallets: WalletProps[] = walletData?.data.data.wallets ?? [];
     const totalWalletBalance = walletData?.data.data.totalWalletBalance ?? "0.00";
     const {
         data: walletTx,
@@ -203,11 +211,10 @@ export default function WalletPage(): React.JSX.Element {
         amount: number;
         usdValue: number;
         coin: string;
-        icon?: string;
+        icon: string;
     }): string => {
-        return wallet.icon ?? "/icons/usdc-logo.svg";
+        return wallet?.icon ?? "/icons/usdc-logo.svg";
     };
-
     return (
         <div className="flex h-full flex-col gap-6 overflow-auto">
             <div className="flex h-full flex-col gap-6">
@@ -236,28 +243,50 @@ export default function WalletPage(): React.JSX.Element {
                             />
                         </div>
                         <div className="grid h-full grid-cols-2 gap-6">
-                            {wallets.map((w, i) => (
-                                <div
-                                    key={i}
-                                    className="flex h-full w-full items-center gap-2 rounded-lg border border-[#5538EE] bg-[#F9F6FE] p-4"
-                                    style={{
-                                        background: w.coin === "avax" ? "#FEF4E3" : "#F9F6FE",
-                                        borderColor: w.coin === "avax" ? "#A05E03" : "#5538EE",
-                                    }}
-                                >
-                                    <Image src={getWalletIcon(w)} width={75} height={75} alt="" />
+                            <div
+                                className="flex h-full w-full items-center gap-2 rounded-lg border border-[#5538EE] bg-[#F9F6FE] p-4"
+                                style={{
+                                    background: "#F9F6FE",
+                                    borderColor: "#5538EE",
+                                }}
+                            >
+                                <Image src={getWalletIcon(wallets[1] as WalletProps)} width={75} height={75} alt="" />
+                                <div className="flex flex-col gap-1">
                                     <div className="flex flex-col gap-1">
-                                        <div className="flex flex-col gap-1">
-                                            <span className="text-sm text-body">
-                                                {w.coin.toUpperCase()} Wallet Balance
-                                            </span>
-                                            <span className="text-2xl font-semibold text-title">{w.amount}</span>
-                                        </div>
-
-                                        <span className="mt-auto text-sm text-body">{formatUsd(w.usdValue)}</span>
+                                        <span className="text-sm text-body">
+                                            {wallets?.[1]?.coin.toUpperCase()} Wallet Balance
+                                        </span>
+                                        <span className="text-2xl font-semibold text-title">
+                                            {wallets?.[1]?.amount}
+                                        </span>
                                     </div>
+
+                                    <span className="mt-auto text-sm text-body">
+                                        {formatUsd((wallets[1]?.usdValue as number) ?? 0.0)}
+                                    </span>
                                 </div>
-                            ))}
+                            </div>
+                            <div
+                                className="flex h-full w-full items-center gap-2 rounded-lg border border-[#5538EE] bg-[#F9F6FE] p-4"
+                                style={{
+                                    background: "#FEF4E3",
+                                    borderColor: "#A05E03",
+                                }}
+                            >
+                                <Image src={getWalletIcon(wallets[0] as WalletProps)} width={75} height={75} alt="" />
+                                <div className="flex flex-col gap-1">
+                                    <div className="flex flex-col gap-1">
+                                        <span className="text-sm text-body">
+                                            {wallets[0]?.coin.toUpperCase()} Wallet Balance
+                                        </span>
+                                        <span className="text-2xl font-semibold text-title">{wallets[0]?.amount}</span>
+                                    </div>
+
+                                    <span className="mt-auto text-sm text-body">
+                                        {formatUsd((wallets[0]?.usdValue as number) ?? 0.0)}
+                                    </span>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <WalletBalanceChart data={statData} />
