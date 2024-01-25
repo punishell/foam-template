@@ -66,7 +66,7 @@ export const OpenJobCard: React.FC<OpenJobProps> = ({
                     {skills.slice(0, 3).map((skill) => (
                         <span
                             key={skill.name}
-                            className="2xl.max:max-w-[max-content] min-w-[50px] truncate rounded-full bg-slate-100 px-4 py-0.5 capitalize xl:max-w-[166px]"
+                            className="min-w-[50px] truncate rounded-full bg-slate-100 px-4 py-0.5 capitalize xl:max-w-[166px] 2xl.max:max-w-[max-content]"
                             style={{ background: skill.color }}
                         >
                             {skill.name}
