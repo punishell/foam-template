@@ -170,7 +170,7 @@ export interface PaymentCoinsProps {
 
 const fetchPaymentCoins = async (): Promise<PaymentCoinsProps[]> => {
     const res = await axios.get(`/payment/coins`);
-    return res.data.data;
+    return res.data.data.reverse();
 };
 
 export const useGetPaymentCoins = (): UseQueryResult<PaymentCoinsProps[], ApiError> => {

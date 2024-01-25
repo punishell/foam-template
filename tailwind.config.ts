@@ -11,6 +11,14 @@ const config: Config = {
         "./app/**/*.{js,ts,jsx,tsx,mdx}",
     ],
     theme: {
+        screens: {
+            sm: { min: "640px" },
+            md: { min: "768px" },
+            lg: { min: "1024px" },
+            xl: { min: "1280px" },
+            "2xl": { min: "1536px" },
+            "2xl.max": { min: "1600px" },
+        },
         extend: {
             colors: {
                 info: "#17A2B8",
