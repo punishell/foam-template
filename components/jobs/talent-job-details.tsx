@@ -292,7 +292,7 @@ export const TalentJobDetails: React.FC<TalentJobDetailsProps> = ({ job, userId 
                     {hasAlreadyApplied && (
                         <div className="my-3 flex w-full items-center gap-2 rounded-lg border border-blue-300 bg-blue-50 p-4 text-blue-500">
                             <Info size={20} />
-                            <span className="text-center text-body">You have already applied to this job</span>
+                            <span className="text-center text-body">You have applied to this job</span>
                         </div>
                     )}
 

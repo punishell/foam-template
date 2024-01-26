@@ -62,11 +62,11 @@ export const OpenJobCard: React.FC<OpenJobProps> = ({
                 </div>
             </Link>
             <div className="mt-auto flex items-center justify-between gap-2">
-                <div className="flex flex-wrap items-center gap-2 2xl:flex-nowrap">
+                <div className="flex flex-wrap items-center gap-2 lg:flex-nowrap">
                     {skills.slice(0, 3).map((skill) => (
                         <span
                             key={skill.name}
-                            className="min-w-[50px] truncate rounded-full bg-slate-100 px-4 py-0.5 capitalize xl:max-w-[166px] 2xl.max:max-w-[max-content]"
+                            className="min-w-[50px] whitespace-nowrap rounded-full bg-slate-100 px-4 py-0.5 text-sm capitalize last:!max-w-[106px] last:!truncate 2xl:last:!max-w-[166px]"
                             style={{ background: skill.color }}
                         >
                             {skill.name}
