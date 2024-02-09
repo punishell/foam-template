@@ -12,6 +12,7 @@ export const useUserState = create<UserState>()((set) => ({
     lastName: "",
     firstName: "",
     score: 0,
+    kyc: false,
     profileImage: {
         url: "",
     },

@@ -10,6 +10,7 @@ import { Invites } from "@/components/overview/invites";
 import { ActiveJobs } from "@/components/overview/active-jobs";
 import { FeedsBookmark } from "@/components/overview/bookmark";
 import { JobHeader } from "@/components/overview/job-header";
+import Kyc from "@/components/kyc";
 
 export default function Overview(): React.JSX.Element {
     return (
@@ -17,6 +18,7 @@ export default function Overview(): React.JSX.Element {
             <div className="flex h-full w-full justify-start gap-6">
                 <div className="flex h-full w-full grow flex-col gap-7">
                     <Header />
+                    <Kyc />
                     <JobHeader />
                     <div className="flex flex-1 basis-0 overflow-y-auto">
                         <Tabs

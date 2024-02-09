@@ -20,6 +20,7 @@ import { WalletTransactions } from "@/components/wallet/transactions";
 import { WithdrawalModal } from "@/components/wallet/withdrawal-modal";
 import { fetchWalletStats, useGetActiveRPC, useGetWalletDetails, useGetWalletTxs } from "@/lib/api/wallet";
 import { formatUsd } from "@/lib/utils";
+import Kyc from "@/components/kyc";
 
 const dateFormat = "DD/MM/YYYY";
 const MAX = 20;
@@ -217,6 +218,7 @@ export default function WalletPage(): React.JSX.Element {
     };
     return (
         <div className="flex h-full flex-col gap-6 overflow-auto">
+            <Kyc />
             <div className="flex h-full flex-col gap-6">
                 <div className="grid grid-cols-2 gap-6">
                     <div className=" grid grid-rows-2 items-center gap-6">
