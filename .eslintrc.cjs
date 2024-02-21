@@ -64,6 +64,7 @@ module.exports = {
         "@typescript-eslint/strict-boolean-expressions": "off",
         "consistent-return": "off",
         "react/no-array-index-key": "off",
+        "no-useless-escape": "off",
         // Temporary rules
         "@typescript-eslint/no-unused-vars": "off",
         "@typescript-eslint/non-nullable-type-assertion-style": "off",

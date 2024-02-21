@@ -13,6 +13,5 @@
     "trailingComma": "all",
     "useTabs": false,
     "arrowParens": "always",
-    "bracketSpacing": true,
-    "plugins": ["prettier-plugin-tailwindcss"]
+    "bracketSpacing": true
 }

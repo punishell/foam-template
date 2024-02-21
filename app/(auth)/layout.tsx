@@ -37,7 +37,7 @@ export default function AuthLayout({ children }: Props): React.JSX.Element {
             <div className="fixed inset-0 bg-auth-gradient" />
             <div className="fixed inset-0 bg-[url(/images/cardboard.png)] opacity-40" />
             <div className="relative flex h-screen w-full flex-col p-5">
-                <Container className="mt-16 flex items-center justify-between">
+                <Container className="mt-8 flex items-center justify-between 2xl:mt-16">
                     <Link className="max-w-[200px]" href="/">
                         <Image src="/images/logo.svg" alt="Logo" width={250} height={60} />
                     </Link>
