@@ -81,6 +81,12 @@ const SignupReferralForm = ({
 		[passwordWatch, confirmPasswordWatch],
 	);
 
+	// Check if when user starts typing the password
+	const isPasswordTyping =
+		passwordWatch !== "" &&
+		passwordWatch !== undefined &&
+		passwordWatch !== null;
+
 	return (
 		<form
 			onSubmit={form.handleSubmit(onSubmit)}
@@ -147,33 +153,35 @@ const SignupReferralForm = ({
 						placeholder="Password"
 						type="password"
 					/>
-					<div className="flex flex-col gap-4 p-4 text-xs text-body">
-						<PasswordCriteria
-							isValidated={validatingErr.isMinLength}
-							criteria="At least 8 characters"
-							isSignUp
-						/>
-						<PasswordCriteria
-							isValidated={validatingErr.checkLowerUpper}
-							criteria="Upper and lower case characters"
-							isSignUp
-						/>
-						<PasswordCriteria
-							isValidated={validatingErr.checkNumber}
-							criteria="1 or more numbers"
-							isSignUp
-						/>
-						<PasswordCriteria
-							isValidated={validatingErr.specialCharacter}
-							criteria="1 or more special characters"
-							isSignUp
-						/>
-						<PasswordCriteria
-							isValidated={validatingErr.confirmedPassword}
-							criteria="passwords must be match"
-							isSignUp
-						/>
-					</div>
+					{isPasswordTyping && (
+						<div className="flex flex-col gap-4 p-4 text-xs text-body">
+							<PasswordCriteria
+								isValidated={validatingErr.isMinLength}
+								criteria="At least 8 characters"
+								isSignUp
+							/>
+							<PasswordCriteria
+								isValidated={validatingErr.checkLowerUpper}
+								criteria="Upper and lower case characters"
+								isSignUp
+							/>
+							<PasswordCriteria
+								isValidated={validatingErr.checkNumber}
+								criteria="1 or more numbers"
+								isSignUp
+							/>
+							<PasswordCriteria
+								isValidated={validatingErr.specialCharacter}
+								criteria="1 or more special characters"
+								isSignUp
+							/>
+							<PasswordCriteria
+								isValidated={validatingErr.confirmedPassword}
+								criteria="passwords must be match"
+								isSignUp
+							/>
+						</div>
+					)}
 				</div>
 
 				<div className="relative mb-2 flex flex-col gap-2">
