@@ -8,13 +8,14 @@ import React from "react";
 import { Button } from "pakt-ui";
 import { Briefcase, Edit } from "lucide-react";
 import Link from "next/link";
+import { useWindowSize } from "usehooks-ts";
 
 /* -------------------------------------------------------------------------- */
 /*                             Internal Dependency                            */
 /* -------------------------------------------------------------------------- */
 
 import { getAvatarColor } from "@/lib/utils";
-import { InviteTalentModal } from "@/components/talents/invite-talent";
+import { InviteTalentModal } from "@/components/talent/profile/invite";
 import { AfroProfile } from "@/components/common/afro-profile";
 
 interface Props {
@@ -41,6 +42,7 @@ export const ProfileHeader: React.FC<Props> = ({
 }) => {
 	const borderColor = getAvatarColor(score);
 	const [isModalOpen, setIsModalOpen] = React.useState(false);
+	const size = useWindowSize();
 
 	return (
 		<>
@@ -57,7 +59,19 @@ export const ProfileHeader: React.FC<Props> = ({
 				/>
 
 				<div>
-					<AfroProfile src={profileImage} score={score} size="xl" />
+					{size.width && (
+						<AfroProfile
+							src={profileImage}
+							score={score}
+							size={
+								size.width > 1530
+									? "xl"
+									: size.width > 768
+										? "lg"
+										: "sm"
+							}
+						/>
+					)}
 				</div>
 				<div className="grid grow grid-cols-1 gap-5">
 					<div className="flex w-full flex-row justify-between gap-2">

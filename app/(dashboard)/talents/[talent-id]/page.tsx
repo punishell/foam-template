@@ -14,16 +14,16 @@ import { useParams } from "next/navigation";
 import { PageError } from "@/components/common/page-error";
 import { PageLoading } from "@/components/common/page-loading";
 import { useGetTalentById, useGetTalentReviewById } from "@/lib/api";
-import { Achievements } from "@/components/talents/achievement";
-import { Reviews } from "@/components/talents/review";
-import { ProfileHeader } from "@/components/talents/header";
-import { Bio } from "@/components/talents/bio";
+import { Achievements } from "@/components/talent/profile/achievements";
+import { Reviews } from "@/components/talent/profile/reviews";
+import { ProfileHeader } from "@/components/talent/profile/header";
+import { Bio } from "@/components/talent/profile/bio";
 
 export default function TalentDetailsPage(): ReactElement {
 	const params = useParams();
 	const talentId = String(params["talent-id"]);
 	const talentData = useGetTalentById(talentId, true);
-	const reviewData = useGetTalentReviewById(talentId, "1", "10", true);
+	const reviewData = useGetTalentReviewById(talentId, "1", "20", true);
 
 	if (
 		talentData.isLoading ||

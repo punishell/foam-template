@@ -6,7 +6,7 @@
 
 import { PageLoading } from "../common/page-loading";
 import { Pagination } from "../common/pagination";
-import { TalentBox } from "./talentbox";
+import { TalentBox } from "./talent-box";
 import { type AchievementType } from "@/lib/utils";
 
 interface TalentProps {

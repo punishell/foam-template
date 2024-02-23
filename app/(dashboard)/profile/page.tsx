@@ -12,11 +12,11 @@ import { useRouter } from "next/navigation";
 /* -------------------------------------------------------------------------- */
 
 import { useGetTalentReviewById } from "@/lib/api";
-import { Achievements } from "@/components/talents/achievement";
-import { Reviews } from "@/components/talents/review";
+import { Achievements } from "@/components/talent/profile/achievements";
+import { Reviews } from "@/components/talent/profile/reviews";
 import { useUserState } from "@/lib/store/account";
-import { ProfileHeader } from "@/components/talents/header";
-import { Bio } from "@/components/talents/bio";
+import { ProfileHeader } from "@/components/talent/profile/header";
+import { Bio } from "@/components/talent/profile/bio";
 import { PageLoading } from "@/components/common/page-loading";
 
 export default function ProfilePage(): ReactElement | null {
@@ -27,7 +27,7 @@ export default function ProfilePage(): ReactElement | null {
 		data: talentReviews,
 		isLoading,
 		refetch: FetchTalent,
-	} = useGetTalentReviewById(talentId, "1", "10", true);
+	} = useGetTalentReviewById(talentId, "1", "20", true);
 
 	useEffect(() => {
 		if (talentId) {

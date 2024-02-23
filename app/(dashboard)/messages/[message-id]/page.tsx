@@ -226,7 +226,7 @@ export default function ChatPage({ params }: Props): ReactElement {
 				</div>
 			</div>
 			{isTyping !== "" && (
-				<p className="text-sky font-normal italic text-sm">
+				<p className="text-sky font-normal italic text-sm ml-12 mt-1">
 					{isTyping}
 				</p>
 			)}
