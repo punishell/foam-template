@@ -2,14 +2,14 @@
 /*                             Internal Dependency                            */
 /* -------------------------------------------------------------------------- */
 
-import { Tabs } from "@/components/common/tabs";
-import { Feeds } from "@/components/overview/feeds";
-import { Header } from "@/components/overview/header";
+import { OverviewHeader } from "@/components/overview/header";
+import { JobHeader } from "@/components/overview/header/sub-header";
 import { LeaderBoard } from "@/components/overview/leaderboard";
-import { Invites } from "@/components/overview/invites";
-import { ActiveJobs } from "@/components/overview/active-jobs";
-import { FeedsBookmark } from "@/components/overview/bookmark";
-import { JobHeader } from "@/components/overview/job-header";
+import { Tabs } from "@/components/common/tabs";
+import { Feeds } from "@/components/overview/tabs/feeds";
+import { Invites } from "@/components/overview/tabs/invites";
+import { ActiveJobs } from "@/components/overview/tabs/active-jobs";
+import { FeedsBookmark } from "@/components/overview/tabs/bookmark";
 import Kyc from "@/components/kyc";
 
 export default function Overview(): React.JSX.Element {
@@ -17,7 +17,7 @@ export default function Overview(): React.JSX.Element {
 		<div className="flex h-screen flex-col gap-6 overflow-hidden">
 			<div className="flex h-full w-full justify-start gap-6">
 				<div className="flex h-full w-full grow flex-col gap-7">
-					<Header />
+					<OverviewHeader />
 					<Kyc />
 					<JobHeader />
 					<div className="flex flex-1 basis-0 overflow-y-auto">

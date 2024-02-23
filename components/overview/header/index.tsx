@@ -12,12 +12,12 @@ import { UserPlus } from "lucide-react";
 /* -------------------------------------------------------------------------- */
 
 import { UserBalance } from "@/components/common/user-balance";
-import { ReferralSideModal } from "./referral/refer";
+import { ReferralSideModal } from "./refer";
 import { useUserState } from "@/lib/store/account";
 import { useGetTalentReviewById } from "@/lib/api";
 import { hasFiveStarReview } from "@/lib/types";
 
-export const Header = (): ReactElement => {
+export const OverviewHeader = (): ReactElement => {
 	const [referOpen, _setReferOpen] = useState(false);
 	const { _id, firstName } = useUserState();
 	const {

@@ -12,11 +12,11 @@ import { Loader } from "lucide-react";
 /* -------------------------------------------------------------------------- */
 
 import { useDismissFeed, useGetTimeline } from "@/lib/api/dashboard";
-import { ParseFeedView } from "./feed-viewer";
+import { ParseFeedView } from "../feeds";
 import { useUserState } from "@/lib/store/account";
-import { PageEmpty } from "../common/page-empty";
-import { PageLoading } from "../common/page-loading";
-import { PageError } from "../common/page-error";
+import { PageEmpty } from "../../common/page-empty";
+import { PageLoading } from "../../common/page-loading";
+import { PageError } from "../../common/page-error";
 import { FEED_TYPES } from "@/lib/utils";
 
 export const Feeds = (): ReactElement => {

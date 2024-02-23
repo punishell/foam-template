@@ -11,9 +11,9 @@ import { useMemo, type ReactElement } from "react";
 /* -------------------------------------------------------------------------- */
 
 import { useUserState } from "@/lib/store/account";
-import { PageEmpty } from "../../common/page-empty";
-import { PageLoading } from "../../common/page-loading";
-import { PageError } from "../../common/page-error";
+import { PageEmpty } from "../../../common/page-empty";
+import { PageLoading } from "../../../common/page-loading";
+import { PageError } from "../../../common/page-error";
 import { useGetJobs } from "@/lib/api/job";
 import { type Job } from "@/lib/types";
 import { ActiveJobCard } from "./active-job-card";

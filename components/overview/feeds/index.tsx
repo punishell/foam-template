@@ -20,18 +20,18 @@ import { FEED_TYPES } from "@/lib/utils";
 
 import { type DataFeedResponse } from "@/lib/types";
 
-import { PublicJobCreatedFeed } from "./feeds/public-job-created";
-import { JobFeedCard } from "./feeds/job-feed";
-import { JobApplicationCard } from "./feeds/job-applicant";
-import { JobUpdateFeed } from "./feeds/job-update";
-import { ReferralSignupFeed } from "./feeds/referral-signup";
-import { JobReviewedFeed } from "./feeds/job-reviewed";
-import { ReferralJobCompletion } from "./feeds/referral-job-completion";
-import { PaymentReleased } from "./feeds/payment-released";
-import { JobCompletionFeed } from "./feeds/job-completion";
-import { ReviewResponseChangeCard } from "./feeds/review-response-change";
-import { ReviewChangeCard } from "./feeds/review-change";
-import { JobCancelled } from "./feeds/job-cancelled";
+import { PublicJobCreatedFeed } from "./cards/job/public-job-created";
+import { JobFeedCard } from "./cards/job/feed";
+import { JobApplicationCard } from "./cards/job/applicant";
+import { JobUpdateFeed } from "./cards/job/update";
+import { ReferralSignupFeed } from "./cards/referral/signup";
+import { JobReviewedFeed } from "./cards/job/reviewed";
+import { ReferralJobCompletion } from "./cards/referral/job-completion";
+import { PaymentReleased } from "./cards/payment-released";
+import { JobCompletionFeed } from "./cards/job/completion";
+import { ReviewResponseChangeCard } from "./cards/review/response-change";
+import { ReviewChangeCard } from "./cards/review/change";
+import { JobCancelled } from "./cards/job/cancelled";
 
 export const ParseFeedView = (
 	feed: DataFeedResponse,

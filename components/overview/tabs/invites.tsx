@@ -14,7 +14,7 @@ import { useGetInvites } from "@/lib/api/invites";
 import { PageEmpty } from "@/components/common/page-empty";
 import { PageError } from "@/components/common/page-error";
 import { PageLoading } from "@/components/common/page-loading";
-import { JobFeedCard } from "./feed-viewer/feeds/job-feed";
+import { JobFeedCard } from "../feeds/cards/job/feed";
 
 export const Invites = (): ReactElement => {
 	const query = useGetInvites({ filter: { status: "pending" } });

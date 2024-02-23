@@ -15,7 +15,7 @@ import { type ReactElement } from "react";
 
 import { RenderBookMark } from "@/components/jobs/job-cards/render-bookmark";
 import { AfroProfile } from "@/components/common/afro-profile";
-import { JobFeedWrapper } from "../feed-wrapper";
+import { JobFeedWrapper } from "./wrapper";
 
 interface JobApplicationCardProps {
 	id: string;

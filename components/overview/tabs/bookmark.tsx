@@ -10,12 +10,12 @@ import { type ReactElement, useMemo } from "react";
 /*                             Internal Dependency                            */
 /* -------------------------------------------------------------------------- */
 
-import { ParseFeedView } from "./feed-viewer";
+import { ParseFeedView } from "../feeds";
 import { useUserState } from "@/lib/store/account";
 import { useGetBookmarks } from "@/lib/api/bookmark";
-import { PageEmpty } from "../common/page-empty";
-import { PageLoading } from "../common/page-loading";
-import { PageError } from "../common/page-error";
+import { PageEmpty } from "../../common/page-empty";
+import { PageLoading } from "../../common/page-loading";
+import { PageError } from "../../common/page-error";
 
 export const FeedsBookmark = (): ReactElement => {
 	const { _id: loggedInUser } = useUserState();
