@@ -13,13 +13,13 @@ import Link from "next/link";
 /*                             Internal Dependency                            */
 /* -------------------------------------------------------------------------- */
 
-import { RenderBookMark } from "@/components/jobs/job-cards/render-bookmark";
+import { RenderBookMark } from "@/components/jobs/misc/render-bookmark";
 import { DeliverableProgressBar } from "@/components/common/deliverable-progress-bar";
 import { AfroProfile } from "@/components/common/afro-profile";
-import { ClientJobModal } from "@/components/jobs/job-modals/client";
+import { ClientJobModal } from "@/components/jobs/home/created/client-card/modal";
 import { SideModal } from "@/components/common/side-modal";
 import { CheckBox } from "@/components/common/checkBox";
-import { TalentJobModal } from "@/components/jobs/job-modals/talent";
+import { TalentJobModal } from "@/components/jobs/home/accepted/talent-card/modal";
 
 interface TalentJobUpdateProps {
 	id: string;

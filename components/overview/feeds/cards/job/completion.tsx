@@ -12,11 +12,11 @@ import { Briefcase, X } from "lucide-react";
 /*                             Internal Dependency                            */
 /* -------------------------------------------------------------------------- */
 
-import { RenderBookMark } from "@/components/jobs/job-cards/render-bookmark";
+import { RenderBookMark } from "@/components/jobs/misc/render-bookmark";
 import { AfroProfile } from "@/components/common/afro-profile";
-import { ClientJobModal } from "@/components/jobs/job-modals/client";
+import { ClientJobModal } from "@/components/jobs/home/created/client-card/modal";
 import { SideModal } from "@/components/common/side-modal";
-import { TalentJobModal } from "@/components/jobs/job-modals/talent";
+import { TalentJobModal } from "@/components/jobs/home/accepted/talent-card/modal";
 
 interface JobCompletedProps {
 	id: string;

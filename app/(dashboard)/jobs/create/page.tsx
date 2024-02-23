@@ -14,7 +14,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 
 import CreateJobForm from "@/components/forms/create-job";
 import { createJobSchema } from "@/lib/validations";
-import Steps from "@/components/jobs/steps";
+import Steps from "@/components/jobs/misc/steps";
 
 type FormValues = z.infer<typeof createJobSchema>;
 

@@ -14,9 +14,9 @@ import { usePathname, useSearchParams, useRouter } from "next/navigation";
 /*                             Internal Dependency                            */
 /* -------------------------------------------------------------------------- */
 
-import { OpenJobs } from "@/components/jobs/open-jobs";
-import { CreatedJobs } from "@/components/jobs/created-jobs";
-import { AcceptedJobs } from "@/components/jobs/assigned-jobs";
+import { OpenJobs } from "@/components/jobs/home/open";
+import { CreatedJobs } from "@/components/jobs/home/created";
+import { AcceptedJobs } from "@/components/jobs/home/accepted";
 
 interface TabTriggerProps {
 	value: string;

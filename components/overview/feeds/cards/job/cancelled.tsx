@@ -13,7 +13,7 @@ import { type ReactElement } from "react";
 /*                             Internal Dependency                            */
 /* -------------------------------------------------------------------------- */
 
-import { RenderBookMark } from "@/components/jobs/job-cards/render-bookmark";
+import { RenderBookMark } from "@/components/jobs/misc/render-bookmark";
 import { AfroProfile } from "@/components/common/afro-profile";
 
 interface JobCancelledProps {

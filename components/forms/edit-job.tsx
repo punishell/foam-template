@@ -20,7 +20,7 @@ import { type Job, isJobDeliverable } from "@/lib/types";
 import { useUpdateJob, useInviteTalentToJob } from "@/lib/api/job";
 import { Spinner } from "@/components/common";
 import { filterEmptyStrings } from "@/lib/utils";
-import Steps from "@/components/jobs/steps";
+import Steps from "@/components/jobs/misc/steps";
 import JobTitle from "@/components/forms/create-job/job-title";
 import JobProposedPrice from "@/components/forms/create-job/job-proposed-price";
 import JobDueDate from "@/components/forms/create-job/job-due-date";

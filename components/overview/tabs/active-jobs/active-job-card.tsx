@@ -16,8 +16,8 @@ import { Briefcase } from "lucide-react";
 import { useUserState } from "@/lib/store/account";
 import { DeliverableProgressBar } from "@/components/common/deliverable-progress-bar";
 import { SideModal } from "@/components/common/side-modal";
-import { TalentJobModal } from "@/components/jobs/job-modals/talent";
-import { ClientJobModal } from "@/components/jobs/job-modals/client";
+import { TalentJobModal } from "@/components/jobs/home/accepted/talent-card/modal";
+import { ClientJobModal } from "@/components/jobs/home/created/client-card/modal";
 import { AfroProfile } from "@/components/common/afro-profile";
 
 interface ActiveJobCardProps {
