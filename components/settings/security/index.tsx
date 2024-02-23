@@ -11,8 +11,8 @@ import { Text } from "pakt-ui";
 /*                             Internal Dependency                            */
 /* -------------------------------------------------------------------------- */
 
-import { AuthApp2FA } from "./auth-app";
-import { Email2FA } from "./email-2fa";
+import { GoogleAuth2FA } from "./google-auth";
+import { EmailAuth2FA } from "./email-auth";
 import { useUserState } from "@/lib/store/account";
 import { TWO_FA_CONSTANTS } from "@/lib/constants";
 import SettingsForm from "@/components/forms/settings";
@@ -36,11 +36,11 @@ export const SecurityView = (): ReactElement => {
 				<Text.h3 size="xs">2FA</Text.h3>
 
 				<div className="flex justify-between gap-5">
-					<AuthApp2FA
+					<GoogleAuth2FA
 						isEnabled={is2FASetUp}
 						disabled={isSecuritySetUp || isEmailSetUp}
 					/>
-					<Email2FA
+					<EmailAuth2FA
 						isEnabled={isEmailSetUp}
 						disabled={is2FASetUp || isSecuritySetUp}
 					/>

@@ -98,8 +98,8 @@ export const JobUpdates: FC<JobUpdatesProps> = ({
 							jobCreator={creator._id}
 							talentId={String(owner?._id)}
 							readonly
-							// eslint-disable-next-line @typescript-eslint/no-shadow
 							deliverables={deliverables.map(
+								// eslint-disable-next-line @typescript-eslint/no-shadow
 								({ _id, name, progress, updatedAt, meta }) => ({
 									progress,
 									updatedAt,

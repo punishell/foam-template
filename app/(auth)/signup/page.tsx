@@ -68,7 +68,7 @@ export default function SignupPage(): React.JSX.Element {
 				</div>
 			)}
 			{!loading && errorMsg && (
-				<Container className="bg-[rgba(0, 124, 91, 0.20)] mx-auto mt-28 flex w-full max-w-xl flex-col items-center justify-center gap-2  rounded-2xl border border-white border-opacity-20 bg-[rgba(0,124,91,0.20)] p-8 px-[40px] py-10 text-center text-white backdrop-blur-lg backdrop-blur-md">
+				<Container className="bg-[rgba(0, 124, 91, 0.20)] mx-auto mt-28 flex w-full max-w-xl flex-col items-center justify-center gap-2  rounded-2xl border border-white border-opacity-20 bg-[rgba(0,124,91,0.20)] p-8 px-[40px] py-10 text-center text-white backdrop-blur-md">
 					<div className="flex w-full max-w-[150px] items-center justify-center">
 						<Lottie animationData={warning} />
 					</div>

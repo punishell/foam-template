@@ -59,9 +59,9 @@ interface fetchWalletStatsParams {
 	format: string;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const fetchWalletStats = async ({
 	format,
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 }: fetchWalletStatsParams): Promise<any> => {
 	try {
 		const { data } = await axios.get(`/transaction/stats?format=${format}`);

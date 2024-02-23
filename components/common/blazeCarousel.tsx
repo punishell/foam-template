@@ -54,8 +54,8 @@ export const useBlazeSlider = (config?: BlazeConfig): BlazeSliderHook => {
 	}, [config]);
 
 	useEffect(() => {
-		// eslint-disable-next-line @typescript-eslint/no-shadow
 		const unsubscribe = sliderRef?.onSlide(
+			// eslint-disable-next-line @typescript-eslint/no-shadow
 			(pageIndex, firstSlideIndex, lastSlideIndex) => {
 				setCurrentSlide(pageIndex);
 				setLastSlide(lastSlideIndex);
@@ -137,9 +137,10 @@ export const useKeenSlide = (): KeenSliderHooks => {
 
 	const prevSlide = (): void => slider.current?.prev();
 	const nextSlide = (): void => slider.current?.next();
-	// @ts-expect-error --- TODO: fix this
 	return {
+		// @ts-expect-error --- TODO: fix this
 		ref: sliderRef,
+		// @ts-expect-error --- TODO: fix this
 		slider,
 		currentSlide,
 		totalSlides,

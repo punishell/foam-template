@@ -126,9 +126,9 @@ interface ClientDeleteJobModalProps {
 	setModalOpen: (state: boolean) => void;
 }
 
-// @ts-expect-error --- Unused variable
 const DeleteJobModal: React.FC<ClientDeleteJobModalProps> = ({
 	jobId,
+	// @ts-expect-error --- Unused variable
 	title,
 	setModalOpen,
 }) => {

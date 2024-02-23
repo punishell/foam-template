@@ -4,12 +4,14 @@
 /*                             External Dependency                            */
 /* -------------------------------------------------------------------------- */
 
+import React from "react";
 import { motion } from "framer-motion";
 import { type ReactElement, useRef, useState } from "react";
 
 export interface SlideItemProps {
 	goToNextSlide: () => void;
 	goToPreviousSlide: () => void;
+	isActive?: boolean;
 }
 
 interface SliderProps {
@@ -17,6 +19,7 @@ interface SliderProps {
 		SlideItem: React.FC<{
 			goToNextSlide: () => void;
 			goToPreviousSlide: () => void;
+			isActive?: boolean;
 		}>;
 	}>;
 }
@@ -55,13 +58,23 @@ export const Slider = ({ items }: SliderProps): ReactElement => {
 				}}
 			>
 				{items.map(({ SlideItem }, index) => {
-					return (
+					const slideItemElement = (
 						<SlideItem
 							goToNextSlide={handleNext}
 							goToPreviousSlide={handlePrevious}
 							key={index}
 						/>
 					);
+					if (React.isValidElement(slideItemElement)) {
+						return React.cloneElement(slideItemElement, {
+							// eslint-disable-next-line react/no-array-index-key
+							key: index,
+							// @ts-expect-error ---
+							isActive: currentSlide === index,
+						});
+					}
+
+					return null;
 				})}
 			</motion.div>
 		</div>

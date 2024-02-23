@@ -54,8 +54,8 @@ const JobCategory = ({ form }: JobDescriptionProps): ReactElement => {
 									<SelectValue placeholder="Select Category" />
 								</SelectTrigger>
 								<SelectContent>
-									{/* eslint-disable-next-line @typescript-eslint/no-shadow */}
 									{CATEGORY_OPTIONS.map(
+										// eslint-disable-next-line @typescript-eslint/no-shadow
 										({ label, value }) => (
 											<SelectItem
 												key={value}

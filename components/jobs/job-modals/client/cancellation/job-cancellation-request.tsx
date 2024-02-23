@@ -90,8 +90,8 @@ export const JobCancellationRequest: FC<JobCancellationRequestProps> = ({
 						jobCreator={creator._id}
 						readonly
 						showActionButton={false}
-						// eslint-disable-next-line @typescript-eslint/no-shadow
 						deliverables={deliverables.map(
+							// eslint-disable-next-line @typescript-eslint/no-shadow
 							({ _id, name, progress, updatedAt }) => ({
 								progress,
 								updatedAt,

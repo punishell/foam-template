@@ -77,7 +77,7 @@ const ProfessionalInfo = ({ form }: FormProps): ReactElement => {
 							placeholder="Enter a 350 character about thing"
 						/>
 						<div className="ml-auto w-fit text-sm text-body">
-							{form.watch("bio")?.length ?? 0} / 350
+							{form.watch("bio")?.length ?? 0}/350
 						</div>
 
 						<span className="absolute -bottom-6 flex w-full">

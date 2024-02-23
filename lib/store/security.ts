@@ -74,3 +74,15 @@ export const useSecurityQuestion2FAState = create<SecurityQuestion2FAState>(
 		},
 	}),
 );
+
+interface MscState {
+	isInput6DigitCode?: boolean;
+	setIsInput6DigitCode?: (value: boolean) => void;
+}
+
+export const useMscState = create<MscState>((set) => ({
+	isInput6DigitCode: false,
+	setIsInput6DigitCode: (value) => {
+		set(() => ({ isInput6DigitCode: value }));
+	},
+}));
