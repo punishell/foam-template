@@ -221,7 +221,7 @@ export default function DashboardLayout({
 								</div>
 							</div>
 						</Modal>
-						<div className="relative isolate z-10 flex h-full w-full flex-col px-8 pt-5">
+						<div className="relative isolate z-10 flex h-full flex-1 flex-col px-4 2xl:px-8 pt-5">
 							{children}
 						</div>
 					</div>

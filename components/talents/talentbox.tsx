@@ -167,38 +167,34 @@ export const TalentBox = ({
 									</span>
 									{skills?.length > 0 && (
 										<div className="flex w-full items-center gap-2">
-											{skills
-												?.slice(0, 3)
-												.map(
-													(
-														skill: {
-															name: string;
-															color: string;
-														},
-														i: number,
-													) => {
-														const {
-															color,
-															name: n,
-														} = skill;
-														const s = n || skill;
-														return (
-															<span
-																key={i}
-																className="shrink-0 grow items-center gap-2 rounded-3xl px-3 py-1 text-center capitalize"
-																style={{
-																	backgroundColor:
-																		color ??
-																		"#B2AAE9",
-																}}
-															>
-																{limitString(
-																	s as string,
-																)}
-															</span>
-														);
+											{skills?.slice(0, 3).map(
+												(
+													skill: {
+														name: string;
+														color: string;
 													},
-												)}
+													i: number,
+												) => {
+													const { color, name: n } =
+														skill;
+													const s = n || skill;
+													return (
+														<span
+															key={i}
+															className="shrink-0 grow items-center gap-2 rounded-3xl px-3 py-1 text-center capitalize"
+															style={{
+																backgroundColor:
+																	color ??
+																	"#B2AAE9",
+															}}
+														>
+															{limitString(
+																s as string,
+															)}
+														</span>
+													);
+												},
+											)}
 										</div>
 									)}
 								</div>

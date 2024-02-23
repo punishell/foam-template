@@ -5,6 +5,7 @@
 /* -------------------------------------------------------------------------- */
 
 import {
+	Brush,
 	CartesianGrid,
 	Line,
 	LineChart,
@@ -24,6 +25,7 @@ interface ChartProps {
 	height?: "sm" | "md" | "lg";
 	dataKey: string;
 	xAxisKey: string;
+	isMonth?: boolean;
 }
 
 const HEIGHT_MAP = {
@@ -37,7 +39,14 @@ export const Chart = ({
 	dataKey,
 	xAxisKey,
 	height = "sm",
+	isMonth,
 }: ChartProps): React.JSX.Element => {
+	// Set start and end index for brush (7 days)
+	const totalDataPoints = data.length;
+	const daysToShow = 7;
+
+	const endIndex = totalDataPoints - 1;
+	const startIndex = Math.max(0, endIndex - daysToShow);
 	return (
 		<ResponsiveContainer
 			width="100%"
@@ -55,9 +64,8 @@ export const Chart = ({
 					tick={{
 						fill: "#1818196B",
 					}}
-					axisLine={false}
 					stroke="#E8E8E8"
-					allowDuplicatedCategory={false}
+					interval={0}
 				/>
 				<YAxis
 					width={40}
@@ -65,7 +73,6 @@ export const Chart = ({
 					tick={{
 						fill: "#1818196B",
 					}}
-					axisLine={false}
 					stroke="#E8E8E8"
 				/>
 				<Line
@@ -76,6 +83,16 @@ export const Chart = ({
 					name={dataKey}
 					dataKey={dataKey}
 				/>
+				{isMonth && (
+					<Brush
+						dataKey="date"
+						height={15}
+						stroke="#28A745"
+						startIndex={startIndex}
+						endIndex={endIndex}
+						className="text-xs"
+					/>
+				)}
 			</LineChart>
 		</ResponsiveContainer>
 	);

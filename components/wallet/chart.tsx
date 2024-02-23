@@ -29,6 +29,34 @@ export const WalletBalanceChart = ({
 }: {
 	data: ChartDataProps;
 }): React.JSX.Element => {
+	const modifiedWeeklyData = [...data.weekly];
+	const modifiedMonthlyData = [...data.monthly];
+	const modifiedYearlyData = [...data.yearly];
+
+	if (modifiedWeeklyData.length > 0) {
+		const lastData = modifiedWeeklyData[
+			modifiedWeeklyData.length - 1
+		] as TransformedData;
+		const additionalDataPoint = { date: "", amt: lastData.amt };
+		modifiedWeeklyData.push(additionalDataPoint);
+	}
+
+	if (modifiedMonthlyData.length > 0) {
+		const lastData = modifiedMonthlyData[
+			modifiedMonthlyData.length - 1
+		] as TransformedData;
+		const additionalDataPoint = { date: "", amt: lastData.amt };
+		modifiedMonthlyData.push(additionalDataPoint);
+	}
+
+	if (modifiedYearlyData.length > 0) {
+		const lastData = modifiedYearlyData[
+			modifiedYearlyData.length - 1
+		] as TransformedData;
+		const additionalDataPoint = { date: "", amt: lastData.amt };
+		modifiedYearlyData.push(additionalDataPoint);
+	}
+
 	return (
 		<Tabs.Root
 			defaultValue="week"
@@ -42,13 +70,13 @@ export const WalletBalanceChart = ({
 						className="rounded-lg p-1 px-2 duration-200 hover:bg-white radix-state-active:bg-white"
 						value="week"
 					>
-						1 Week
+						7 Days
 					</Tabs.Trigger>
 					<Tabs.Trigger
 						className="rounded-lg p-1 px-2 duration-200 hover:bg-white radix-state-active:bg-white"
 						value="month"
 					>
-						1 Month
+						30 Days
 					</Tabs.Trigger>
 					<Tabs.Trigger
 						className="rounded-lg p-1 px-2 duration-200 hover:bg-white radix-state-active:bg-white"
@@ -61,7 +89,7 @@ export const WalletBalanceChart = ({
 			<div className="h-full">
 				<Tabs.Content value="week" className="h-full">
 					<Chart
-						data={data.weekly}
+						data={modifiedWeeklyData}
 						dataKey="amt"
 						xAxisKey="date"
 						height="md"
@@ -69,15 +97,16 @@ export const WalletBalanceChart = ({
 				</Tabs.Content>
 				<Tabs.Content value="month" className="h-full">
 					<Chart
-						data={data.monthly}
+						data={modifiedMonthlyData}
 						dataKey="amt"
 						xAxisKey="date"
 						height="md"
+						isMonth
 					/>
 				</Tabs.Content>
 				<Tabs.Content value="year" className="h-full">
 					<Chart
-						data={data.yearly}
+						data={modifiedYearlyData}
 						dataKey="amt"
 						xAxisKey="date"
 						height="md"
