@@ -214,6 +214,7 @@ export interface ConversationMessage {
 	attachments: AttachmentsResponseProps[] | SendAttachmentsProps[];
 	// Added from sending message
 	sending: boolean;
+	timestamp: string;
 }
 
 // Profile Type
@@ -230,6 +231,7 @@ export interface ConversationUserProps {
 	lastName: string;
 	score: number;
 	profileImage: ProfileImage;
+	socket: SocketProps;
 }
 
 // Header Type
@@ -279,4 +281,6 @@ export interface SocketContextType {
 	getConversationById: (id: string) => void;
 	setActiveConversation: (id: string) => void;
 	unreadChatCount: number;
+	handleTyping: () => void;
+	isTyping: string;
 }

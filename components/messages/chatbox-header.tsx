@@ -5,6 +5,7 @@
 /* -------------------------------------------------------------------------- */
 
 import { type ReactElement } from "react";
+import dayjs from "dayjs";
 
 /* -------------------------------------------------------------------------- */
 /*                             Internal Dependency                            */
@@ -48,7 +49,9 @@ export const ChatBoxHeader = ({
 				</div>
 			</div>
 			<div>
-				<span className="text-body">Started: {time}</span>
+				<span className="text-body">
+					Started: {dayjs(time).format("MMMM D, YYYY")}
+				</span>
 			</div>
 		</div>
 	);

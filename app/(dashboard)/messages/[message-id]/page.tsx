@@ -20,9 +20,9 @@ import { useDropzone } from "react-dropzone";
 import { MessageTypeEnums, useMessaging } from "@/providers/socketProvider";
 import { Spinner } from "@/components/common";
 import { formatBytes, getPreviewByType } from "@/lib/utils";
-import { ChatBoxHeader } from "@/components/messaging/chatbox-header";
-import { Messages } from "@/components/messaging/messages";
-import { RenderAttachmentPreviewer } from "@/components/messaging/render-attachment-viewer";
+import { ChatBoxHeader } from "@/components/messages/chatbox-header";
+import { Messages } from "@/components/messages/messages";
+import { RenderAttachmentPreviewer } from "@/components/messages/render-attachment-viewer";
 import { type SendAttachmentsProps } from "@/providers/socket-types";
 import { toast } from "@/components/common/toaster";
 
@@ -45,7 +45,8 @@ export default function ChatPage({ params }: Props): ReactElement {
 		setActiveConversation,
 		sendUserMessage,
 		markUserMessageAsSeen,
-		// handleTyping,
+		handleTyping,
+		isTyping,
 	} = useMessaging();
 
 	const [loadingMessage, setLoadingMessages] = useState(true);
@@ -166,7 +167,7 @@ export default function ChatPage({ params }: Props): ReactElement {
 	const onKeyDownPress = async (
 		e: React.KeyboardEvent<HTMLTextAreaElement>,
 	): Promise<void> => {
-		// handleTyping();
+		handleTyping();
 		if (e.which === 13 && !e.shiftKey) {
 			e.preventDefault();
 			return sendMessage();
@@ -224,6 +225,11 @@ export default function ChatPage({ params }: Props): ReactElement {
 					</button>
 				</div>
 			</div>
+			{isTyping !== "" && (
+				<p className="text-sky font-normal italic text-sm">
+					{isTyping}
+				</p>
+			)}
 		</div>
 	);
 }

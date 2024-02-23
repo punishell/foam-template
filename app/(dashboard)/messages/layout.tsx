@@ -20,8 +20,8 @@ import {
 // import { AfroScore } from "@/components/common/afro-profile";
 // import { useGetConnectionPreference, useUpdateConnectionPreference } from "@/lib/api/connection";
 import { useMessaging } from "@/providers/socketProvider";
-import { ChatList } from "@/components/messaging/chat-list/chatlist";
-import { ChatListSearch } from "@/components/messaging/chat-list/chat-list-search";
+import { ChatList } from "@/components/messages/chat-list/chatlist";
+import { ChatListSearch } from "@/components/messages/chat-list/chat-list-search";
 
 interface Props {
 	children: React.ReactNode;
@@ -41,7 +41,7 @@ export default function MessagesLayout({ children }: Props): ReactElement {
         </div>
       </div> */}
 
-			<div className="mb-4 flex w-full grow">
+			<div className="mb-4 flex w-full grow h-[90%]">
 				<div className="flex h-full shrink-0 grow-0 basis-[370px] flex-col rounded-lg rounded-r-none border border-line bg-white">
 					<ChatListSearch />
 					{/* <div className="flex relative items-center gap-2 px-4 pb-6">

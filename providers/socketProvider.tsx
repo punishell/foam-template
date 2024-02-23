@@ -17,8 +17,6 @@ import {
 } from "react";
 import { io, type Socket } from "socket.io-client";
 import { usePathname, useRouter } from "next/navigation";
-import dayjs from "dayjs";
-// import { useDebounce } from "usehooks-ts";
 
 /* -------------------------------------------------------------------------- */
 /*                             Internal Dependency                            */
@@ -66,7 +64,7 @@ export const conversationEnums = {
 	FETCH_CONVERSATION_MESSAGES: "FETCH_CONVERSATION_MESSAGES",
 	SEND_MESSAGE: "SEND_MESSAGE",
 	// CURRENT_RECIPIENT: "CURRENT_RECIPIENT",
-	USER_TYPING: "USER_TYPING",
+	// USER_TYPING: "USER_TYPING",
 	SENDER_IS_TYPING: "SENDER_IS_TYPING",
 	SENDER_STOPS_TYPING: "SENDER_STOPS_TYPING",
 	POPUP_MESSAGE: "POPUP_MESSAGE",
@@ -77,25 +75,17 @@ export const conversationEnums = {
 	// DELETE_MESSAGE: "DELETE_MESSAGE",
 };
 
+interface TypingProps {
+	message: string;
+	sender: string;
+}
+
 const MIN_LEN = 25;
 
 const SOCKET_URL = process.env.NEXT_PUBLIC_SOCKET_URL;
 
-const defaultContext: SocketContextType = {
-	currentConversation: null,
-	loadingChats: true,
-	status: "pending",
-	conversations: [],
-	socket: null,
-	startingNewChat: false,
-	fetchUserChats: () => {},
-	startUserInitializeConversation: async () => Promise.resolve(),
-	sendUserMessage: async () => Promise.resolve(),
-	markUserMessageAsSeen: async () => {},
-	getConversationById: async () => {},
-	setActiveConversation: async () => {},
-	unreadChatCount: 0,
-};
+// @ts-expect-error --- TODO: Fix this
+const defaultContext: SocketContextType = {};
 
 export const SocketContext = createContext<SocketContextType>(defaultContext);
 
@@ -123,12 +113,8 @@ export const MessagingProvider = ({
 	const [unreadChatCount, setUnreadChatCount] = useState<number>(0);
 	const [startingNewChat, setStartingNewChat] = useState(false);
 
-	// const [isUserTyping, setIsUserTyping] = useState<boolean>(false);
-	// const [isSenderTyping, setIsSenderTyping] = useState<boolean>(false);
-
-	// const debouncedIsTyping = useDebounce(isUserTyping, 500);
-
-	// const typingTimer = useRef<string | number | undefined | null>(null);
+	const [isTyping, setIsTyping] = useState<string>("");
+	const typingTimer = useRef<NodeJS.Timeout | null>(null);
 
 	const router = useRouter();
 	const initiated = useRef(false);
@@ -171,9 +157,7 @@ export const MessagingProvider = ({
 		messages: MessageResponseProps[],
 	): string | null => {
 		const lastMessage = messages[messages.length - 1];
-		return lastMessage
-			? dayjs(lastMessage.createdAt).format("HH:ss A")
-			: null;
+		return lastMessage ? lastMessage.createdAt : null;
 	};
 
 	const setUnreadChats = (convo: ConversationProps[]): void => {
@@ -194,7 +178,6 @@ export const MessagingProvider = ({
 	const setActiveConversation = useCallback(
 		(_id: string): void => {
 			const conversation = getConversationById(_id);
-
 			setCurrentConversation(conversation ?? null);
 		},
 		[getConversationById],
@@ -221,6 +204,7 @@ export const MessagingProvider = ({
 			isSent: m.user === loggedInUser,
 			isRead: !!m.readBy?.includes(loggedInUser),
 			attachments: parseMessageAttachments(m.attachments),
+			timestamp: m.createdAt,
 		}));
 
 	const getConversationHeader = (
@@ -274,7 +258,8 @@ export const MessagingProvider = ({
 					) as ConversationUserProps,
 					recipients: c.recipients,
 					header: getConversationHeader(c) as ConversationHeaderProps,
-					createdAt: dayjs(c.createdAt).format("MMMM D, YYYY"),
+					// createdAt: dayjs(c.createdAt).format("MMMM D, YYYY"),
+					createdAt: c.createdAt,
 					type: c.type,
 					unreadcount: getUnreadCount(c.messages),
 					lastMessage: getLastMessage(c.messages) as string,
@@ -305,8 +290,8 @@ export const MessagingProvider = ({
 						setLoadingChats(false);
 						setUnreadChats(parsedConversation);
 						if (
-							currentConversationId &&
-							activeConversationId === currentConversationId
+							currentConversationId
+							// && activeConversationId === currentConversationId
 						) {
 							const cOV = parsedConversation.find(
 								(c: ConversationProps) =>
@@ -432,6 +417,7 @@ export const MessagingProvider = ({
 							isSent: true,
 							sending: true,
 							attachments: images,
+							timestamp: new Date().toISOString(),
 						},
 					],
 				});
@@ -462,8 +448,8 @@ export const MessagingProvider = ({
 					},
 				);
 			} catch (error) {
-				// @ts-expect-error --- TODO: Fix this
 				toast.error(
+					// @ts-expect-error --- TODO: Fix this
 					error?.response?.data.message ??
 						"Failed to Send Message Try again",
 				);
@@ -517,6 +503,7 @@ export const MessagingProvider = ({
 						router.push(`/messages/${conversation._id}`);
 					},
 				);
+				setStartingNewChat(false);
 			} catch (error) {
 				setErrorMessage({
 					title: "Socket Connection Error (startUserInitializeConversation Function)",
@@ -673,30 +660,62 @@ export const MessagingProvider = ({
 		};
 	}, [fetchUserChats, loggedInUser, messagingScreen, pathname, socket]);
 
-	// const handleTyping = useCallback(() => {
-	//     setIsUserTyping(true);
-	//     socket?.emit(conversationEnums.USER_TYPING, {
-	//         isTyping: true,
-	//         senderId: loggedInUser,
-	//         recipientId: currentConversation?.sender?._id,
-	//     });
-	// }, [currentConversation?.sender?._id, loggedInUser, socket]);
+	const handleTyping = useCallback(() => {
+		// setIsTyping(true);
+		socket?.emit(conversationEnums.SENDER_IS_TYPING, {
+			isTyping: true,
+			senderId: loggedInUser,
+			recipientId: currentConversation?.sender?._id,
+		});
+		// Clear existing timer
+		if (typingTimer.current) {
+			clearTimeout(typingTimer.current);
+		}
+		// Set a new timer
+		typingTimer.current = setTimeout(() => {
+			// setIsTyping(false);
+			socket?.emit(conversationEnums.SENDER_STOPS_TYPING, {
+				isTyping: false,
+				senderId: loggedInUser,
+				recipientId: currentConversation?.sender?._id,
+			});
+		}, 5000); // 5 seconds timeout
+	}, [currentConversation?.sender?._id, loggedInUser, socket]);
 
-	// useEffect(() => {
-	//     // Listen for when user stops typing
-	//     socket?.on(conversationEnums.SENDER_IS_TYPING, (data: { isTyping: boolean }) => {
-	//         console.log(data);
-	//         setIsSenderTyping(data.isTyping);
-	//     });
+	useEffect(() => {
+		// Listen for when user is typing
+		socket?.on(conversationEnums.SENDER_IS_TYPING, (data: TypingProps) => {
+			const { message, sender: id } = data;
+			// Get user that is typing
+			const sender = currentConversation?.recipients.find(
+				(r: ConversationUserProps) => r._id === id,
+			);
+			// Get sender name
+			const senderName = `${sender?.firstName} ${sender?.lastName}`;
+			// Show typing notification
+			if (id !== loggedInUser) {
+				setIsTyping(`${senderName} ${message}`);
+			} else {
+				setIsTyping("");
+			}
+		});
 
-	//     // Listen for when user stops typing
-	//     socket?.on(conversationEnums.SENDER_STOPS_TYPING, (data: { isTyping: boolean }) => {
-	//         console.log(data);
-	//         setIsSenderTyping(data.isTyping);
-	//     });
+		// Listen for when user stops typing
+		socket?.on(
+			conversationEnums.SENDER_STOPS_TYPING,
+			(data: TypingProps) => {
+				if (data.sender) {
+					setIsTyping("");
+				}
+			},
+		);
 
-	//     // eslint-disable-next-line react-hooks/exhaustive-deps
-	// }, [socket]);
+		return () => {
+			clearTimeout(typingTimer.current as NodeJS.Timeout);
+			// socket.disconnect();
+		};
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [socket, currentConversation]);
 
 	const SocketServer: SocketContextType = useMemo(
 		() => ({
@@ -713,7 +732,8 @@ export const MessagingProvider = ({
 			markUserMessageAsSeen,
 			getConversationById,
 			setActiveConversation,
-			// handleTyping,
+			handleTyping,
+			isTyping,
 		}),
 		[
 			currentConversation,
@@ -729,7 +749,8 @@ export const MessagingProvider = ({
 			markUserMessageAsSeen,
 			getConversationById,
 			setActiveConversation,
-			// handleTyping,
+			handleTyping,
+			isTyping,
 		],
 	);
 

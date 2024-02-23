@@ -13,6 +13,7 @@ import { usePathname } from "next/navigation";
 /* -------------------------------------------------------------------------- */
 
 import { AfroProfile } from "../../common/afro-profile";
+import { formatTimestampForDisplay } from "@/lib/utils";
 
 interface ChatListItemProps {
 	_id: string;
@@ -23,6 +24,7 @@ interface ChatListItemProps {
 	chatId: string;
 	lastMessage: string;
 	unreadCount: number;
+	status: string;
 }
 
 export const ChatListItem: React.FC<ChatListItemProps> = ({
@@ -34,6 +36,7 @@ export const ChatListItem: React.FC<ChatListItemProps> = ({
 	lastMessage,
 	time,
 	chatId,
+	status,
 }) => {
 	const pathname = usePathname();
 	const urlChatId = pathname.split("/")[2];
@@ -66,7 +69,20 @@ export const ChatListItem: React.FC<ChatListItemProps> = ({
 								</div>
 							)}
 						</div>
-						<div className="text-xs text-body">{time}</div>
+						<div className="flex flex-col items-end gap-2">
+							<p className="text-xs text-body">
+								{formatTimestampForDisplay(time)}
+							</p>
+							<div
+								className={`h-2 w-2 rounded-full ${
+									status === "ONLINE"
+										? "bg-green-500"
+										: status === "OFFLINE"
+											? "bg-gray-500"
+											: ""
+								}`}
+							/>
+						</div>
 					</div>
 					<div className="overflow-hidden text-ellipsis whitespace-nowrap text-sm text-body">
 						{lastMessage && lastMessage.length > 30

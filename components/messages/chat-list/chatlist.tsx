@@ -24,8 +24,12 @@ export const ChatList = ({
 	loading,
 }: ChatListProps): ReactElement => {
 	return (
-		<div className="flex w-full grow flex-col divide-line overflow-y-auto border-t">
-			{loading && <Spinner />}
+		<div className="flex w-full grow flex-col divide-line overflow-y-auto h-full border-t">
+			{loading && (
+				<div className="flex h-full w-full grow flex-col items-center  justify-center gap-1">
+					<Spinner />
+				</div>
+			)}
 			{conversations.map((c: ConversationProps, i: number) => (
 				<ChatListItem
 					key={i}
@@ -37,6 +41,7 @@ export const ChatList = ({
 					unreadCount={c?.unreadcount}
 					lastMessage={c?.lastMessage ?? ""}
 					time={c?.lastMessageTime}
+					status={c?.sender?.socket?.status}
 				/>
 			))}
 		</div>
