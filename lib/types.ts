@@ -36,6 +36,7 @@ export interface User {
     // VerifyEmailResponse
     token?: string;
     expiresIn?: number;
+    kyc?: boolean;
 }
 
 export interface Job {
