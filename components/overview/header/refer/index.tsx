@@ -68,7 +68,7 @@ export function ReferralSideModal({
 				title: u?.referral?.profile?.bio?.title ?? "",
 				score: u?.referral?.score,
 				image: u?.referral?.profileImage?.url,
-				dated: dayjs(u?.createdAt).format("DD/MM/YYYY"),
+				dated: dayjs(u?.createdAt).format("MM/DD/YYYY"),
 			})),
 		[data],
 	);

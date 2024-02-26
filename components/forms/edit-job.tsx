@@ -113,8 +113,7 @@ export const EditJobForm: FC<JobEditFormProps> = ({ job }) => {
 								},
 							},
 						);
-					}
-					if (talentId) {
+					} else if (talentId) {
 						router.push(
 							`/jobs/${id}/make-deposit/?talent-id=${talentId}`,
 						);
