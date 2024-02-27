@@ -101,22 +101,22 @@ function ResetPasswordForm({
 			{!isCompleted && (
 				<Container className="flex h-full w-full max-w-2xl flex-col items-center justify-center gap-6">
 					<div className="flex flex-col items-center gap-2 text-center text-white">
-						<h3 className="font-sans text-3xl font-bold">
+						<h3 className="font-sans text-2xl 2xl:text-3xl font-bold">
 							Reset Password
 						</h3>
-						<p className="font-sans text-base">
+						<p className="font-sans text-base leading-normal tracking-tight">
 							Choose a new password for your account
 						</p>
 					</div>
 					<form
 						onSubmit={resetForm.handleSubmit(onSubmit)}
-						className="bg-[rgba(0, 124, 91, 0.20)] relative z-[100] mx-auto flex w-full max-w-[600px] flex-col items-center gap-6 rounded-2xl border border-white border-opacity-20 bg-[rgba(0,124,91,0.20)] px-[40px] py-10 backdrop-blur-md"
+						className="relative z-[100] mx-auto flex w-full sm:max-w-[600px] flex-col items-center gap-6 rounded-2xl border border-white border-opacity-20 bg-[rgba(0,124,91,0.20)] p-4 sm:px-[40px] sm:py-10 backdrop-blur-md"
 					>
 						<div className="flex w-full flex-col gap-4">
 							<div className="relative mb-2 flex flex-col gap-2">
 								<label
 									htmlFor="password"
-									className="text-sm text-white"
+									className="text-base sm:text-sm text-white"
 								>
 									Create Password
 								</label>
@@ -171,7 +171,7 @@ function ResetPasswordForm({
 							<div className="relative mb-2 flex flex-col gap-2">
 								<label
 									htmlFor="confirmPassword"
-									className="text-sm text-white"
+									className="text-base sm:text-sm text-white"
 								>
 									Confirm Password
 								</label>
@@ -203,7 +203,7 @@ function ResetPasswordForm({
 				</Container>
 			)}
 			{isCompleted && (
-				<Container className="bg-[rgba(0, 124, 91, 0.20)] mx-auto mt-28 flex w-full max-w-xl flex-col items-center justify-center gap-2  rounded-2xl border border-white border-opacity-20 bg-[rgba(0,124,91,0.20)] p-8 px-[40px] py-10 text-center text-white backdrop-blur-lg">
+				<Container className="mx-auto mt-28 flex w-full max-w-xl flex-col items-center justify-center gap-2  rounded-2xl border border-white border-opacity-20 bg-[rgba(0,124,91,0.20)] p-8 px-[40px] py-10 text-center text-white backdrop-blur-lg">
 					<div className="flex w-full max-w-[150px] items-center justify-center">
 						<Lottie animationData={success} />
 					</div>

@@ -14,7 +14,7 @@ export const Container = ({
 	className,
 }: Props): React.JSX.Element => {
 	return (
-		<div className={`${cn("container mx-auto w-full px-4", className)}`}>
+		<div className={`${cn("container mx-auto w-full sm:px-4", className)}`}>
 			{children}
 		</div>
 	);

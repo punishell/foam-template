@@ -73,11 +73,14 @@ const LoginForm = (): React.JSX.Element => {
 		<form
 			method="post"
 			onSubmit={form.handleSubmit(onSubmit)}
-			className="mx-auto flex w-full max-w-[600px] flex-col items-center gap-6 rounded-2xl border border-white border-opacity-20 bg-primary bg-opacity-20 px-[40px] py-10 backdrop-blur-md"
+			className="mx-auto flex w-full sm:max-w-[600px] flex-col items-center gap-6 rounded-2xl border border-white border-opacity-20 bg-primary bg-opacity-20 p-4 sm:px-[40px] sm:py-10 backdrop-blur-md"
 		>
 			<div className="flex w-full flex-col gap-4">
 				<div className="flex flex-col gap-2">
-					<label htmlFor="email" className="text-sm text-white">
+					<label
+						htmlFor="email"
+						className="text-base sm:text-sm text-white"
+					>
 						Email Address
 					</label>
 
@@ -89,7 +92,10 @@ const LoginForm = (): React.JSX.Element => {
 				</div>
 
 				<div className="flex flex-col gap-2">
-					<label htmlFor="email" className="text-sm text-white">
+					<label
+						htmlFor="email"
+						className="text-base sm:text-sm text-white"
+					>
 						Password
 					</label>
 					<PasswordInput
