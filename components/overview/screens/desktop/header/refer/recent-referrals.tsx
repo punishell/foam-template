@@ -11,7 +11,7 @@ import { Calendar } from "lucide-react";
 /*                             Internal Dependency                            */
 /* -------------------------------------------------------------------------- */
 
-import { AfroProfile } from "../../../common/afro-profile";
+import { AfroProfile } from "../../../../../common/afro-profile";
 
 interface RecentReferralProps {
 	referral: {

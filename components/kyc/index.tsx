@@ -38,7 +38,7 @@ const Kyc = (): JSX.Element => {
 	};
 	return (
 		<div
-			className={`flex w-full items-center justify-between rounded-[16px] border border-[#7DDE86] bg-white p-4 shadow ${kyc ? "hidden" : "flex"}`}
+			className={`flex w-full flex-col sm:flex-row gap-4 sm:gap-0 items-start sm:items-center justify-between rounded-[16px] border border-[#7DDE86] bg-white p-4 shadow ${kyc ? "hidden" : "flex"}`}
 		>
 			<p className="text-base font-normal text-[#6c757d]">
 				KYC is required before performing job creation and wallet
@@ -47,7 +47,7 @@ const Kyc = (): JSX.Element => {
 			<Button
 				variant="secondary"
 				size="sm"
-				className="bg-transparent"
+				className="bg-transparent max-sm:!px-4 max-sm:!py-2 max-sm:!text-sm"
 				onClick={() => {
 					handleCreateSession();
 				}}

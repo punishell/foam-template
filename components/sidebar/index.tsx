@@ -26,7 +26,7 @@ import { useMessaging } from "@/providers/socketProvider";
 export const Sidebar = (): ReactElement => {
 	const { unreadChatCount } = useMessaging();
 	return (
-		<div className="px flex h-screen shrink-0 basis-[240px] 2xl:basis-[280px] flex-col gap-6 overflow-hidden bg-sidebar-gradient px-6 pb-4 pt-6 text-white">
+		<div className="px hidden sm:flex h-screen shrink-0 basis-[240px] 2xl:basis-[280px] flex-col gap-6 overflow-hidden bg-sidebar-gradient px-6 pb-4 pt-6 text-white">
 			<div className="flex w-full flex-col items-center">
 				<Link href="/profile">
 					<UserProfile />

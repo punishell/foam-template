@@ -2,9 +2,9 @@
 /*                             Internal Dependency                            */
 /* -------------------------------------------------------------------------- */
 
-import { OverviewHeader } from "@/components/overview/header";
-import { JobHeader } from "@/components/overview/header/sub-header";
-import { LeaderBoard } from "@/components/overview/leaderboard";
+import { DesktopOverviewHeader } from "@/components/overview/screens/desktop/header";
+import { JobHeader } from "@/components/overview/screens/desktop/header/sub-header";
+import { LeaderBoard } from "@/components/overview/screens/desktop/leaderboard";
 import { Tabs } from "@/components/common/tabs";
 import { Feeds } from "@/components/overview/tabs/feeds";
 import { Invites } from "@/components/overview/tabs/invites";
@@ -17,7 +17,7 @@ export default function Overview(): React.JSX.Element {
 		<div className="flex h-screen flex-col gap-6 overflow-hidden">
 			<div className="flex h-full w-full justify-start gap-6">
 				<div className="flex h-full w-full grow flex-col gap-7">
-					<OverviewHeader />
+					<DesktopOverviewHeader />
 					<Kyc />
 					<JobHeader />
 					<div className="flex flex-1 basis-0 overflow-y-auto">

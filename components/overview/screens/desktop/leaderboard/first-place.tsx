@@ -12,7 +12,7 @@ import Image from "next/image";
 
 import { type LeaderBoardItemProps } from "./types";
 import { truncate } from "@/lib/utils";
-import { AfroProfile } from "../../common/afro-profile";
+import { AfroProfile } from "../../../../common/afro-profile";
 
 export const FirstPlace = ({
 	_id,

@@ -23,6 +23,7 @@ import { axios } from "@/lib/axios";
 import { Modal } from "@/components/common/headless-modal";
 import { Sidebar } from "@/components/sidebar";
 import { PageLoading } from "@/components/common/page-loading";
+import { BottomNav } from "@/components/bottom-nav";
 
 function Loader(): React.JSX.Element {
 	return (
@@ -225,6 +226,8 @@ export default function DashboardLayout({
 							{children}
 						</div>
 					</div>
+
+					<BottomNav />
 				</div>
 			</MessagingProvider>
 		</AccountWrapper>

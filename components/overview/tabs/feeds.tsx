@@ -12,7 +12,7 @@ import { Loader } from "lucide-react";
 /* -------------------------------------------------------------------------- */
 
 import { useDismissFeed, useGetTimeline } from "@/lib/api/dashboard";
-import { ParseFeedView } from "../feeds";
+import { ParseFeedView } from "../screens/desktop/feeds";
 import { useUserState } from "@/lib/store/account";
 import { PageEmpty } from "../../common/page-empty";
 import { PageLoading } from "../../common/page-loading";

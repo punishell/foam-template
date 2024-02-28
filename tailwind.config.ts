@@ -19,6 +19,7 @@ const config: Config = {
 			xl: { min: "1280px" },
 			"2xl": { min: "1536px" },
 			"2xl.max": { min: "1600px" },
+			"max-sm": { max: "639px" },
 		},
 		extend: {
 			colors: {
