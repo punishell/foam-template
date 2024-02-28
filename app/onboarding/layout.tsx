@@ -60,18 +60,19 @@ export default function OnboardingLayout({
 				<div className="fixed inset-0 bg-auth-gradient" />
 				<div className="fixed inset-0 bg-[url(/images/cardboard.png)] opacity-40" />
 
-				<div className="relative isolate z-10 flex h-screen w-full flex-col items-center justify-center p-5 px-8">
-					<div className="flex w-full max-w-4xl flex-col gap-4">
-						<div className="mx-auto">
+				<div className="relative isolate z-10 flex h-screen w-full flex-col items-center justify-center p-4 sm:p-5 sm:px-8">
+					<div className="flex w-full h-full sm:h-auto max-w-4xl flex-col gap-4">
+						<div className="sm:mx-auto">
 							<Image
 								src="/images/logo.svg"
 								alt="Logo"
 								width={250}
 								height={60}
+								className="w-[165.06px] h-[38px] sm:w-[250px] sm:h-[60px]"
 							/>
 						</div>
-						<div className="relative w-full rounded-2xl border bg-white p-8">
-							<div className="absolute inset-0 rounded-2xl bg-[url(/images/rain.png)] bg-repeat opacity-50" />
+						<div className="relative w-full sm:rounded-2xl sm:border sm:bg-white sm:p-8 mt-[24px] sm:mt-0 h-full">
+							<div className="hidden sm:block absolute inset-0 rounded-2xl bg-[url(/images/rain.png)] bg-repeat opacity-50" />
 							{children}
 						</div>
 					</div>

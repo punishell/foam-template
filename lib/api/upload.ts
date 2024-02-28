@@ -12,13 +12,13 @@ import { axios, type ApiError } from "@/lib/axios";
 import { toast } from "@/components/common/toaster";
 
 // upload image
-interface UploadImageResponse {
+export interface UploadImageResponse {
 	fileName: string;
 	storageUrl: string;
 	_id: string;
 }
 
-interface UploadImageParams {
+export interface UploadImageParams {
 	file: File;
 	onProgress?: (progress: number) => void;
 }

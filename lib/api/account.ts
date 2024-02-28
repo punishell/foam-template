@@ -51,7 +51,7 @@ interface GetAccountResponse {
 	};
 	isPrivate?: boolean;
 }
-interface UpdateAccountParams {
+export interface UpdateAccountParams {
 	firstName?: string;
 	lastName?: string;
 	profile?: {
