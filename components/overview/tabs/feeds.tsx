@@ -12,7 +12,7 @@ import { Loader } from "lucide-react";
 /* -------------------------------------------------------------------------- */
 
 import { useDismissFeed, useGetTimeline } from "@/lib/api/dashboard";
-import { ParseFeedView } from "../screens/desktop/feeds";
+import { ParseFeedView } from "../feeds";
 import { useUserState } from "@/lib/store/account";
 import { PageEmpty } from "../../common/page-empty";
 import { PageLoading } from "../../common/page-loading";
@@ -152,11 +152,11 @@ export const Feeds = (): ReactElement => {
 			<PageEmpty className="h-[65vh] rounded-2xl border border-line" />
 		);
 	return (
-		<div className="relative h-[65vh]">
+		<div className="relative sm:h-[65vh]">
 			<div
 				id="timeline-content"
 				ref={scrollParentRef}
-				className="scrollbar-hide h-full w-full overflow-auto rounded-2xl  border border-line bg-white p-4 [&:last]:mb-0 [&>*]:mb-5"
+				className="scrollbar-hide h-full w-full overflow-auto rounded-2xl sm:border sm:border-line bg-white p-4 [&:last]:mb-0 [&>*]:mb-5"
 			>
 				<div className="[&>*]:mb-5">
 					{timelineFeeds}
@@ -171,7 +171,6 @@ export const Feeds = (): ReactElement => {
 					<span ref={observerTarget} />
 				</div>
 			</div>
-			{/* <div className="absolute left-0 right-0 -bottom-[0px] h-10 z-50 bg-gradient-to-b from-transparent via-transparent to-green-50 rounded-2xl"></div> */}
 		</div>
 	);
 };

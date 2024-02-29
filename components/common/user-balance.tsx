@@ -26,7 +26,7 @@ export const UserBalance: FC<Props> = ({ className }) => {
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 	return (
-		<span className={cn("text-3xl text-body", className)}>
+		<span className={cn("text-lg sm:text-3xl text-body", className)}>
 			{formatUsd(parseFloat(totalWalletBalance))}
 		</span>
 	);

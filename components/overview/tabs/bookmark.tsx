@@ -10,7 +10,7 @@ import { type ReactElement, useMemo } from "react";
 /*                             Internal Dependency                            */
 /* -------------------------------------------------------------------------- */
 
-import { ParseFeedView } from "../screens/desktop/feeds";
+import { ParseFeedView } from "../feeds";
 import { useUserState } from "@/lib/store/account";
 import { useGetBookmarks } from "@/lib/api/bookmark";
 import { PageEmpty } from "../../common/page-empty";

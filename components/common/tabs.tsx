@@ -55,22 +55,22 @@ export const Tabs: FC<Props> = ({ tabs, defaultTab, urlKey, className }) => {
 			defaultValue={initialTab}
 			onValueChange={handleTabChange}
 			className={cn(
-				"gap-4relative flex w-full flex-col items-start justify-start",
+				"sm:gap-4 relative flex w-full flex-col items-start justify-start max-sm:bg-white max-sm:border-t max-sm:border-gray-200",
 				className,
 			)}
 		>
-			<RadixTabs.List className="flex w-full items-center border-b">
+			<RadixTabs.List className="flex w-full items-center max-sm:justify-between border-b max-sm:h-[64px]">
 				{tabs.map((tab) => (
 					<RadixTabs.Trigger
 						key={tab.value}
 						value={tab.value}
-						className="min-w-[100px] border-b-2 border-transparent px-8 py-2 text-center text-sm font-medium text-title transition-all duration-200 hover:text-primary radix-state-active:border-primary"
+						className="sm:min-w-[100px] border-b-2 border-transparent p-4 sm:px-8 sm:py-2 text-center text-sm font-medium text-gray-500 transition-all duration-200 hover:text-primary radix-state-active:border-primary radix-state-active:text-title"
 					>
 						{tab.label}
 					</RadixTabs.Trigger>
 				))}
 			</RadixTabs.List>
-			<div className="scrollbar-hide mt-4 w-full grow overflow-y-auto">
+			<div className="scrollbar-hide sm:mt-4 w-full grow h-auto overflow-y-auto">
 				{tabs.map((tab) => (
 					<RadixTabs.Content
 						key={tab.value}

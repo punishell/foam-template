@@ -29,6 +29,7 @@ interface AfroScoreProps {
 	size: Size;
 	score: number;
 	children?: React.ReactNode;
+	style?: React.CSSProperties;
 }
 
 const progressToColor = (progress: number): string => {
@@ -48,6 +49,7 @@ export const AfroScore: FC<AfroScoreProps> = ({
 	size,
 	score: initialScore = 63,
 	children,
+	style,
 }) => {
 	const id = useId();
 	const svgRef = useRef<SVGSVGElement>(null);
@@ -104,7 +106,10 @@ export const AfroScore: FC<AfroScoreProps> = ({
 	// };
 
 	return (
-		<div className="relative flex items-center justify-center">
+		<div
+			className="relative flex items-center justify-center"
+			style={style}
+		>
 			<div
 				style={{
 					height: radius * 2,
@@ -222,6 +227,7 @@ export const AfroScore: FC<AfroScoreProps> = ({
 type AfroProfileProps = Omit<AfroScoreProps, "children"> & {
 	src?: string;
 	url?: string;
+	className?: string;
 };
 
 export const AfroProfile: FC<AfroProfileProps> = ({
@@ -229,11 +235,14 @@ export const AfroProfile: FC<AfroProfileProps> = ({
 	score,
 	src,
 	url,
+	style,
+	className,
 }) => {
 	return (
 		<Link
 			href={url ?? ""}
-			className="relative flex items-center justify-center"
+			className={`relative flex items-center justify-center ${className}`}
+			style={style}
 		>
 			<AfroScore score={score} size={size}>
 				{src ? (

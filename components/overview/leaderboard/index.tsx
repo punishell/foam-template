@@ -11,7 +11,7 @@ import { type ReactElement } from "react";
 /* -------------------------------------------------------------------------- */
 
 import { useGetLeaderBoard } from "@/lib/api/dashboard";
-import { Spinner } from "../../../../common";
+import { Spinner } from "../../common";
 import { RunnerUp } from "./runner-up";
 import { FirstPlace } from "./first-place";
 import { SecondPlace } from "./second-place";

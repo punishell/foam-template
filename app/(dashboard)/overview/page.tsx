@@ -2,53 +2,26 @@
 /*                             Internal Dependency                            */
 /* -------------------------------------------------------------------------- */
 
-import { DesktopOverviewHeader } from "@/components/overview/screens/desktop/header";
-import { JobHeader } from "@/components/overview/screens/desktop/header/sub-header";
-import { LeaderBoard } from "@/components/overview/screens/desktop/leaderboard";
-import { Tabs } from "@/components/common/tabs";
-import { Feeds } from "@/components/overview/tabs/feeds";
-import { Invites } from "@/components/overview/tabs/invites";
-import { ActiveJobs } from "@/components/overview/tabs/active-jobs";
-import { FeedsBookmark } from "@/components/overview/tabs/bookmark";
+import { DesktopOverviewHeader } from "@/components/overview/header";
+import { MobileOverviewHeader } from "@/components/overview/header/mobile";
+import { JobHeader } from "@/components/overview/sub-header";
+import { LeaderBoard } from "@/components/overview/leaderboard";
 import Kyc from "@/components/kyc";
+import { FeedTabs } from "@/components/overview/tabs";
 
 export default function Overview(): React.JSX.Element {
 	return (
-		<div className="flex h-screen flex-col gap-6 overflow-hidden">
+		<div className="flex h-screen flex-col gap-6 sm:overflow-hidden">
 			<div className="flex h-full w-full justify-start gap-6">
-				<div className="flex h-full w-full grow flex-col gap-7">
+				<div className="flex h-full w-full grow flex-col sm:gap-7">
 					<DesktopOverviewHeader />
+					<MobileOverviewHeader />
 					<Kyc />
 					<JobHeader />
-					<div className="flex flex-1 basis-0 overflow-y-auto">
-						<Tabs
-							tabs={[
-								{
-									label: "Your Feed",
-									value: "feed",
-									content: <Feeds />,
-								},
-								{
-									label: "Active Jobs",
-									value: "active",
-									content: <ActiveJobs />,
-								},
-								{
-									label: "Invites",
-									value: "invites",
-									content: <Invites />,
-								},
-								{
-									label: "Bookmarks",
-									value: "bookmarks",
-									content: <FeedsBookmark />,
-								},
-							]}
-						/>
-					</div>
+					<FeedTabs />
 				</div>
 
-				<div className="xw-fit flex min-h-full w-full shrink-0 basis-[270px] flex-col items-center overflow-y-auto">
+				<div className="hidden sm:flex min-h-full w-full shrink-0 basis-[270px] flex-col items-center overflow-y-auto">
 					<div className="scrollbar-hide flex w-full flex-1 basis-0 flex-col gap-2 overflow-y-auto">
 						<LeaderBoard />
 					</div>

@@ -21,9 +21,9 @@ import { AUTH_TOKEN_KEY } from "@/lib/utils";
 import { MessagingProvider } from "@/providers/socketProvider";
 import { axios } from "@/lib/axios";
 import { Modal } from "@/components/common/headless-modal";
-import { Sidebar } from "@/components/sidebar";
+import { Sidebar } from "@/components/navigations/side-nav";
 import { PageLoading } from "@/components/common/page-loading";
-import { BottomNav } from "@/components/bottom-nav";
+import { BottomNav } from "@/components/navigations/bottom-nav";
 
 function Loader(): React.JSX.Element {
 	return (
@@ -184,7 +184,7 @@ export default function DashboardLayout({
 						<div className="absolute inset-0 bg-[url(/images/rain.png)] bg-repeat opacity-50" />
 						<Modal
 							isOpen={isTimeoutModalOpen}
-							closeModal={() => {}}
+							closeModal={() => { }}
 							disableClickOutside
 						>
 							<div className="flex w-full flex-col items-center gap-4 rounded-xl bg-white p-4 py-4 text-center">
@@ -222,7 +222,7 @@ export default function DashboardLayout({
 								</div>
 							</div>
 						</Modal>
-						<div className="relative isolate z-10 flex h-full flex-1 flex-col px-4 2xl:px-8 pt-5">
+						<div className="relative isolate z-10 flex h-full flex-1 flex-col sm:px-4 2xl:px-8 sm:pt-5">
 							{children}
 						</div>
 					</div>

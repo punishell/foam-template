@@ -18,10 +18,10 @@ import { type z } from "zod";
 /* -------------------------------------------------------------------------- */
 
 import email from "@/lottiefiles/email.json";
-import { TagInput2 } from "../../../../../common/tag-input";
+import { TagInput2 } from "../../../common/tag-input";
 import { useGetReferral, useSendReferralInvite } from "@/lib/api/referral";
-import { SideModal } from "../../../../../common/side-modal";
-import { Spinner } from "../../../../../common";
+import { SideModal } from "../../../common/side-modal";
+import { Spinner } from "../../../common";
 import { CopyText } from "@/lib/utils";
 import { referralSchema } from "@/lib/validations";
 import RecentReferral from "./recent-referrals";

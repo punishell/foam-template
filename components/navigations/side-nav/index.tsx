@@ -20,7 +20,7 @@ import Link from "next/link";
 
 import { LogOut } from "./logout";
 import { NavLink } from "./nav-link";
-import { UserProfile } from "@/components/sidebar/user-profile";
+import { UserProfile } from "@/components/navigations/side-nav/user-profile";
 import { useMessaging } from "@/providers/socketProvider";
 
 export const Sidebar = (): ReactElement => {
