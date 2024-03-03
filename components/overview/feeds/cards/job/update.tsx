@@ -6,7 +6,7 @@
 
 import { type ReactElement, useState } from "react";
 import { Button } from "pakt-ui";
-import { X, Briefcase } from "lucide-react";
+import { X, Briefcase, ChevronRight } from "lucide-react";
 import Link from "next/link";
 
 /* -------------------------------------------------------------------------- */
@@ -20,6 +20,7 @@ import { ClientJobModal } from "@/components/jobs/home/created/client-card/modal
 import { SideModal } from "@/components/common/side-modal";
 import { CheckBox } from "@/components/common/checkBox";
 import { TalentJobModal } from "@/components/jobs/home/accepted/talent-card/modal";
+import { titleCase } from "@/lib/utils";
 
 interface TalentJobUpdateProps {
 	id: string;
@@ -30,6 +31,7 @@ interface TalentJobUpdateProps {
 		name: string;
 		avatar: string;
 		score: number;
+		title: string;
 	};
 	bookmarked: boolean;
 	bookmarkId: string;
@@ -52,6 +54,39 @@ interface TalentJobUpdateProps {
 
 const MAX_LEN = 150;
 
+const MobileSubNav = ({
+	setIsModalOpen,
+}: {
+	setIsModalOpen: (val: boolean) => void;
+}): JSX.Element => (
+	<div className="sm:hidden w-full h-[43px] px-[35px] py-[11px] bg-neutral-50 border border-gray-200 flex-col justify-start items-start gap-2.5 inline-flex">
+		<div className="justify-start items-start inline-flex">
+			<div className="justify-start items-start flex">
+				<div className="justify-center items-center gap-2 flex">
+					<div
+						className="text-gray-500 text-sm leading-[21px] tracking-wide"
+						role="button"
+						tabIndex={0}
+						onClick={(e) => {
+							e.stopPropagation();
+							setIsModalOpen(false);
+						}}
+						onKeyPress={() => {
+							setIsModalOpen(false);
+						}}
+					>
+						Jobs
+					</div>
+					<ChevronRight size={20} className="text-gray-500" />
+					<div className="text-teal-700 text-sm font-bold font-['Circular Std'] leading-[21px] tracking-wide">
+						Update Job
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+);
+
 export const JobUpdateFeed = ({
 	id,
 	jobId,
@@ -70,100 +105,184 @@ export const JobUpdateFeed = ({
 	const [isModalOpen, setIsModalOpen] = useState(false);
 
 	return (
-		<div className="relative z-10 flex w-full gap-4  overflow-hidden rounded-2xl border border-[#9BDCFD] bg-[#F1FBFF] px-4 pl-2">
-			<AfroProfile
-				src={talent.avatar}
-				score={talent.score}
-				size="lg"
-				url={`/talents/${talent._id}`}
-			/>
-			<div className="flex w-full flex-col gap-4 py-4">
-				<div className="flex justify-between">
-					<h3 className="w-[90%] items-center text-xl text-title">
-						{!isCreator
-							? title
-							: `${talent.name} ${isMarked ? "completed" : "Unchecked"} a deliverable on `}{" "}
-						<span className="font-bold">{jobTitle}</span>
-					</h3>
-					{close && (
-						<X
+		<>
+			<div className="relative z-10 hidden sm:flex w-full gap-4  overflow-hidden rounded-2xl border border-[#9BDCFD] bg-[#F1FBFF] px-4 pl-2">
+				<AfroProfile
+					src={talent.avatar}
+					score={talent.score}
+					size="lg"
+					url={`/talents/${talent._id}`}
+				/>
+				<div className="flex w-full flex-col gap-4 py-4">
+					<div className="flex justify-between">
+						<h3 className="w-[90%] items-center text-xl text-title">
+							{!isCreator
+								? title
+								: `${talent.name} ${isMarked ? "completed" : "Unchecked"} a deliverable on `}{" "}
+							<span className="font-bold">{jobTitle}</span>
+						</h3>
+						{close && (
+							<X
+								size={20}
+								className="cursor-pointer"
+								onClick={() => {
+									close(id);
+								}}
+							/>
+						)}
+					</div>
+					{/* <p className="text-body">{!isCreator ? description : `✅ ${description}`}</p> */}
+					<p className="flex flex-row gap-4 capitalize text-body">
+						{" "}
+						<CheckBox isChecked={isMarked} />{" "}
+						{description.length > MAX_LEN
+							? `${description.slice(0, MAX_LEN)}...`
+							: description}
+					</p>
+					<div className="mt-auto flex items-center justify-between">
+						<div className="flex w-full items-center gap-2">
+							{/* {progress.progress === 100 && ( */}
+							<Button
+								size="xs"
+								variant="secondary"
+								onClick={() => {
+									setIsModalOpen(true);
+								}}
+							>
+								See Update
+							</Button>
+							{/* )} */}
+							<Link
+								href={`/messages?userId=${isCreator ? talent._id : creator._id}`}
+							>
+								<Button size="xs" variant="outline">
+									Message
+								</Button>
+							</Link>
+							<DeliverableProgressBar
+								percentageProgress={progress.progress}
+								totalDeliverables={progress.total}
+								className="w-full max-w-[300px]"
+							/>
+						</div>
+						<RenderBookMark
 							size={20}
-							className="cursor-pointer"
-							onClick={() => {
-								close(id);
+							isBookmarked={bookmarked}
+							type="feed"
+							id={id}
+							bookmarkId={bookmarkId}
+						/>
+					</div>
+				</div>
+
+				<div className="absolute right-0 top-16 -z-[1] translate-x-1/3">
+					<Briefcase size={200} color="#F2F4F5" />
+				</div>
+
+				<SideModal isOpen={isModalOpen} onOpenChange={setIsModalOpen}>
+					{isCreator ? (
+						<ClientJobModal
+							jobId={jobId}
+							talentId={talent._id}
+							closeModal={() => {
+								setIsModalOpen(false);
 							}}
+							extras={id}
+						/>
+					) : (
+						<TalentJobModal
+							jobId={jobId}
+							talentId={talent._id}
+							closeModal={() => {
+								setIsModalOpen(false);
+							}}
+							extras={id}
+						/>
+					)}
+				</SideModal>
+			</div>
+			<div
+				role="button"
+				tabIndex={0}
+				onClick={() => {
+					setIsModalOpen(true);
+				}}
+				onKeyPress={() => {
+					setIsModalOpen(true);
+				}}
+				className="cursor-pointer relative z-10 flex sm:hidden w-full flex-col gap-4 overflow-hidden border-b border-[#9BDCFD] bg-[#F1FBFF] px-[21px] py-4"
+			>
+				<div className="flex items-center gap-2 relative -left-[5px]">
+					<AfroProfile
+						score={talent.score}
+						src={talent.avatar}
+						size="sm"
+						url={`/talents/${talent._id}`}
+					/>
+					<div className="flex-col justify-start items-start inline-flex">
+						<p className="text-gray-800 text-lg flex leading-[27px] tracking-wide">
+							{talent.name}
+						</p>
+						<span className="text-gray-500 text-xs leading-[18px] tracking-wide">
+							{titleCase(talent.title)}
+						</span>
+					</div>
+				</div>
+				<div className="flex w-full flex-col gap-2">
+					<div className="flex justify-between">
+						<h3 className="w-[90%] items-center text-base text-title">
+							{!isCreator
+								? title
+								: `${talent.name} ${isMarked ? "completed" : "Unchecked"} a deliverable on `}{" "}
+							<span className="font-bold">{jobTitle}</span>
+						</h3>
+					</div>
+					<p className="flex flex-row gap-4 capitalize text-body text-base">
+						{description.length > MAX_LEN
+							? `${description.slice(0, MAX_LEN)}...`
+							: `✅ ${description}`}
+					</p>
+					<div className="mt-auto flex items-center justify-between">
+						<div className="flex w-[80%]">
+							<DeliverableProgressBar
+								percentageProgress={progress.progress}
+								totalDeliverables={progress.total}
+								className="w-full max-w-[300px]"
+							/>
+						</div>
+						<RenderBookMark
+							size={20}
+							isBookmarked={bookmarked}
+							type="feed"
+							id={id}
+							bookmarkId={bookmarkId}
+						/>
+					</div>
+				</div>
+
+				<div className="">
+					<MobileSubNav setIsModalOpen={setIsModalOpen} />
+					{isCreator ? (
+						<ClientJobModal
+							jobId={jobId}
+							talentId={talent._id}
+							closeModal={() => {
+								setIsModalOpen(false);
+							}}
+							extras={id}
+						/>
+					) : (
+						<TalentJobModal
+							jobId={jobId}
+							talentId={talent._id}
+							closeModal={() => {
+								setIsModalOpen(false);
+							}}
+							extras={id}
 						/>
 					)}
 				</div>
-				{/* <p className="text-body">{!isCreator ? description : `✅ ${description}`}</p> */}
-				<p className="flex flex-row gap-4 capitalize text-body">
-					{" "}
-					<CheckBox isChecked={isMarked} />{" "}
-					{description.length > MAX_LEN
-						? `${description.slice(0, MAX_LEN)}...`
-						: description}
-				</p>
-				<div className="mt-auto flex items-center justify-between">
-					<div className="flex w-full items-center gap-2">
-						{/* {progress.progress === 100 && ( */}
-						<Button
-							size="xs"
-							variant="secondary"
-							onClick={() => {
-								setIsModalOpen(true);
-							}}
-						>
-							See Update
-						</Button>
-						{/* )} */}
-						<Link
-							href={`/messages?userId=${isCreator ? talent._id : creator._id}`}
-						>
-							<Button size="xs" variant="outline">
-								Message
-							</Button>
-						</Link>
-						<DeliverableProgressBar
-							percentageProgress={progress.progress}
-							totalDeliverables={progress.total}
-							className="w-full max-w-[300px]"
-						/>
-					</div>
-					<RenderBookMark
-						size={20}
-						isBookmarked={bookmarked}
-						type="feed"
-						id={id}
-						bookmarkId={bookmarkId}
-					/>
-				</div>
 			</div>
-
-			<div className="absolute right-0 top-16 -z-[1] translate-x-1/3">
-				<Briefcase size={200} color="#F2F4F5" />
-			</div>
-
-			<SideModal isOpen={isModalOpen} onOpenChange={setIsModalOpen}>
-				{isCreator ? (
-					<ClientJobModal
-						jobId={jobId}
-						talentId={talent._id}
-						closeModal={() => {
-							setIsModalOpen(false);
-						}}
-						extras={id}
-					/>
-				) : (
-					<TalentJobModal
-						jobId={jobId}
-						talentId={talent._id}
-						closeModal={() => {
-							setIsModalOpen(false);
-						}}
-						extras={id}
-					/>
-				)}
-			</SideModal>
-		</div>
+		</>
 	);
 };

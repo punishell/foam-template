@@ -18,6 +18,7 @@ import { PageEmpty } from "../../common/page-empty";
 import { PageLoading } from "../../common/page-loading";
 import { PageError } from "../../common/page-error";
 import { FEED_TYPES } from "@/lib/utils";
+import { JobFeedCard } from "../feeds/cards/job/feed";
 
 export const Feeds = (): ReactElement => {
 	const { _id: loggedInUser } = useUserState();
@@ -139,26 +140,26 @@ export const Feeds = (): ReactElement => {
 	if (isLoading && timelineFeeds.length < 1)
 		return (
 			<PageLoading
-				className="h-[65vh] rounded-2xl border border-line"
+				className="h-[65vh] sm:rounded-2xl border border-line"
 				color="#007C5B"
 			/>
 		);
 	if (isError)
 		return (
-			<PageError className="h-[65vh] rounded-2xl border border-line" />
+			<PageError className="h-[65vh] sm:rounded-2xl border border-line" />
 		);
 	if (timelineFeeds.length === 0)
 		return (
-			<PageEmpty className="h-[65vh] rounded-2xl border border-line" />
+			<PageEmpty className="h-[65vh] sm:rounded-2xl border border-line" />
 		);
 	return (
 		<div className="relative sm:h-[65vh]">
 			<div
 				id="timeline-content"
 				ref={scrollParentRef}
-				className="scrollbar-hide h-full w-full overflow-auto rounded-2xl sm:border sm:border-line bg-white p-4 [&:last]:mb-0 [&>*]:mb-5"
+				className="scrollbar-hide h-full w-full overflow-auto rounded-2xl sm:border sm:border-line bg-white sm:p-4 [&:last]:mb-0 [&>*]:mb-5"
 			>
-				<div className="[&>*]:mb-5">
+				<div className="[&>*]:mb-0 sm:[&>*]:mb-5">
 					{timelineFeeds}
 					{isFetchingNextPage && (
 						<div className="mx-auto flex w-full flex-row items-center justify-center text-center">

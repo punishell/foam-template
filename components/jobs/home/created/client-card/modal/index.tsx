@@ -6,6 +6,7 @@
 
 import { type FC, useState } from "react";
 import Lottie from "lottie-react";
+import { useMediaQuery } from "usehooks-ts";
 
 /* -------------------------------------------------------------------------- */
 /*                             Internal Dependency                            */
@@ -15,7 +16,7 @@ import { useGetJobById } from "@/lib/api/job";
 import { isJobCancellation } from "@/lib/types";
 import { PageError } from "@/components/common/page-error";
 import { PageLoading } from "@/components/common/page-loading";
-import { JobUpdates } from "./update";
+import { JobUpdates, MobileJobUpdates } from "./update";
 import warning from "@/lottiefiles/warning.json";
 import { ReviewTalent } from "./review/review-talent";
 import { JobCancellationRequest } from "./cancel/job-cancellation-request";
@@ -35,6 +36,7 @@ export const ClientJobModal: FC<ClientJobModalProps> = ({
 	closeModal,
 	extras,
 }) => {
+	const isMobile = useMediaQuery("(max-width: 640px)");
 	const query = useGetJobById({ jobId, extras });
 	const [isRequestingJobCancellation, setIsRequestingJobCancellation] =
 		useState(false);
@@ -98,7 +100,14 @@ export const ClientJobModal: FC<ClientJobModalProps> = ({
 		return <ReviewTalent job={job} closeModal={closeModal} />;
 	}
 
-	return (
+	return isMobile ? (
+		<MobileJobUpdates
+			job={job}
+			requestJobCancellation={() => {
+				setIsRequestingJobCancellation(true);
+			}}
+		/>
+	) : (
 		<JobUpdates
 			job={job}
 			requestJobCancellation={() => {

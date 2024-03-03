@@ -51,6 +51,7 @@ export const ParseFeedView = (
 		avatar: feed?.creator?.profileImage?.url ?? "",
 		name: `${feed?.creator?.firstName ?? ""} ${feed?.creator?.lastName ?? ""}`,
 		score: feed?.creator?.score ?? 0,
+		title: feed?.creator?.profile?.bio?.title ?? "",
 	};
 
 	const inviter = {
@@ -58,6 +59,7 @@ export const ParseFeedView = (
 		avatar: feed?.data?.creator?.profileImage?.url ?? "",
 		name: `${feed?.data?.creator?.firstName ?? ""} ${feed?.data?.creator?.lastName ?? ""}`,
 		score: feed?.data?.creator?.score ?? 0,
+		title: feed?.data?.creator?.profile?.bio?.title ?? "",
 	};
 
 	const talent = {
@@ -65,6 +67,7 @@ export const ParseFeedView = (
 		avatar: feed?.data?.owner?.profileImage?.url ?? "",
 		name: `${feed?.data?.owner?.firstName ?? ""} ${feed?.data?.owner?.lastName ?? ""}`,
 		score: feed?.data?.owner?.score ?? 0,
+		title: feed?.data?.owner?.profile?.bio?.title ?? "",
 	};
 
 	// console.log(feed?.data);
@@ -81,6 +84,7 @@ export const ParseFeedView = (
 		case FEED_TYPES.COLLECTION_CREATED:
 		case FEED_TYPES.PUBLIC_JOB_CREATED:
 			return (
+				// Done
 				<PublicJobCreatedFeed
 					key={key}
 					creator={inviter}
@@ -96,6 +100,7 @@ export const ParseFeedView = (
 		case FEED_TYPES.COLLECTION_INVITE:
 		case FEED_TYPES.JOB_INVITATION_RECEIVED:
 			return (
+				// Done
 				<JobFeedCard
 					key={key}
 					id={_id}
@@ -116,6 +121,7 @@ export const ParseFeedView = (
 		case FEED_TYPES.COLLECTION_INVITE_REJECTED:
 		case FEED_TYPES.COLLECTION_INVITE_CANCELLED:
 			return (
+				// Done
 				<JobFeedCard
 					key={key}
 					id={_id}
@@ -138,6 +144,7 @@ export const ParseFeedView = (
 			);
 		case FEED_TYPES.JOB_APPLICATION_SUBMITTED:
 			return (
+				// Done
 				<JobApplicationCard
 					key={key}
 					id={feed?._id}
@@ -147,6 +154,7 @@ export const ParseFeedView = (
 						name: `${feed?.data?.creator.firstName} ${feed?.data?.creator?.lastName}`,
 						avatar: feed?.data?.creator?.profileImage?.url ?? "",
 						score: feed?.data?.creator?.score,
+						title: feed?.data?.creator?.profile?.bio?.title ?? "",
 					}}
 					bookmarked={isBookmarked}
 					bookmarkId={bookmarkId}
@@ -225,6 +233,7 @@ export const ParseFeedView = (
 			);
 		case FEED_TYPES.JOB_PAYMENT_RELEASED:
 			return (
+				// Done
 				<PaymentReleased
 					key={key}
 					id={feed?._id}

@@ -44,24 +44,24 @@ export const FeedsBookmark = (): ReactElement => {
 	if (!isFetched && isFetching)
 		return (
 			<PageLoading
-				className="h-[65vh] rounded-2xl border border-line"
+				className="h-[65vh] sm:rounded-2xl border border-line"
 				color="#007C5B"
 			/>
 		);
 	if (isError)
 		return (
-			<PageError className="h-[65vh] rounded-2xl border border-red-200" />
+			<PageError className="h-[65vh] sm:rounded-2xl border border-red-200" />
 		);
 	if (bookmarks.length === 0)
 		return (
 			<PageEmpty
-				className="h-[65vh] rounded-2xl border border-line"
+				className="h-[65vh] sm:rounded-2xl border border-line"
 				label="Bookmarked notifications will appear here"
 			/>
 		);
 
 	return (
-		<div className="flex w-full flex-col gap-5 rounded-2xl border border-line bg-white p-4">
+		<div className="flex w-full flex-col gap-5 sm:rounded-2xl border border-line bg-white sm:p-4">
 			{bookmarks}
 		</div>
 	);

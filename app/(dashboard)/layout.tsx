@@ -24,6 +24,7 @@ import { Modal } from "@/components/common/headless-modal";
 import { Sidebar } from "@/components/navigations/side-nav";
 import { PageLoading } from "@/components/common/page-loading";
 import { BottomNav } from "@/components/navigations/bottom-nav";
+import { MobileHeader } from "@/components/navigations/mobile-header";
 
 function Loader(): React.JSX.Element {
 	return (
@@ -134,9 +135,9 @@ export default function DashboardLayout({
 	return (
 		<AccountWrapper tokenSet={isTokenSet}>
 			<MessagingProvider>
-				<div className="flex h-screen w-screen max-w-full overflow-y-hidden">
+				<div className="flex sm:flex-row flex-col h-screen w-screen max-w-full overflow-y-hidden">
 					<Sidebar />
-
+					<MobileHeader />
 					<div className="relative w-full">
 						<div className="absolute inset-0 z-[1]">
 							<div className="isolate">
@@ -184,7 +185,9 @@ export default function DashboardLayout({
 						<div className="absolute inset-0 bg-[url(/images/rain.png)] bg-repeat opacity-50" />
 						<Modal
 							isOpen={isTimeoutModalOpen}
-							closeModal={() => { }}
+							closeModal={() => {
+								console.log("close");
+							}}
 							disableClickOutside
 						>
 							<div className="flex w-full flex-col items-center gap-4 rounded-xl bg-white p-4 py-4 text-center">
@@ -226,7 +229,6 @@ export default function DashboardLayout({
 							{children}
 						</div>
 					</div>
-
 					<BottomNav />
 				</div>
 			</MessagingProvider>

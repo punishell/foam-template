@@ -12,13 +12,13 @@ import Image from "next/image";
 /* -------------------------------------------------------------------------- */
 
 import { UserBalance } from "@/components/common/user-balance";
-import { ReferralSideModal } from "./refer";
+import { ReferralSideModal } from "../overview/header/refer";
 import { useUserState } from "@/lib/store/account";
 // import { useGetTalentReviewById } from "@/lib/api";
 // import { hasFiveStarReview } from "@/lib/types";
 import { AfroProfile } from "@/components/common/afro-profile";
 
-export const MobileOverviewHeader = (): ReactElement => {
+export const MobileHeader = (): ReactElement => {
 	const [referOpen, _setReferOpen] = useState(false);
 	const [scrollY, setScrollY] = useState(0);
 	const { profileCompleteness, profileImage } = useUserState();
@@ -51,7 +51,7 @@ export const MobileOverviewHeader = (): ReactElement => {
 	const scale = Math.min(1 + scrollY / 1000, 103 / 54);
 
 	return (
-		<div className="sm:hidden flex items-center h-[65px] justify-between relative bg-[#ECFCE5] px-4">
+		<div className="sm:hidden flex items-center h-[65px] justify-between relative top-0 left-0 right-0 bg-[#ECFCE5] px-4 !z-[99999] w-full">
 			<ReferralSideModal
 				isOpen={referOpen}
 				onOpenChange={(e) => {
