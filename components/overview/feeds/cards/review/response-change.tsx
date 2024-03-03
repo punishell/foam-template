@@ -14,9 +14,9 @@ import { X, Briefcase } from "lucide-react";
 
 import { RenderBookMark } from "@/components/jobs/misc/render-bookmark";
 import { AfroProfile } from "@/components/common/afro-profile";
-import { ClientJobModal } from "@/components/jobs/home/created/client-card/modal";
+import { ClientJobModal } from "@/components/job-actions/client/desktop/sheet";
 import { SideModal } from "@/components/common/side-modal";
-import { TalentJobModal } from "@/components/jobs/home/accepted/talent-card/modal";
+import { TalentJobModal } from "@/components/job-actions/talent/desktop/sheet";
 
 interface ReviewResponseChangeProps {
 	id: string;
@@ -58,11 +58,10 @@ export const ReviewResponseChangeCard = ({
 	const [isModalOpen, setIsModalOpen] = useState(false);
 	return (
 		<div
-			className={`${
-				isDeclined
-					? "border-[#FF5247] bg-[#FFF4F4]"
-					: "border-[#9BDCFD] bg-[#F1FBFF]"
-			} relative z-10 flex h-[174px] w-full gap-4 overflow-hidden rounded-2xl border p-4`}
+			className={`${isDeclined
+				? "border-[#FF5247] bg-[#FFF4F4]"
+				: "border-[#9BDCFD] bg-[#F1FBFF]"
+				} relative z-10 flex h-[174px] w-full gap-4 overflow-hidden rounded-2xl border p-4`}
 		>
 			<AfroProfile
 				src={isCreator ? talent.avatar : creator.avatar}

@@ -16,11 +16,13 @@ import Link from "next/link";
 import { RenderBookMark } from "@/components/jobs/misc/render-bookmark";
 import { DeliverableProgressBar } from "@/components/common/deliverable-progress-bar";
 import { AfroProfile } from "@/components/common/afro-profile";
-import { ClientJobModal } from "@/components/jobs/home/created/client-card/modal";
 import { SideModal } from "@/components/common/side-modal";
 import { CheckBox } from "@/components/common/checkBox";
-import { TalentJobModal } from "@/components/jobs/home/accepted/talent-card/modal";
+
 import { titleCase } from "@/lib/utils";
+
+import { ClientJobModal } from "@/components/job-actions/client/desktop/sheet";
+import { TalentJobModal } from "@/components/job-actions/talent/desktop/sheet";
 
 interface TalentJobUpdateProps {
 	id: string;

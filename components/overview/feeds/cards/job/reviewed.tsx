@@ -15,9 +15,9 @@ import { Button } from "pakt-ui";
 
 import { RenderBookMark } from "@/components/jobs/misc/render-bookmark";
 import { AfroProfile } from "@/components/common/afro-profile";
-import { ClientJobModal } from "@/components/jobs/home/created/client-card/modal";
+import { ClientJobModal } from "@/components/job-actions/client/desktop/sheet";
 import { SideModal } from "@/components/common/side-modal";
-import { TalentJobModal } from "@/components/jobs/home/accepted/talent-card/modal";
+import { TalentJobModal } from "@/components/job-actions/talent/desktop/sheet";
 
 const MAX_LEN = 150;
 
