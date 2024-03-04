@@ -14,9 +14,9 @@ import { X, Briefcase } from "lucide-react";
 
 import { RenderBookMark } from "@/components/jobs/misc/render-bookmark";
 import { AfroProfile } from "@/components/common/afro-profile";
-import { ClientJobModal } from "@/components/job-actions/desktop/client";
+import { ClientJobModal } from "@/components/jobs/actions/desktop-sheets/client";
 import { SideModal } from "@/components/common/side-modal";
-import { TalentJobModal } from "@/components/job-actions/desktop/talent";
+import { TalentJobModal } from "@/components/jobs/actions/desktop-sheets/talent";
 
 interface ReviewResponseChangeProps {
 	id: string;

@@ -15,7 +15,7 @@ import { useRouter } from "next/navigation";
 import { type ReviewChangeRequest } from "@/lib/types";
 import { SideModal } from "@/components/common/side-modal";
 import { AfroProfile } from "@/components/common/afro-profile";
-import { ClientJobModal } from "@/components/job-actions/desktop/client";
+import { ClientJobModal } from "@/components/jobs/actions/desktop-sheets/client";
 import { DeliverableProgressBar } from "@/components/common/deliverable-progress-bar";
 
 interface ClientJobCardProps {

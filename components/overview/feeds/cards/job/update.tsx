@@ -21,12 +21,12 @@ import { CheckBox } from "@/components/common/checkBox";
 
 import { titleCase } from "@/lib/utils";
 
-import { ClientJobModal } from "@/components/job-actions/desktop/client";
-import { TalentJobModal } from "@/components/job-actions/desktop/talent";
+import { ClientJobModal } from "@/components/jobs/actions/desktop-sheets/client";
+import { TalentJobModal } from "@/components/jobs/actions/desktop-sheets/talent";
 
-import { ClientJobModalForMobile } from "@/components/job-actions/mobile/client";
-import { TalentJobSheetForMobile } from "@/components/job-actions/mobile/talent";
-import MobileSheetWrapper from "@/components/job-actions/mobile/sheet-wrapper";
+import { ClientJobModalForMobile } from "@/components/jobs/actions/mobile-sheets/client";
+import { TalentJobSheetForMobile } from "@/components/jobs/actions/mobile-sheets/talent";
+import MobileSheetWrapper from "@/components/jobs/actions/mobile-sheets/sheet-wrapper";
 
 interface TalentJobUpdateProps {
 	id: string;

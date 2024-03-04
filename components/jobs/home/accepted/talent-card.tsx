@@ -15,7 +15,7 @@ import { useRouter } from "next/navigation";
 import { type JobStatus } from "@/lib/types";
 import { SideModal } from "@/components/common/side-modal";
 import { AfroProfile } from "@/components/common/afro-profile";
-import { TalentJobModal } from "@/components/job-actions/desktop/talent";
+import { TalentJobModal } from "@/components/jobs/actions/desktop-sheets/talent";
 import { DeliverableProgressBar } from "@/components/common/deliverable-progress-bar";
 import { useErrorService } from "@/lib/store/error-service";
 
