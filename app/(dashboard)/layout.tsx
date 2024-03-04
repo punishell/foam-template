@@ -185,9 +185,7 @@ export default function DashboardLayout({
 						<div className="absolute inset-0 bg-[url(/images/rain.png)] bg-repeat opacity-50" />
 						<Modal
 							isOpen={isTimeoutModalOpen}
-							closeModal={() => {
-								console.log("close");
-							}}
+							closeModal={() => {}}
 							disableClickOutside
 						>
 							<div className="flex w-full flex-col items-center gap-4 rounded-xl bg-white p-4 py-4 text-center">

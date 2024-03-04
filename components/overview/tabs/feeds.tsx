@@ -18,7 +18,6 @@ import { PageEmpty } from "../../common/page-empty";
 import { PageLoading } from "../../common/page-loading";
 import { PageError } from "../../common/page-error";
 import { FEED_TYPES } from "@/lib/utils";
-import { JobFeedCard } from "../feeds/cards/job/feed";
 
 export const Feeds = (): ReactElement => {
 	const { _id: loggedInUser } = useUserState();

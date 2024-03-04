@@ -58,10 +58,11 @@ export const ReviewResponseChangeCard = ({
 	const [isModalOpen, setIsModalOpen] = useState(false);
 	return (
 		<div
-			className={`${isDeclined
-				? "border-[#FF5247] bg-[#FFF4F4]"
-				: "border-[#9BDCFD] bg-[#F1FBFF]"
-				} relative z-10 flex h-[174px] w-full gap-4 overflow-hidden rounded-2xl border p-4`}
+			className={`${
+				isDeclined
+					? "border-[#FF5247] bg-[#FFF4F4]"
+					: "border-[#9BDCFD] bg-[#F1FBFF]"
+			} relative z-10 flex h-[174px] w-full gap-4 overflow-hidden rounded-2xl border p-4`}
 		>
 			<AfroProfile
 				src={isCreator ? talent.avatar : creator.avatar}
