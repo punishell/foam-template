@@ -15,9 +15,9 @@ import Rating from "react-rating";
 
 import { RenderBookMark } from "@/components/jobs/misc/render-bookmark";
 import { AfroProfile } from "@/components/common/afro-profile";
-import { ClientJobModal } from "@/components/job-actions/client/desktop/sheet";
+import { ClientJobModal } from "@/components/job-actions/desktop/client";
 import { SideModal } from "@/components/common/side-modal";
-import { TalentJobModal } from "@/components/job-actions/talent/desktop/sheet";
+import { TalentJobModal } from "@/components/job-actions/desktop/talent";
 // import { useUserState } from "@/lib/store/account";
 
 interface ReviewChangeProps {

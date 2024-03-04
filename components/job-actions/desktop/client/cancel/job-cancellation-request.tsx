@@ -13,7 +13,7 @@ import { Button } from "pakt-ui";
 
 import type { Job } from "@/lib/types";
 import { isJobCancellation, isJobDeliverable } from "@/lib/types";
-import { JobUpdateHeader } from "../../../../talent/desktop/sheet/update/header";
+import { JobUpdateHeader } from "../../talent/update/header";
 import { DeliverablesStepper } from "@/components/jobs/misc/deliverables-stepper";
 import { AcceptJobCancellation } from "./accept-job-cancellation";
 

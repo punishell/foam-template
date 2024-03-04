@@ -6,7 +6,7 @@
 
 import { type ReactElement, useState } from "react";
 import { Button } from "pakt-ui";
-import { X, Briefcase, ChevronRight } from "lucide-react";
+import { X, Briefcase } from "lucide-react";
 import Link from "next/link";
 
 /* -------------------------------------------------------------------------- */
@@ -21,8 +21,12 @@ import { CheckBox } from "@/components/common/checkBox";
 
 import { titleCase } from "@/lib/utils";
 
-import { ClientJobModal } from "@/components/job-actions/client/desktop/sheet";
-import { TalentJobModal } from "@/components/job-actions/talent/desktop/sheet";
+import { ClientJobModal } from "@/components/job-actions/desktop/client";
+import { TalentJobModal } from "@/components/job-actions/desktop/talent";
+
+import { ClientJobModalForMobile } from "@/components/job-actions/mobile/client";
+import { TalentJobSheetForMobile } from "@/components/job-actions/mobile/talent";
+import MobileSheetWrapper from "@/components/job-actions/mobile/sheet-wrapper";
 
 interface TalentJobUpdateProps {
 	id: string;
@@ -56,39 +60,6 @@ interface TalentJobUpdateProps {
 
 const MAX_LEN = 150;
 
-const MobileSubNav = ({
-	setIsModalOpen,
-}: {
-	setIsModalOpen: (val: boolean) => void;
-}): JSX.Element => (
-	<div className="sm:hidden w-full h-[43px] px-[35px] py-[11px] bg-neutral-50 border border-gray-200 flex-col justify-start items-start gap-2.5 inline-flex">
-		<div className="justify-start items-start inline-flex">
-			<div className="justify-start items-start flex">
-				<div className="justify-center items-center gap-2 flex">
-					<div
-						className="text-gray-500 text-sm leading-[21px] tracking-wide"
-						role="button"
-						tabIndex={0}
-						onClick={(e) => {
-							e.stopPropagation();
-							setIsModalOpen(false);
-						}}
-						onKeyPress={() => {
-							setIsModalOpen(false);
-						}}
-					>
-						Jobs
-					</div>
-					<ChevronRight size={20} className="text-gray-500" />
-					<div className="text-teal-700 text-sm font-bold font-['Circular Std'] leading-[21px] tracking-wide">
-						Update Job
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-);
-
 export const JobUpdateFeed = ({
 	id,
 	jobId,
@@ -105,6 +76,7 @@ export const JobUpdateFeed = ({
 	close,
 }: TalentJobUpdateProps): ReactElement => {
 	const [isModalOpen, setIsModalOpen] = useState(false);
+	const [isMobileModalOpen, setIsMobileModalOpen] = useState(false);
 
 	return (
 		<>
@@ -207,12 +179,12 @@ export const JobUpdateFeed = ({
 				role="button"
 				tabIndex={0}
 				onClick={() => {
-					setIsModalOpen(true);
+					setIsMobileModalOpen(true);
 				}}
 				onKeyPress={() => {
-					setIsModalOpen(true);
+					setIsMobileModalOpen(true);
 				}}
-				className="cursor-pointer relative z-10 flex sm:hidden w-full flex-col gap-4 overflow-hidden border-b border-[#9BDCFD] bg-[#F1FBFF] px-[21px] py-4"
+				className="cursor-pointer z-10 flex sm:hidden w-full flex-col gap-4 overflow-hidden border-b border-[#9BDCFD] bg-[#F1FBFF] px-[21px] py-4"
 			>
 				<div className="flex items-center gap-2 relative -left-[5px]">
 					<AfroProfile
@@ -261,11 +233,15 @@ export const JobUpdateFeed = ({
 						/>
 					</div>
 				</div>
-
-				<div className="">
-					<MobileSubNav setIsModalOpen={setIsModalOpen} />
+				{/* Sidebar Sheet */}
+				<MobileSheetWrapper
+					closeSheet={setIsMobileModalOpen}
+					isOpen={isMobileModalOpen}
+					from="Jobs"
+					to="Update Job"
+				>
 					{isCreator ? (
-						<ClientJobModal
+						<ClientJobModalForMobile
 							jobId={jobId}
 							talentId={talent._id}
 							closeModal={() => {
@@ -274,7 +250,7 @@ export const JobUpdateFeed = ({
 							extras={id}
 						/>
 					) : (
-						<TalentJobModal
+						<TalentJobSheetForMobile
 							jobId={jobId}
 							talentId={talent._id}
 							closeModal={() => {
@@ -283,7 +259,7 @@ export const JobUpdateFeed = ({
 							extras={id}
 						/>
 					)}
-				</div>
+				</MobileSheetWrapper>
 			</div>
 		</>
 	);

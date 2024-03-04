@@ -65,6 +65,7 @@ export const MobileHeader = (): ReactElement => {
 					src={profileImage?.url}
 					style={{ transform: `scale(${scale})` }}
 					className="absolute top-0 left-0 w-full h-full transition-transform duration-300 transform scale-100 hover:scale-110"
+					url="/profile"
 				/>
 			</div>
 			<Image
