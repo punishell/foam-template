@@ -11,11 +11,7 @@ interface PaginationProps {
 	setCurrentPage: (page: number) => void;
 }
 
-export const Pagination: FC<PaginationProps> = ({
-	currentPage,
-	setCurrentPage,
-	totalPages,
-}) => {
+export const Pagination: FC<PaginationProps> = ({ currentPage, setCurrentPage, totalPages }) => {
 	const BOUNDARY = 3;
 	const MIN_PAGE = 1;
 	const MAX_PAGE = Math.max(MIN_PAGE, totalPages);
@@ -23,19 +19,11 @@ export const Pagination: FC<PaginationProps> = ({
 	const leftPages: number[] = [];
 	const rightPages: number[] = [];
 
-	for (
-		let i = Math.max(MIN_PAGE, currentPage - BOUNDARY);
-		i < currentPage;
-		i++
-	) {
+	for (let i = Math.max(MIN_PAGE, currentPage - BOUNDARY); i < currentPage; i++) {
 		leftPages.push(i);
 	}
 
-	for (
-		let i = currentPage;
-		i <= Math.min(MAX_PAGE, currentPage + BOUNDARY);
-		i++
-	) {
+	for (let i = currentPage; i <= Math.min(MAX_PAGE, currentPage + BOUNDARY); i++) {
 		rightPages.push(i);
 	}
 
@@ -76,9 +64,7 @@ export const Pagination: FC<PaginationProps> = ({
 						<button
 							key={page}
 							className={`rounded-lg p-1 px-3  text-sm text-primary hover:bg-[#007C5B1A] ${
-								currentPage === page
-									? "bg-[#007C5B1A]"
-									: "bg-white"
+								currentPage === page ? "bg-[#007C5B1A]" : "bg-white"
 							}`}
 							onClick={() => {
 								setCurrentPage(page);

@@ -33,16 +33,8 @@ export const ActiveJobs = (): ReactElement => {
 		isFetching: assignedFetching,
 		isError: assignedError,
 	} = useGetJobs({ category: "assigned" });
-	const {
-		data: jobCreatedData,
-		isFetched,
-		isFetching,
-		isError,
-	} = useGetJobs({ category: "created" });
-	const jobDataJoined = [
-		...(jobAssignedData?.data ?? []),
-		...(jobCreatedData?.data ?? []),
-	];
+	const { data: jobCreatedData, isFetched, isFetching, isError } = useGetJobs({ category: "created" });
+	const jobDataJoined = [...(jobAssignedData?.data ?? []), ...(jobCreatedData?.data ?? [])];
 
 	const ongoingJobs = jobDataJoined.filter(
 		(job) =>
@@ -53,26 +45,16 @@ export const ActiveJobs = (): ReactElement => {
 	);
 	const jobData = ongoingJobs.filter((f) => f.inviteAccepted);
 
-	jobData.sort(
-		(a, b) =>
-			new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime(),
-	);
+	jobData.sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime());
 
 	const activeJobs = useMemo(
 		() =>
 			(jobData || []).map((job, i) => {
-				const deliverableTotal = job?.collections.filter(
-					(f) => f.type === "deliverable",
-				).length;
+				const deliverableTotal = job?.collections.filter((f) => f.type === "deliverable").length;
 				const deliverableTotalCompleted = job?.collections.filter(
 					(f) => f.type === "deliverable" && f.progress === 100,
 				).length;
-				const currentProgress = parseInt(
-					String(
-						(deliverableTotalCompleted * 100) / deliverableTotal,
-					),
-					10,
-				);
+				const currentProgress = parseInt(String((deliverableTotalCompleted * 100) / deliverableTotal), 10);
 				const deliverableCountPercentage = {
 					total: deliverableTotal,
 					progress: Math.floor(currentProgress),
@@ -107,27 +89,12 @@ export const ActiveJobs = (): ReactElement => {
 		[jobData, loggedInUser],
 	);
 	if ((!isFetched || !assignedFetched) && (isFetching || assignedFetching))
-		return (
-			<PageLoading
-				className="h-[65vh] rounded-2xl border border-line"
-				color="#007C5B"
-			/>
-		);
-	if (isError || assignedError)
-		return (
-			<PageError className="h-[85vh] rounded-2xl border border-red-200" />
-		);
+		return <PageLoading className="h-[65vh] rounded-2xl border border-line" color="#007C5B" />;
+	if (isError || assignedError) return <PageError className="h-[85vh] rounded-2xl border border-red-200" />;
 	if (activeJobs.length === 0)
 		return (
-			<PageEmpty
-				className="h-[65vh] rounded-2xl border border-line"
-				label="Your Active Jobs will appear here"
-			/>
+			<PageEmpty className="h-[65vh] rounded-2xl border border-line" label="Your Active Jobs will appear here" />
 		);
 
-	return (
-		<div className="flex w-full flex-col gap-5 rounded-2xl border border-line bg-white p-4">
-			{activeJobs}
-		</div>
-	);
+	return <div className="flex w-full flex-col gap-5 rounded-2xl border border-line bg-white p-4">{activeJobs}</div>;
 };

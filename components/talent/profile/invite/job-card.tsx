@@ -20,11 +20,7 @@ interface JobCardProps {
 	setJobId: (jobId: string) => void;
 }
 
-export const JobCard = ({
-	job,
-	setJobId,
-	isSelected,
-}: JobCardProps): ReactElement | null => {
+export const JobCard = ({ job, setJobId, isSelected }: JobCardProps): ReactElement | null => {
 	return (
 		<div
 			className={cn(

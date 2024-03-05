@@ -52,13 +52,7 @@ interface MobileSheetWrapperProps {
 	to: string;
 }
 
-const MobileSheetWrapper = ({
-	children,
-	closeSheet,
-	isOpen,
-	from,
-	to,
-}: MobileSheetWrapperProps): JSX.Element => {
+const MobileSheetWrapper = ({ children, closeSheet, isOpen, from, to }: MobileSheetWrapperProps): JSX.Element => {
 	return (
 		<div
 			className={`fixed top-16 z-50 w-full h-[calc(100vh-130px)] overflow-y-scroll bg-[#F1FBFF] transition-all duration-300 ease-in-out ${isOpen ? "right-0" : "-right-full"}`}

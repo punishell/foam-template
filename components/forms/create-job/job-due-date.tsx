@@ -42,9 +42,7 @@ const JobDueDate = ({ form }: JobDueDateProps): ReactElement => {
 			/>
 			<span className="absolute -bottom-5 flex w-full">
 				{form.formState.errors.due?.message != null && (
-					<span className="text-sm text-red-200">
-						{form.formState.errors.due?.message}
-					</span>
+					<span className="text-sm text-red-200">{form.formState.errors.due?.message}</span>
 				)}
 			</span>
 		</div>

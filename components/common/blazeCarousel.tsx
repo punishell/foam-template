@@ -45,10 +45,7 @@ export const useBlazeSlider = (config?: BlazeConfig): BlazeSliderHook => {
 	const totalSlides = Number(sliderRef?.states.length) - 1;
 	useEffect(() => {
 		if (!sliderRefIn.current && elRef.current) {
-			sliderRefIn.current = new BlazeSlider(
-				elRef.current,
-				config ?? defaultConfig,
-			);
+			sliderRefIn.current = new BlazeSlider(elRef.current, config ?? defaultConfig);
 			setSliderRef(sliderRefIn.current);
 		}
 	}, [config]);
@@ -88,16 +85,10 @@ interface CarouselProps {
 export const BlazeCarousel: React.FC<CarouselProps> = ({ elRef, children }) => {
 	return (
 		// <div className='relative w-full'>
-		<div
-			ref={elRef}
-			className="blaze-slider"
-			style={{ ["--slides-to-show" as string | number]: 2 }}
-		>
+		<div ref={elRef} className="blaze-slider" style={{ ["--slides-to-show" as string | number]: 2 }}>
 			<div className="blaze-container">
 				<div className="blaze-track-container">
-					<div className="blaze-track">
-						{React.Children.map(children, (Child) => Child)}
-					</div>
+					<div className="blaze-track">{React.Children.map(children, (Child) => Child)}</div>
 				</div>
 			</div>
 		</div>
@@ -154,10 +145,7 @@ export const KeenCarousel: React.FC<CarouselProps> = ({ elRef, children }) => {
 		<div ref={elRef} className="keen-slider">
 			<div className="absolute">
 				{React.Children.map(children, (Child, index) => (
-					<div
-						key={index}
-						className={`keen-slider__slide number-slide_${index}`}
-					>
+					<div key={index} className={`keen-slider__slide number-slide_${index}`}>
 						{Child}
 					</div>
 				))}

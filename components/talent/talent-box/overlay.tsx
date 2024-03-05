@@ -1,11 +1,6 @@
 export const Overlay = (): React.JSX.Element => {
 	return (
-		<svg
-			preserveAspectRatio="xMaxYMid meet"
-			viewBox="0 0 366 333"
-			fill="none"
-			xmlns="http://www.w3.org/2000/svg"
-		>
+		<svg preserveAspectRatio="xMaxYMid meet" viewBox="0 0 366 333" fill="none" xmlns="http://www.w3.org/2000/svg">
 			<g filter="url(#filter0_b_5263_139566)">
 				<path
 					d="M0 62.014C0 41.64 0 31.453 6.32938 25.1236C12.6588 18.7942 22.8458 18.7942 43.2197 18.7942H91.4187H120.15C131.242 18.7942 142.108 15.657 151.494 9.74475V9.74475C170.648 -2.32118 195.027 -2.32118 214.181 9.74475V9.74475C223.567 15.657 234.433 18.7942 245.525 18.7942H274.256H322.455C342.829 18.7942 353.016 18.7942 359.345 25.1236C365.675 31.453 365.675 41.64 365.675 62.0139V289.431C365.675 309.805 365.675 319.992 359.345 326.322C353.016 332.651 342.829 332.651 322.455 332.651H43.2197C22.8458 332.651 12.6588 332.651 6.32938 326.322C0 319.992 0 309.805 0 289.431L0 62.014Z"
@@ -29,23 +24,14 @@ export const Overlay = (): React.JSX.Element => {
 					colorInterpolationFilters="sRGB"
 				>
 					<feFlood floodOpacity="0" result="BackgroundImageFix" />
-					<feGaussianBlur
-						in2="SourceAlpha"
-						in="BackgroundImageFix"
-						stdDeviation="25"
-					/>
+					<feGaussianBlur in2="SourceAlpha" in="BackgroundImageFix" stdDeviation="25" />
 					<feComposite
 						in="SourceAlpha"
 						in2="BackgroundImageFix"
 						operator="in"
 						result="effect1_backgroundBlur_5263_139566"
 					/>
-					<feBlend
-						mode="normal"
-						in="SourceGraphic"
-						in2="effect1_backgroundBlur_5263_139566"
-						result="shape"
-					/>
+					<feBlend mode="normal" in="SourceGraphic" in2="effect1_backgroundBlur_5263_139566" result="shape" />
 				</filter>
 				<linearGradient
 					id="paint0_linear_5263_139566"

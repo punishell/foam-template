@@ -71,9 +71,7 @@ export const ParseFeedView = (
 	};
 
 	// console.log(feed?.data);
-	const deliverableTotal = (feed?.data?.collections ?? []).filter(
-		(f) => f.type === "deliverable",
-	).length;
+	const deliverableTotal = (feed?.data?.collections ?? []).filter((f) => f.type === "deliverable").length;
 	const currentProgress = feed?.meta?.value;
 	const deliverableCountPercentage = {
 		total: deliverableTotal,
@@ -128,13 +126,9 @@ export const ParseFeedView = (
 					title={feed?.data?.name}
 					type="job-invite-response"
 					accepted={
-						feed?.type ===
-						(FEED_TYPES.JOB_INVITATION_ACCEPTED ||
-							FEED_TYPES.COLLECTION_INVITE_ACCEPTED)
+						feed?.type === (FEED_TYPES.JOB_INVITATION_ACCEPTED || FEED_TYPES.COLLECTION_INVITE_ACCEPTED)
 					}
-					cancelled={
-						feed?.type === FEED_TYPES.COLLECTION_INVITE_CANCELLED
-					}
+					cancelled={feed?.type === FEED_TYPES.COLLECTION_INVITE_CANCELLED}
 					bookmarked={isBookmarked}
 					jobId={feed?.data?._id}
 					bookmarkId={bookmarkId}
@@ -300,9 +294,7 @@ export const ParseFeedView = (
 							: `${feedCreator.name} requested to cancel a job`
 					}
 					description={feed?.description}
-					isAccepted={
-						feed?.type === FEED_TYPES.JOB_CANCELLED_ACCEPTED
-					}
+					isAccepted={feed?.type === FEED_TYPES.JOB_CANCELLED_ACCEPTED}
 					rating={feed?.meta?.value}
 				/>
 			);
@@ -338,9 +330,7 @@ export const ParseFeedView = (
 					bookmarkId={bookmarkId}
 					title={feed?.title}
 					description={feed?.description}
-					isDeclined={
-						feed?.type === FEED_TYPES.JOB_REVIEW_CHANGE_DECLINED
-					}
+					isDeclined={feed?.type === FEED_TYPES.JOB_REVIEW_CHANGE_DECLINED}
 				/>
 			);
 

@@ -50,9 +50,7 @@ export const ClientJobCard: FC<ClientJobCardProps> = ({
 }) => {
 	const router = useRouter();
 	const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
-	const progress = Math.floor(
-		(completedDeliverables / totalDeliverables) * 100,
-	);
+	const progress = Math.floor((completedDeliverables / totalDeliverables) * 100);
 
 	return (
 		<div className="flex w-full grow flex-col gap-1 rounded-3xl border border-line bg-white p-4 pt-0">
@@ -67,16 +65,12 @@ export const ClientJobCard: FC<ClientJobCardProps> = ({
 				</div>
 				<div className="-ml-3 flex grow flex-col gap-2 pt-4">
 					<div className="flex items-center justify-between gap-2">
-						<span className="text-lg font-bold text-body">
-							{talent.name}
-						</span>
+						<span className="text-lg font-bold text-body">{talent.name}</span>
 						<span className="inline-flex rounded-full bg-[#B2E9AA66] px-3 text-base text-title">
 							${price}
 						</span>
 					</div>
-					<div className="flex grow items-center break-words text-2xl text-title">
-						{title}
-					</div>
+					<div className="flex grow items-center break-words text-2xl text-title">{title}</div>
 				</div>
 			</div>
 			<div className="mt-auto flex w-full items-center justify-between gap-4">
@@ -89,11 +83,7 @@ export const ClientJobCard: FC<ClientJobCardProps> = ({
 								setIsUpdateModalOpen(true);
 							}}
 						>
-							{jobProgress === 100
-								? reviewRequestChange
-									? "View Request"
-									: "Review"
-								: "See Updates"}
+							{jobProgress === 100 ? (reviewRequestChange ? "View Request" : "Review") : "See Updates"}
 						</Button>
 					)}
 					<Button

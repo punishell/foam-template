@@ -56,12 +56,7 @@ export const DeliverableProgressBar: FC<Props> = ({
 	}
 
 	return (
-		<div
-			className={cn(
-				"flex w-full max-w-[200px] flex-col gap-2 text-xs",
-				className,
-			)}
-		>
+		<div className={cn("flex w-full max-w-[200px] flex-col gap-2 text-xs", className)}>
 			{isCancelled ? (
 				<div className="flex items-center gap-1 text-[#FF5247]">
 					<span>Job Cancelled. Progress:</span>

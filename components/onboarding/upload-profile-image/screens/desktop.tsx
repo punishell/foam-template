@@ -48,9 +48,7 @@ export function DesktopUploadProfileImage({
 				</Button>
 				<div className="flex flex-col items-center text-body">
 					<p className="text-lg">Last Step</p>
-					<span className="text-2xl font-bold text-title">
-						Upload Your Profile Image
-					</span>
+					<span className="text-2xl font-bold text-title">Upload Your Profile Image</span>
 				</div>
 				<Button
 					className="!text-lg !font-bold !absolute right-0 -top-4 !border-primary text-primary w-[148px] hover:!text-primary hover:bg-lime-50"
@@ -83,12 +81,7 @@ export function DesktopUploadProfileImage({
 
 				<div className="absolute inset-0 flex items-center justify-center">
 					{imageFile != null && (
-						<Image
-							src={imageFile.preview}
-							alt="profile picture"
-							layout="fill"
-							objectFit="cover"
-						/>
+						<Image src={imageFile.preview} alt="profile picture" layout="fill" objectFit="cover" />
 					)}
 				</div>
 

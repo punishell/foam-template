@@ -36,9 +36,7 @@ const JobProposedPrice = ({ form }: JobProposedPriceProps): ReactElement => {
 			</div>
 			<span className="absolute -bottom-5 flex w-full">
 				{form.formState.errors.budget?.message != null && (
-					<span className="text-sm text-red-200">
-						{form.formState.errors.budget?.message}
-					</span>
+					<span className="text-sm text-red-200">{form.formState.errors.budget?.message}</span>
 				)}
 			</span>
 		</div>

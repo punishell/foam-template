@@ -7,11 +7,7 @@
 import { type ReactNode, type ReactElement } from "react";
 import { Briefcase } from "lucide-react";
 
-export const JobFeedWrapper = ({
-	children,
-}: {
-	children: ReactNode;
-}): ReactElement => {
+export const JobFeedWrapper = ({ children }: { children: ReactNode }): ReactElement => {
 	return (
 		<div className="relative z-10 hidden sm:flex h-[174px] w-full gap-4 overflow-hidden rounded-2xl border border-blue-lighter bg-[#F1FBFF] px-4 pl-2">
 			{children}

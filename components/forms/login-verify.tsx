@@ -138,33 +138,22 @@ const LoginVerificationForm = (): React.JSX.Element => {
 					}}
 				/>
 
-				<Button
-					fullWidth
-					disabled={loginOTP.isLoading || !form.formState.isValid}
-				>
+				<Button fullWidth disabled={loginOTP.isLoading || !form.formState.isValid}>
 					{loginOTP.isLoading ? <Spinner /> : "Submit"}
 				</Button>
 
 				{verifyType === TWO_FA_CONSTANTS.EMAIL && (
 					<div className="flex w-full flex-col items-center gap-4">
-						<span className="text-white">
-							{formatCountdown(countdown)}
-						</span>
+						<span className="text-white">{formatCountdown(countdown)}</span>
 						<div className="w-full max-w-[150px]">
 							<Button
 								size="xs"
 								fullWidth
 								variant="secondary"
 								onClick={handleResendOTP}
-								disabled={
-									resendOTP.isLoading || isResendDisabled
-								}
+								disabled={resendOTP.isLoading || isResendDisabled}
 							>
-								{resendOTP.isLoading ? (
-									<Spinner size={16} />
-								) : (
-									"Resend Code"
-								)}
+								{resendOTP.isLoading ? <Spinner size={16} /> : "Resend Code"}
 							</Button>
 						</div>
 					</div>

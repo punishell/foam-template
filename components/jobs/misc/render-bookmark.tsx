@@ -79,11 +79,7 @@ export const RenderBookMark: FC<bookmarkType> = ({
 					}
 				}}
 			>
-				<CheckMark
-					fill={bookmarked ? "#7DDE86" : undefined}
-					className="cursor-pointer"
-					size={24}
-				/>{" "}
+				<CheckMark fill={bookmarked ? "#7DDE86" : undefined} className="cursor-pointer" size={24} />{" "}
 				<span className="ml-2">{bookmarked ? "Saved" : "Save"}</span>
 			</div>
 		);

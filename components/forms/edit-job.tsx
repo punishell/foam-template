@@ -61,9 +61,7 @@ export const EditJobForm: FC<JobEditFormProps> = ({ job }) => {
 		resolver: zodResolver(createJobSchema),
 		defaultValues: {
 			budget: job.paymentFee,
-			deliverables: job.collections
-				.filter(isJobDeliverable)
-				.map((collection) => collection.name),
+			deliverables: job.collections.filter(isJobDeliverable).map((collection) => collection.name),
 			title: job?.name,
 			category: job?.category,
 			description: job?.description,
@@ -114,9 +112,7 @@ export const EditJobForm: FC<JobEditFormProps> = ({ job }) => {
 							},
 						);
 					} else if (talentId) {
-						router.push(
-							`/jobs/${id}/make-deposit/?talent-id=${talentId}`,
-						);
+						router.push(`/jobs/${id}/make-deposit/?talent-id=${talentId}`);
 					} else {
 						router.push(`/jobs/${id}`);
 					}
@@ -133,12 +129,8 @@ export const EditJobForm: FC<JobEditFormProps> = ({ job }) => {
 			!form.getFieldState("due").invalid &&
 			!!form.watch("budget") &&
 			!form.getFieldState("budget").invalid,
-		skills:
-			!!form.watch("firstSkill") &&
-			!form.getFieldState("firstSkill").invalid,
-		description:
-			!!form.watch("description") &&
-			!form.getFieldState("description").invalid,
+		skills: !!form.watch("firstSkill") && !form.getFieldState("firstSkill").invalid,
+		description: !!form.watch("description") && !form.getFieldState("description").invalid,
 		deliverables:
 			Array.isArray(form.watch("deliverables")) &&
 			form.watch("deliverables").filter((r) => r !== "").length > 0 &&
@@ -177,9 +169,7 @@ export const EditJobForm: FC<JobEditFormProps> = ({ job }) => {
 						<JobDeliverables form={form} isEdit />
 
 						<div className="flex flex-col gap-4">
-							<h3 className="text-lg font-medium text-black">
-								Classification
-							</h3>
+							<h3 className="text-lg font-medium text-black">Classification</h3>
 							<div className="flex items-center gap-4">
 								<JobCategory form={form} />
 								<JobVisibility form={form} />
@@ -194,61 +184,32 @@ export const EditJobForm: FC<JobEditFormProps> = ({ job }) => {
 				<div className="flex w-full gap-4">
 					{!talentId && !job.escrowPaid && (
 						<div className="w-full">
-							<Button
-								onClick={form.handleSubmit(onSubmit)}
-								fullWidth
-							>
-								{updateJob.isLoading ? (
-									<Spinner />
-								) : (
-									"Update Job"
-								)}
+							<Button onClick={form.handleSubmit(onSubmit)} fullWidth>
+								{updateJob.isLoading ? <Spinner /> : "Update Job"}
 							</Button>
 						</div>
 					)}
 
 					{!talentId && job.escrowPaid && (
 						<div className="w-full">
-							<Button
-								onClick={form.handleSubmit(onSubmit)}
-								fullWidth
-							>
-								{updateJob.isLoading ? (
-									<Spinner />
-								) : (
-									"Update Job"
-								)}
+							<Button onClick={form.handleSubmit(onSubmit)} fullWidth>
+								{updateJob.isLoading ? <Spinner /> : "Update Job"}
 							</Button>
 						</div>
 					)}
 
 					{talentId && !job.escrowPaid && (
 						<div className="w-full">
-							<Button
-								onClick={form.handleSubmit(onSubmit)}
-								fullWidth
-							>
-								{updateJob.isLoading ? (
-									<Spinner />
-								) : (
-									"Make Deposit"
-								)}
+							<Button onClick={form.handleSubmit(onSubmit)} fullWidth>
+								{updateJob.isLoading ? <Spinner /> : "Make Deposit"}
 							</Button>
 						</div>
 					)}
 
 					{talentId && job.escrowPaid && (
 						<div className="w-full">
-							<Button
-								onClick={form.handleSubmit(onSubmit)}
-								fullWidth
-							>
-								{inviteTalent.isLoading ||
-								updateJob.isLoading ? (
-									<Spinner />
-								) : (
-									"Invite Talent"
-								)}
+							<Button onClick={form.handleSubmit(onSubmit)} fullWidth>
+								{inviteTalent.isLoading || updateJob.isLoading ? <Spinner /> : "Invite Talent"}
 							</Button>
 						</div>
 					)}

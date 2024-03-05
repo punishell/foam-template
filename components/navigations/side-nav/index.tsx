@@ -4,14 +4,7 @@
 
 import { type ReactElement } from "react";
 import Image from "next/image";
-import {
-	LayoutDashboard,
-	Users,
-	LayoutList,
-	Wallet,
-	MessageSquare,
-	Settings,
-} from "lucide-react";
+import { LayoutDashboard, Users, LayoutList, Wallet, MessageSquare, Settings } from "lucide-react";
 import Link from "next/link";
 
 /* -------------------------------------------------------------------------- */
@@ -80,13 +73,7 @@ export const Sidebar = (): ReactElement => {
 				<LogOut />
 			</div>
 			<div className="border-b border-line opacity-20" />
-			<Image
-				src="/images/logo.svg"
-				alt="Logo"
-				width={250}
-				height={60}
-				className="mx-auto max-w-[80%]"
-			/>
+			<Image src="/images/logo.svg" alt="Logo" width={250} height={60} className="mx-auto max-w-[80%]" />
 		</div>
 	);
 };

@@ -7,16 +7,12 @@
 import { AchievementBar } from "./bar";
 import { type AchievementType, type AchievementProps } from "./types";
 
-export const Achievements = ({
-	achievements = [],
-}: AchievementProps): JSX.Element => {
+export const Achievements = ({ achievements = [] }: AchievementProps): JSX.Element => {
 	achievements.sort((a, b) => b.total - a.total);
 	return (
 		<div className="shrink-0 rounded-2xl bg-primary-gradient p-[4px]">
 			<div className="flex h-full w-fit shrink-0 flex-col items-center gap-4 rounded-xl bg-[#F8FFF4] px-6 py-4">
-				<h3 className="text-center text-2xl font-medium text-title">
-					Achievements
-				</h3>
+				<h3 className="text-center text-2xl font-medium text-title">Achievements</h3>
 				<div className="grid w-full grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
 					{achievements.length > 0 &&
 						achievements.map(({ total, type, value }) => {

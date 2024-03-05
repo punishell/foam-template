@@ -22,12 +22,7 @@ interface ApplicantCardProps {
 	inviteReceiverId?: string;
 }
 
-export const ApplicantCard: FC<ApplicantCardProps> = ({
-	bid,
-	talent,
-	message,
-	inviteReceiverId,
-}) => {
+export const ApplicantCard: FC<ApplicantCardProps> = ({ bid, talent, message, inviteReceiverId }) => {
 	const router = useRouter();
 	const { firstName, lastName, score, profileImage, profile } = talent;
 	const hasBeenInvited = inviteReceiverId === talent._id;

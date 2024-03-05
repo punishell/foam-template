@@ -79,9 +79,7 @@ export const PaymentReleased = ({
 						)}
 					</div>
 					<p className="text-3xl text-title">
-						{isCreator
-							? `${title}`
-							: `$${amount} has been added to Your Wallet! 💰`}
+						{isCreator ? `${title}` : `$${amount} has been added to Your Wallet! 💰`}
 					</p>
 					<div className="mt-auto flex items-center justify-between">
 						<div className="flex items-center gap-2">
@@ -113,17 +111,13 @@ export const PaymentReleased = ({
 				<div className="flex w-full flex-col gap-4">
 					<div className="flex w-full items-center justify-between">
 						<h3 className="text-base text-body leading-normal tracking-tight font-medium">
-							{isCreator
-								? "Job Completed"
-								: "💰 Payment Released"}
+							{isCreator ? "Job Completed" : "💰 Payment Released"}
 						</h3>
 					</div>
 
 					<div className="flex items-end gap-2 justify-between">
 						<p className="text-lg text-black">
-							{isCreator
-								? `${title}`
-								: `$${amount} has been added to Your Wallet! 💰`}
+							{isCreator ? `${title}` : `$${amount} has been added to Your Wallet! 💰`}
 						</p>
 						<RenderBookMark
 							size={20}

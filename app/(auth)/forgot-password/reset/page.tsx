@@ -23,23 +23,14 @@ export default function ResetPasswordPage(): React.JSX.Element {
 	const token = searchParams.get("token") ?? "";
 
 	useEffect(() => {
-		if (
-			typeof email !== "string" ||
-			typeof token !== "string" ||
-			email === "" ||
-			token === ""
-		) {
+		if (typeof email !== "string" || typeof token !== "string" || email === "" || token === "") {
 			router.push("/forgot-password");
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [email, token]);
 
 	return showResetForm ? (
-		<ResetPasswordForm
-			searchParams={searchParams}
-			otp={otp}
-			token={token}
-		/>
+		<ResetPasswordForm searchParams={searchParams} otp={otp} token={token} />
 	) : (
 		<ResetPasswordVerificationForm
 			searchParams={searchParams}

@@ -12,10 +12,7 @@ interface DeliverablesProps {
 	setDeliverables: React.Dispatch<React.SetStateAction<string[]>>;
 }
 
-export const DeliverablesInput: React.FC<DeliverablesProps> = ({
-	deliverables,
-	setDeliverables,
-}) => {
+export const DeliverablesInput: React.FC<DeliverablesProps> = ({ deliverables, setDeliverables }) => {
 	const MAX_DELIVERABLES = 5;
 	const deliverableListRef = React.useRef<HTMLDivElement>(null);
 
@@ -30,19 +27,12 @@ export const DeliverablesInput: React.FC<DeliverablesProps> = ({
 		);
 	};
 
-	const editDeliverable = (
-		deliverableIndex: number,
-		newDeliverable: string,
-	): void => {
-		const updatedDeliverables = deliverables.map((d, index) =>
-			index === deliverableIndex ? newDeliverable : d,
-		);
+	const editDeliverable = (deliverableIndex: number, newDeliverable: string): void => {
+		const updatedDeliverables = deliverables.map((d, index) => (index === deliverableIndex ? newDeliverable : d));
 		setDeliverables(updatedDeliverables);
 	};
 
-	const handleKeyDown = (
-		e: React.KeyboardEvent<HTMLTextAreaElement>,
-	): void => {
+	const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>): void => {
 		if (e.key === "Enter" && deliverables.length < MAX_DELIVERABLES) {
 			addDeliverable();
 
@@ -51,9 +41,7 @@ export const DeliverablesInput: React.FC<DeliverablesProps> = ({
 				// wait for the new deliverable to be rendered
 				setTimeout(() => {
 					const newDeliverableInput =
-						deliverableListRef.current?.children[
-							newDeliverableIndex
-						]?.querySelector("textarea");
+						deliverableListRef.current?.children[newDeliverableIndex]?.querySelector("textarea");
 					newDeliverableInput?.focus();
 				}, 1);
 			}
@@ -91,11 +79,7 @@ export const DeliverablesInput: React.FC<DeliverablesProps> = ({
 								className="flex shrink-0 basis-[50px] items-center justify-center rounded-lg border border-line bg-slate-50 duration-200 hover:bg-gray-100"
 								aria-label="Delete Deliverable"
 							>
-								<Trash2
-									size={20}
-									strokeWidth={2}
-									className="text-danger"
-								/>
+								<Trash2 size={20} strokeWidth={2} className="text-danger" />
 							</button>
 						</div>
 					);

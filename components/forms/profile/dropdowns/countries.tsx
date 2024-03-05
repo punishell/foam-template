@@ -13,18 +13,8 @@ import { Check, ChevronsUpDown } from "lucide-react";
 
 import { Button } from "@/components/common/button";
 import { ScrollArea, ScrollBar } from "@/components/common/scroll-area";
-import {
-	Command,
-	CommandEmpty,
-	CommandGroup,
-	CommandInput,
-	CommandItem,
-} from "@/components/common/command";
-import {
-	Popover,
-	PopoverContent,
-	PopoverTrigger,
-} from "@/components/common/popover";
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem } from "@/components/common/command";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/common/popover";
 
 import { cn, lowerCase } from "@/lib/utils";
 import countries from "@/lib/countries.json";
@@ -38,18 +28,11 @@ interface CountryDropdownProps {
 	value: string;
 }
 
-const CountryDropdown = ({
-	disabled,
-	onChange,
-	value,
-}: CountryDropdownProps): React.JSX.Element => {
+const CountryDropdown = ({ disabled, onChange, value }: CountryDropdownProps): React.JSX.Element => {
 	const { openCountryDropdown, setOpenCountryDropdown } = useDropdownStore();
 	const C = countries as CountryProps[];
 	return (
-		<Popover
-			open={openCountryDropdown}
-			onOpenChange={setOpenCountryDropdown}
-		>
+		<Popover open={openCountryDropdown} onOpenChange={setOpenCountryDropdown}>
 			<PopoverTrigger asChild>
 				<Button
 					variant="outline"
@@ -62,22 +45,10 @@ const CountryDropdown = ({
 						{value ? (
 							<div className="flex items-end gap-2">
 								<span>
-									{
-										countries.find(
-											(country) =>
-												lowerCase(country.name) ===
-												lowerCase(value),
-										)?.emoji
-									}
+									{countries.find((country) => lowerCase(country.name) === lowerCase(value))?.emoji}
 								</span>
 								<span>
-									{
-										countries.find(
-											(country) =>
-												lowerCase(country.name) ===
-												lowerCase(value),
-										)?.name
-									}
+									{countries.find((country) => lowerCase(country.name) === lowerCase(value))?.name}
 								</span>
 							</div>
 						) : (
@@ -99,12 +70,7 @@ const CountryDropdown = ({
 									value={country.name}
 									onSelect={(currentValue: string) => {
 										// setCountryValue(currentValue === lowerCase(country.name) ? currentValue : "");
-										onChange(
-											currentValue ===
-												lowerCase(country.name)
-												? currentValue
-												: "",
-										);
+										onChange(currentValue === lowerCase(country.name) ? currentValue : "");
 										setOpenCountryDropdown(false);
 									}}
 									className="flex cursor-pointer items-center justify-between text-sm hover:!bg-primary-brighter"
@@ -116,9 +82,7 @@ const CountryDropdown = ({
 									<Check
 										className={cn(
 											"mr-2 h-4 w-4",
-											value === lowerCase(country.name)
-												? "opacity-100"
-												: "opacity-0",
+											value === lowerCase(country.name) ? "opacity-100" : "opacity-0",
 										)}
 									/>
 								</CommandItem>

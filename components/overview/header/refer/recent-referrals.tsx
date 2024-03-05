@@ -28,12 +28,7 @@ const RecentReferral = ({ referral }: RecentReferralProps): ReactElement => {
 	return (
 		<div className="flex w-full flex-row justify-between rounded-2xl border border-refer-border bg-refer-bg px-4 py-2">
 			<div className="flex flex-row gap-2">
-				<AfroProfile
-					score={referral.score}
-					src={referral.image}
-					size="sm"
-					url={`talents/${referral._id}`}
-				/>
+				<AfroProfile score={referral.score} src={referral.image} size="sm" url={`talents/${referral._id}`} />
 				<span className="my-auto items-center">
 					<h3 className="text-lg text-title">{referral.name}</h3>
 					<p className="text-sm text-title">{referral.title}</p>

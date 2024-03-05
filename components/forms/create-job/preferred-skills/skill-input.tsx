@@ -35,9 +35,7 @@ export const SkillInput = ({ form, name }: SkillInputProps): JSX.Element => {
 	const { data, isFetching, isLoading } = useGetCategory(skillValue);
 	const categories = data?.data ?? [];
 
-	const CATEGORY_LIST: Array<{ label: string; value: string }> = (
-		categories || []
-	).map((c) => ({
+	const CATEGORY_LIST: Array<{ label: string; value: string }> = (categories || []).map((c) => ({
 		label: c.name,
 		value: c.name,
 	}));
@@ -112,36 +110,31 @@ export const SkillInput = ({ form, name }: SkillInputProps): JSX.Element => {
 									<Spinner />
 								) : (
 									<>
-										{filteredCategoryList.map(
-											({ label, value: v }) => (
-												<div
-													key={v}
-													className="relative flex w-full cursor-pointer select-none items-center rounded p-2 text-base outline-none hover:bg-[#ECFCE5]"
-													onClick={() => {
+										{filteredCategoryList.map(({ label, value: v }) => (
+											<div
+												key={v}
+												className="relative flex w-full cursor-pointer select-none items-center rounded p-2 text-base outline-none hover:bg-[#ECFCE5]"
+												onClick={() => {
+													onChange(label);
+													setIsOpened(false);
+												}}
+												onKeyDown={(e) => {
+													if (e.key === "Enter" || e.key === " ") {
 														onChange(label);
 														setIsOpened(false);
-													}}
-													onKeyDown={(e) => {
-														if (
-															e.key === "Enter" ||
-															e.key === " "
-														) {
-															onChange(label);
-															setIsOpened(false);
-														}
-													}}
-													role="button"
-													tabIndex={0}
-												>
-													{sentenceCase(label)}
-													{label === value && (
-														<span className="absolute right-3 flex h-3.5 w-3.5 items-center justify-center">
-															<Check className="h-4 w-4" />
-														</span>
-													)}
-												</div>
-											),
-										)}
+													}
+												}}
+												role="button"
+												tabIndex={0}
+											>
+												{sentenceCase(label)}
+												{label === value && (
+													<span className="absolute right-3 flex h-3.5 w-3.5 items-center justify-center">
+														<Check className="h-4 w-4" />
+													</span>
+												)}
+											</div>
+										))}
 									</>
 								)}
 							</div>

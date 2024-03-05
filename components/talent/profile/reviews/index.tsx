@@ -16,13 +16,7 @@ import { BlazeCarousel, useBlazeSlider } from "../../../common/blazeCarousel";
 import { type ReviewProps } from "./types";
 import { Review } from "./item";
 
-export const Reviews = ({
-	reviews,
-	loading,
-}: {
-	reviews: ReviewProps[];
-	loading: boolean;
-}): ReactElement => {
+export const Reviews = ({ reviews, loading }: { reviews: ReviewProps[]; loading: boolean }): ReactElement => {
 	const sliderInstance = useBlazeSlider();
 
 	const { currentSlide } = sliderInstance;

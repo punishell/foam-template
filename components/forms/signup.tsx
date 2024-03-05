@@ -63,15 +63,11 @@ const SignupForm = (): React.JSX.Element => {
 	const validatingErr = useMemo(
 		() => ({
 			isMinLength: password?.length >= 8 || false,
-			checkLowerUpper:
-				(/[A-Z]/.test(password) && /[a-z]/.test(password)) || false,
+			checkLowerUpper: (/[A-Z]/.test(password) && /[a-z]/.test(password)) || false,
 			checkNumber: !(password?.match(/\d+/g) == null),
 			specialCharacter: spChars.test(password) || false,
 			confirmedPassword:
-				(password === confirmPassword &&
-					password !== "" &&
-					password !== undefined &&
-					password !== null) ||
+				(password === confirmPassword && password !== "" && password !== undefined && password !== null) ||
 				false,
 		}),
 		// eslint-disable-next-line react-hooks/exhaustive-deps
@@ -79,10 +75,7 @@ const SignupForm = (): React.JSX.Element => {
 	);
 
 	// Check if when user starts typing the password
-	const isPasswordTyping =
-		passwordWatch !== "" &&
-		passwordWatch !== undefined &&
-		passwordWatch !== null;
+	const isPasswordTyping = passwordWatch !== "" && passwordWatch !== undefined && passwordWatch !== null;
 
 	return (
 		<form
@@ -93,61 +86,31 @@ const SignupForm = (): React.JSX.Element => {
 			<div className="flex w-full flex-col gap-4">
 				<div className="grid grid-cols-2 gap-4">
 					<div className="relative mb-2 flex flex-col gap-2">
-						<label
-							htmlFor="firstName"
-							className="text-base sm:text-sm text-white"
-						>
+						<label htmlFor="firstName" className="text-base sm:text-sm text-white">
 							First Name
 						</label>
-						<Input
-							id="firstName"
-							{...form.register("firstName")}
-							placeholder="First Name"
-						/>
-						<InputErrorMessage
-							message={form.formState.errors.firstName?.message}
-						/>
+						<Input id="firstName" {...form.register("firstName")} placeholder="First Name" />
+						<InputErrorMessage message={form.formState.errors.firstName?.message} />
 					</div>
 					<div className="relative flex flex-col gap-2">
-						<label
-							htmlFor="lastName"
-							className="text-base sm:text-sm text-white"
-						>
+						<label htmlFor="lastName" className="text-base sm:text-sm text-white">
 							Last Name
 						</label>
-						<Input
-							id="lastName"
-							{...form.register("lastName")}
-							placeholder="Last Name"
-						/>
-						<InputErrorMessage
-							message={form.formState.errors.lastName?.message}
-						/>
+						<Input id="lastName" {...form.register("lastName")} placeholder="Last Name" />
+						<InputErrorMessage message={form.formState.errors.lastName?.message} />
 					</div>
 				</div>
 
 				<div className="relative mb-2 flex flex-col gap-2">
-					<label
-						htmlFor="email"
-						className="text-base sm:text-sm text-white"
-					>
+					<label htmlFor="email" className="text-base sm:text-sm text-white">
 						Email Address
 					</label>
-					<Input
-						id="email"
-						{...form.register("email")}
-						placeholder="Email Address"
-					/>
-					<InputErrorMessage
-						message={form.formState.errors.email?.message}
-					/>
+					<Input id="email" {...form.register("email")} placeholder="Email Address" />
+					<InputErrorMessage message={form.formState.errors.email?.message} />
 				</div>
 
 				<div className="relative mb-2 flex flex-col gap-2">
-					<label
-						htmlFor="password"
-						className="text-base sm:text-sm text-white"
-					>
+					<label htmlFor="password" className="text-base sm:text-sm text-white">
 						Create Password
 					</label>
 					<Input
@@ -189,10 +152,7 @@ const SignupForm = (): React.JSX.Element => {
 				</div>
 
 				<div className="relative mb-2 flex flex-col gap-2">
-					<label
-						htmlFor="confirmPassword"
-						className="text-base sm:text-sm text-white"
-					>
+					<label htmlFor="confirmPassword" className="text-base sm:text-sm text-white">
 						Confirm Password
 					</label>
 					<Input
@@ -205,11 +165,7 @@ const SignupForm = (): React.JSX.Element => {
 				</div>
 			</div>
 
-			<Button
-				className=""
-				fullWidth
-				disabled={!form.formState.isValid || signup.isLoading}
-			>
+			<Button className="" fullWidth disabled={!form.formState.isValid || signup.isLoading}>
 				{signup.isLoading ? <Spinner /> : "Signup"}
 			</Button>
 		</form>

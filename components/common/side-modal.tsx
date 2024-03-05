@@ -18,12 +18,7 @@ interface Props {
 	onOpenChange: (open: boolean) => void;
 }
 
-export const SideModal: FC<Props> = ({
-	children,
-	isOpen,
-	onOpenChange,
-	className,
-}) => {
+export const SideModal: FC<Props> = ({ children, isOpen, onOpenChange, className }) => {
 	return (
 		<Dialog.Root open={isOpen} onOpenChange={onOpenChange}>
 			<Dialog.Portal>

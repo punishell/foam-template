@@ -35,9 +35,7 @@ export const RequestReviewChange: FC<RequestReviewChangeProps> = ({
 	const mutation = useRequestReviewChange({ recipientId });
 	const [reason, setReason] = useState("");
 
-	const clientReview = job.ratings?.find(
-		(review) => review.owner._id === job.creator._id,
-	);
+	const clientReview = job.ratings?.find((review) => review.owner._id === job.creator._id);
 
 	return (
 		<>
@@ -57,27 +55,20 @@ export const RequestReviewChange: FC<RequestReviewChangeProps> = ({
 			</div>
 			<div className="flex h-full grow flex-col gap-6 px-4 py-6">
 				<div className="flex flex-col gap-2 rounded-xl border border-yellow bg-[#FEF4E3] p-3">
-					If the client approves your request, the job will be
-					reopened. After completion both parties will leave new
-					reviews.
+					If the client approves your request, the job will be reopened. After completion both parties will
+					leave new reviews.
 				</div>
 
 				<div>
 					<div className="flex flex-col gap-3 rounded-xl border border-line p-3">
 						<div className="flex items-center justify-between">
-							<span>
-								{clientReview?.owner.firstName}&apos; Review
-							</span>
+							<span>{clientReview?.owner.firstName}&apos; Review</span>
 							{/* @ts-expect-error --- Types Error */}
 							<Rating
 								readonly
 								initialRating={clientReview?.rating ?? 0}
-								fullSymbol={
-									<Star fill="#15D28E" color="#15D28E" />
-								}
-								emptySymbol={
-									<Star fill="transparent" color="#15D28E" />
-								}
+								fullSymbol={<Star fill="#15D28E" color="#15D28E" />}
+								emptySymbol={<Star fill="transparent" color="#15D28E" />}
 							/>
 						</div>
 						<p className="text-body">{clientReview?.review}</p>
@@ -86,8 +77,7 @@ export const RequestReviewChange: FC<RequestReviewChangeProps> = ({
 
 				<div className="flex flex-col gap-1">
 					<h3>
-						Reason for requesting review change{" "}
-						<span className="text-red-500">*</span>
+						Reason for requesting review change <span className="text-red-500">*</span>
 					</h3>
 					<div>
 						<textarea
@@ -120,11 +110,7 @@ export const RequestReviewChange: FC<RequestReviewChangeProps> = ({
 							);
 						}}
 					>
-						{mutation.isLoading ? (
-							<Spinner size={20} />
-						) : (
-							"Submit Request"
-						)}
+						{mutation.isLoading ? <Spinner size={20} /> : "Submit Request"}
 					</Button>
 				</div>
 			</div>

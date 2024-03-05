@@ -4,13 +4,7 @@
 /*                             External Dependency                            */
 /* -------------------------------------------------------------------------- */
 
-import {
-	type ReactElement,
-	useEffect,
-	useMemo,
-	useState,
-	useCallback,
-} from "react";
+import { type ReactElement, useEffect, useMemo, useState, useCallback } from "react";
 import { useDebounce } from "usehooks-ts";
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
 
@@ -67,24 +61,16 @@ export default function TalentsPage(): ReactElement {
 	const pathname = usePathname();
 	const searchParams = useSearchParams();
 
-	const [searchQuery, setSearchQuery] = useState(
-		searchParams.get("search") ?? "",
-	);
+	const [searchQuery, setSearchQuery] = useState(searchParams.get("search") ?? "");
 	const debouncedSearchQuery = useDebounce(searchQuery, 300);
 
-	const [skillsQuery, setSkillsQuery] = useState(
-		searchParams.get("skills") ?? "",
-	);
+	const [skillsQuery, setSkillsQuery] = useState(searchParams.get("skills") ?? "");
 	const debouncedSkillsQuery = useDebounce(skillsQuery, 300);
 
-	const [minimumPriceQuery, setMinimumPriceQuery] = useState(
-		searchParams.get("range")?.split(",")[0] ?? 0,
-	);
+	const [minimumPriceQuery, setMinimumPriceQuery] = useState(searchParams.get("range")?.split(",")[0] ?? 0);
 	const debouncedMinimumPriceQuery = useDebounce(minimumPriceQuery, 300);
 
-	const [maximumPriceQuery, setMaximumPriceQuery] = useState(
-		searchParams.get("range")?.split(",")[1] ?? 100,
-	);
+	const [maximumPriceQuery, setMaximumPriceQuery] = useState(searchParams.get("range")?.split(",")[1] ?? 100);
 	const debouncedMaximumPriceQuery = useDebounce(maximumPriceQuery, 300);
 
 	useEffect(() => {

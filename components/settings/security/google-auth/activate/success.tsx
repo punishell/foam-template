@@ -27,23 +27,13 @@ export const ActivateAuthAppSuccess = (): React.JSX.Element => {
 		<div className="flex w-full shrink-0 flex-col items-center">
 			<div className="flex w-full flex-row justify-between">
 				<Text.h3 size="xs">Authenticator App</Text.h3>
-				<XCircleIcon
-					className="my-auto cursor-pointer text-body"
-					onClick={Close}
-				/>
+				<XCircleIcon className="my-auto cursor-pointer text-body" onClick={Close} />
 			</div>
 
-			<Image
-				src="/icons/success.gif"
-				className="my-auto"
-				width={230}
-				height={230}
-				alt=""
-			/>
+			<Image src="/icons/success.gif" className="my-auto" width={230} height={230} alt="" />
 			<Text.p size="base" className="text-center">
-				You have successfully secured your account with 2FA. You will
-				input your Authentication App’s generated code each time you
-				want to login or make a withdrawal.
+				You have successfully secured your account with 2FA. You will input your Authentication App’s generated
+				code each time you want to login or make a withdrawal.
 			</Text.p>
 			<Button className="mt-auto w-full" onClick={Close} fullWidth>
 				Done

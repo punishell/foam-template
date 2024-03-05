@@ -47,27 +47,18 @@ export const OpenJobCard: React.FC<OpenJobProps> = ({
 	return (
 		<div className="flex w-full grow flex-col gap-4 rounded-3xl border border-line bg-white p-4">
 			<Link href={`/jobs/${id}`} className="flex w-full gap-4">
-				<AfroProfile
-					src={creator.avatar}
-					score={creator.paktScore}
-					size="md"
-					url={`talents/${creator._id}`}
-				/>
+				<AfroProfile src={creator.avatar} score={creator.paktScore} size="md" url={`talents/${creator._id}`} />
 
 				<div className="flex grow flex-col gap-2">
 					<div className="flex items-center justify-between gap-2">
 						<div className="flex items-center gap-2">
-							<span className="text-lg font-medium text-body">
-								{creator.name}
-							</span>
+							<span className="text-lg font-medium text-body">{creator.name}</span>
 							<span className="inline-flex rounded-full bg-[#B2E9AA66] px-3 text-base text-title">
 								${price}
 							</span>
 						</div>
 					</div>
-					<div className="break-word flex grow items-center text-2xl text-title">
-						{title}
-					</div>
+					<div className="break-word flex grow items-center text-2xl text-title">{title}</div>
 				</div>
 			</Link>
 			<div className="mt-auto flex items-center justify-between gap-2">

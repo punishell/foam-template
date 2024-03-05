@@ -27,9 +27,7 @@ export const MobileNavLink: FC<Props> = ({ href, label, icon }) => {
       `}
 		>
 			{icon}
-			<span className={`hidden !text-white ${isActive && "!block"}`}>
-				{label}
-			</span>
+			<span className={`hidden !text-white ${isActive && "!block"}`}>{label}</span>
 		</Link>
 	);
 };

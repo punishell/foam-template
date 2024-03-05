@@ -44,12 +44,7 @@ interface BasicInfoProps {
 	};
 }
 
-const BasicInfo = ({
-	userData,
-	form,
-	toggleUserProfile,
-	refetchUser,
-}: BasicInfoProps): ReactElement => {
+const BasicInfo = ({ userData, form, toggleUserProfile, refetchUser }: BasicInfoProps): ReactElement => {
 	return (
 		<div className="flex h-fit w-1/4 flex-col items-center rounded-lg bg-white">
 			<div className="flex flex-col gap-4 p-4">
@@ -59,11 +54,7 @@ const BasicInfo = ({
 					</span>
 				</div>
 				<div className="item-center mx-auto flex flex-col justify-center gap-2 text-center">
-					<UploadAvatar
-						size={150}
-						image={userData.avatar}
-						onUploadComplete={refetchUser}
-					/>
+					<UploadAvatar size={150} image={userData.avatar} onUploadComplete={refetchUser} />
 				</div>
 				<div className="flex flex-row items-center justify-center">
 					<p className="text-lg font-bold text-title">
@@ -73,15 +64,12 @@ const BasicInfo = ({
 				</div>
 				<div className="flex flex-row items-center justify-center text-body">
 					<Mail className="mr-2" />
-					<p className="text-base font-thin text-body">
-						{userData?.email}
-					</p>
+					<p className="text-base font-thin text-body">{userData?.email}</p>
 				</div>
 				<div className="flex flex-row items-center justify-center text-body">
 					<MapPin className="mr-2" />
 					<p className="text-base font-thin text-body">
-						{sentenceCase(userData?.location)},{" "}
-						{sentenceCase(userData?.country)}
+						{sentenceCase(userData?.location)}, {sentenceCase(userData?.country)}
 					</p>
 				</div>
 				<div className="mt-4 flex flex-col">
@@ -91,9 +79,7 @@ const BasicInfo = ({
 						onChange={(e: string) => {
 							toggleUserProfile(e);
 						}}
-						placeholder={
-							form.getValues().isPrivate ? "Private" : "Public"
-						}
+						placeholder={form.getValues().isPrivate ? "Private" : "Public"}
 						className="!border-[#E8E8E8] !bg-[#FCFCFD] capitalize"
 					/>
 					{/* <Select defaultValue={form.getValues().isPrivate ? 'Private' : 'Public'} onValueChange={(e: any) => toggleUserProfile(e)} className="!bg-[#FCFCFD] !border-[#E8E8E8] capitalize">
@@ -109,8 +95,7 @@ const BasicInfo = ({
                   </SelectContent>
                 </Select> */}
 					<p className="my-4 text-sm text-body">
-						Your visibility settings determine if your profile is
-						searchable.
+						Your visibility settings determine if your profile is searchable.
 					</p>
 				</div>
 			</div>

@@ -18,17 +18,10 @@ import { useUserState } from "@/lib/store/account";
 import { sentenceCase } from "@/lib/utils";
 import { type ReviewProps } from "./types";
 
-export const Review = ({
-	body,
-	title,
-	rating,
-	user,
-	date,
-}: ReviewProps): ReactElement => {
+export const Review = ({ body, title, rating, user, date }: ReviewProps): ReactElement => {
 	const { _id: loggedInUser } = useUserState();
 	const MAX_LEN = 150;
-	const navigateUrl =
-		loggedInUser === user._id ? "/profile" : `/talents/${user?._id}`;
+	const navigateUrl = loggedInUser === user._id ? "/profile" : `/talents/${user?._id}`;
 	return (
 		<div
 			className="flex min-h-full w-full cursor-grab select-none flex-col gap-4 rounded-2xl bg-white p-6"
@@ -54,20 +47,11 @@ export const Review = ({
 			<div className="flex items-center justify-between">
 				<div className="grid grid-cols-3 gap-2">
 					<div className="relative flex">
-						<AfroProfile
-							size="sm"
-							score={user.afroScore as number}
-							src={user?.avatar}
-							url={navigateUrl}
-						/>
+						<AfroProfile size="sm" score={user.afroScore as number} src={user?.avatar} url={navigateUrl} />
 					</div>
 					<div className="col-span-2 my-auto flex flex-col">
-						<span className="text-sm font-medium text-title">
-							{user.name}
-						</span>
-						<span className="text-sm text-body">
-							{sentenceCase(user.title)}
-						</span>
+						<span className="text-sm font-medium text-title">{user.name}</span>
+						<span className="text-sm text-body">{sentenceCase(user.title)}</span>
 					</div>
 				</div>
 				{/* @ts-expect-error --- Types Error */}

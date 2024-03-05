@@ -24,17 +24,14 @@ export const JuryInvitationFeed = (): ReactElement => {
 
 			<div className="flex w-full flex-col gap-4">
 				<div className="flex items-center justify-between">
-					<h3 className="text-xl font-bold text-title">
-						You’ve Been Invited To Serve On A Jury
-					</h3>
+					<h3 className="text-xl font-bold text-title">You’ve Been Invited To Serve On A Jury</h3>
 
 					<X size={20} />
 				</div>
 
 				<p className="text-base text-body">
-					You have two days to accept this invitation. Participating
-					will increase your Afroscore by 1 Point. Declining will cost
-					1 Point.
+					You have two days to accept this invitation. Participating will increase your Afroscore by 1 Point.
+					Declining will cost 1 Point.
 				</p>
 
 				<div className="mt-auto flex items-center justify-between">

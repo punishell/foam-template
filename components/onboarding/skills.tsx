@@ -6,15 +6,7 @@
 
 import clsx from "clsx";
 import { Button } from "pakt-ui";
-import {
-	type LucideIcon,
-	PenTool,
-	Terminal,
-	Users,
-	Feather,
-	Library,
-	Volume2,
-} from "lucide-react";
+import { type LucideIcon, PenTool, Terminal, Users, Feather, Library, Volume2 } from "lucide-react";
 
 /* -------------------------------------------------------------------------- */
 /*                             Internal Dependency                            */
@@ -31,12 +23,7 @@ interface SkillCardProps {
 	toggleSelection: () => void;
 }
 
-function SkillCard({
-	label,
-	Icon,
-	isActive,
-	toggleSelection,
-}: SkillCardProps): React.JSX.Element {
+function SkillCard({ label, Icon, isActive, toggleSelection }: SkillCardProps): React.JSX.Element {
 	return (
 		<button
 			onClick={toggleSelection}
@@ -70,9 +57,7 @@ export function Skills({ goToNextSlide }: SlideItemProps): React.JSX.Element {
 	return (
 		<div className="flex w-full shrink-0 flex-col items-center sm:gap-4">
 			<div className="flex w-full flex-col gap-1 text-left">
-				<p className="text-lg text-white sm:text-black sm:text-2xl">
-					Great to meet you, {firstName}.
-				</p>
+				<p className="text-lg text-white sm:text-black sm:text-2xl">Great to meet you, {firstName}.</p>
 				<span className="text-2xl sm:text-4xl font-bold text-white sm:text-[#1f2739]">
 					What are you interested in?
 				</span>
@@ -90,21 +75,13 @@ export function Skills({ goToNextSlide }: SlideItemProps): React.JSX.Element {
 					/>
 				))}
 				<div className="mx-auto mt-2 w-full max-w-xs col-span-2 sm:hidden">
-					<Button
-						fullWidth
-						disabled={skill === ""}
-						onClick={goToNextSlide}
-					>
+					<Button fullWidth disabled={skill === ""} onClick={goToNextSlide}>
 						Continue
 					</Button>
 				</div>
 			</div>
 			<div className="mx-auto mt-2 w-full max-w-xs hidden sm:block">
-				<Button
-					fullWidth
-					disabled={skill === ""}
-					onClick={goToNextSlide}
-				>
+				<Button fullWidth disabled={skill === ""} onClick={goToNextSlide}>
 					Continue
 				</Button>
 			</div>

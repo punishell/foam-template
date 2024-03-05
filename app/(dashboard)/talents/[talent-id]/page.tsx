@@ -57,14 +57,12 @@ export default function TalentDetailsPage(): ReactElement {
 			<div className="flex w-full gap-6">
 				<Bio body={talent.profile?.bio?.description ?? ""} />
 				<Achievements
-					achievements={talentData.data.talent.achievements?.map(
-						({ total, type, value }) => ({
-							type,
-							title: type,
-							total: Number(total),
-							value: parseInt(value, 10),
-						}),
-					)}
+					achievements={talentData.data.talent.achievements?.map(({ total, type, value }) => ({
+						type,
+						title: type,
+						total: Number(total),
+						value: parseInt(value, 10),
+					}))}
 				/>
 			</div>
 

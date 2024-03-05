@@ -13,11 +13,7 @@ import { MoreVertical } from "lucide-react";
 
 import { isJobDeliverable, type Job } from "@/lib/types";
 import { DeliverablesStepper } from "@/components/jobs/misc/deliverables-stepper";
-import {
-	Popover,
-	PopoverTrigger,
-	PopoverContent,
-} from "@/components/common/popover";
+import { Popover, PopoverTrigger, PopoverContent } from "@/components/common/popover";
 import { JobUpdateHeader } from "./header";
 
 interface JobUpdatesProps {
@@ -25,10 +21,7 @@ interface JobUpdatesProps {
 	requestJobCancellation: () => void;
 }
 
-export const JobUpdates: FC<JobUpdatesProps> = ({
-	job,
-	requestJobCancellation,
-}) => {
+export const JobUpdates: FC<JobUpdatesProps> = ({ job, requestJobCancellation }) => {
 	const {
 		name,
 		tags,
@@ -78,17 +71,12 @@ export const JobUpdates: FC<JobUpdatesProps> = ({
 
 				<div className="flex flex-col gap-2">
 					<h3 className="text-lg font-bold">Job Description</h3>
-					<p className="rounded-xl border border-blue-300 bg-[#C9F0FF] p-3">
-						{description}
-					</p>
+					<p className="rounded-xl border border-blue-300 bg-[#C9F0FF] p-3">{description}</p>
 				</div>
 				<div className="flex grow flex-col gap-2">
 					<div>
 						<h3 className="text-lg font-bold">Job Deliverables</h3>
-						<p className="text-body">
-							Deliverables will check off as the talent completes
-							them.
-						</p>
+						<p className="text-body">Deliverables will check off as the talent completes them.</p>
 					</div>
 
 					<div className="h-full grow">

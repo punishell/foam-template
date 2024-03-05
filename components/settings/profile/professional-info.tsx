@@ -26,9 +26,7 @@ const ProfessionalInfo = ({ form }: FormProps): ReactElement => {
 	return (
 		<div className="mb-4 rounded-lg bg-white px-8 py-7">
 			<div className="flex h-[50px] flex-row items-center justify-between">
-				<p className="text-lg font-bold text-title">
-					Professional Information
-				</p>
+				<p className="text-lg font-bold text-title">Professional Information</p>
 			</div>
 			<div className="flex flex-col gap-4">
 				<div className="flex flex-row gap-4">
@@ -38,9 +36,7 @@ const ProfessionalInfo = ({ form }: FormProps): ReactElement => {
 							<Controller
 								name="tags"
 								control={form.control}
-								render={({
-									field: { onChange, value = [] },
-								}) => (
+								render={({ field: { onChange, value = [] } }) => (
 									<TagInput
 										tags={value}
 										setTags={onChange}
@@ -48,8 +44,7 @@ const ProfessionalInfo = ({ form }: FormProps): ReactElement => {
 										placeholder={
 											value?.length < 3
 												? "Add your top 3 skills first"
-												: value?.length > 3 &&
-													  value?.length === 10
+												: value?.length > 3 && value?.length === 10
 													? ""
 													: value?.length >= 3
 														? `You can add ${10 - value.length} more skill${10 - value.length === 1 ? "" : "s"}`
@@ -62,9 +57,7 @@ const ProfessionalInfo = ({ form }: FormProps): ReactElement => {
 						</div>
 						<span className="absolute -bottom-6 flex w-full">
 							{form.formState.errors.tags?.message && (
-								<span className="text-sm text-red-500">
-									{form.formState.errors.tags?.message}
-								</span>
+								<span className="text-sm text-red-500">{form.formState.errors.tags?.message}</span>
 							)}
 						</span>
 					</div>
@@ -76,15 +69,11 @@ const ProfessionalInfo = ({ form }: FormProps): ReactElement => {
 							{...form.register("bio")}
 							placeholder="Enter a 350 character about thing"
 						/>
-						<div className="ml-auto w-fit text-sm text-body">
-							{form.watch("bio")?.length ?? 0}/350
-						</div>
+						<div className="ml-auto w-fit text-sm text-body">{form.watch("bio")?.length ?? 0}/350</div>
 
 						<span className="absolute -bottom-6 flex w-full">
 							{form.formState.errors.bio?.message && (
-								<span className="text-sm text-red-500">
-									{form.formState.errors.bio?.message}
-								</span>
+								<span className="text-sm text-red-500">{form.formState.errors.bio?.message}</span>
 							)}
 						</span>
 					</div>

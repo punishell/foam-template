@@ -39,10 +39,8 @@ export const JobUpdateHeader: FC<Props> = ({
 			<div
 				className="grid grid-cols-4 divide-x rounded-2xl border p-4"
 				style={{
-					borderColor:
-						status === "cancel_requested" ? "#FFBDBD" : "#7DDE86",
-					backgroundColor:
-						status === "cancel_requested" ? "#FFF8F8" : "#F8FFF4",
+					borderColor: status === "cancel_requested" ? "#FFBDBD" : "#7DDE86",
+					backgroundColor: status === "cancel_requested" ? "#FFF8F8" : "#F8FFF4",
 				}}
 			>
 				<div className="flex flex-col gap-2 pr-4">
@@ -51,9 +49,7 @@ export const JobUpdateHeader: FC<Props> = ({
 				</div>
 				<div className="flex flex-col gap-2 px-4">
 					<span className="text-body">Due Date</span>
-					<span>
-						{format(new Date(deliveryDate), "MMM dd, yyyy")}
-					</span>
+					<span>{format(new Date(deliveryDate), "MMM dd, yyyy")}</span>
 				</div>
 
 				<div className="flex flex-col gap-2 px-4">
@@ -65,19 +61,11 @@ export const JobUpdateHeader: FC<Props> = ({
 					<span
 						className="inline-flex w-fit rounded-full px-3 py-1 text-sm text-white"
 						style={{
-							borderColor:
-								status === "cancel_requested"
-									? "#FFBDBD"
-									: "#7DDE86",
-							backgroundColor:
-								status === "cancel_requested"
-									? "#EE4B2B"
-									: "#7DDE86",
+							borderColor: status === "cancel_requested" ? "#FFBDBD" : "#7DDE86",
+							backgroundColor: status === "cancel_requested" ? "#EE4B2B" : "#7DDE86",
 						}}
 					>
-						{status === "cancel_requested"
-							? "Cancelling"
-							: "In Progress"}
+						{status === "cancel_requested" ? "Cancelling" : "In Progress"}
 					</span>
 				</div>
 			</div>
@@ -85,10 +73,8 @@ export const JobUpdateHeader: FC<Props> = ({
 			<div
 				className="flex flex-col divide-y rounded-2xl border p-4"
 				style={{
-					borderColor:
-						status === "cancel_requested" ? "#FFBDBD" : "#7DDE86",
-					backgroundColor:
-						status === "cancel_requested" ? "#FFF8F8" : "#F8FFF4",
+					borderColor: status === "cancel_requested" ? "#FFBDBD" : "#7DDE86",
+					backgroundColor: status === "cancel_requested" ? "#FFF8F8" : "#F8FFF4",
 				}}
 			>
 				<div className="flex flex-col gap-2 pb-1">
@@ -103,9 +89,7 @@ export const JobUpdateHeader: FC<Props> = ({
 							<span className="text-base font-bold text-title">{`
                   ${profile.firstName} ${profile.lastName}
                   `}</span>
-							<span className="text-sm capitalize">
-								{profile.profile.bio.title}
-							</span>
+							<span className="text-sm capitalize">{profile.profile.bio.title}</span>
 						</div>
 					</div>
 				</div>

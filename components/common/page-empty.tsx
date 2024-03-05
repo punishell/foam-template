@@ -23,18 +23,13 @@ export const PageEmpty: FC<Props> = ({ className, label, children }) => {
 		<div
 			aria-live="polite"
 			aria-busy="true"
-			className={cn(
-				"flex h-screen w-full items-center justify-center border bg-white",
-				className,
-			)}
+			className={cn("flex h-screen w-full items-center justify-center border bg-white", className)}
 		>
 			<div className="flex flex-col items-center">
 				<div className="flex w-full max-w-[250px] items-center justify-center">
 					<Lottie animationData={empty} loop={false} />
 				</div>
-				<span className="max-w-md text-center text-lg text-body">
-					{label ?? "Nothing to show yet."}
-				</span>
+				<span className="max-w-md text-center text-lg text-body">{label ?? "Nothing to show yet."}</span>
 				{children}
 			</div>
 		</div>

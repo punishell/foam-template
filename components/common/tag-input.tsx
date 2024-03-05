@@ -22,20 +22,12 @@ interface TagInputProps {
 	disabled?: boolean;
 }
 
-export const TagInput: FC<TagInputProps> = ({
-	tags,
-	setTags,
-	className,
-	placeholder,
-	disabled,
-}) => {
+export const TagInput: FC<TagInputProps> = ({ tags, setTags, className, placeholder, disabled }) => {
 	const [isOpened, setIsOpened] = useState<boolean>(false);
 	const [inputValue, setInputValue] = useState<string>("");
 	const ref = useRef<HTMLDivElement | null>(null);
 
-	const handleKeyDown = (
-		event: React.KeyboardEvent<HTMLInputElement>,
-	): void => {
+	const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>): void => {
 		if (event.key === "Enter" && inputValue.trim() !== "") {
 			event.preventDefault();
 			setTags([...tags, inputValue.trim()]);
@@ -49,9 +41,7 @@ export const TagInput: FC<TagInputProps> = ({
 	const { data, isFetching, isLoading } = useGetCategory(inputValue);
 	const categories = data?.data ?? [];
 
-	const CATEGORY_LIST: Array<{ label: string; value: string }> = (
-		categories || []
-	).map((c) => ({
+	const CATEGORY_LIST: Array<{ label: string; value: string }> = (categories || []).map((c) => ({
 		label: sentenceCase(c.name),
 		value: sentenceCase(c.name),
 	}));
@@ -122,29 +112,27 @@ export const TagInput: FC<TagInputProps> = ({
 							<Spinner />
 						) : (
 							<>
-								{filteredCategoryList.map(
-									({ label, value: v }) => (
-										<div
-											key={v}
-											className="relative flex w-full cursor-pointer select-none items-center rounded p-2 text-base outline-none hover:bg-[#ECFCE5]"
-											onClick={() => {
-												setIsOpened(false);
-												setTags([...tags, label]);
-												setInputValue("");
-											}}
-											onKeyDown={handleKeyDown}
-											role="button"
-											tabIndex={0}
-										>
-											{label}
-											{label === inputValue && (
-												<span className="absolute right-3 flex h-3.5 w-3.5 items-center justify-center">
-													<Check className="h-4 w-4" />
-												</span>
-											)}
-										</div>
-									),
-								)}
+								{filteredCategoryList.map(({ label, value: v }) => (
+									<div
+										key={v}
+										className="relative flex w-full cursor-pointer select-none items-center rounded p-2 text-base outline-none hover:bg-[#ECFCE5]"
+										onClick={() => {
+											setIsOpened(false);
+											setTags([...tags, label]);
+											setInputValue("");
+										}}
+										onKeyDown={handleKeyDown}
+										role="button"
+										tabIndex={0}
+									>
+										{label}
+										{label === inputValue && (
+											<span className="absolute right-3 flex h-3.5 w-3.5 items-center justify-center">
+												<Check className="h-4 w-4" />
+											</span>
+										)}
+									</div>
+								))}
 							</>
 						)}
 					</div>
@@ -161,17 +149,10 @@ interface TagInputProps2 {
 	placeholder?: string;
 }
 
-export const TagInput2: FC<TagInputProps2> = ({
-	tags,
-	setTags,
-	className,
-	placeholder,
-}) => {
+export const TagInput2: FC<TagInputProps2> = ({ tags, setTags, className, placeholder }) => {
 	const [inputValue, setInputValue] = useState("");
 
-	const handleKeyDown = (
-		event: React.KeyboardEvent<HTMLInputElement>,
-	): void => {
+	const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>): void => {
 		if (event.key === "Enter" && inputValue.trim() !== "") {
 			event.preventDefault();
 			setTags([...tags, inputValue.trim()]);

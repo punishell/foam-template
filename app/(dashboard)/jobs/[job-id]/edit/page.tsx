@@ -20,8 +20,7 @@ export default function EditJobPage({ params }: Props): React.JSX.Element {
 	const jobQuery = useGetJobById({ jobId });
 
 	if (jobQuery.isError) return <PageError className="absolute inset-0" />;
-	if (jobQuery.isLoading)
-		return <PageLoading className="absolute inset-0" color="#007C5B" />;
+	if (jobQuery.isLoading) return <PageLoading className="absolute inset-0" color="#007C5B" />;
 	const { data: job } = jobQuery;
 
 	return <EditJobForm job={job} />;

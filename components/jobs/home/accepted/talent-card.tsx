@@ -47,9 +47,7 @@ export const TalentJobCard: FC<TalentJobCardProps> = ({
 }) => {
 	const router = useRouter();
 	const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
-	const progress = Math.floor(
-		(completedDeliverables / totalDeliverables) * 100,
-	);
+	const progress = Math.floor((completedDeliverables / totalDeliverables) * 100);
 	const { setErrorMessage } = useErrorService();
 
 	useEffect(() => {
@@ -66,25 +64,17 @@ export const TalentJobCard: FC<TalentJobCardProps> = ({
 		>
 			<div className="flex w-full gap-4">
 				<div className="-ml-3">
-					<AfroProfile
-						score={client.paktScore}
-						size="2md"
-						src={client.avatar}
-					/>
+					<AfroProfile score={client.paktScore} size="2md" src={client.avatar} />
 				</div>
 				<div className="-ml-3 flex grow flex-col gap-2 pt-4">
 					<div className="flex items-center justify-between gap-2">
-						<span className="text-lg font-bold text-body">
-							{client.name}
-						</span>
+						<span className="text-lg font-bold text-body">{client.name}</span>
 
 						<span className="inline-flex rounded-full bg-[#B2E9AA66] px-3 text-base text-title">
 							${price}
 						</span>
 					</div>
-					<div className="flex grow items-center break-words text-2xl text-title">
-						{title}
-					</div>
+					<div className="flex grow items-center break-words text-2xl text-title">{title}</div>
 				</div>
 			</div>
 			<div className="mt-auto flex w-full items-center justify-between gap-4">
@@ -92,9 +82,7 @@ export const TalentJobCard: FC<TalentJobCardProps> = ({
 					{!isCompleted && (
 						<Button
 							size="xs"
-							variant={
-								status === "cancelled" ? "danger" : "secondary"
-							}
+							variant={status === "cancelled" ? "danger" : "secondary"}
 							onClick={() => {
 								setIsUpdateModalOpen(true);
 							}}

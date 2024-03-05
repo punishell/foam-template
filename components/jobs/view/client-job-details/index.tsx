@@ -53,9 +53,7 @@ export function ClientJobDetails({ job }: ClientJobDetailsProps): ReactElement {
 					<JobDescription description={job.description} />
 
 					<JobDeliverables
-						deliverables={job.collections
-							.filter(isJobDeliverable)
-							.map((collection) => collection.name)}
+						deliverables={job.collections.filter(isJobDeliverable).map((collection) => collection.name)}
 					/>
 
 					{job.invite == null && (
@@ -78,18 +76,11 @@ export function ClientJobDetails({ job }: ClientJobDetailsProps): ReactElement {
 							<button
 								className="flex h-[35px] w-[130px] items-center justify-center rounded-lg border border-red-500 bg-red-50 text-sm text-red-500"
 								onClick={() => {
-									cancelInvite.mutate(
-										{ inviteId: job.invite?._id ?? "" },
-										{},
-									);
+									cancelInvite.mutate({ inviteId: job.invite?._id ?? "" }, {});
 								}}
 								type="button"
 							>
-								{cancelInvite.isLoading ? (
-									<Spinner size={16} />
-								) : (
-									"Cancel Invite"
-								)}
+								{cancelInvite.isLoading ? <Spinner size={16} /> : "Cancel Invite"}
 							</button>
 						</div>
 					)}
@@ -103,11 +94,7 @@ export function ClientJobDetails({ job }: ClientJobDetailsProps): ReactElement {
 					setIsDeleteModalOpen(false);
 				}}
 			>
-				<DeleteJobModal
-					jobId={job._id}
-					title={job.name}
-					setModalOpen={setIsDeleteModalOpen}
-				/>
+				<DeleteJobModal jobId={job._id} title={job.name} setModalOpen={setIsDeleteModalOpen} />
 			</Modal>
 		</div>
 	);

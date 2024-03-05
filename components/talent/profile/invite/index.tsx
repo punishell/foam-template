@@ -16,11 +16,7 @@ import { PageError } from "@/components/common/page-error";
 import { PageLoading } from "@/components/common/page-loading";
 import { JobList } from "./job-list";
 
-const InviteTalent = ({
-	talentId,
-}: {
-	talentId: string;
-}): ReactElement | null => {
+const InviteTalent = ({ talentId }: { talentId: string }): ReactElement | null => {
 	const jobsData = useGetJobs({ category: "created" });
 
 	if (jobsData.isError) return <PageError />;
@@ -29,16 +25,10 @@ const InviteTalent = ({
 
 	const jobs = jobsData.data.data;
 	const sortedJobs = jobs.sort((a, b) => {
-		return (
-			new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-		);
+		return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
 	});
 	const unassignedJobs = sortedJobs
-		.filter(
-			(job) =>
-				job.status === "pending" ||
-				(job.status === "ongoing" && !job.inviteAccepted),
-		)
+		.filter((job) => job.status === "pending" || (job.status === "ongoing" && !job.inviteAccepted))
 		.filter((job) => !job.invite);
 
 	return <JobList jobs={unassignedJobs} talentId={talentId} />;
@@ -50,11 +40,7 @@ interface Props {
 	setIsOpen: (isOpen: boolean) => void;
 }
 
-export const InviteTalentModal = ({
-	isOpen,
-	setIsOpen,
-	talentId,
-}: Props): ReactElement | null => {
+export const InviteTalentModal = ({ isOpen, setIsOpen, talentId }: Props): ReactElement | null => {
 	return (
 		<SideModal
 			isOpen={isOpen}

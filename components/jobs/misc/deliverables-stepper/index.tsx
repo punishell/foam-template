@@ -37,43 +37,30 @@ export const DeliverablesStepper = ({
 	const updateJobProgress = useUpdateJobProgress({ creatorId: jobCreator });
 	const markJobAsComplete = useMarkJobAsComplete();
 	const totalDeliverables = deliverables.length;
-	const completedDeliverables = deliverables.filter(
-		(deliverable) => deliverable.progress === 100,
-	).length;
+	const completedDeliverables = deliverables.filter((deliverable) => deliverable.progress === 100).length;
 	// console.log(deliverables);
 
 	return (
 		<div className="flex h-full w-full grow flex-col pb-6">
 			{deliverables
 				.sort((a, b) => b.progress - a.progress)
-				.map(
-					(
-						{
-							deliverableId,
-							description,
-							jobId: jId,
-							progress,
-							meta,
-						},
-						index,
-					) => {
-						return (
-							<DeliverableStep
-								jobId={jId}
-								jobCreator={jobCreator}
-								isClient={isClient}
-								progress={progress}
-								key={deliverableId}
-								updatedAt={meta?.completedAt as string}
-								description={description}
-								deliverableId={deliverableId}
-								totalDeliverables={totalDeliverables}
-								isLast={index === totalDeliverables - 1}
-								completedDeliverables={completedDeliverables}
-							/>
-						);
-					},
-				)}
+				.map(({ deliverableId, description, jobId: jId, progress, meta }, index) => {
+					return (
+						<DeliverableStep
+							jobId={jId}
+							jobCreator={jobCreator}
+							isClient={isClient}
+							progress={progress}
+							key={deliverableId}
+							updatedAt={meta?.completedAt as string}
+							description={description}
+							deliverableId={deliverableId}
+							totalDeliverables={totalDeliverables}
+							isLast={index === totalDeliverables - 1}
+							completedDeliverables={completedDeliverables}
+						/>
+					);
+				})}
 
 			<div className="mt-auto">
 				{showActionButton && isClient && jobProgress === 100 && (
@@ -95,11 +82,7 @@ export const DeliverablesStepper = ({
 							);
 						}}
 					>
-						{markJobAsComplete.isLoading ? (
-							<Spinner size={20} />
-						) : (
-							"Finalize Job and Review"
-						)}
+						{markJobAsComplete.isLoading ? <Spinner size={20} /> : "Finalize Job and Review"}
 					</Button>
 				)}
 
@@ -133,11 +116,7 @@ export const DeliverablesStepper = ({
 								);
 							}}
 						>
-							{updateJobProgress.isLoading ? (
-								<Spinner size={20} />
-							) : (
-								"Complete Job"
-							)}
+							{updateJobProgress.isLoading ? <Spinner size={20} /> : "Complete Job"}
 						</Button>
 					)}
 			</div>

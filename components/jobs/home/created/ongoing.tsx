@@ -37,56 +37,36 @@ export const OngoingJobs: React.FC<OngoingJobsProps> = ({ jobs }) => {
 	return (
 		<div className="flex h-full min-h-[80vh] flex-col">
 			<div className="grid grid-cols-2 gap-4 overflow-y-auto pb-20">
-				{paginatedJobs.map(
-					({
-						_id,
-						paymentFee,
-						name,
-						collections,
-						owner,
-						progress,
-					}) => {
-						const reviewRequestChange = collections.find(
-							isReviewChangeRequest,
-						);
-						return (
-							<ClientJobCard
-								totalDeliverables={
-									collections.filter(
-										(collection) =>
-											collection.type === "deliverable",
-									).length
-								}
-								completedDeliverables={
-									collections.filter(
-										(collection) =>
-											collection.type === "deliverable" &&
-											collection.progress === 100,
-									).length
-								}
-								reviewRequestChange={reviewRequestChange}
-								jobId={_id}
-								key={_id}
-								price={paymentFee}
-								title={name}
-								talent={{
-									id: owner?._id ?? "",
-									paktScore: owner?.score ?? 0,
-									avatar: owner?.profileImage?.url,
-									name: `${owner?.firstName} ${owner?.lastName}`,
-								}}
-								jobProgress={progress}
-							/>
-						);
-					},
-				)}
+				{paginatedJobs.map(({ _id, paymentFee, name, collections, owner, progress }) => {
+					const reviewRequestChange = collections.find(isReviewChangeRequest);
+					return (
+						<ClientJobCard
+							totalDeliverables={
+								collections.filter((collection) => collection.type === "deliverable").length
+							}
+							completedDeliverables={
+								collections.filter(
+									(collection) => collection.type === "deliverable" && collection.progress === 100,
+								).length
+							}
+							reviewRequestChange={reviewRequestChange}
+							jobId={_id}
+							key={_id}
+							price={paymentFee}
+							title={name}
+							talent={{
+								id: owner?._id ?? "",
+								paktScore: owner?.score ?? 0,
+								avatar: owner?.profileImage?.url,
+								name: `${owner?.firstName} ${owner?.lastName}`,
+							}}
+							jobProgress={progress}
+						/>
+					);
+				})}
 			</div>
 			<div className="mt-auto pt-4">
-				<Pagination
-					currentPage={currentPage}
-					totalPages={TOTAL_PAGES}
-					setCurrentPage={setCurrentPage}
-				/>
+				<Pagination currentPage={currentPage} totalPages={TOTAL_PAGES} setCurrentPage={setCurrentPage} />
 			</div>
 		</div>
 	);

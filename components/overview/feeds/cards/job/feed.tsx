@@ -76,10 +76,7 @@ interface JobResponseProps {
 	close?: (id: string) => void;
 }
 
-type JobFeedCardProps =
-	| JobInvitePendingProps
-	| JobFilledProps
-	| JobResponseProps;
+type JobFeedCardProps = JobInvitePendingProps | JobFilledProps | JobResponseProps;
 
 export const JobFeedCard = (props: JobFeedCardProps): ReactElement => {
 	const { type } = props;
@@ -90,17 +87,10 @@ export const JobFeedCard = (props: JobFeedCardProps): ReactElement => {
 		return (
 			<>
 				<JobFeedWrapper>
-					<AfroProfile
-						src={inviter.avatar}
-						score={inviter.score}
-						size="lg"
-						url={`/talents/${inviter._id}`}
-					/>
+					<AfroProfile src={inviter.avatar} score={inviter.score} size="lg" url={`/talents/${inviter._id}`} />
 					<div className="flex w-full flex-col gap-4 py-4">
 						<div className="flex items-center justify-between">
-							<h3 className="text-xl font-bold text-title">
-								Job Filled
-							</h3>
+							<h3 className="text-xl font-bold text-title">Job Filled</h3>
 
 							{close && (
 								<X
@@ -114,12 +104,8 @@ export const JobFeedCard = (props: JobFeedCardProps): ReactElement => {
 						</div>
 
 						<p className="text-body">
-							The{" "}
-							<span className="text-bold text-title">
-								&quot;{title}&quot;
-							</span>{" "}
-							Job you applied to has been filled. You can check
-							out more public jobs that fit your profile
+							The <span className="text-bold text-title">&quot;{title}&quot;</span> Job you applied to has
+							been filled. You can check out more public jobs that fit your profile
 						</p>
 
 						<div className="mt-auto flex items-center justify-between">
@@ -140,17 +126,10 @@ export const JobFeedCard = (props: JobFeedCardProps): ReactElement => {
 				</JobFeedWrapper>
 				{/* Mobile */}
 				<div className="sm:hidden flex">
-					<AfroProfile
-						src={inviter.avatar}
-						score={inviter.score}
-						size="lg"
-						url={`/talents/${inviter._id}`}
-					/>
+					<AfroProfile src={inviter.avatar} score={inviter.score} size="lg" url={`/talents/${inviter._id}`} />
 					<div className="flex w-full flex-col gap-4 py-4">
 						<div className="flex items-center justify-between">
-							<h3 className="text-xl font-bold text-title">
-								Job Filled
-							</h3>
+							<h3 className="text-xl font-bold text-title">Job Filled</h3>
 
 							{close && (
 								<X
@@ -163,12 +142,8 @@ export const JobFeedCard = (props: JobFeedCardProps): ReactElement => {
 							)}
 						</div>
 						<p className="text-body">
-							The{" "}
-							<span className="text-bold text-title">
-								&quot;{title}&quot;
-							</span>{" "}
-							Job you applied to has been filled. You can check
-							out more public jobs that fit your profile
+							The <span className="text-bold text-title">&quot;{title}&quot;</span> Job you applied to has
+							been filled. You can check out more public jobs that fit your profile
 						</p>
 						hhhhhhhhhhhhhhhhhhhhhh
 						<div className="mt-auto flex items-center justify-between">
@@ -192,27 +167,11 @@ export const JobFeedCard = (props: JobFeedCardProps): ReactElement => {
 	}
 
 	if (type === "job-invite-pending") {
-		const {
-			id,
-			title,
-			amount,
-			inviter,
-			bookmarked,
-			invitationExpiry,
-			inviteId,
-			jobId,
-			bookmarkId,
-			close,
-		} = props;
+		const { id, title, amount, inviter, bookmarked, invitationExpiry, inviteId, jobId, bookmarkId, close } = props;
 		return (
 			<>
 				<JobFeedWrapper>
-					<AfroProfile
-						src={inviter.avatar}
-						score={inviter.score}
-						size="lg"
-						url={`/talents/${inviter._id}`}
-					/>
+					<AfroProfile src={inviter.avatar} score={inviter.score} size="lg" url={`/talents/${inviter._id}`} />
 					<div className="flex w-full flex-col gap-4 py-4">
 						<div className="flex items-center justify-between">
 							<span className="text-xl font-bold text-body">
@@ -242,15 +201,10 @@ export const JobFeedCard = (props: JobFeedCardProps): ReactElement => {
 							</div>
 						</div>
 
-						<span className="text-2xl font-normal text-title">
-							{title}
-						</span>
+						<span className="text-2xl font-normal text-title">{title}</span>
 
 						<div className="mt-auto flex items-center justify-between">
-							<Link
-								href={`/jobs/${jobId}?invite-id=${inviteId}`}
-								className="flex items-center gap-2"
-							>
+							<Link href={`/jobs/${jobId}?invite-id=${inviteId}`} className="flex items-center gap-2">
 								<Button size="xs" variant="secondary">
 									See Details
 								</Button>
@@ -278,9 +232,7 @@ export const JobFeedCard = (props: JobFeedCardProps): ReactElement => {
 							url={`/talents/${inviter._id}`}
 						/>
 						<div className="flex-col justify-start items-start inline-flex">
-							<p className="text-gray-800 text-lg flex leading-[27px] tracking-wide">
-								{inviter.name}
-							</p>
+							<p className="text-gray-800 text-lg flex leading-[27px] tracking-wide">{inviter.name}</p>
 							<span className="text-gray-500 text-xs leading-[18px] tracking-wide">
 								{titleCase(inviter.title ?? "")}
 							</span>
@@ -307,9 +259,7 @@ export const JobFeedCard = (props: JobFeedCardProps): ReactElement => {
 						</div>
 
 						<div className="flex items-center justify-between gap-2">
-							<h3 className="text-lg font-normal text-black">
-								{title}
-							</h3>
+							<h3 className="text-lg font-normal text-black">{title}</h3>
 							<RenderBookMark
 								size={20}
 								isBookmarked={bookmarked}
@@ -325,36 +275,16 @@ export const JobFeedCard = (props: JobFeedCardProps): ReactElement => {
 	}
 
 	if (type === "job-invite-response") {
-		const {
-			id,
-			title,
-			bookmarked,
-			bookmarkId,
-			talent,
-			jobId,
-			close,
-			accepted,
-			cancelled,
-		} = props;
+		const { id, title, bookmarked, bookmarkId, talent, jobId, close, accepted, cancelled } = props;
 		return (
 			<>
 				<JobFeedWrapper>
-					<AfroProfile
-						src={talent.avatar}
-						score={talent.score}
-						size="lg"
-						url={`/talents/${talent._id}`}
-					/>
+					<AfroProfile src={talent.avatar} score={talent.score} size="lg" url={`/talents/${talent._id}`} />
 
 					<div className="flex w-full flex-col gap-4 py-4">
 						<div className="flex items-center justify-between">
 							<h3 className="text-xl font-bold text-title">
-								Job Invitation{" "}
-								{cancelled
-									? "cancelled"
-									: accepted
-										? "Accepted"
-										: "Declined"}
+								Job Invitation {cancelled ? "cancelled" : accepted ? "Accepted" : "Declined"}
 							</h3>
 
 							{close && (
@@ -369,16 +299,9 @@ export const JobFeedCard = (props: JobFeedCardProps): ReactElement => {
 						</div>
 
 						<p className="text-body">
-							{talent.name} has{" "}
-							{cancelled
-								? "cancelled"
-								: accepted
-									? "Accepted"
-									: "Declined"}{" "}
-							<span className="text-bold text-title">
-								&quot;{title}&quot;
-							</span>{" "}
-							Job. You can check job here
+							{talent.name} has {cancelled ? "cancelled" : accepted ? "Accepted" : "Declined"}{" "}
+							<span className="text-bold text-title">&quot;{title}&quot;</span> Job. You can check job
+							here
 						</p>
 
 						<div className="mt-auto flex items-center justify-between">
@@ -409,9 +332,7 @@ export const JobFeedCard = (props: JobFeedCardProps): ReactElement => {
 							url={`/talents/${talent._id}`}
 						/>
 						<div className="flex-col justify-start items-start inline-flex">
-							<p className="text-gray-800 text-lg flex leading-[27px] tracking-wide">
-								{talent.name}
-							</p>
+							<p className="text-gray-800 text-lg flex leading-[27px] tracking-wide">{talent.name}</p>
 							<span className="text-gray-500 text-xs leading-[18px] tracking-wide">
 								{titleCase(talent.title)}
 							</span>
@@ -420,26 +341,14 @@ export const JobFeedCard = (props: JobFeedCardProps): ReactElement => {
 					<div className="flex w-full flex-col gap-2">
 						<div className="flex items-center justify-between">
 							<h3 className="text-base font-bold text-body">
-								Job Invitation{" "}
-								{cancelled
-									? "cancelled"
-									: accepted
-										? "Accepted"
-										: "Declined"}
+								Job Invitation {cancelled ? "cancelled" : accepted ? "Accepted" : "Declined"}
 							</h3>
 						</div>
 						<div className="flex items-center justify-between gap-2 w-full">
 							<h3 className="text-lg font-normal text-black w-[80%]">
-								{talent.name} has{" "}
-								{cancelled
-									? "cancelled"
-									: accepted
-										? "Accepted"
-										: "Declined"}{" "}
-								<span className="text-bold text-title">
-									&quot;{title}&quot;
-								</span>{" "}
-								Job. You can check job here
+								{talent.name} has {cancelled ? "cancelled" : accepted ? "Accepted" : "Declined"}{" "}
+								<span className="text-bold text-title">&quot;{title}&quot;</span> Job. You can check job
+								here
 							</h3>
 							<RenderBookMark
 								size={20}

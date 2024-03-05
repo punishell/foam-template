@@ -30,11 +30,7 @@ interface timelineFetchParams {
 	filter: Record<string, unknown>;
 }
 
-async function getBookmarks({
-	page,
-	limit,
-	filter,
-}: timelineFetchParams): Promise<GetBookMarkResponse> {
+async function getBookmarks({ page, limit, filter }: timelineFetchParams): Promise<GetBookMarkResponse> {
 	const res = await axios.get(`/bookmark`, {
 		params: {
 			page,
@@ -69,22 +65,14 @@ interface AddToBookmarkParams {
 	type: string;
 }
 
-async function addToBookmark({
-	reference,
-	type,
-}: AddToBookmarkParams): Promise<AddToBookmarkParams> {
+async function addToBookmark({ reference, type }: AddToBookmarkParams): Promise<AddToBookmarkParams> {
 	const res = await axios.post(`/bookmark`, { reference, type });
 	return res.data.data;
 }
 
 export function useSaveToBookmark(
 	callBack?: () => void,
-): UseMutationResult<
-	AddToBookmarkParams,
-	ApiError,
-	AddToBookmarkParams,
-	unknown
-> {
+): UseMutationResult<AddToBookmarkParams, ApiError, AddToBookmarkParams, unknown> {
 	const queryClient = useQueryClient();
 	return useMutation({
 		mutationFn: addToBookmark,
@@ -110,9 +98,7 @@ interface BookmarkParams {
 	// add other properties here if needed
 }
 
-async function removeFromBookmark({
-	id,
-}: BookmarkParams): Promise<BookmarkParams> {
+async function removeFromBookmark({ id }: BookmarkParams): Promise<BookmarkParams> {
 	const res = await axios.delete(`/bookmark/${id}`);
 	return res.data.data;
 }

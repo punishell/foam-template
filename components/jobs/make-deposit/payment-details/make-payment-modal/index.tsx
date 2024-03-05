@@ -56,10 +56,7 @@ export const MakePaymentModal = ({
 			</div>
 
 			<div className="flex grow flex-col items-center justify-center">
-				<Tabs.Root
-					defaultValue="connect-wallet"
-					className="flex flex-col gap-6"
-				>
+				<Tabs.Root defaultValue="connect-wallet" className="flex flex-col gap-6">
 					<Tabs.List className="grid grid-cols-2 gap-1 rounded-lg bg-[#F0F2F5] p-0.5 text-base text-[#828A9B]">
 						<Tabs.Trigger
 							className="rounded-lg p-2 px-2 duration-200 hover:bg-white radix-state-active:bg-white"

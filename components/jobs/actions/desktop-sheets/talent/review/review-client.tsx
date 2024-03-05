@@ -38,15 +38,13 @@ export const ReviewClient: FC<ReviewClientProps> = ({ job, closeModal }) => {
 	const [rating, setRating] = useState(0);
 	const [comment, setComment] = useState("");
 
-	const clientReview = job.ratings?.find(
-		(review) => review.owner._id === job.creator._id,
-	);
+	const clientReview = job.ratings?.find((review) => review.owner._id === job.creator._id);
 
 	const reviewChangeRequest = job.collections.find(isReviewChangeRequest);
-	const reviewChangeRequestCompleted =
-		reviewChangeRequest?.status === "completed";
-	const [reviewChangeRequestPending, setReviewChangeRequestPending] =
-		useState(reviewChangeRequest?.status === "pending");
+	const reviewChangeRequestCompleted = reviewChangeRequest?.status === "completed";
+	const [reviewChangeRequestPending, setReviewChangeRequestPending] = useState(
+		reviewChangeRequest?.status === "pending",
+	);
 
 	if (reviewChangeRequestPending) {
 		return <RequestJobChangeSuccess closeModal={closeModal} />;
@@ -68,11 +66,7 @@ export const ReviewClient: FC<ReviewClientProps> = ({ job, closeModal }) => {
 		<>
 			<div className="bg-primary-gradient px-4 py-6 text-2xl font-bold text-white">
 				<div className="flex items-center gap-2">
-					<button
-						onClick={closeModal}
-						aria-label="Back"
-						type="button"
-					>
+					<button onClick={closeModal} aria-label="Back" type="button">
 						<ChevronLeft />
 					</button>
 					<span>Review</span>
@@ -80,43 +74,33 @@ export const ReviewClient: FC<ReviewClientProps> = ({ job, closeModal }) => {
 			</div>
 
 			<div className="flex h-full flex-col gap-6 px-4 py-4">
-				{clientReview &&
-					clientReview.rating < 5 &&
-					!reviewChangeRequestCompleted && (
-						<div className="xborder-line flex flex-col gap-3 rounded-xl border border-[#7DDE86] bg-[#FBFFFA] p-3">
-							<div className="flex items-center justify-between">
-								<span>
-									{clientReview.owner.firstName}{" "}
-									{clientReview.owner.lastName}&apos; Review
-								</span>
-								{/* @ts-expect-error --- Types Error */}
-								<Rating
-									readonly
-									initialRating={clientReview.rating || 0}
-									fullSymbol={
-										<Star fill="#15D28E" color="#15D28E" />
-									}
-									emptySymbol={
-										<Star
-											fill="transparent"
-											color="#15D28E"
-										/>
-									}
-								/>
-							</div>
-							<p className="text-body">{clientReview.review}</p>
-							<Button
-								fullWidth
-								size="xs"
-								variant="secondary"
-								onClick={() => {
-									setRequestReviewChange(true);
-								}}
-							>
-								Request opportunity to improve
-							</Button>
+				{clientReview && clientReview.rating < 5 && !reviewChangeRequestCompleted && (
+					<div className="xborder-line flex flex-col gap-3 rounded-xl border border-[#7DDE86] bg-[#FBFFFA] p-3">
+						<div className="flex items-center justify-between">
+							<span>
+								{clientReview.owner.firstName} {clientReview.owner.lastName}&apos; Review
+							</span>
+							{/* @ts-expect-error --- Types Error */}
+							<Rating
+								readonly
+								initialRating={clientReview.rating || 0}
+								fullSymbol={<Star fill="#15D28E" color="#15D28E" />}
+								emptySymbol={<Star fill="transparent" color="#15D28E" />}
+							/>
 						</div>
-					)}
+						<p className="text-body">{clientReview.review}</p>
+						<Button
+							fullWidth
+							size="xs"
+							variant="secondary"
+							onClick={() => {
+								setRequestReviewChange(true);
+							}}
+						>
+							Request opportunity to improve
+						</Button>
+					</div>
+				)}
 
 				<div className="rounded-xl border bg-gray-50 p-3">
 					<h3 className="text-lg">How was your experience with</h3>
@@ -131,9 +115,7 @@ export const ReviewClient: FC<ReviewClientProps> = ({ job, closeModal }) => {
 
 							<div className="flex flex-col gap-1">
 								<span className="text-base font-medium leading-none text-title">{`${creator?.firstName} ${creator?.lastName}`}</span>
-								<span className="text-sm capitalize leading-none">
-									{creator?.profile.bio.title}
-								</span>
+								<span className="text-sm capitalize leading-none">{creator?.profile.bio.title}</span>
 							</div>
 						</div>
 
@@ -144,12 +126,8 @@ export const ReviewClient: FC<ReviewClientProps> = ({ job, closeModal }) => {
 								onChange={(value) => {
 									setRating(value);
 								}}
-								fullSymbol={
-									<Star fill="#15D28E" color="#15D28E" />
-								}
-								emptySymbol={
-									<Star fill="transparent" color="#15D28E" />
-								}
+								fullSymbol={<Star fill="#15D28E" color="#15D28E" />}
+								emptySymbol={<Star fill="transparent" color="#15D28E" />}
 							/>
 						</div>
 					</div>
@@ -162,9 +140,7 @@ export const ReviewClient: FC<ReviewClientProps> = ({ job, closeModal }) => {
 							rows={3}
 							value={comment}
 							onChange={(e) => {
-								if (
-									e.target.value.length <= MAX_COMMENT_LENGTH
-								) {
+								if (e.target.value.length <= MAX_COMMENT_LENGTH) {
 									setComment(e.target.value);
 								}
 							}}
@@ -172,13 +148,9 @@ export const ReviewClient: FC<ReviewClientProps> = ({ job, closeModal }) => {
 							className="w-full grow resize-none rounded-lg border border-line bg-white p-2 placeholder:text-sm focus:outline-none"
 						/>
 						<div className="ml-auto w-fit">
-							<span className="text-sm text-body">
-								{comment.length}
-							</span>
+							<span className="text-sm text-body">{comment.length}</span>
 							<span className="text-sm text-body">/</span>
-							<span className="text-sm text-body">
-								{MAX_COMMENT_LENGTH} characters
-							</span>
+							<span className="text-sm text-body">{MAX_COMMENT_LENGTH} characters</span>
 						</div>
 					</div>
 				</div>
@@ -186,11 +158,7 @@ export const ReviewClient: FC<ReviewClientProps> = ({ job, closeModal }) => {
 				<div className="mt-auto">
 					<Button
 						fullWidth
-						disabled={
-							mutation.isLoading ||
-							rating === 0 ||
-							comment.length === 0
-						}
+						disabled={mutation.isLoading || rating === 0 || comment.length === 0}
 						onClick={() => {
 							mutation.mutate(
 								{
@@ -211,11 +179,7 @@ export const ReviewClient: FC<ReviewClientProps> = ({ job, closeModal }) => {
 							);
 						}}
 					>
-						{mutation.isLoading ? (
-							<Spinner size={20} />
-						) : (
-							"Submit Review"
-						)}
+						{mutation.isLoading ? <Spinner size={20} /> : "Submit Review"}
 					</Button>
 				</div>
 			</div>

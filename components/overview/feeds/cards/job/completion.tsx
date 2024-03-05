@@ -61,9 +61,7 @@ export const JobCompletionFeed = ({
 			/>
 			<div className="flex w-full flex-col gap-4 py-4">
 				<div className="flex items-center justify-between">
-					<h3 className="text-xl font-bold text-body">
-						{talent.name} completed all deliverables
-					</h3>
+					<h3 className="text-xl font-bold text-body">{talent.name} completed all deliverables</h3>
 					{close && (
 						<X
 							size={20}
@@ -87,13 +85,7 @@ export const JobCompletionFeed = ({
 							Review
 						</Button>
 					</div>
-					<RenderBookMark
-						size={20}
-						isBookmarked={bookmarked}
-						type="feed"
-						id={id}
-						bookmarkId={bookmarkId}
-					/>
+					<RenderBookMark size={20} isBookmarked={bookmarked} type="feed" id={id} bookmarkId={bookmarkId} />
 				</div>
 			</div>
 			<div className="absolute right-0 top-16 -z-[1] translate-x-1/3">

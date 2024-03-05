@@ -42,10 +42,7 @@ export const DeleteJobModal: FC<ClientDeleteJobModalProps> = ({
 					</div>
 
 					<h2 className="text-2xl font-medium">Application Sent</h2>
-					<span className="text-body">
-						You will get a notification if the client sends you a
-						message
-					</span>
+					<span className="text-body">You will get a notification if the client sends you a message</span>
 				</div>
 			</div>
 		);
@@ -56,12 +53,10 @@ export const DeleteJobModal: FC<ClientDeleteJobModalProps> = ({
 			<div className="flex flex-col items-center gap-4">
 				<h2 className="text-2xl font-medium">Delete Job</h2>
 				<span className="text-center text-body">
-					This action is irreversible. Once you delete the Job, all of
-					its content and data will be permanently erased.
+					This action is irreversible. Once you delete the Job, all of its content and data will be
+					permanently erased.
 				</span>
-				<span className="font-bold text-body">
-					Are you sure you want to proceed with the deletion?
-				</span>
+				<span className="font-bold text-body">Are you sure you want to proceed with the deletion?</span>
 			</div>
 			<div className="mt-auto flex w-full flex-row items-center justify-between gap-2">
 				<Button
@@ -93,11 +88,7 @@ export const DeleteJobModal: FC<ClientDeleteJobModalProps> = ({
 						}}
 						disabled={deleteJobMutation.isLoading}
 					>
-						{deleteJobMutation.isLoading ? (
-							<Spinner />
-						) : (
-							"Yes, Proceed"
-						)}
+						{deleteJobMutation.isLoading ? <Spinner /> : "Yes, Proceed"}
 					</Button>
 				</div>
 			</div>

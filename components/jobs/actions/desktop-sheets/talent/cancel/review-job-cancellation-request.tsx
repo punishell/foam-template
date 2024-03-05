@@ -23,9 +23,7 @@ interface ReviewJobCancellationRequestProps {
 	closeModal: () => void;
 }
 
-export const ReviewJobCancellationRequest: FC<
-	ReviewJobCancellationRequestProps
-> = ({ job }) => {
+export const ReviewJobCancellationRequest: FC<ReviewJobCancellationRequestProps> = ({ job }) => {
 	const [acceptCancellation, setAcceptCancellation] = useState(false);
 
 	const {
@@ -45,13 +43,7 @@ export const ReviewJobCancellationRequest: FC<
 	const jobCancellation = job.collections.find(isJobCancellation);
 
 	if (acceptCancellation) {
-		return (
-			<AcceptJobCancellation
-				job={job}
-				client={creator}
-				setAcceptCancellation={setAcceptCancellation}
-			/>
-		);
+		return <AcceptJobCancellation job={job} client={creator} setAcceptCancellation={setAcceptCancellation} />;
 	}
 
 	return (
@@ -112,9 +104,7 @@ export const ReviewJobCancellationRequest: FC<
 							}}
 							variant="danger"
 						>
-							<span className="normal-case">
-								Cancel Job and Review
-							</span>
+							<span className="normal-case">Cancel Job and Review</span>
 						</Button>
 					</div>
 				</div>

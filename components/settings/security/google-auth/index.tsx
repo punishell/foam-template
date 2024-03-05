@@ -29,10 +29,7 @@ interface AuthApp2FAProps {
 	disabled?: boolean;
 }
 
-export const GoogleAuth2FA = ({
-	isEnabled,
-	disabled,
-}: AuthApp2FAProps): React.JSX.Element => {
+export const GoogleAuth2FA = ({ isEnabled, disabled }: AuthApp2FAProps): React.JSX.Element => {
 	const { isModalOpen, closeModal, openModal } = useAuthApp2FAState();
 	const { isInput6DigitCode } = useMscState();
 	const [isActive, _setIsActive] = useState(isEnabled);
@@ -54,12 +51,7 @@ export const GoogleAuth2FA = ({
 					<Checkbox checked={isEnabled} />
 				</div>
 				<div className="flex h-[100px] items-center">
-					<Image
-						src="/icons/authenticator-app.svg"
-						width={76}
-						height={76}
-						alt=""
-					/>
+					<Image src="/icons/authenticator-app.svg" width={76} height={76} alt="" />
 				</div>
 				<Text.p size="lg">Authenticator app</Text.p>
 			</button>
@@ -73,12 +65,7 @@ export const GoogleAuth2FA = ({
 				disableClickOutside
 			>
 				{isActive ? (
-					<Slider
-						items={[
-							{ SlideItem: VerifyDeactivateAuthApp },
-							{ SlideItem: DeactivateAuthAppSuccess },
-						]}
-					/>
+					<Slider items={[{ SlideItem: VerifyDeactivateAuthApp }, { SlideItem: DeactivateAuthAppSuccess }]} />
 				) : (
 					<Slider
 						items={[

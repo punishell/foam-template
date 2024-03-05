@@ -55,9 +55,7 @@ export default function CreateJobPage(): React.JSX.Element {
 			!form.getFieldState("description").invalid,
 		deliverables:
 			Array.isArray(form.watch("deliverables")) &&
-			form
-				.watch("deliverables")
-				.filter((r) => r !== undefined && r !== "").length > 0 &&
+			form.watch("deliverables").filter((r) => r !== undefined && r !== "").length > 0 &&
 			!form.getFieldState("deliverables").invalid,
 		classification:
 			form.watch("visibility") !== undefined &&

@@ -27,15 +27,13 @@ export default function JobDetailsPage({ params }: Props): ReactElement {
 	const jobId = params["job-id"];
 	const accountQuery = useGetAccount();
 	const jobQuery = useGetJobById({ jobId });
-	if (jobQuery.isError || accountQuery.isError)
-		return <PageError className="absolute inset-0" />;
+	if (jobQuery.isError || accountQuery.isError) return <PageError className="absolute inset-0" />;
 	if (jobQuery.isLoading || accountQuery.isLoading)
 		return <PageLoading className="absolute inset-0" color="#007C5B" />;
 
 	const { data: job } = jobQuery;
 	const { data: account } = accountQuery;
-	const USER_ROLE: "client" | "talent" =
-		account?._id === job.creator._id ? "client" : "talent";
+	const USER_ROLE: "client" | "talent" = account?._id === job.creator._id ? "client" : "talent";
 
 	const VIEWS = {
 		client: ClientJobDetails,

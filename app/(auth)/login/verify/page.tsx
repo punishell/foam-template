@@ -22,9 +22,7 @@ export default function LoginVerificationPage(): React.JSX.Element {
 	return (
 		<Container className="mt-[42px] sm:mt-28 flex w-full max-w-2xl flex-col items-center gap-6">
 			<div className="flex flex-col items-center gap-2 text-center text-white">
-				<h3 className="font-sans text-2xl sm:text-3xl font-bold">
-					2FA Security
-				</h3>
+				<h3 className="font-sans text-2xl sm:text-3xl font-bold">2FA Security</h3>
 				<p className="font-sans text-base leading-normal tracking-tight">
 					{verifyType === TWO_FA_CONSTANTS.AUTHENTICATOR
 						? "Enter the OTP from your authenticator"

@@ -25,18 +25,14 @@ export const UserProfile = (): ReactElement => {
 				// size="2xl"
 				src={account?.profileImage?.url}
 				url="/profile"
-				size={
-					size.width > 1530 ? "2xl" : size.width > 768 ? "xl" : "sm"
-				}
+				size={size.width > 1530 ? "2xl" : size.width > 768 ? "xl" : "sm"}
 			/>
 
 			<div className="flex flex-col gap-0 text-center">
 				<span className="text-lg">
 					{account?.firstName} {account?.lastName}
 				</span>
-				<span className="text-sm capitalize text-sky">
-					{account?.profile?.bio?.title}
-				</span>
+				<span className="text-sm capitalize text-sky">{account?.profile?.bio?.title}</span>
 			</div>
 		</div>
 	);

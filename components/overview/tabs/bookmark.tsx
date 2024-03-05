@@ -30,28 +30,15 @@ export const FeedsBookmark = (): ReactElement => {
 	const bookmarks = useMemo(
 		() =>
 			(bookmarkData?.data ?? []).map((feed, i) =>
-				ParseFeedView(
-					{ ...feed.feed, bookmarkId: feed._id, isBookmarked: true },
-					loggedInUser,
-					i,
-					refetch,
-				),
+				ParseFeedView({ ...feed.feed, bookmarkId: feed._id, isBookmarked: true }, loggedInUser, i, refetch),
 			),
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 		[bookmarkData?.data],
 	);
 
 	if (!isFetched && isFetching)
-		return (
-			<PageLoading
-				className="h-[65vh] sm:rounded-2xl border border-line"
-				color="#007C5B"
-			/>
-		);
-	if (isError)
-		return (
-			<PageError className="h-[65vh] sm:rounded-2xl border border-red-200" />
-		);
+		return <PageLoading className="h-[65vh] sm:rounded-2xl border border-line" color="#007C5B" />;
+	if (isError) return <PageError className="h-[65vh] sm:rounded-2xl border border-red-200" />;
 	if (bookmarks.length === 0)
 		return (
 			<PageEmpty
@@ -61,8 +48,6 @@ export const FeedsBookmark = (): ReactElement => {
 		);
 
 	return (
-		<div className="flex w-full flex-col gap-5 sm:rounded-2xl border border-line bg-white sm:p-4">
-			{bookmarks}
-		</div>
+		<div className="flex w-full flex-col gap-5 sm:rounded-2xl border border-line bg-white sm:p-4">{bookmarks}</div>
 	);
 };

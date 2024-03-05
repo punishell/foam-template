@@ -94,9 +94,7 @@ export const ActiveJobCard = ({
 											? "Review"
 											: "Update"}
 							</Button>
-							<Link
-								href={`/messages?userId=${isCreator ? talent._id : creator._id}`}
-							>
+							<Link href={`/messages?userId=${isCreator ? talent._id : creator._id}`}>
 								<Button size="xs" variant="outline">
 									Message
 								</Button>

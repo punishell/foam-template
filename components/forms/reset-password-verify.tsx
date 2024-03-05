@@ -114,12 +114,9 @@ function ResetPasswordVerificationForm({
 	return (
 		<Container className="mt-28 flex w-full max-w-2xl flex-col items-center gap-6">
 			<div className="flex flex-col items-center gap-2 text-center text-white">
-				<h3 className="font-sans text-3xl font-bold">
-					Reset Password Code
-				</h3>
+				<h3 className="font-sans text-3xl font-bold">Reset Password Code</h3>
 				<p className="font-sans text-base">
-					A code has been sent to your email address. Enter it to
-					verify your reset password.
+					A code has been sent to your email address. Enter it to verify your reset password.
 				</p>
 			</div>
 			<form
@@ -159,57 +156,29 @@ function ResetPasswordVerificationForm({
 						}}
 					/>
 
-					<Button
-						fullWidth
-						disabled={
-							verifyResetPassword.isLoading ||
-							!form.formState.isValid
-						}
-					>
-						{verifyResetPassword.isLoading ? (
-							<Spinner />
-						) : (
-							"Reset Password"
-						)}
+					<Button fullWidth disabled={verifyResetPassword.isLoading || !form.formState.isValid}>
+						{verifyResetPassword.isLoading ? <Spinner /> : "Reset Password"}
 					</Button>
 
 					<div className="flex w-full flex-col items-center gap-4">
-						<span className="text-white">
-							{formatCountdown(countdown)}
-						</span>
+						<span className="text-white">{formatCountdown(countdown)}</span>
 						<div className="w-full max-w-[150px]">
 							<Button
 								size="xs"
 								fullWidth
 								variant="outline"
 								onClick={
-									!(
-										requestPasswordReset.isLoading ||
-										isResendDisabled
-									)
-										? handleResendOTP
-										: () => {}
+									!(requestPasswordReset.isLoading || isResendDisabled) ? handleResendOTP : () => {}
 								}
-								disabled={
-									requestPasswordReset.isLoading ||
-									isResendDisabled
-								}
+								disabled={requestPasswordReset.isLoading || isResendDisabled}
 								className="!border-white !text-white"
 								style={{
-									opacity:
-										requestPasswordReset.isLoading ||
-										isResendDisabled
-											? 0.2
-											: 1,
+									opacity: requestPasswordReset.isLoading || isResendDisabled ? 0.2 : 1,
 								}}
 							>
 								<span className="flex flex-row gap-2">
 									<Timer size={16} className="text-white" />
-									{requestPasswordReset.isLoading ? (
-										<Spinner size={16} />
-									) : (
-										"Resend Code"
-									)}
+									{requestPasswordReset.isLoading ? <Spinner size={16} /> : "Resend Code"}
 								</span>
 							</Button>
 						</div>

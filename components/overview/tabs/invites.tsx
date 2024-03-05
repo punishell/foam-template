@@ -19,27 +19,15 @@ import { JobFeedCard } from "../feeds/cards/job/feed";
 export const Invites = (): ReactElement => {
 	const query = useGetInvites({ filter: { status: "pending" } });
 
-	if (query.isLoading)
-		return (
-			<PageLoading
-				className="h-[65vh] sm:rounded-2xl border border-line"
-				color="#007C5B"
-			/>
-		);
+	if (query.isLoading) return <PageLoading className="h-[65vh] sm:rounded-2xl border border-line" color="#007C5B" />;
 
-	if (query.isError)
-		return (
-			<PageError className="h-[65vh] sm:rounded-2xl border border-red-200" />
-		);
+	if (query.isError) return <PageError className="h-[65vh] sm:rounded-2xl border border-red-200" />;
 
 	const invites = query.data.data;
 
 	if (invites.length === 0)
 		return (
-			<PageEmpty
-				className="h-[65vh] sm:rounded-2xl border border-line"
-				label="Your Invites will appear here"
-			/>
+			<PageEmpty className="h-[65vh] sm:rounded-2xl border border-line" label="Your Invites will appear here" />
 		);
 
 	return (

@@ -1,8 +1,4 @@
-const Elements = ({
-	colorCodes,
-}: {
-	colorCodes: string;
-}): React.JSX.Element => {
+const Elements = ({ colorCodes }: { colorCodes: string }): React.JSX.Element => {
 	return (
 		<>
 			<div

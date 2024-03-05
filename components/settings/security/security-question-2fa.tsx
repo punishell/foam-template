@@ -19,18 +19,8 @@ import { XCircleIcon } from "lucide-react";
 /* -------------------------------------------------------------------------- */
 
 import { useSecurityQuestion2FAState } from "@/lib/store";
-import {
-	InputErrorMessage,
-	Modal,
-	type SlideItemProps,
-	Slider,
-	Spinner,
-} from "@/components/common";
-import {
-	useActivate2FA,
-	useDeActivate2FA,
-	useInitialize2FA,
-} from "@/lib/api/account";
+import { InputErrorMessage, Modal, type SlideItemProps, Slider, Spinner } from "@/components/common";
+import { useActivate2FA, useDeActivate2FA, useInitialize2FA } from "@/lib/api/account";
 import { TWO_FA_CONSTANTS } from "@/lib/constants";
 import { toast } from "@/components/common/toaster";
 
@@ -48,9 +38,7 @@ const securityQuestionsSchema = z
 type SecurityQuestionFormValues = z.infer<typeof securityQuestionsSchema>;
 
 // @ts-expect-error --- Unused variable
-const InitiateActivateSecurityQuestion = ({
-	goToNextSlide,
-}: SlideItemProps): React.JSX.Element => {
+const InitiateActivateSecurityQuestion = ({ goToNextSlide }: SlideItemProps): React.JSX.Element => {
 	const { closeModal } = useSecurityQuestion2FAState();
 	const { isLoading } = useInitialize2FA();
 	// const { closeModal, setSecurityQuestions } = useSecurityQuestion2FAState();
@@ -68,23 +56,12 @@ const InitiateActivateSecurityQuestion = ({
 		<div className="flex w-full shrink-0 flex-col items-center">
 			<div className="flex w-full flex-row justify-between gap-2 text-center">
 				<Text.h3 size="xs">Security Question</Text.h3>
-				<XCircleIcon
-					className="my-auto cursor-pointer text-body"
-					onClick={closeModal}
-				/>
+				<XCircleIcon className="my-auto cursor-pointer text-body" onClick={closeModal} />
 			</div>
 
-			<Text.p size="base">
-				To begin, you will need to select a question from the predefined
-				questions.
-			</Text.p>
+			<Text.p size="base">To begin, you will need to select a question from the predefined questions.</Text.p>
 			<div className="m-auto flex items-center">
-				<Image
-					src="/icons/security-question.svg"
-					width={150}
-					height={210}
-					alt=""
-				/>
+				<Image src="/icons/security-question.svg" width={150} height={210} alt="" />
 			</div>
 
 			<Button onClick={handleInitiateOtp} className="w-full" fullWidth>
@@ -94,11 +71,8 @@ const InitiateActivateSecurityQuestion = ({
 	);
 };
 
-const ActivateSecurityQuestion = ({
-	goToNextSlide,
-}: SlideItemProps): React.JSX.Element => {
-	const { isModalOpen, closeModal, securityQuestions, setSecurityQuestions } =
-		useSecurityQuestion2FAState();
+const ActivateSecurityQuestion = ({ goToNextSlide }: SlideItemProps): React.JSX.Element => {
+	const { isModalOpen, closeModal, securityQuestions, setSecurityQuestions } = useSecurityQuestion2FAState();
 	const { mutateAsync, isLoading } = useActivate2FA();
 	const Initialize = useInitialize2FA();
 
@@ -136,10 +110,7 @@ const ActivateSecurityQuestion = ({
 		resolver: zodResolver(securityQuestionsSchema),
 	});
 
-	const onSubmit: SubmitHandler<SecurityQuestionFormValues> = async ({
-		answer,
-		question,
-	}) => {
+	const onSubmit: SubmitHandler<SecurityQuestionFormValues> = async ({ answer, question }) => {
 		await mutateAsync({ code: answer, securityQuestion: question });
 		goToNextSlide();
 	};
@@ -148,22 +119,15 @@ const ActivateSecurityQuestion = ({
 		<div className="flex w-full shrink-0 flex-col items-center gap-6">
 			<div className="flex w-full flex-row justify-between">
 				<Text.h3 size="xs">Security Question</Text.h3>
-				<XCircleIcon
-					className="my-auto cursor-pointer text-body"
-					onClick={closeModal}
-				/>
+				<XCircleIcon className="my-auto cursor-pointer text-body" onClick={closeModal} />
 			</div>
 			<Text.p size="base" className="max-w-sm text-center">
-				Choose your security question. It will be asked you want to sign
-				in or make a withdrawal.
+				Choose your security question. It will be asked you want to sign in or make a withdrawal.
 			</Text.p>
 			{Initialize.isLoading ? (
 				<Spinner />
 			) : (
-				<form
-					className="flex w-full flex-col gap-6"
-					onSubmit={handleSubmit(onSubmit)}
-				>
+				<form className="flex w-full flex-col gap-6" onSubmit={handleSubmit(onSubmit)}>
 					<div className="relative">
 						<Controller
 							control={control}
@@ -185,23 +149,13 @@ const ActivateSecurityQuestion = ({
 					</div>
 
 					<div className="relative">
-						<Input
-							label="Enter Answer"
-							placeholder=""
-							{...register("answer")}
-						/>
+						<Input label="Enter Answer" placeholder="" {...register("answer")} />
 						<InputErrorMessage message={errors.answer?.message} />
 					</div>
 
 					<div className="relative">
-						<Input
-							label="Confirm Answer"
-							placeholder=""
-							{...register("confirmAnswer")}
-						/>
-						<InputErrorMessage
-							message={errors.confirmAnswer?.message}
-						/>
+						<Input label="Confirm Answer" placeholder="" {...register("confirmAnswer")} />
+						<InputErrorMessage message={errors.confirmAnswer?.message} />
 					</div>
 
 					<Button className="w-full" fullWidth>
@@ -219,19 +173,10 @@ const ActivateSecuritySuccess = (): React.JSX.Element => {
 		<div className="flex w-full shrink-0 flex-col items-center">
 			<div className="flex w-full flex-row justify-between">
 				<Text.h3 size="xs">Security Question</Text.h3>
-				<XCircleIcon
-					className="my-auto cursor-pointer text-body"
-					onClick={closeModal}
-				/>
+				<XCircleIcon className="my-auto cursor-pointer text-body" onClick={closeModal} />
 			</div>
 
-			<Image
-				src="/icons/success.gif"
-				className="my-auto"
-				width={230}
-				height={230}
-				alt=""
-			/>
+			<Image src="/icons/success.gif" className="my-auto" width={230} height={230} alt="" />
 			<Text.p size="base" className="text-center">
 				You have successfully secured your account with 2FA.
 			</Text.p>
@@ -242,9 +187,7 @@ const ActivateSecuritySuccess = (): React.JSX.Element => {
 	);
 };
 
-const DeactivateSecurityQuestion = ({
-	goToNextSlide,
-}: SlideItemProps): React.JSX.Element => {
+const DeactivateSecurityQuestion = ({ goToNextSlide }: SlideItemProps): React.JSX.Element => {
 	const { closeModal } = useSecurityQuestion2FAState();
 	const { mutate, isLoading } = useDeActivate2FA();
 	// const { refetch: fetchAccount } = useGetAccount();
@@ -270,14 +213,9 @@ const DeactivateSecurityQuestion = ({
 		<div className="flex w-full shrink-0 flex-col items-center gap-6">
 			<div className="flex w-full flex-row justify-between">
 				<Text.h3 size="xs">Deactivate Security Question</Text.h3>
-				<XCircleIcon
-					className="my-auto cursor-pointer text-body"
-					onClick={closeModal}
-				/>
+				<XCircleIcon className="my-auto cursor-pointer text-body" onClick={closeModal} />
 			</div>
-			<Text.p size="sm">
-				Answer your security question to deactivate 2FA.
-			</Text.p>
+			<Text.p size="sm">Answer your security question to deactivate 2FA.</Text.p>
 
 			<div className="flex w-full max-w-full flex-col gap-6">
 				<Input
@@ -301,19 +239,10 @@ const DeactivateSecuritySuccess = (): React.JSX.Element => {
 		<div className="flex w-full shrink-0 flex-col items-center">
 			<div className="flex w-full flex-row justify-between">
 				<Text.h3 size="xs">Security Question</Text.h3>
-				<XCircleIcon
-					className="my-auto cursor-pointer text-body"
-					onClick={closeModal}
-				/>
+				<XCircleIcon className="my-auto cursor-pointer text-body" onClick={closeModal} />
 			</div>
 
-			<Image
-				src="/icons/success.gif"
-				className="my-auto"
-				width={230}
-				height={230}
-				alt=""
-			/>
+			<Image src="/icons/success.gif" className="my-auto" width={230} height={230} alt="" />
 			<Text.p size="base" className="my-4 text-center">
 				You have successfully deactivate 2FA from your account.
 			</Text.p>
@@ -335,8 +264,7 @@ export const SecurityQuestion2FA = ({
 	disabled,
 	// refetchAccount,
 }: SecurityQuestion2FAProps): React.JSX.Element => {
-	const { isModalOpen, closeModal, openModal } =
-		useSecurityQuestion2FAState();
+	const { isModalOpen, closeModal, openModal } = useSecurityQuestion2FAState();
 	const [isActive, _setIsActive] = useState(isEnabled);
 	useEffect(() => {
 		if (!isModalOpen) _setIsActive(isEnabled);
@@ -360,35 +288,18 @@ export const SecurityQuestion2FA = ({
 					<Checkbox checked={isEnabled} />
 				</div>
 				<div className="flex h-[75px] items-center">
-					<Image
-						src="/icons/security-question.svg"
-						width={50}
-						height={70}
-						alt=""
-					/>
+					<Image src="/icons/security-question.svg" width={50} height={70} alt="" />
 				</div>
 				<Text.p size="lg">Security Question</Text.p>
 			</button>
 
-			<Modal
-				isOpen={isModalOpen}
-				onOpenChange={closeModal}
-				className="rounded-xl bg-white p-8"
-			>
+			<Modal isOpen={isModalOpen} onOpenChange={closeModal} className="rounded-xl bg-white p-8">
 				{isActive ? (
 					<Slider
-						items={[
-							{ SlideItem: DeactivateSecurityQuestion },
-							{ SlideItem: DeactivateSecuritySuccess },
-						]}
+						items={[{ SlideItem: DeactivateSecurityQuestion }, { SlideItem: DeactivateSecuritySuccess }]}
 					/>
 				) : (
-					<Slider
-						items={[
-							{ SlideItem: ActivateSecurityQuestion },
-							{ SlideItem: ActivateSecuritySuccess },
-						]}
-					/>
+					<Slider items={[{ SlideItem: ActivateSecurityQuestion }, { SlideItem: ActivateSecuritySuccess }]} />
 				)}
 			</Modal>
 		</>

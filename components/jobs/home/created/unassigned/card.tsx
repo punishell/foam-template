@@ -24,16 +24,7 @@ interface UnAssignedJobCardProps {
 export const UnAssignedJobCard: FC<UnAssignedJobCardProps> = ({ job }) => {
 	const router = useRouter();
 
-	const {
-		createdAt,
-		_id,
-		collections,
-		tagsData,
-		name,
-		paymentFee,
-		invite,
-		isPrivate,
-	} = job;
+	const { createdAt, _id, collections, tagsData, name, paymentFee, invite, isPrivate } = job;
 
 	const id = _id;
 	const title = name;
@@ -48,18 +39,14 @@ export const UnAssignedJobCard: FC<UnAssignedJobCardProps> = ({ job }) => {
 				<div className="flex grow flex-col gap-2">
 					<div className="flex items-center justify-between gap-2">
 						<div className="flex items-center gap-2">
-							<span className="text-lg text-body">
-								{creationDate}
-							</span>
+							<span className="text-lg text-body">{creationDate}</span>
 						</div>
 
 						<span className="inline-flex rounded-full border border-green-200 bg-[#B2E9AA66] px-3 text-lg text-title">
 							${paymentFee}
 						</span>
 					</div>
-					<div className="min-h-[58px] grow break-words text-2xl text-title">
-						{title}
-					</div>
+					<div className="min-h-[58px] grow break-words text-2xl text-title">{title}</div>
 				</div>
 			</div>
 			<div className="mt-auto flex items-center justify-between gap-2">
@@ -69,9 +56,7 @@ export const UnAssignedJobCard: FC<UnAssignedJobCardProps> = ({ job }) => {
 							size="xs"
 							variant="secondary"
 							onClick={() => {
-								router.push(
-									`/talents${skills ? `?skills=${skills}` : ""}`,
-								);
+								router.push(`/talents${skills ? `?skills=${skills}` : ""}`);
 							}}
 						>
 							Find Talent
@@ -106,9 +91,7 @@ export const UnAssignedJobCard: FC<UnAssignedJobCardProps> = ({ job }) => {
 						<div className="inline-flex w-fit flex-row-reverse items-center">
 							{applicants.length > 5 && (
 								<div className="-ml-3 flex h-[30px] w-[30px] items-center justify-center overflow-hidden rounded-full border-2 border-white bg-[#D9D9D9] text-sm last:ml-0">
-									<span className="-ml-1.5">
-										+{applicants.length - 5}
-									</span>
+									<span className="-ml-1.5">+{applicants.length - 5}</span>
 								</div>
 							)}
 
@@ -120,10 +103,7 @@ export const UnAssignedJobCard: FC<UnAssignedJobCardProps> = ({ job }) => {
 									>
 										{applicant.creator.profileImage && (
 											<Image
-												src={
-													applicant.creator
-														.profileImage?.url ?? ""
-												}
+												src={applicant.creator.profileImage?.url ?? ""}
 												alt=""
 												width={30}
 												height={30}
@@ -140,10 +120,7 @@ export const UnAssignedJobCard: FC<UnAssignedJobCardProps> = ({ job }) => {
 							<div className="h-[27px] w-[27px] overflow-hidden rounded-full border border-white bg-white">
 								{invite?.receiver.profileImage && (
 									<Image
-										src={
-											invite.receiver.profileImage?.url ??
-											""
-										}
+										src={invite.receiver.profileImage?.url ?? ""}
 										alt=""
 										width={30}
 										height={30}

@@ -45,12 +45,7 @@ const progressToColor = (progress: number): string => {
 	return "#17a753";
 };
 
-export const AfroScore: FC<AfroScoreProps> = ({
-	size,
-	score: initialScore = 63,
-	children,
-	style,
-}) => {
+export const AfroScore: FC<AfroScoreProps> = ({ size, score: initialScore = 63, children, style }) => {
 	const id = useId();
 	const svgRef = useRef<SVGSVGElement>(null);
 	const sizeInPx = SIZE_TO_PX[size];
@@ -80,10 +75,8 @@ export const AfroScore: FC<AfroScoreProps> = ({
 	const progressArcPath = progressArcGenerator();
 
 	// Add a knob to the progress arc
-	const knobX =
-		(radius - thickness / 2) * Math.cos(progressAngle - Math.PI / 2);
-	const knobY =
-		(radius - thickness / 2) * Math.sin(progressAngle - Math.PI / 2);
+	const knobX = (radius - thickness / 2) * Math.cos(progressAngle - Math.PI / 2);
+	const knobY = (radius - thickness / 2) * Math.sin(progressAngle - Math.PI / 2);
 
 	// @ts-expect-error --- Unused variable
 	const [knobPosition, setKnobPosition] = useState({ x: knobX, y: knobY });
@@ -106,10 +99,7 @@ export const AfroScore: FC<AfroScoreProps> = ({
 	// };
 
 	return (
-		<div
-			className="relative flex items-center justify-center"
-			style={style}
-		>
+		<div className="relative flex items-center justify-center" style={style}>
 			<div
 				style={{
 					height: radius * 2,
@@ -151,9 +141,7 @@ export const AfroScore: FC<AfroScoreProps> = ({
           `}
 				</style>
 
-				<g
-					transform={`translate(${(sizeInPx + knobRadius) / 2}, ${(sizeInPx + knobRadius) / 2})`}
-				>
+				<g transform={`translate(${(sizeInPx + knobRadius) / 2}, ${(sizeInPx + knobRadius) / 2})`}>
 					<clipPath id={id}>
 						<path
 							d={progressArcPath}
@@ -230,20 +218,9 @@ type AfroProfileProps = Omit<AfroScoreProps, "children"> & {
 	className?: string;
 };
 
-export const AfroProfile: FC<AfroProfileProps> = ({
-	size,
-	score,
-	src,
-	url,
-	style,
-	className,
-}) => {
+export const AfroProfile: FC<AfroProfileProps> = ({ size, score, src, url, style, className }) => {
 	return (
-		<Link
-			href={url ?? ""}
-			className={`relative flex items-center justify-center ${className}`}
-			style={style}
-		>
+		<Link href={url ?? ""} className={`relative flex items-center justify-center ${className}`} style={style}>
 			<AfroScore score={score} size={size}>
 				{src ? (
 					<Image

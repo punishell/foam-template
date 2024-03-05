@@ -24,16 +24,14 @@ export const IssueResolutionResolveFeed = (): ReactElement => {
 
 			<div className="flex w-full flex-col gap-4">
 				<div className="flex items-center justify-between">
-					<h3 className="text-xl font-bold text-title">
-						You Won Your Issue Resolution
-					</h3>
+					<h3 className="text-xl font-bold text-title">You Won Your Issue Resolution</h3>
 
 					<X size={20} />
 				</div>
 
 				<p className="text-base text-body">
-					After thorough review of the provided evidence for the [job]
-					issue, the jury decided that you were correct.
+					After thorough review of the provided evidence for the [job] issue, the jury decided that you were
+					correct.
 				</p>
 
 				<div className="mt-auto flex items-center justify-between">

@@ -4,12 +4,7 @@
 /*                             External Dependency                            */
 /* -------------------------------------------------------------------------- */
 
-import React, {
-	type ReactElement,
-	useEffect,
-	useState,
-	useCallback,
-} from "react";
+import React, { type ReactElement, useEffect, useState, useCallback } from "react";
 import { SendHorizonal, Paperclip } from "lucide-react";
 import { useDropzone } from "react-dropzone";
 
@@ -51,9 +46,7 @@ export default function ChatPage({ params }: Props): ReactElement {
 
 	const [loadingMessage, setLoadingMessages] = useState(true);
 	const [text, setText] = useState("");
-	const [imageFiles, setImageFiles] = useState<SendAttachmentsProps[] | []>(
-		[],
-	);
+	const [imageFiles, setImageFiles] = useState<SendAttachmentsProps[] | []>([]);
 
 	const loadMessages = async (): Promise<void> => {
 		setActiveConversation(messageId);
@@ -114,12 +107,10 @@ export default function ChatPage({ params }: Props): ReactElement {
 		accept: {
 			"image/*": [],
 			"application/pdf": [".pdf"],
-			"application/vnd.openxmlformats-officedocument.wordprocessingml.document":
-				[".docx"],
+			"application/vnd.openxmlformats-officedocument.wordprocessingml.document": [".docx"],
 			"text/*": [".csv"],
 			"application/vnd.ms-excel": [".csv"],
-			"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet":
-				[".xlsx"],
+			"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": [".xlsx"],
 			"image/avif": [".avif"],
 			"image/webp": [".webp"],
 		},
@@ -135,11 +126,7 @@ export default function ChatPage({ params }: Props): ReactElement {
 
 	const sendMessage = async (): Promise<void> => {
 		if (text !== "" || imageFiles.length > 0) {
-			if (
-				currentConversation?.recipient?._id &&
-				currentConversation?.sender?._id &&
-				currentConversation?.id
-			) {
+			if (currentConversation?.recipient?._id && currentConversation?.sender?._id && currentConversation?.id) {
 				await sendUserMessage(
 					currentConversation?.recipient?._id,
 					currentConversation?.sender?._id,
@@ -152,9 +139,7 @@ export default function ChatPage({ params }: Props): ReactElement {
 				setImageFiles([]);
 			} else {
 				// Handle the case where currentConversation or its properties are null or undefined
-				toast.error(
-					"currentConversation, recipient, or sender is null or undefined",
-				);
+				toast.error("currentConversation, recipient, or sender is null or undefined");
 			}
 		}
 	};
@@ -164,9 +149,7 @@ export default function ChatPage({ params }: Props): ReactElement {
 		setImageFiles(newImages);
 	};
 
-	const onKeyDownPress = async (
-		e: React.KeyboardEvent<HTMLTextAreaElement>,
-	): Promise<void> => {
+	const onKeyDownPress = async (e: React.KeyboardEvent<HTMLTextAreaElement>): Promise<void> => {
 		handleTyping();
 		if (e.which === 13 && !e.shiftKey) {
 			e.preventDefault();
@@ -209,10 +192,7 @@ export default function ChatPage({ params }: Props): ReactElement {
 						}}
 						onKeyDown={onKeyDownPress}
 					/>
-					<RenderAttachmentPreviewer
-						images={imageFiles}
-						removeImage={removeImg}
-					/>
+					<RenderAttachmentPreviewer images={imageFiles} removeImage={removeImg} />
 				</div>
 				<div className="flex w-10 items-end">
 					<button
@@ -225,11 +205,7 @@ export default function ChatPage({ params }: Props): ReactElement {
 					</button>
 				</div>
 			</div>
-			{isTyping !== "" && (
-				<p className="text-sky font-normal italic text-sm ml-12 mt-1">
-					{isTyping}
-				</p>
-			)}
+			{isTyping !== "" && <p className="text-sky font-normal italic text-sm ml-12 mt-1">{isTyping}</p>}
 		</div>
 	);
 }

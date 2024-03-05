@@ -48,8 +48,7 @@ export const DepositToAddress = ({
 	return (
 		<div className="flex flex-col gap-4">
 			<p className="text-center text-sm text-[#87898E]">
-				Copy the wallet address or scan QR code to make payment. Click I
-				have made transfer to continue.
+				Copy the wallet address or scan QR code to make payment. Click I have made transfer to continue.
 			</p>
 
 			<div className="flex justify-between gap-2 rounded-2xl border border-primary bg-[#ECFCE5] px-4 py-6 text-primary">
@@ -60,20 +59,14 @@ export const DepositToAddress = ({
 			</div>
 
 			<div className="flex w-full items-center justify-between gap-2 rounded-2xl border border-line bg-[#fcfcfc] px-4 py-4">
-				<span className="max-w-[250px] break-words text-sm">
-					{depositAddress}
-				</span>
+				<span className="max-w-[250px] break-words text-sm">{depositAddress}</span>
 
 				<button
 					className="flex shrink-0 items-center gap-1 rounded-lg border border-primary !border-opacity-80 bg-[#ECFCE5] px-3 py-2 text-xs text-primary !text-opacity-80"
 					onClick={async () => copy(depositAddress)}
 					type="button"
 				>
-					{value !== null ? (
-						<CopyCheck size={14} strokeWidth={2} />
-					) : (
-						<Copy size={14} strokeWidth={2} />
-					)}
+					{value !== null ? <CopyCheck size={14} strokeWidth={2} /> : <Copy size={14} strokeWidth={2} />}
 					<span>
 						{value !== null ? (
 							<span className="animate-pulse">Copied</span>
@@ -116,11 +109,7 @@ export const DepositToAddress = ({
 				}}
 				fullWidth
 			>
-				{confirmPayment.isLoading || inviteTalent.isLoading ? (
-					<Spinner />
-				) : (
-					"I have made transfer"
-				)}
+				{confirmPayment.isLoading || inviteTalent.isLoading ? <Spinner /> : "I have made transfer"}
 			</Button>
 		</div>
 	);

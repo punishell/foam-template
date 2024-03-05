@@ -29,9 +29,7 @@ const otpSchema = z.object({
 
 type EmailOtpFormValues = z.infer<typeof otpSchema>;
 
-export const VerifyDeactivateOTP = ({
-	goToNextSlide,
-}: SlideItemProps): React.JSX.Element => {
+export const VerifyDeactivateOTP = ({ goToNextSlide }: SlideItemProps): React.JSX.Element => {
 	const { closeModal } = useEmail2FAState();
 	const { mutateAsync, isLoading } = useDeActivate2FA();
 	const { email } = useUserState();
@@ -53,30 +51,19 @@ export const VerifyDeactivateOTP = ({
 		<div className="flex w-full shrink-0 flex-col items-center gap-8">
 			<div className="flex w-full flex-row justify-between gap-2 text-center">
 				<Text.h3 size="xs">Email</Text.h3>
-				<XCircleIcon
-					className="my-auto cursor-pointer text-body"
-					onClick={closeModal}
-				/>
+				<XCircleIcon className="my-auto cursor-pointer text-body" onClick={closeModal} />
 			</div>
 			<Text.p size="sm">
-				Enter the 6 digit code sent to{" "}
-				<span className="text-success">{email}</span>
+				Enter the 6 digit code sent to <span className="text-success">{email}</span>
 			</Text.p>
 
-			<form
-				className="flex flex-col items-center gap-8"
-				onSubmit={handleSubmit(onSubmit)}
-			>
+			<form className="flex flex-col items-center gap-8" onSubmit={handleSubmit(onSubmit)}>
 				<div className="relative">
 					<Controller
 						name="otp"
 						control={control}
 						render={({ field: { onChange, value } }) => (
-							<OtpInput
-								value={value}
-								onChange={onChange}
-								numInputs={6}
-							/>
+							<OtpInput value={value} onChange={onChange} numInputs={6} />
 						)}
 					/>
 					<InputErrorMessage message={errors.otp?.message} />

@@ -37,12 +37,7 @@ export const BottomNav = (): JSX.Element => {
 	return (
 		<nav className="fixed bottom-0 left-0 right-0 bg-primary px-[21px] py-3 flex sm:hidden justify-between h-16 z-50 w-screen">
 			{NavLink.map((link) => (
-				<MobileNavLink
-					key={link.label}
-					href={link.href}
-					label={link.label}
-					icon={link.icon}
-				/>
+				<MobileNavLink key={link.label} href={link.href} label={link.label} icon={link.icon} />
 			))}
 		</nav>
 	);

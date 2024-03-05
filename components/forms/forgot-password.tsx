@@ -55,32 +55,14 @@ const ForgotPasswordForm = (): JSX.Element => {
 			onSubmit={form.handleSubmit(onSubmit)}
 		>
 			<div className="relative flex w-full flex-col gap-2">
-				<label
-					className="font-sans text-base sm:text-sm text-white"
-					htmlFor="email"
-				>
+				<label className="font-sans text-base sm:text-sm text-white" htmlFor="email">
 					Email
 				</label>
-				<Input
-					{...form.register("email")}
-					placeholder="Email"
-					type="email"
-					className="w-full"
-					id="email"
-				/>
+				<Input {...form.register("email")} placeholder="Email" type="email" className="w-full" id="email" />
 			</div>
 
-			<Button
-				fullWidth
-				disabled={
-					!form.formState.isValid || requestPasswordReset.isLoading
-				}
-			>
-				{requestPasswordReset.isLoading ? (
-					<Spinner />
-				) : (
-					"Reset Password"
-				)}
+			<Button fullWidth disabled={!form.formState.isValid || requestPasswordReset.isLoading}>
+				{requestPasswordReset.isLoading ? <Spinner /> : "Reset Password"}
 			</Button>
 
 			<Link href="/login" className="mt-4 font-sans text-sm text-white">

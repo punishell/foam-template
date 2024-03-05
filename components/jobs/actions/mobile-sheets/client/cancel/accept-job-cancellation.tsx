@@ -25,11 +25,7 @@ interface AcceptJobCancellationProps {
 	setAcceptCancellation: (value: boolean) => void;
 }
 
-export const AcceptJobCancellation: FC<AcceptJobCancellationProps> = ({
-	setAcceptCancellation,
-	talent,
-	job,
-}) => {
+export const AcceptJobCancellation: FC<AcceptJobCancellationProps> = ({ setAcceptCancellation, talent, job }) => {
 	const cancelJobMutation = useAcceptJobCancellation();
 
 	const totalDeliverables = job.collections.filter(isJobDeliverable).length;
@@ -66,25 +62,17 @@ export const AcceptJobCancellation: FC<AcceptJobCancellationProps> = ({
 				<DeliverableProgressBar
 					totalDeliverables={totalDeliverables}
 					className="max-w-none text-base"
-					percentageProgress={Math.floor(
-						(completedDeliverables / totalDeliverables) * 100,
-					)}
+					percentageProgress={Math.floor((completedDeliverables / totalDeliverables) * 100)}
 				/>
 
 				<div className="flex flex-col gap-1">
-					<p className="text-title">
-						Proposed Job Price: ${job.paymentFee}
-					</p>
+					<p className="text-title">Proposed Job Price: ${job.paymentFee}</p>
 
 					<div className="flex flex-col gap-3 rounded-lg border border-gray-200 bg-slate-50 p-3">
 						<p className="flex items-center gap-2 text-body">
 							<span>Amount to pay the Talent:</span>{" "}
-							<span className="font-bold text-green-600">
-								${Math.floor(amountToPay)}
-							</span>
-							<span className="text-sm">
-								({percentageToPay}%)
-							</span>
+							<span className="font-bold text-green-600">${Math.floor(amountToPay)}</span>
+							<span className="text-sm">({percentageToPay}%)</span>
 						</p>
 						<div className="my-2">
 							<Slider
@@ -100,9 +88,7 @@ export const AcceptJobCancellation: FC<AcceptJobCancellationProps> = ({
 				</div>
 
 				<div className="flex flex-col gap-1">
-					<span className="text-title">
-						How was your experience with {talent?.firstName}?
-					</span>
+					<span className="text-title">How was your experience with {talent?.firstName}?</span>
 					<div className="flex flex-col gap-3 rounded-lg border border-gray-200 bg-slate-50 p-3">
 						<div className="flex items-center justify-between">
 							<div className="flex items-center gap-2">
@@ -123,9 +109,7 @@ export const AcceptJobCancellation: FC<AcceptJobCancellationProps> = ({
 
 								<div className="flex flex-col gap-1">
 									<span className="text-base font-medium leading-none text-title">{`${talent?.firstName} ${talent?.lastName}`}</span>
-									<span className="text-sm capitalize leading-none">
-										{talent?.profile.bio.title}
-									</span>
+									<span className="text-sm capitalize leading-none">{talent?.profile.bio.title}</span>
 								</div>
 							</div>
 
@@ -136,15 +120,8 @@ export const AcceptJobCancellation: FC<AcceptJobCancellationProps> = ({
 									onChange={(value) => {
 										setRating(value);
 									}}
-									fullSymbol={
-										<Star fill="#15D28E" color="#15D28E" />
-									}
-									emptySymbol={
-										<Star
-											fill="transparent"
-											color="#15D28E"
-										/>
-									}
+									fullSymbol={<Star fill="#15D28E" color="#15D28E" />}
+									emptySymbol={<Star fill="transparent" color="#15D28E" />}
 								/>
 							</div>
 						</div>
@@ -158,9 +135,7 @@ export const AcceptJobCancellation: FC<AcceptJobCancellationProps> = ({
 							rows={5}
 							value={comment}
 							onChange={(e) => {
-								if (
-									e.target.value.length <= MAX_REVIEW_LENGTH
-								) {
+								if (e.target.value.length <= MAX_REVIEW_LENGTH) {
 									setComment(e.target.value);
 								}
 							}}
@@ -168,13 +143,9 @@ export const AcceptJobCancellation: FC<AcceptJobCancellationProps> = ({
 							className="w-full grow resize-none rounded-lg border border-line bg-gray-50 p-2 placeholder:text-sm focus:outline-none"
 						/>
 						<div className="ml-auto w-fit">
-							<span className="text-sm text-body">
-								{comment.length}
-							</span>
+							<span className="text-sm text-body">{comment.length}</span>
 							<span className="text-sm text-body">/</span>
-							<span className="text-sm text-body">
-								{MAX_REVIEW_LENGTH}
-							</span>
+							<span className="text-sm text-body">{MAX_REVIEW_LENGTH}</span>
 						</div>
 					</div>
 				</div>
@@ -183,11 +154,7 @@ export const AcceptJobCancellation: FC<AcceptJobCancellationProps> = ({
 					<Button
 						fullWidth
 						variant="primary"
-						disabled={
-							cancelJobMutation.isLoading ||
-							comment.length === 0 ||
-							rating === 0
-						}
+						disabled={cancelJobMutation.isLoading || comment.length === 0 || rating === 0}
 						onClick={() => {
 							cancelJobMutation.mutate({
 								rating,
@@ -198,11 +165,7 @@ export const AcceptJobCancellation: FC<AcceptJobCancellationProps> = ({
 							});
 						}}
 					>
-						{cancelJobMutation.isLoading ? (
-							<Spinner size={20} />
-						) : (
-							"Accept Cancellation"
-						)}
+						{cancelJobMutation.isLoading ? <Spinner size={20} /> : "Accept Cancellation"}
 					</Button>
 				</div>
 			</div>

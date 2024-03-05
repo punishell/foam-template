@@ -20,16 +20,11 @@ export const PageError: FC<Props> = ({ className }) => {
 		<div
 			aria-live="polite"
 			aria-busy="true"
-			className={cn(
-				"flex h-screen w-full items-center justify-center bg-red-50 bg-transparent",
-				className,
-			)}
+			className={cn("flex h-screen w-full items-center justify-center bg-red-50 bg-transparent", className)}
 		>
 			<div className="flex flex-col items-center gap-2 text-center text-red-500">
 				<AlertCircle size={60} strokeWidth={1} />
-				<p className="text-lg">
-					Something went wrong. Please try again later.
-				</p>
+				<p className="text-lg">Something went wrong. Please try again later.</p>
 			</div>
 		</div>
 	);

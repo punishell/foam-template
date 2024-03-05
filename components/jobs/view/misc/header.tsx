@@ -26,12 +26,7 @@ interface JobHeaderProps {
 	};
 }
 
-export const JobHeader = ({
-	title,
-	price,
-	dueDate,
-	creator,
-}: JobHeaderProps): ReactElement => {
+export const JobHeader = ({ title, price, dueDate, creator }: JobHeaderProps): ReactElement => {
 	// Handle due date error
 	const dueDateError = new Date(dueDate).toString() === "Invalid Date";
 	const dueDateValue = dueDateError ? new Date() : new Date(dueDate);
@@ -61,9 +56,7 @@ export const JobHeader = ({
 						score={creator.score}
 						url={`/talents/${creator._id}`}
 					/>
-					<span className="whitespace-nowrap text-xl font-bold text-white">
-						{creator.name}
-					</span>
+					<span className="whitespace-nowrap text-xl font-bold text-white">{creator.name}</span>
 				</div>
 			)}
 		</div>

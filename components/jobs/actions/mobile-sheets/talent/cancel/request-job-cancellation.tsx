@@ -16,10 +16,7 @@ import { Spinner } from "@/components/common";
 import { useRequestJobCancellation } from "@/lib/api/job";
 import { JobCancellationRequested } from "./job-cancellation-requested";
 
-const JOB_CANCEL_REASONS = [
-	"Client is not responsive",
-	"Unforeseeable Circumstances",
-];
+const JOB_CANCEL_REASONS = ["Client is not responsive", "Unforeseeable Circumstances"];
 
 interface RequestJobCancellationProps {
 	jobId: string;
@@ -52,11 +49,7 @@ export const RequestJobCancellation: FC<RequestJobCancellationProps> = ({
 		<>
 			<div className="flex items-center justify-between bg-primary-gradient px-4 py-6 text-3xl font-bold text-white">
 				<div className="flex items-center gap-2">
-					<button
-						onClick={cancelJobCancellationRequest}
-						aria-label="Back"
-						type="button"
-					>
+					<button onClick={cancelJobCancellationRequest} aria-label="Back" type="button">
 						<ChevronLeft />
 					</button>
 					<span>Cancel Job</span>
@@ -65,21 +58,16 @@ export const RequestJobCancellation: FC<RequestJobCancellationProps> = ({
 
 			<div className="flex h-full grow flex-col gap-6 px-4 py-6">
 				<div className="rounded-2xl  border border-yellow-dark bg-[#FEF4E3] p-4">
-					The client will need to accept for the cancellation to be
-					effective.
+					The client will need to accept for the cancellation to be effective.
 				</div>
 
 				<div className="flex flex-col gap-2">
 					<h2>
-						Reason for cancellation{" "}
-						<span className="text-red-500">*</span>
+						Reason for cancellation <span className="text-red-500">*</span>
 					</h2>
 					<div className="flex flex-col gap-3">
 						{JOB_CANCEL_REASONS.map((option) => (
-							<label
-								key={option}
-								className="flex items-center gap-2"
-							>
+							<label key={option} className="flex items-center gap-2">
 								<Checkbox
 									checked={reason === option}
 									onCheckedChange={() => {
@@ -120,9 +108,8 @@ export const RequestJobCancellation: FC<RequestJobCancellationProps> = ({
 
 				<div className="flex flex-col gap-6">
 					<div className="rounded-2xl  border border-yellow-dark bg-[#FEF4E3] p-4">
-						Payment for any deliverable is at the sole discretion of
-						the client. Client will review talent but talent cannot
-						review client.
+						Payment for any deliverable is at the sole discretion of the client. Client will review talent
+						but talent cannot review client.
 					</div>
 
 					<div className="flex flex-col gap-1">
@@ -145,9 +132,7 @@ export const RequestJobCancellation: FC<RequestJobCancellationProps> = ({
 					<Button
 						fullWidth
 						disabled={
-							requestJobCancellationMutation.isLoading ||
-							reason.length === 0 ||
-							explanation.length === 0
+							requestJobCancellationMutation.isLoading || reason.length === 0 || explanation.length === 0
 						}
 						onClick={() => {
 							requestJobCancellationMutation.mutate(
@@ -165,11 +150,7 @@ export const RequestJobCancellation: FC<RequestJobCancellationProps> = ({
 							);
 						}}
 					>
-						{requestJobCancellationMutation.isLoading ? (
-							<Spinner size={20} />
-						) : (
-							"Request Cancellation"
-						)}
+						{requestJobCancellationMutation.isLoading ? <Spinner size={20} /> : "Request Cancellation"}
 					</Button>
 				</div>
 			</div>

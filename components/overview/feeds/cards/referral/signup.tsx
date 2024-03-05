@@ -42,17 +42,10 @@ export const ReferralSignupFeed = ({
 }: ReferralSignupFeedProps): ReactElement => {
 	return (
 		<div className="relative z-10 flex h-[174px] w-full gap-4 overflow-hidden rounded-2xl border border-[#CDCFD0] bg-[#F9F9F9] p-4 pl-2">
-			<AfroProfile
-				src={avatar}
-				score={Number(score)}
-				size="lg"
-				url={`/talents/${userId}`}
-			/>
+			<AfroProfile src={avatar} score={Number(score)} size="lg" url={`/talents/${userId}`} />
 			<div className="flex w-full flex-col gap-4">
 				<div className="flex items-center justify-between">
-					<h3 className="text-xl font-bold text-title">
-						{title ?? `${name} just signed up`}
-					</h3>
+					<h3 className="text-xl font-bold text-title">{title ?? `${name} just signed up`}</h3>
 					{close && (
 						<X
 							size={20}
@@ -78,13 +71,7 @@ export const ReferralSignupFeed = ({
 							</Button>
 						</Link>
 					</div>
-					<RenderBookMark
-						size={20}
-						isBookmarked={bookmarked}
-						type="feed"
-						id={id}
-						bookmarkId={bookmarkId}
-					/>
+					<RenderBookMark size={20} isBookmarked={bookmarked} type="feed" id={id} bookmarkId={bookmarkId} />
 				</div>
 			</div>
 

@@ -59,9 +59,7 @@ export const ReviewResponseChangeCard = ({
 	return (
 		<div
 			className={`${
-				isDeclined
-					? "border-[#FF5247] bg-[#FFF4F4]"
-					: "border-[#9BDCFD] bg-[#F1FBFF]"
+				isDeclined ? "border-[#FF5247] bg-[#FFF4F4]" : "border-[#9BDCFD] bg-[#F1FBFF]"
 			} relative z-10 flex h-[174px] w-full gap-4 overflow-hidden rounded-2xl border p-4`}
 		>
 			<AfroProfile
@@ -98,13 +96,7 @@ export const ReviewResponseChangeCard = ({
 							{isDeclined ? "Review" : "Update"}
 						</Button>
 					</div>
-					<RenderBookMark
-						size={20}
-						isBookmarked={bookmarked}
-						type="feed"
-						id={id}
-						bookmarkId={bookmarkId}
-					/>
+					<RenderBookMark size={20} isBookmarked={bookmarked} type="feed" id={id} bookmarkId={bookmarkId} />
 				</div>
 			</div>
 

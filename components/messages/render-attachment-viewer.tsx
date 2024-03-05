@@ -27,10 +27,7 @@ export const RenderAttachmentPreviewer = ({
 		images.length > 0 && (
 			<div className="flex h-fit flex-row gap-4 overflow-x-auto py-4">
 				{images.map((img) => (
-					<div
-						key={img._id}
-						className="relative flex flex-row gap-2 rounded-lg border p-2"
-					>
+					<div key={img._id} className="relative flex flex-row gap-2 rounded-lg border p-2">
 						<span
 							className="absolute -right-3 -top-3 h-fit w-fit cursor-pointer rounded-full bg-[#CDCFD0] p-1"
 							onClick={() => {
@@ -56,9 +53,7 @@ export const RenderAttachmentPreviewer = ({
 						</div>
 						<div className="flex flex-col">
 							<p className="text-sm text-title">
-								{img.name.length > MAX_LEN
-									? `${img.name.slice(0, MAX_LEN)}...`
-									: img.name}
+								{img.name.length > MAX_LEN ? `${img.name.slice(0, MAX_LEN)}...` : img.name}
 							</p>
 							<p className="text-sm text-body">{img.size}</p>
 						</div>

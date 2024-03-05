@@ -36,14 +36,7 @@ export const PageLoading = ({ className, color }: Props): React.JSX.Element => {
 		void getLoader();
 	}, [setErrorMessage]);
 	return (
-		<div
-			aria-live="polite"
-			aria-busy
-			className={cn(
-				"flex h-screen w-full items-center justify-center",
-				className,
-			)}
-		>
+		<div aria-live="polite" aria-busy className={cn("flex h-screen w-full items-center justify-center", className)}>
 			<l-zoomies
 				size="80"
 				stroke="5"

@@ -29,22 +29,16 @@ export const JobHeader = (): React.JSX.Element => {
 				<div className="flex h-full w-full gap-2 rounded-2xl border bg-white p-4 sm:p-2">
 					<div className="flex flex-[8] items-center">
 						<div className="hidden sm:flex flex-[2] flex-col items-center text-center">
-							<h3 className="text-[50px] font-bold leading-[54px]">
-								{value}%
-							</h3>
-							<p className="text-base">
-								of your profile is completed
-							</p>
+							<h3 className="text-[50px] font-bold leading-[54px]">{value}%</h3>
+							<p className="text-base">of your profile is completed</p>
 						</div>
 						<div className="flex flex-[7] flex-col gap-4 sm:gap-2 sm:border-l-[1px] sm:border-[#e8e8e8] sm:pl-[24px]">
 							<p className="text-base leading-6 tracking-[0.75px] text-body hidden sm:block">
-								Welcome to Afrofund! Fill out your profile so
-								you can begin collaborating.
+								Welcome to Afrofund! Fill out your profile so you can begin collaborating.
 							</p>
 							<p className="text-base leading-6 tracking-[0.75px] text-body sm:hidden">
-								Welcome to Afrofund! <br /> Fill out your skills
-								-- The more complete it is, the more likely you
-								are to get hired.
+								Welcome to Afrofund! <br /> Fill out your skills -- The more complete it is, the more
+								likely you are to get hired.
 							</p>
 							<div className="h-[48px] w-full sm:w-[226px]">
 								<Button
@@ -71,8 +65,7 @@ export const JobHeader = (): React.JSX.Element => {
 			<div className="relative overflow-hidden rounded-2xl border-2 border-primary bg-[#ECFCE5] p-4">
 				<div className="relative z-10 flex flex-col gap-4">
 					<p className="max-w-[300px] text-xl font-bold">
-						Create a job to hire skilled workers from the talent
-						pool.
+						Create a job to hire skilled workers from the talent pool.
 					</p>
 					<Button
 						size="lg"
@@ -95,8 +88,7 @@ export const JobHeader = (): React.JSX.Element => {
 			<div className="relative overflow-hidden rounded-2xl border-2 border-blue-darkest bg-[#C9F0FF] p-4">
 				<div className="relative z-10 flex flex-col gap-4">
 					<p className="max-w-[320px] text-xl font-bold">
-						Search the Afrofund job board for work that matches your
-						skills.
+						Search the Afrofund job board for work that matches your skills.
 					</p>
 					<Button
 						variant="secondary"

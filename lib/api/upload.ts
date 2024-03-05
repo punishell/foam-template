@@ -23,27 +23,20 @@ export interface UploadImageParams {
 	onProgress?: (progress: number) => void;
 }
 
-async function postUploadImage({
-	file,
-	onProgress,
-}: UploadImageParams): Promise<UploadImageResponse> {
+async function postUploadImage({ file, onProgress }: UploadImageParams): Promise<UploadImageResponse> {
 	const formData = new FormData();
 	formData.append("file", file);
 	const res = await axios.post("/upload", formData, {
 		headers: { "Content-Type": "multipart/form-data" },
 		onUploadProgress: (progressEvent) => {
-			const percentCompleted = Math.round(
-				(progressEvent.loaded * 100) / (progressEvent.total ?? 1),
-			);
+			const percentCompleted = Math.round((progressEvent.loaded * 100) / (progressEvent.total ?? 1));
 			onProgress?.(percentCompleted);
 		},
 	});
 	return res.data.data;
 }
 
-export async function postUploadImages(
-	uploadParams: UploadImageParams[],
-): Promise<UploadImageResponse[]> {
+export async function postUploadImages(uploadParams: UploadImageParams[]): Promise<UploadImageResponse[]> {
 	const allReqs = [];
 	for (let i = 0; i < uploadParams.length; i++) {
 		const uploadParam = uploadParams[i];
@@ -75,12 +68,7 @@ async function postDownloadAttachment(url: string): Promise<void> {
 		});
 }
 
-export function useUploadImage(): UseMutationResult<
-	UploadImageResponse,
-	ApiError,
-	UploadImageParams,
-	unknown
-> {
+export function useUploadImage(): UseMutationResult<UploadImageResponse, ApiError, UploadImageParams, unknown> {
 	return useMutation({
 		mutationFn: postUploadImage,
 		mutationKey: ["upload-image"],
@@ -90,12 +78,7 @@ export function useUploadImage(): UseMutationResult<
 	});
 }
 
-export function useDownloadAttachment(): UseMutationResult<
-	void,
-	ApiError,
-	string,
-	unknown
-> {
+export function useDownloadAttachment(): UseMutationResult<void, ApiError, string, unknown> {
 	return useMutation({
 		mutationFn: postDownloadAttachment,
 		mutationKey: ["download-attachment"],

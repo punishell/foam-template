@@ -2,12 +2,7 @@
 /*                             External Dependency                            */
 /* -------------------------------------------------------------------------- */
 
-import {
-	useQuery,
-	useMutation,
-	type UseMutationResult,
-	type UseQueryResult,
-} from "@tanstack/react-query";
+import { useQuery, useMutation, type UseMutationResult, type UseQueryResult } from "@tanstack/react-query";
 
 /* -------------------------------------------------------------------------- */
 /*                             Internal Dependency                            */
@@ -80,12 +75,7 @@ async function postUpdateAccount(values: UpdateAccountParams): Promise<User> {
 	return res.data.data;
 }
 
-export function useUpdateAccount(): UseMutationResult<
-	User,
-	ApiError,
-	UpdateAccountParams,
-	unknown
-> {
+export function useUpdateAccount(): UseMutationResult<User, ApiError, UpdateAccountParams, unknown> {
 	return useMutation({
 		mutationFn: postUpdateAccount,
 		mutationKey: ["update_account_system"],
@@ -103,10 +93,7 @@ async function fetchUserAccount(): Promise<User> {
 	return res.data.data;
 }
 
-export const useGetAccount = (): UseQueryResult<
-	GetAccountResponse,
-	ApiError
-> => {
+export const useGetAccount = (): UseQueryResult<GetAccountResponse, ApiError> => {
 	const { setUser } = useUserState();
 	return useQuery({
 		queryFn: fetchUserAccount,
@@ -134,12 +121,7 @@ async function postChangePassword(values: ChangePasswordParams): Promise<void> {
 	return res.data.data;
 }
 
-export function useChangePassword(): UseMutationResult<
-	void,
-	ApiError,
-	ChangePasswordParams,
-	unknown
-> {
+export function useChangePassword(): UseMutationResult<void, ApiError, ChangePasswordParams, unknown> {
 	return useMutation({
 		mutationFn: postChangePassword,
 		mutationKey: ["change_password"],
@@ -165,19 +147,12 @@ interface Initiate2FAResponse {
 	type?: string;
 }
 
-async function postInitiate2FA(
-	values: Initiate2FAParams,
-): Promise<Initiate2FAResponse> {
+async function postInitiate2FA(values: Initiate2FAParams): Promise<Initiate2FAResponse> {
 	const res = await axios.post("/account/initiate/2fa", values);
 	return res.data.data;
 }
 
-export function useInitialize2FA(): UseMutationResult<
-	Initiate2FAResponse,
-	ApiError,
-	Initiate2FAParams,
-	unknown
-> {
+export function useInitialize2FA(): UseMutationResult<Initiate2FAResponse, ApiError, Initiate2FAParams, unknown> {
 	return useMutation({
 		mutationFn: postInitiate2FA,
 		mutationKey: ["initialize_2fa_setup"],
@@ -194,19 +169,12 @@ interface ActivateDeactivate2FAParams {
 	securityQuestion?: string;
 }
 
-async function postActivate2FA(
-	values: ActivateDeactivate2FAParams,
-): Promise<void> {
+async function postActivate2FA(values: ActivateDeactivate2FAParams): Promise<void> {
 	const res = await axios.post("/account/activate/2fa", values);
 	return res.data.data;
 }
 
-export function useActivate2FA(): UseMutationResult<
-	void,
-	ApiError,
-	ActivateDeactivate2FAParams,
-	unknown
-> {
+export function useActivate2FA(): UseMutationResult<void, ApiError, ActivateDeactivate2FAParams, unknown> {
 	const { isFetching, refetch: fetchAccount } = useGetAccount();
 	return useMutation({
 		mutationFn: postActivate2FA,
@@ -223,19 +191,12 @@ export function useActivate2FA(): UseMutationResult<
 
 // ===
 
-async function postDeActivate2FA(
-	values: ActivateDeactivate2FAParams,
-): Promise<void> {
+async function postDeActivate2FA(values: ActivateDeactivate2FAParams): Promise<void> {
 	const res = await axios.post("/account/deactivate/2fa", values);
 	return res.data.data;
 }
 
-export function useDeActivate2FA(): UseMutationResult<
-	void,
-	ApiError,
-	ActivateDeactivate2FAParams,
-	unknown
-> {
+export function useDeActivate2FA(): UseMutationResult<void, ApiError, ActivateDeactivate2FAParams, unknown> {
 	const { isFetching, refetch: fetchAccount } = useGetAccount();
 	return useMutation({
 		mutationFn: postDeActivate2FA,
@@ -257,12 +218,7 @@ async function postDeActivate2FAEmailInitiate(): Promise<void> {
 	return res.data.data;
 }
 
-export function useDeActivate2FAEmailInitiate(): UseMutationResult<
-	void,
-	ApiError,
-	void,
-	unknown
-> {
+export function useDeActivate2FAEmailInitiate(): UseMutationResult<void, ApiError, void, unknown> {
 	return useMutation({
 		mutationFn: postDeActivate2FAEmailInitiate,
 		mutationKey: ["deactivate_email_2fa_setup"],

@@ -63,62 +63,42 @@ interface Props {
 export default function MakeDepositPage({ params }: Props): JSX.Element {
 	const jobId = params["job-id"];
 	const router = useRouter();
-	const {
-		data: job,
-		isLoading,
-		isFetched,
-		isError,
-	} = useGetJobById({ jobId });
+	const { data: job, isLoading, isFetched, isError } = useGetJobById({ jobId });
 	const mutation = usePostJobPaymentDetails();
 	const [paymentCoin, setPaymentCoin] = useState<SUPPORTED_COINS_TYPES>();
 	const [contractAddress, setContractAddress] = useState<string>();
 	// @ts-expect-error --- Unused variable
-	const { data: paymentCoinsData, isLoading: paymentCoinsLoading } =
-		useGetPaymentCoins();
+	const { data: paymentCoinsData, isLoading: paymentCoinsLoading } = useGetPaymentCoins();
 
 	const selectPaymentCoin = (coin: SUPPORTED_COINS_TYPES): void => {
 		setPaymentCoin(coin);
 		mutation.mutate({ jobId, coin });
 	};
 
-	const getCoinIcon = (coin: PaymentCoinsProps): string =>
-		coin.icon ?? "/icons/usdc-logo.svg";
+	const getCoinIcon = (coin: PaymentCoinsProps): string => coin.icon ?? "/icons/usdc-logo.svg";
 
 	return (
 		<WagmiConfig config={wagmiConfig as unknown}>
 			<div className="flex flex-col gap-6 overflow-y-auto">
 				<div>
 					<div className="flex items-center gap-1">
-						<ChevronLeft
-							size={24}
-							strokeWidth={2}
-							onClick={router.back}
-							className="cursor-pointer"
-						/>
-						<span className="text-2xl font-medium">
-							Make Deposit
-						</span>
+						<ChevronLeft size={24} strokeWidth={2} onClick={router.back} className="cursor-pointer" />
+						<span className="text-2xl font-medium">Make Deposit</span>
 					</div>
 				</div>
 				<div className="flex">
 					<div className="flex w-full max-w-3xl flex-col gap-6 rounded-3xl border border-line bg-white p-6">
 						<div className="flex flex-col gap-2">
-							<h2 className="text-2xl font-bold">
-								Escrow Payment
-							</h2>
+							<h2 className="text-2xl font-bold">Escrow Payment</h2>
 							<p className="text-lg text-body">
-								Before an invitation is sent to talent, a client
-								is required to deposit payment into a secure
-								escrow wallet. This payment safely lives on the
-								blockchain and cannot be accessed by Afro.Fund,
-								nor Pakt, nor any third party.
+								Before an invitation is sent to talent, a client is required to deposit payment into a
+								secure escrow wallet. This payment safely lives on the blockchain and cannot be accessed
+								by Afro.Fund, nor Pakt, nor any third party.
 							</p>
 						</div>
 
 						<div className="flex flex-col gap-2">
-							<h2 className="text-lg font-bold">
-								Choose Payment Method
-							</h2>
+							<h2 className="text-lg font-bold">Choose Payment Method</h2>
 							<div className="flex items-center gap-2">
 								{(paymentCoinsData ?? [])?.map((coin) => (
 									<button
@@ -126,29 +106,17 @@ export default function MakeDepositPage({ params }: Props): JSX.Element {
 										className={cn(
 											"flex items-center gap-2 rounded-xl border-[1.5px] border-line bg-white p-4 duration-200 hover:bg-green-50",
 											{
-												"border-secondary bg-green-50":
-													paymentCoin === coin.symbol,
+												"border-secondary bg-green-50": paymentCoin === coin.symbol,
 											},
 										)}
 										onClick={() => {
-											selectPaymentCoin(
-												coin.symbol as SUPPORTED_COINS_TYPES,
-											);
-											setContractAddress(
-												coin.contractAddress,
-											);
+											selectPaymentCoin(coin.symbol as SUPPORTED_COINS_TYPES);
+											setContractAddress(coin.contractAddress);
 										}}
 										type="button"
 									>
-										<Image
-											src={getCoinIcon(coin)}
-											alt="Coinbase"
-											width={30}
-											height={30}
-										/>
-										<span className="text-lg font-bold">
-											{coin.symbol.toUpperCase()}
-										</span>
+										<Image src={getCoinIcon(coin)} alt="Coinbase" width={30} height={30} />
+										<span className="text-lg font-bold">{coin.symbol.toUpperCase()}</span>
 									</button>
 								))}
 								{/* <button
@@ -171,10 +139,7 @@ export default function MakeDepositPage({ params }: Props): JSX.Element {
 								jobId={jobId}
 								coin={paymentCoin}
 								paymentDetails={mutation.data}
-								isLoading={
-									mutation.isLoading ||
-									(!isFetched && isLoading)
-								}
+								isLoading={mutation.isLoading || (!isFetched && isLoading)}
 								isError={mutation.isError || isError}
 								errMsg={mutation.error?.message}
 								contractAddress={contractAddress}

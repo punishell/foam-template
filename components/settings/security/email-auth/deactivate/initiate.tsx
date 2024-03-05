@@ -18,9 +18,7 @@ import { useEmail2FAState } from "@/lib/store/security";
 import { Spinner } from "@/components/common/loader";
 import { type SlideItemProps } from "@/components/common/slider";
 
-export const InitiateDeactivateOTP = ({
-	goToNextSlide,
-}: SlideItemProps): React.JSX.Element => {
+export const InitiateDeactivateOTP = ({ goToNextSlide }: SlideItemProps): React.JSX.Element => {
 	const { email } = useUserState();
 	const { closeModal } = useEmail2FAState();
 	const { mutateAsync, isLoading } = useDeActivate2FAEmailInitiate();
@@ -34,14 +32,10 @@ export const InitiateDeactivateOTP = ({
 		<div className="flex w-full shrink-0 flex-col items-center gap-8">
 			<div className="flex w-full flex-row justify-between gap-2 text-center">
 				<Text.h3 size="xs">Deactivate Email OTP</Text.h3>
-				<XCircleIcon
-					className="my-auto cursor-pointer text-body"
-					onClick={closeModal}
-				/>
+				<XCircleIcon className="my-auto cursor-pointer text-body" onClick={closeModal} />
 			</div>
 			<Text.p size="sm" className="my-auto">
-				A code will be sent to{" "}
-				<span className="text-success">{email}</span>
+				A code will be sent to <span className="text-success">{email}</span>
 			</Text.p>
 
 			<Button onClick={handleInitiateOtp} className="w-full" fullWidth>

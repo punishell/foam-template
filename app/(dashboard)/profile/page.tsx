@@ -23,11 +23,7 @@ export default function ProfilePage(): ReactElement | null {
 	const router = useRouter();
 	const user = useUserState();
 	const talentId = String(user?._id);
-	const {
-		data: talentReviews,
-		isLoading,
-		refetch: FetchTalent,
-	} = useGetTalentReviewById(talentId, "1", "20", true);
+	const { data: talentReviews, isLoading, refetch: FetchTalent } = useGetTalentReviewById(talentId, "1", "20", true);
 
 	useEffect(() => {
 		if (talentId) {
@@ -77,14 +73,12 @@ export default function ProfilePage(): ReactElement | null {
 			<div className="flex w-full gap-6">
 				<Bio body={talent.bio} />
 				<Achievements
-					achievements={talent.achievements?.map(
-						({ total, type, value }) => ({
-							type,
-							title: type,
-							total: Number(total),
-							value: parseInt(String(value), 10),
-						}),
-					)}
+					achievements={talent.achievements?.map(({ total, type, value }) => ({
+						type,
+						title: type,
+						total: Number(total),
+						value: parseInt(String(value), 10),
+					}))}
 				/>
 			</div>
 			<div className="w-full">

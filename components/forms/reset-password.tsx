@@ -63,15 +63,11 @@ function ResetPasswordForm({
 	const validatingErr = useMemo(
 		() => ({
 			isMinLength: password?.length >= 8 || false,
-			checkLowerUpper:
-				(/[A-Z]/.test(password) && /[a-z]/.test(password)) || false,
+			checkLowerUpper: (/[A-Z]/.test(password) && /[a-z]/.test(password)) || false,
 			checkNumber: !(password?.match(/\d+/g) == null),
 			specialCharacter: spChars.test(password) || false,
 			confirmedPassword:
-				(password === confirmPassword &&
-					password !== "" &&
-					password !== undefined &&
-					password !== null) ||
+				(password === confirmPassword && password !== "" && password !== undefined && password !== null) ||
 				false,
 		}),
 		// eslint-disable-next-line react-hooks/exhaustive-deps
@@ -80,10 +76,7 @@ function ResetPasswordForm({
 
 	// console.log(resetForm.formState.errors);
 	// Check if when user starts typing the password
-	const isPasswordTyping =
-		passwordWatch !== "" &&
-		passwordWatch !== undefined &&
-		passwordWatch !== null;
+	const isPasswordTyping = passwordWatch !== "" && passwordWatch !== undefined && passwordWatch !== null;
 
 	return (
 		<>
@@ -101,9 +94,7 @@ function ResetPasswordForm({
 			{!isCompleted && (
 				<Container className="flex h-full w-full max-w-2xl flex-col items-center justify-center gap-6">
 					<div className="flex flex-col items-center gap-2 text-center text-white">
-						<h3 className="font-sans text-2xl 2xl:text-3xl font-bold">
-							Reset Password
-						</h3>
+						<h3 className="font-sans text-2xl 2xl:text-3xl font-bold">Reset Password</h3>
 						<p className="font-sans text-base leading-normal tracking-tight">
 							Choose a new password for your account
 						</p>
@@ -114,10 +105,7 @@ function ResetPasswordForm({
 					>
 						<div className="flex w-full flex-col gap-4">
 							<div className="relative mb-2 flex flex-col gap-2">
-								<label
-									htmlFor="password"
-									className="text-base sm:text-sm text-white"
-								>
+								<label htmlFor="password" className="text-base sm:text-sm text-white">
 									Create Password
 								</label>
 								<Input
@@ -130,37 +118,27 @@ function ResetPasswordForm({
 								{isPasswordTyping && (
 									<div className="flex flex-col gap-4 p-4 text-xs text-body">
 										<PasswordCriteria
-											isValidated={
-												validatingErr.isMinLength
-											}
+											isValidated={validatingErr.isMinLength}
 											criteria="At least 8 characters"
 											isSignUp
 										/>
 										<PasswordCriteria
-											isValidated={
-												validatingErr.checkLowerUpper
-											}
+											isValidated={validatingErr.checkLowerUpper}
 											criteria="Upper and lower case characters"
 											isSignUp
 										/>
 										<PasswordCriteria
-											isValidated={
-												validatingErr.checkNumber
-											}
+											isValidated={validatingErr.checkNumber}
 											criteria="1 or more numbers"
 											isSignUp
 										/>
 										<PasswordCriteria
-											isValidated={
-												validatingErr.specialCharacter
-											}
+											isValidated={validatingErr.specialCharacter}
 											criteria="1 or more special characters"
 											isSignUp
 										/>
 										<PasswordCriteria
-											isValidated={
-												validatingErr.confirmedPassword
-											}
+											isValidated={validatingErr.confirmedPassword}
 											criteria="passwords must be match"
 											isSignUp
 										/>
@@ -169,10 +147,7 @@ function ResetPasswordForm({
 							</div>
 
 							<div className="relative mb-2 flex flex-col gap-2">
-								<label
-									htmlFor="confirmPassword"
-									className="text-base sm:text-sm text-white"
-								>
+								<label htmlFor="confirmPassword" className="text-base sm:text-sm text-white">
 									Confirm Password
 								</label>
 								<Input
@@ -188,16 +163,9 @@ function ResetPasswordForm({
 						<Button
 							className=""
 							fullWidth
-							disabled={
-								!resetForm.formState.isValid ||
-								changePassword.isLoading
-							}
+							disabled={!resetForm.formState.isValid || changePassword.isLoading}
 						>
-							{changePassword.isLoading ? (
-								<Spinner />
-							) : (
-								"Reset Password"
-							)}
+							{changePassword.isLoading ? <Spinner /> : "Reset Password"}
 						</Button>
 					</form>
 				</Container>
@@ -207,9 +175,7 @@ function ResetPasswordForm({
 					<div className="flex w-full max-w-[150px] items-center justify-center">
 						<Lottie animationData={success} />
 					</div>
-					<h6 className="my-4 flex-wrap text-lg font-thin opacity-[0.8]">
-						Password Reset Successful.
-					</h6>
+					<h6 className="my-4 flex-wrap text-lg font-thin opacity-[0.8]">Password Reset Successful.</h6>
 					<Button
 						className=""
 						fullWidth

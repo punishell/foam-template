@@ -23,19 +23,13 @@ interface Props {
 
 function Loader(): React.JSX.Element {
 	return (
-		<div
-			aria-live="polite"
-			aria-busy="true"
-			className="flex h-screen w-screen items-center justify-center"
-		>
+		<div aria-live="polite" aria-busy="true" className="flex h-screen w-screen items-center justify-center">
 			<PageLoading color="#007C5B" />
 		</div>
 	);
 }
 
-export default function OnboardingLayout({
-	children,
-}: Props): React.JSX.Element {
+export default function OnboardingLayout({ children }: Props): React.JSX.Element {
 	const router = useRouter();
 	const token = getCookie(AUTH_TOKEN_KEY);
 	const [isTokenSet, setIsTokenSet] = useState(false);

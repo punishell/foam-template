@@ -121,10 +121,7 @@ export const Feeds = (): ReactElement => {
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		const newData = totalData.sort((a: any, b: any) => {
 			if (a && b) {
-				return (
-					new Date(b.createdAt).getTime() -
-					new Date(a.createdAt).getTime()
-				);
+				return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
 			}
 			return 0;
 		});
@@ -133,10 +130,7 @@ export const Feeds = (): ReactElement => {
 	}, [timelineData, timelineData?.pages]);
 
 	const timelineFeeds = useMemo(
-		() =>
-			(currentData || []).map((feed, i) =>
-				ParseFeedView(feed, loggedInUser, i, callback, dismissByID),
-			),
+		() => (currentData || []).map((feed, i) => ParseFeedView(feed, loggedInUser, i, callback, dismissByID)),
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 		[currentData],
 	);
@@ -166,10 +160,7 @@ export const Feeds = (): ReactElement => {
 
 			{isFetchingNextPage && (
 				<div className="mx-auto flex w-full flex-row items-center justify-center text-center">
-					<Loader
-						size={25}
-						className="animate-spin text-center text-black"
-					/>
+					<Loader size={25} className="animate-spin text-center text-black" />
 				</div>
 			)}
 			<span ref={observerTarget} />

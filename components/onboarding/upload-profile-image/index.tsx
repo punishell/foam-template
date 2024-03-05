@@ -23,9 +23,7 @@ import { type SlideItemProps } from "@/components/common";
 const MB_IN_BYTES = 1024 * 1024;
 const maxSize = 2 * MB_IN_BYTES;
 
-export function UploadProfileImage({
-	goToPreviousSlide,
-}: SlideItemProps): React.JSX.Element {
+export function UploadProfileImage({ goToPreviousSlide }: SlideItemProps): React.JSX.Element {
 	const router = useRouter();
 	const { skill } = useOnboardingState();
 	const uploadImage = useUploadImage();
@@ -47,23 +45,20 @@ export function UploadProfileImage({
 		});
 	}, []);
 
-	const { getRootProps, getInputProps, fileRejections, isDragReject } =
-		useDropzone({
-			onDrop,
-			maxSize,
-			minSize: 0,
-			maxFiles: 1,
-			accept: {
-				"image/png": [],
-				"image/jpeg": [],
-				"image/jpg": [],
-			},
-		});
+	const { getRootProps, getInputProps, fileRejections, isDragReject } = useDropzone({
+		onDrop,
+		maxSize,
+		minSize: 0,
+		maxFiles: 1,
+		accept: {
+			"image/png": [],
+			"image/jpeg": [],
+			"image/jpg": [],
+		},
+	});
 
 	const isFileTooLarge =
-		fileRejections.length > 0 &&
-		fileRejections[0]?.file?.size != null &&
-		fileRejections[0].file.size > maxSize;
+		fileRejections.length > 0 && fileRejections[0]?.file?.size != null && fileRejections[0].file.size > maxSize;
 
 	useEffect(() => {
 		return () => {

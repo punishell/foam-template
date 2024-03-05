@@ -44,17 +44,10 @@ export const MobileHeader = (): ReactElement => {
 	return (
 		<div className="sm:hidden w-full relative overflow-hidden block !z-[99] bg-[#ECFCE5] h-auto max-h-max">
 			<div
-				className={`absolute -left-1 transition-all duration-300 transform translate-x-1/2 z-[5] ${scrollPosition === 0
-						? "scale-[1.6] translate-y-1/2"
-						: "scale-100 top-0 translate-y-[2%]"
-					}`}
+				className={`absolute -left-1 transition-all duration-300 transform translate-x-1/2 z-[5]
+				${scrollPosition === 0 && profileCompleted ? "scale-[1.6] translate-y-1/2" : "scale-100 top-0 translate-y-[2%]"}`}
 			>
-				<AfroProfile
-					size="sm"
-					score={value}
-					src={profileImage?.url}
-					url="/profile"
-				/>
+				<AfroProfile size="sm" score={value} src={profileImage?.url} url="/profile" />
 			</div>
 			<div className="relative flex items-center justify-between px-5 w-full h-[65px] z-[3]">
 				<div />
@@ -81,27 +74,20 @@ export const MobileHeader = (): ReactElement => {
 				</div>
 			</div>
 			<div
-				className={`flex items-center bg-[#BCF68CD4] w-full px-5 overflow-hidden relative z-[2] transition-all duration-300  ${scrollPosition === 0 ? "h-[78px]" : "h-[0px]"}`}
+				className={`flex items-center bg-[#BCF68CD4] w-full px-5 overflow-hidden relative z-[2] transition-all duration-300  ${scrollPosition === 0 && profileCompleted ? "h-[78px]" : "h-[0px]"}`}
 			>
 				<div className="absolute inset-0 bg-[url(/images/rain.png)] bg-repeat opacity-50 -z-[1]" />
 				<div className="flex items-center justify-between w-full z-20 gap-2">
 					<Button className="w-full h-[38px] bg-white rounded-[10px] border border-primary flex justify-end">
 						<div className="flex items-center gap-2">
 							<div className="flex items-center gap-1">
-								<span className="text-primary text-xs">
-									Leaderboard Position:
-								</span>
-								<span className="text-primary text-base">
-									49/750
-								</span>
+								<span className="text-primary text-xs">Leaderboard Position:</span>
+								<span className="text-primary text-base">49/750</span>
 							</div>
 							<ChevronRight className="text-primary h-4 w-4" />
 						</div>
 					</Button>
-					<Button
-						className="border !border-primary bg-[#ECFCE5]"
-						variant="outline"
-					>
+					<Button className="border !border-primary bg-[#ECFCE5]" variant="outline">
 						<UserPlus className="text-primary" />
 					</Button>
 					<ReferralSideModal

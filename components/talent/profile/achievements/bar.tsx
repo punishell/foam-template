@@ -4,9 +4,7 @@
 
 import { ACHIEVEMENT_STYLES, type AchievementBarProps } from "./types";
 
-export const AchievementBar = ({
-	achievement,
-}: AchievementBarProps): JSX.Element => {
+export const AchievementBar = ({ achievement }: AchievementBarProps): JSX.Element => {
 	const styles = ACHIEVEMENT_STYLES[achievement.type];
 	const percentage = (achievement.value / achievement.maxValue) * 100;
 

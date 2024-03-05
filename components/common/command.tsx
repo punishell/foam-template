@@ -36,10 +36,7 @@ Command.displayName = CommandPrimitive.displayName;
 
 interface CommandDialogProps extends DialogProps {}
 
-const CommandDialog = ({
-	children,
-	...props
-}: CommandDialogProps): React.JSX.Element => {
+const CommandDialog = ({ children, ...props }: CommandDialogProps): React.JSX.Element => {
 	return (
 		<Dialog {...props}>
 			<DialogContent className="overflow-hidden p-0 shadow-lg">
@@ -84,10 +81,7 @@ const CommandList = React.forwardRef<
 >(({ className, ...props }, ref) => (
 	<CommandPrimitive.List
 		ref={ref}
-		className={cn(
-			"max-h-[300px] overflow-y-auto overflow-x-hidden",
-			className,
-		)}
+		className={cn("max-h-[300px] overflow-y-auto overflow-x-hidden", className)}
 		{...props}
 	/>
 ));
@@ -97,13 +91,7 @@ CommandList.displayName = CommandPrimitive.List.displayName;
 const CommandEmpty = React.forwardRef<
 	React.ElementRef<typeof CommandPrimitive.Empty>,
 	React.ComponentPropsWithoutRef<typeof CommandPrimitive.Empty>
->((props, ref) => (
-	<CommandPrimitive.Empty
-		ref={ref}
-		className="py-6 text-center text-sm"
-		{...props}
-	/>
-));
+>((props, ref) => <CommandPrimitive.Empty ref={ref} className="py-6 text-center text-sm" {...props} />);
 
 CommandEmpty.displayName = CommandPrimitive.Empty.displayName;
 
@@ -131,11 +119,7 @@ const CommandSeparator = React.forwardRef<
 		className?: string;
 	}
 >(({ className, ...props }, ref) => (
-	<CommandPrimitive.Separator
-		ref={ref}
-		className={cn("bg-border -mx-1 h-px", className)}
-		{...props}
-	/>
+	<CommandPrimitive.Separator ref={ref} className={cn("bg-border -mx-1 h-px", className)} {...props} />
 ));
 CommandSeparator.displayName = CommandPrimitive.Separator.displayName;
 
@@ -163,15 +147,7 @@ const CommandShortcut = ({
 }: React.HTMLAttributes<HTMLSpanElement> & {
 	className?: string;
 }): React.JSX.Element => {
-	return (
-		<span
-			className={cn(
-				"text-muted-foreground ml-auto text-xs tracking-widest",
-				className,
-			)}
-			{...props}
-		/>
-	);
+	return <span className={cn("text-muted-foreground ml-auto text-xs tracking-widest", className)} {...props} />;
 };
 CommandShortcut.displayName = "CommandShortcut";
 

@@ -77,48 +77,28 @@ const LoginForm = (): React.JSX.Element => {
 		>
 			<div className="flex w-full flex-col gap-4">
 				<div className="flex flex-col gap-2">
-					<label
-						htmlFor="email"
-						className="text-base sm:text-sm text-white"
-					>
+					<label htmlFor="email" className="text-base sm:text-sm text-white">
 						Email Address
 					</label>
 
-					<Input
-						{...form.register("email")}
-						className=""
-						placeholder="Email Address"
-					/>
+					<Input {...form.register("email")} className="" placeholder="Email Address" />
 				</div>
 
 				<div className="flex flex-col gap-2">
-					<label
-						htmlFor="email"
-						className="text-base sm:text-sm text-white"
-					>
+					<label htmlFor="email" className="text-base sm:text-sm text-white">
 						Password
 					</label>
-					<PasswordInput
-						{...form.register("password")}
-						className=""
-						placeholder="Password"
-					/>
+					<PasswordInput {...form.register("password")} className="" placeholder="Password" />
 				</div>
 
 				<div className="flex items-center justify-end">
-					<Link
-						href="/forgot-password"
-						className="text-sm text-white"
-					>
+					<Link href="/forgot-password" className="text-sm text-white">
 						Forgot Password?
 					</Link>
 				</div>
 			</div>
 
-			<Button
-				fullWidth
-				disabled={!form.formState.isValid || login.isLoading}
-			>
+			<Button fullWidth disabled={!form.formState.isValid || login.isLoading}>
 				{login.isLoading ? <Spinner /> : "Login"}
 			</Button>
 		</form>

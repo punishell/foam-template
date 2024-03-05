@@ -30,13 +30,7 @@ export const DollarIcon: FC<IconProps> = ({ size = 24, className, style }) => {
 	);
 };
 
-export const CheckMark: FC<IconProps> = ({
-	size = 24,
-	className,
-	style,
-	fill,
-	onClick,
-}) => {
+export const CheckMark: FC<IconProps> = ({ size = 24, className, style, fill, onClick }) => {
 	if (fill) {
 		return (
 			<svg

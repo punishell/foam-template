@@ -13,18 +13,8 @@ import { Check, ChevronsUpDown } from "lucide-react";
 
 import { Button } from "@/components/common/button";
 import { ScrollArea, ScrollBar } from "@/components/common/scroll-area";
-import {
-	Command,
-	CommandEmpty,
-	CommandGroup,
-	CommandInput,
-	CommandItem,
-} from "@/components/common/command";
-import {
-	Popover,
-	PopoverContent,
-	PopoverTrigger,
-} from "@/components/common/popover";
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem } from "@/components/common/command";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/common/popover";
 
 import { cn, lowerCase, titleCase } from "@/lib/utils";
 import states from "@/lib/states.json";
@@ -38,17 +28,11 @@ interface StateDropdownProps {
 	countryValue: string;
 }
 
-const StateDropdown = ({
-	onChange,
-	value,
-	countryValue,
-}: StateDropdownProps): React.JSX.Element => {
+const StateDropdown = ({ onChange, value, countryValue }: StateDropdownProps): React.JSX.Element => {
 	const { openStateDropdown, setOpenStateDropdown } = useDropdownStore();
 
 	const SD = states as StateProps[];
-	const S = SD.filter(
-		(state) => state.country_name === titleCase(countryValue),
-	);
+	const S = SD.filter((state) => state.country_name === titleCase(countryValue));
 
 	return (
 		<Popover open={openStateDropdown} onOpenChange={setOpenStateDropdown}>
@@ -62,15 +46,7 @@ const StateDropdown = ({
 				>
 					{value ? (
 						<div className="flex items-end gap-2">
-							<span>
-								{
-									S.find(
-										(state) =>
-											lowerCase(state.name) ===
-											lowerCase(value),
-									)?.name
-								}
-							</span>
+							<span>{S.find((state) => lowerCase(state.name) === lowerCase(value))?.name}</span>
 						</div>
 					) : (
 						<span>Select State...</span>
@@ -90,12 +66,7 @@ const StateDropdown = ({
 									value={state.name}
 									onSelect={(currentValue: string) => {
 										// setStateValue(currentValue === lowerCase(state.name) ? currentValue : "");
-										onChange(
-											currentValue ===
-												lowerCase(state.name)
-												? currentValue
-												: "",
-										);
+										onChange(currentValue === lowerCase(state.name) ? currentValue : "");
 										setOpenStateDropdown(false);
 									}}
 									className="flex cursor-pointer items-center justify-between  text-sm hover:!bg-primary-brighter"
@@ -106,9 +77,7 @@ const StateDropdown = ({
 									<Check
 										className={cn(
 											"mr-2 h-4 w-4",
-											value === lowerCase(state.name)
-												? "opacity-100"
-												: "opacity-0",
+											value === lowerCase(state.name) ? "opacity-100" : "opacity-0",
 										)}
 									/>
 								</CommandItem>

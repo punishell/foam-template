@@ -30,10 +30,7 @@ export default function SignupPage(): React.JSX.Element {
 
 	useMemo(() => {
 		if (systemSetting != null) {
-			const signupByInviteONly = Boolean(
-				systemSetting[SETTING_CONSTANTS.ALLOW_SIGN_ON_INVITE_ONLY] ===
-					"true",
-			);
+			const signupByInviteONly = Boolean(systemSetting[SETTING_CONSTANTS.ALLOW_SIGN_ON_INVITE_ONLY] === "true");
 			_setErrorMsg(signupByInviteONly);
 		}
 	}, [systemSetting]);
@@ -54,9 +51,7 @@ export default function SignupPage(): React.JSX.Element {
 			{!loading && !errorMsg && (
 				<Container className="mt-[42px] pb-[42px] sm:mt-0 flex h-auto sm:h-full w-full sm:max-w-2xl flex-col items-center justify-center gap-6">
 					<div className="flex flex-col items-center gap-2 text-center text-white">
-						<h3 className="font-sans text-3xl font-bold">
-							Create Your Account
-						</h3>
+						<h3 className="font-sans text-3xl font-bold">Create Your Account</h3>
 						<p className="font-sans text-base leading-normal tracking-tight">
 							Join Afrofund to Connect Globally
 						</p>
@@ -74,12 +69,9 @@ export default function SignupPage(): React.JSX.Element {
 					<div className="flex w-full max-w-[150px] items-center justify-center">
 						<Lottie animationData={warning} />
 					</div>
-					<h3 className="text-3xl font-bold">
-						Invalid Referral Code
-					</h3>
+					<h3 className="text-3xl font-bold">Invalid Referral Code</h3>
 					<h6 className="flex-wrap text-lg font-thin opacity-[0.8]">
-						You need a valid referral code to be able to sign up to
-						Afrofund.{" "}
+						You need a valid referral code to be able to sign up to Afrofund.{" "}
 					</h6>
 				</Container>
 			)}

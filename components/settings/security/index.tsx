@@ -19,14 +19,9 @@ import SettingsForm from "@/components/forms/settings";
 
 export const SecurityView = (): ReactElement => {
 	const { twoFa } = useUserState();
-	const is2FASetUp =
-		(twoFa?.status && twoFa?.type === TWO_FA_CONSTANTS.AUTHENTICATOR) ??
-		false;
-	const isEmailSetUp =
-		(twoFa?.status && twoFa?.type === TWO_FA_CONSTANTS.EMAIL) ?? false;
-	const isSecuritySetUp =
-		(twoFa?.status && twoFa?.type === TWO_FA_CONSTANTS.SECURITY_QUESTION) ??
-		false;
+	const is2FASetUp = (twoFa?.status && twoFa?.type === TWO_FA_CONSTANTS.AUTHENTICATOR) ?? false;
+	const isEmailSetUp = (twoFa?.status && twoFa?.type === TWO_FA_CONSTANTS.EMAIL) ?? false;
+	const isSecuritySetUp = (twoFa?.status && twoFa?.type === TWO_FA_CONSTANTS.SECURITY_QUESTION) ?? false;
 
 	return (
 		<div className="relative flex h-full grow flex-row gap-6 overflow-auto pb-4">
@@ -36,14 +31,8 @@ export const SecurityView = (): ReactElement => {
 				<Text.h3 size="xs">2FA</Text.h3>
 
 				<div className="flex justify-between gap-5">
-					<GoogleAuth2FA
-						isEnabled={is2FASetUp}
-						disabled={isSecuritySetUp || isEmailSetUp}
-					/>
-					<EmailAuth2FA
-						isEnabled={isEmailSetUp}
-						disabled={is2FASetUp || isSecuritySetUp}
-					/>
+					<GoogleAuth2FA isEnabled={is2FASetUp} disabled={isSecuritySetUp || isEmailSetUp} />
+					<EmailAuth2FA isEnabled={isEmailSetUp} disabled={is2FASetUp || isSecuritySetUp} />
 					{/* <SecurityQuestion2FA isEnabled={isSecuritySetUp} disabled={is2FASetUp || isEmailSetUp} /> */}
 				</div>
 			</div>

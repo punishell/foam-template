@@ -1,8 +1,4 @@
-export const UploadProgress = ({
-	progress,
-}: {
-	progress: number;
-}): React.JSX.Element => {
+export const UploadProgress = ({ progress }: { progress: number }): React.JSX.Element => {
 	return (
 		<div className="flex w-full max-w-sm flex-col gap-2 rounded-2xl border border-[#7DDE86] bg-[#ECFCE533] p-4">
 			<span className="text-sm">Uploading</span>

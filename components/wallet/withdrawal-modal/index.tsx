@@ -83,19 +83,9 @@ export const WithdrawalModal = ({
 		return wallet.icon ?? "/icons/usdc-logo.svg";
 	};
 
-	const renderOption = (
-		icon: string,
-		coin: string,
-		balance: string,
-	): React.JSX.Element => (
+	const renderOption = (icon: string, coin: string, balance: string): React.JSX.Element => (
 		<div className="flex flex-row text-lg">
-			<Image
-				width={25}
-				height={25}
-				className="mr-4 h-[25px] w-[25px]"
-				src={icon}
-				alt="logo for currency"
-			/>
+			<Image width={25} height={25} className="mr-4 h-[25px] w-[25px]" src={icon} alt="logo for currency" />
 			{coin.toUpperCase()} (${balance})
 		</div>
 	);
@@ -125,26 +115,13 @@ export const WithdrawalModal = ({
 				</div>
 			</div>
 			{!is2FA ? (
-				<form
-					className="flex flex-col gap-6 px-6"
-					onSubmit={form.handleSubmit(onSubmit)}
-				>
+				<form className="flex flex-col gap-6 px-6" onSubmit={form.handleSubmit(onSubmit)}>
 					<Select
 						// @ts-expect-error ts-migrate(2769) FIXME: No overload matches this call.
 						options={wallets.map(
-							(s: {
-								_id: string;
-								amount: number;
-								usdValue: number;
-								coin: string;
-								icon?: string;
-							}) => {
+							(s: { _id: string; amount: number; usdValue: number; coin: string; icon?: string }) => {
 								return {
-									label: renderOption(
-										getWalletIcon(s),
-										s.coin,
-										s.usdValue.toString(),
-									),
+									label: renderOption(getWalletIcon(s), s.coin, s.usdValue.toString()),
 									value: s.coin.toUpperCase(),
 								};
 							},
@@ -159,22 +136,17 @@ export const WithdrawalModal = ({
 					<div className="flex flex-col gap-2">
 						<div className="flex items-center justify-between">
 							<span>Wallet Address</span>
-							<span className="font-medium text-title">
-								Network: {network}
-							</span>
+							<span className="font-medium text-title">Network: {network}</span>
 						</div>
 
 						<div className="relative mb-4">
 							<Input type="text" {...form.register("address")} />
-							<InputErrorMessage
-								message={form.formState.errors.address?.message}
-							/>
+							<InputErrorMessage message={form.formState.errors.address?.message} />
 						</div>
 
 						<span className="text-left text-sm text-info">
-							Ensure you are sending to the right wallet address
-							and on the Avax C-Chain. Sending to a wrong address
-							or network can result in loss of funds.
+							Ensure you are sending to the right wallet address and on the Avax C-Chain. Sending to a
+							wrong address or network can result in loss of funds.
 						</span>
 					</div>
 
@@ -185,20 +157,12 @@ export const WithdrawalModal = ({
 								form.setValue("amount", Number(e));
 							}}
 						/>
-						<InputErrorMessage
-							message={form.formState.errors.amount?.message}
-						/>
+						<InputErrorMessage message={form.formState.errors.amount?.message} />
 					</div>
 
 					<div className="relative">
-						<Input
-							type="password"
-							label="Password"
-							{...form.register("password")}
-						/>
-						<InputErrorMessage
-							message={form.formState.errors.password?.message}
-						/>
+						<Input type="password" label="Password" {...form.register("password")} />
+						<InputErrorMessage message={form.formState.errors.password?.message} />
 					</div>
 
 					<div className="relative my-2 flex cursor-pointer flex-col">
@@ -206,9 +170,7 @@ export const WithdrawalModal = ({
 							<Controller
 								name="confirm"
 								control={form.control}
-								render={({
-									field: { onChange: change, value },
-								}) => (
+								render={({ field: { onChange: change, value } }) => (
 									<Checkbox
 										id="confirm-withdrawal"
 										{...form.register("confirm")}
@@ -217,24 +179,15 @@ export const WithdrawalModal = ({
 									/>
 								)}
 							/>
-							<label
-								htmlFor="confirm-withdrawal"
-								className="cursor-pointer text-sm"
-							>
-								I confirm that all the above details are
-								correct.
+							<label htmlFor="confirm-withdrawal" className="cursor-pointer text-sm">
+								I confirm that all the above details are correct.
 							</label>
 						</div>
 
-						<InputErrorMessage
-							message={form.formState.errors.confirm?.message}
-						/>
+						<InputErrorMessage message={form.formState.errors.confirm?.message} />
 					</div>
 
-					<Button
-						disabled={withdraw.isLoading || !form.formState.isValid}
-						fullWidth
-					>
+					<Button disabled={withdraw.isLoading || !form.formState.isValid} fullWidth>
 						{withdraw.isLoading ? <Spinner /> : "Withdraw Funds"}
 					</Button>
 				</form>

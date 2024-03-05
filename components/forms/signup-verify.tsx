@@ -136,43 +136,27 @@ const SignupVerificationForm = (): React.JSX.Element => {
 					}}
 				/>
 
-				<Button
-					fullWidth
-					disabled={verifyEmail.isLoading || !form.formState.isValid}
-				>
+				<Button fullWidth disabled={verifyEmail.isLoading || !form.formState.isValid}>
 					{verifyEmail.isLoading ? <Spinner /> : "Verify Email"}
 				</Button>
 
 				<div className="flex w-full flex-col items-center gap-4">
-					<span className="text-white">
-						{formatCountdown(countdown)}
-					</span>
+					<span className="text-white">{formatCountdown(countdown)}</span>
 					<div className="w-full max-w-[150px]">
 						<Button
 							size="xs"
 							fullWidth
 							variant="outline"
-							onClick={
-								!(resendOTP.isLoading || isResendDisabled)
-									? handleResendOTP
-									: () => {}
-							}
+							onClick={!(resendOTP.isLoading || isResendDisabled) ? handleResendOTP : () => {}}
 							disabled={resendOTP.isLoading || isResendDisabled}
 							className="!border-white !text-white"
 							style={{
-								opacity:
-									resendOTP.isLoading || isResendDisabled
-										? 0.2
-										: 1,
+								opacity: resendOTP.isLoading || isResendDisabled ? 0.2 : 1,
 							}}
 						>
 							<span className="flex flex-row gap-2">
 								<Timer size={16} className="text-white" />
-								{resendOTP.isLoading ? (
-									<Spinner size={16} />
-								) : (
-									"Resend Code"
-								)}
+								{resendOTP.isLoading ? <Spinner size={16} /> : "Resend Code"}
 							</span>
 						</Button>
 					</div>

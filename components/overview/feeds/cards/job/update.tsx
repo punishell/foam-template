@@ -81,12 +81,7 @@ export const JobUpdateFeed = ({
 	return (
 		<>
 			<div className="relative z-10 hidden sm:flex w-full gap-4  overflow-hidden rounded-2xl border border-[#9BDCFD] bg-[#F1FBFF] px-4 pl-2">
-				<AfroProfile
-					src={talent.avatar}
-					score={talent.score}
-					size="lg"
-					url={`/talents/${talent._id}`}
-				/>
+				<AfroProfile src={talent.avatar} score={talent.score} size="lg" url={`/talents/${talent._id}`} />
 				<div className="flex w-full flex-col gap-4 py-4">
 					<div className="flex justify-between">
 						<h3 className="w-[90%] items-center text-xl text-title">
@@ -109,9 +104,7 @@ export const JobUpdateFeed = ({
 					<p className="flex flex-row gap-4 capitalize text-body">
 						{" "}
 						<CheckBox isChecked={isMarked} />{" "}
-						{description.length > MAX_LEN
-							? `${description.slice(0, MAX_LEN)}...`
-							: description}
+						{description.length > MAX_LEN ? `${description.slice(0, MAX_LEN)}...` : description}
 					</p>
 					<div className="mt-auto flex items-center justify-between">
 						<div className="flex w-full items-center gap-2">
@@ -126,9 +119,7 @@ export const JobUpdateFeed = ({
 								See Update
 							</Button>
 							{/* )} */}
-							<Link
-								href={`/messages?userId=${isCreator ? talent._id : creator._id}`}
-							>
+							<Link href={`/messages?userId=${isCreator ? talent._id : creator._id}`}>
 								<Button size="xs" variant="outline">
 									Message
 								</Button>
@@ -187,16 +178,9 @@ export const JobUpdateFeed = ({
 				className="cursor-pointer z-10 flex sm:hidden w-full flex-col gap-4 overflow-hidden border-b border-[#9BDCFD] bg-[#F1FBFF] px-[21px] py-4"
 			>
 				<div className="flex items-center gap-2 relative -left-[5px]">
-					<AfroProfile
-						score={talent.score}
-						src={talent.avatar}
-						size="sm"
-						url={`/talents/${talent._id}`}
-					/>
+					<AfroProfile score={talent.score} src={talent.avatar} size="sm" url={`/talents/${talent._id}`} />
 					<div className="flex-col justify-start items-start inline-flex">
-						<p className="text-gray-800 text-lg flex leading-[27px] tracking-wide">
-							{talent.name}
-						</p>
+						<p className="text-gray-800 text-lg flex leading-[27px] tracking-wide">{talent.name}</p>
 						<span className="text-gray-500 text-xs leading-[18px] tracking-wide">
 							{titleCase(talent.title)}
 						</span>
@@ -212,9 +196,7 @@ export const JobUpdateFeed = ({
 						</h3>
 					</div>
 					<p className="flex flex-row gap-4 capitalize text-body text-base">
-						{description.length > MAX_LEN
-							? `${description.slice(0, MAX_LEN)}...`
-							: `✅ ${description}`}
+						{description.length > MAX_LEN ? `${description.slice(0, MAX_LEN)}...` : `✅ ${description}`}
 					</p>
 					<div className="mt-auto flex items-center justify-between">
 						<div className="flex w-[80%]">

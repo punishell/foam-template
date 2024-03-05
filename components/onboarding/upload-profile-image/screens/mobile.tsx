@@ -34,17 +34,10 @@ export function MobileProfileImage({
 	return (
 		<div className="relative flex sm:hidden w-full shrink-0 flex-col items-center gap-4 max-h-auto">
 			<div className="flex items-center justify-between w-full relative">
-				<Button
-					size="sm"
-					className="!border-white"
-					onClick={goToPreviousSlide}
-					variant="outline"
-				>
+				<Button size="sm" className="!border-white" onClick={goToPreviousSlide} variant="outline">
 					<ChevronLeft className="text-white" />
 				</Button>
-				<span className="text-xl font-bold text-white">
-					Create Your Avatar
-				</span>
+				<span className="text-xl font-bold text-white">Create Your Avatar</span>
 				<Button
 					className="!text-white !px-0 !mx-0 !text-lg !font-normal"
 					type="button"
@@ -77,12 +70,7 @@ export function MobileProfileImage({
 
 					<div className="absolute inset-0 flex items-center justify-center">
 						{imageFile != null && (
-							<Image
-								src={imageFile.preview}
-								alt="profile picture"
-								layout="fill"
-								objectFit="cover"
-							/>
+							<Image src={imageFile.preview} alt="profile picture" layout="fill" objectFit="cover" />
 						)}
 					</div>
 

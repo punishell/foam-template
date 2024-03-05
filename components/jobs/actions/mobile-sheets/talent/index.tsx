@@ -30,20 +30,13 @@ interface TalentJobModalProps {
 	extras?: string;
 }
 
-export const TalentJobSheetForMobile: FC<TalentJobModalProps> = ({
-	jobId,
-	talentId,
-	closeModal,
-	extras,
-}) => {
+export const TalentJobSheetForMobile: FC<TalentJobModalProps> = ({ jobId, talentId, closeModal, extras }) => {
 	const query = useGetJobById({ jobId, extras });
-	const [isRequestingJobCancellation, setIsRequestingJobCancellation] =
-		useState(false);
+	const [isRequestingJobCancellation, setIsRequestingJobCancellation] = useState(false);
 
 	if (query.isError) return <PageError className="absolute inset-0" />;
 
-	if (query.isLoading)
-		return <PageLoading className="absolute inset-0" color="#007C5B" />;
+	if (query.isLoading) return <PageLoading className="absolute inset-0" color="#007C5B" />;
 
 	const job = query.data;
 
@@ -65,17 +58,11 @@ export const TalentJobSheetForMobile: FC<TalentJobModalProps> = ({
 
 	const jobCancellation = job.collections.find(isJobCancellation);
 
-	const talentRequestedCancellation =
-		jobCancellation?.creator._id === job.owner?._id; // problem here
-	const clientRequestedCancellation =
-		jobCancellation?.creator._id === job.creator._id;
+	const talentRequestedCancellation = jobCancellation?.creator._id === job.owner?._id; // problem here
+	const clientRequestedCancellation = jobCancellation?.creator._id === job.creator._id;
 
-	const talentHasReviewed = job.ratings?.some(
-		(review) => review.owner._id === job.owner?._id,
-	);
-	const clientHasReviewed = job.ratings?.some(
-		(review) => review.owner._id === job.creator._id,
-	);
+	const talentHasReviewed = job.ratings?.some((review) => review.owner._id === job.owner?._id);
+	const clientHasReviewed = job.ratings?.some((review) => review.owner._id === job.creator._id);
 
 	if (job.status === "cancelled") {
 		return (

@@ -19,12 +19,8 @@ export const NotificationView = (): ReactElement => {
 	return (
 		<div className="flex h-full flex-col">
 			<div className="flex flex-col gap-4 rounded-lg bg-white p-4 pb-20">
-				<h2 className="text-lg font-bold">
-					Set Notification Preferences
-				</h2>
-				<p className="text-sm text-body">
-					We need permissions to show notifications
-				</p>
+				<h2 className="text-lg font-bold">Set Notification Preferences</h2>
+				<p className="text-sm text-body">We need permissions to show notifications</p>
 				<div className="flex flex-col">
 					<div className="flex flex-row px-8 py-4 text-sm text-body">
 						<p className="w-64 flex-1">Type</p>

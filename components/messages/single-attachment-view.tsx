@@ -19,11 +19,7 @@ import { type AttachmentsSendingProps } from "@/providers/socket-types";
 
 const MAX_LEN = 15;
 
-const SingleAttachmentView = ({
-	img,
-}: {
-	img: AttachmentsSendingProps;
-}): ReactElement => {
+const SingleAttachmentView = ({ img }: { img: AttachmentsSendingProps }): ReactElement => {
 	const downloadAttachments = useDownloadAttachment();
 	const DownloadAttachment = (url: string): void => {
 		downloadAttachments.mutate(url);
@@ -36,8 +32,7 @@ const SingleAttachmentView = ({
 					src={
 						img?.file
 							? getPreviewByType(img.file).preview
-							: getPreviewByTypeUrl(img?.url as string, img?.type)
-									.preview
+							: getPreviewByTypeUrl(img?.url as string, img?.type).preview
 					}
 					alt="upload-picture"
 					width={38}
@@ -47,14 +42,10 @@ const SingleAttachmentView = ({
 			</div>
 			<div className="flex w-64 flex-1 flex-col">
 				<p className="text-sm text-title">
-					{img?.name.length > MAX_LEN
-						? `${img?.name.slice(0, MAX_LEN)}...`
-						: img?.name}
+					{img?.name.length > MAX_LEN ? `${img?.name.slice(0, MAX_LEN)}...` : img?.name}
 				</p>
 				<p className="flex items-center text-sm text-body">
-					{img?.file
-						? `${img.progress ?? 0}%`
-						: dayJs(img?.createdAt).format("DD mmm, YYYY")}{" "}
+					{img?.file ? `${img.progress ?? 0}%` : dayJs(img?.createdAt).format("DD mmm, YYYY")}{" "}
 					<Dot size={20} /> <span>{img?.size}</span>
 				</p>
 			</div>
@@ -83,12 +74,8 @@ export const RenderAttachmentViewer = ({
 	align?: "left" | "right";
 }): ReactElement => {
 	return (
-		<div
-			className={`flex w-fit flex-col gap-2 ${align === "left" ? "ml-auto" : "mr-auto"}`}
-		>
-			{images?.map((img, i) => (
-				<SingleAttachmentView key={i} img={img} />
-			))}
+		<div className={`flex w-fit flex-col gap-2 ${align === "left" ? "ml-auto" : "mr-auto"}`}>
+			{images?.map((img, i) => <SingleAttachmentView key={i} img={img} />)}
 		</div>
 	);
 };

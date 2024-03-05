@@ -31,13 +31,7 @@ interface SignupParams {
 	referral?: string;
 }
 
-async function postSignUp({
-	email,
-	password,
-	firstName,
-	lastName,
-	referral,
-}: SignupParams): Promise<SignupResponse> {
+async function postSignUp({ email, password, firstName, lastName, referral }: SignupParams): Promise<SignupResponse> {
 	const res = await axios.post("/auth/create-account", {
 		email,
 		password,
@@ -48,11 +42,7 @@ async function postSignUp({
 	return res.data.data as SignupResponse;
 }
 
-export function useSignUp(): UseMutationResult<
-	SignupResponse,
-	ApiError,
-	SignupParams
-> {
+export function useSignUp(): UseMutationResult<SignupResponse, ApiError, SignupParams> {
 	return useMutation({
 		mutationFn: postSignUp,
 		mutationKey: ["signup"],
@@ -74,10 +64,7 @@ interface VerifyEmailParams {
 	token: string;
 }
 
-async function postVerifyEmail({
-	otp,
-	token,
-}: VerifyEmailParams): Promise<VerifyEmailResponse> {
+async function postVerifyEmail({ otp, token }: VerifyEmailParams): Promise<VerifyEmailResponse> {
 	const res = await axios.post("/auth/account/verify", {
 		token: otp,
 		tempToken: token,
@@ -85,11 +72,7 @@ async function postVerifyEmail({
 	return res.data.data as VerifyEmailResponse;
 }
 
-export function useVerifyEmail(): UseMutationResult<
-	VerifyEmailResponse,
-	ApiError,
-	VerifyEmailParams
-> {
+export function useVerifyEmail(): UseMutationResult<VerifyEmailResponse, ApiError, VerifyEmailParams> {
 	return useMutation({
 		mutationFn: postVerifyEmail,
 		mutationKey: ["verify-email"],
@@ -110,18 +93,12 @@ interface ResendOTPParams {
 	email: string;
 }
 
-async function postResendOTP({
-	email,
-}: ResendOTPParams): Promise<ResendOTPResponse> {
+async function postResendOTP({ email }: ResendOTPParams): Promise<ResendOTPResponse> {
 	const res = await axios.post("/auth/verify/resend", { email });
 	return res.data.data as ResendOTPResponse;
 }
 
-export function useResendOTP(): UseMutationResult<
-	ResendOTPResponse,
-	ApiError,
-	ResendOTPParams
-> {
+export function useResendOTP(): UseMutationResult<ResendOTPResponse, ApiError, ResendOTPParams> {
 	return useMutation({
 		mutationFn: postResendOTP,
 		mutationKey: ["resend-otp"],
@@ -158,27 +135,17 @@ interface Login2FAParams {
 	tempToken: string;
 }
 
-async function postLogin({
-	email,
-	password,
-}: LoginParams): Promise<LoginResponse> {
+async function postLogin({ email, password }: LoginParams): Promise<LoginResponse> {
 	const res = await axios.post("/auth/login", { email, password });
 	return res.data.data as LoginResponse;
 }
 
-async function postLogin2FA({
-	code,
-	tempToken,
-}: Login2FAParams): Promise<LoginResponse> {
+async function postLogin2FA({ code, tempToken }: Login2FAParams): Promise<LoginResponse> {
 	const res = await axios.post("/auth/login/2fa", { code, tempToken });
 	return res.data.data as LoginResponse;
 }
 
-export function useLogin(): UseMutationResult<
-	LoginResponse,
-	ApiError,
-	LoginParams
-> {
+export function useLogin(): UseMutationResult<LoginResponse, ApiError, LoginParams> {
 	const { setUser } = useUserState();
 	const { setWallet } = useWalletState();
 	return useMutation({
@@ -198,11 +165,7 @@ export function useLogin(): UseMutationResult<
 	});
 }
 
-export function useLoginOTP(): UseMutationResult<
-	LoginResponse,
-	ApiError,
-	Login2FAParams
-> {
+export function useLoginOTP(): UseMutationResult<LoginResponse, ApiError, Login2FAParams> {
 	const { setUser } = useUserState();
 	return useMutation({
 		mutationFn: postLogin2FA,
@@ -230,18 +193,12 @@ interface ResetPasswordResponse {
 	};
 }
 
-async function postRequestPasswordReset({
-	email,
-}: ResetPasswordParams): Promise<ResetPasswordResponse> {
+async function postRequestPasswordReset({ email }: ResetPasswordParams): Promise<ResetPasswordResponse> {
 	const res = await axios.post("/auth/password/reset", { email });
 	return res.data.data as ResetPasswordResponse;
 }
 
-export function useRequestPasswordReset(): UseMutationResult<
-	ResetPasswordResponse,
-	ApiError,
-	ResetPasswordParams
-> {
+export function useRequestPasswordReset(): UseMutationResult<ResetPasswordResponse, ApiError, ResetPasswordParams> {
 	return useMutation({
 		mutationFn: postRequestPasswordReset,
 		mutationKey: ["request-reset-password"],

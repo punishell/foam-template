@@ -100,12 +100,7 @@ export interface UserProfile {
 	};
 }
 
-export type JobStatus =
-	| "pending"
-	| "ongoing"
-	| "completed"
-	| "waiting"
-	| "cancelled";
+export type JobStatus = "pending" | "ongoing" | "completed" | "waiting" | "cancelled";
 
 interface Rating {
 	_id: string;
@@ -156,33 +151,21 @@ export interface ReviewChangeRequest {
 	status: "pending" | "completed";
 }
 
-type Collection =
-	| JobDeliverable
-	| JobApplicant
-	| JobCancellation
-	| ReviewChangeRequest;
+type Collection = JobDeliverable | JobApplicant | JobCancellation | ReviewChangeRequest;
 
-export const isJobDeliverable = (
-	collection: Collection,
-): collection is JobDeliverable => {
+export const isJobDeliverable = (collection: Collection): collection is JobDeliverable => {
 	return collection.type === "deliverable";
 };
 
-export const isJobApplicant = (
-	collection: Collection,
-): collection is JobApplicant => {
+export const isJobApplicant = (collection: Collection): collection is JobApplicant => {
 	return collection.type === "application";
 };
 
-export const isJobCancellation = (
-	collection: Collection,
-): collection is JobCancellation => {
+export const isJobCancellation = (collection: Collection): collection is JobCancellation => {
 	return collection.type === "cancellation";
 };
 
-export const isReviewChangeRequest = (
-	collection: Collection,
-): collection is ReviewChangeRequest => {
+export const isReviewChangeRequest = (collection: Collection): collection is ReviewChangeRequest => {
 	return collection.type === "review_change_request";
 };
 

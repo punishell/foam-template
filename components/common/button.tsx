@@ -18,15 +18,12 @@ const buttonVariants = cva(
 				default:
 					"bg-ink-darkest text-white hover:bg-opacity-60 dark:bg-ink-darkest dark:text-white dark:hover:bg-opacity-60",
 				destructive: "bg-red-100 text-red-500",
-				outline:
-					"border border-white text-white hover:text-white dark:border-white dark:hover:text-white",
-				secondary:
-					"bg-[#ECFCE5] text-primary hover:bg-[#ECFCE5]/80 border-primary border",
+				outline: "border border-white text-white hover:text-white dark:border-white dark:hover:text-white",
+				secondary: "bg-[#ECFCE5] text-primary hover:bg-[#ECFCE5]/80 border-primary border",
 				ghost: "hover:bg-slate-100 hover:text-slate-900 dark:hover:bg-slate-800 dark:hover:text-slate-50",
 				link: "text-slate-900 underline-offset-4 hover:underline dark:text-slate-50",
 				white: "bg-white text-slate-900 hover:bg-opacity-60 dark:bg-white dark:text-slate-900 dark:hover:bg-opacity-60",
-				primary:
-					"bg-primary-gradient text-white hover:bg-opacity-60 dark:hover:bg-opacity-60",
+				primary: "bg-primary-gradient text-white hover:bg-opacity-60 dark:hover:bg-opacity-60",
 			},
 			size: {
 				default: "h-10 px-5 py-3",
@@ -51,17 +48,7 @@ export interface ButtonProps
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-	(
-		{
-			className,
-			variant,
-			size,
-			asChild = false,
-			fullWidth = false,
-			...props
-		},
-		ref,
-	) => {
+	({ className, variant, size, asChild = false, fullWidth = false, ...props }, ref) => {
 		const Comp = asChild ? Slot : "button";
 		return (
 			<Comp

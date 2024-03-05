@@ -32,10 +32,7 @@ const otpSchema = z.object({
 
 type EmailOtpFormValues = z.infer<typeof otpSchema>;
 
-export const VerifyActivateOTP = ({
-	goToNextSlide,
-	goToPreviousSlide,
-}: SlideItemProps): React.JSX.Element => {
+export const VerifyActivateOTP = ({ goToNextSlide, goToPreviousSlide }: SlideItemProps): React.JSX.Element => {
 	const [countdown, setCountdown] = useState(0);
 	const [isResendDisabled, setIsResendDisabled] = useState(true);
 	const { email } = useUserState();
@@ -83,36 +80,22 @@ export const VerifyActivateOTP = ({
 		<div className="flex w-full shrink-0 flex-col items-center gap-8">
 			<div className="flex w-full flex-col gap-2 text-center">
 				<div className="flex w-full flex-row justify-between">
-					<ChevronLeft
-						className="cursor-pointer"
-						onClick={goToPreviousSlide}
-					/>
+					<ChevronLeft className="cursor-pointer" onClick={goToPreviousSlide} />
 					<Text.h3 size="xs">Email Authentication</Text.h3>
-					<XCircleIcon
-						className="my-auto cursor-pointer text-body"
-						onClick={closeModal}
-					/>
+					<XCircleIcon className="my-auto cursor-pointer text-body" onClick={closeModal} />
 				</div>
 				<Text.p size="base">
-					Enter the 6 digit code sent to{" "}
-					<span className="text-success">{email}</span>
+					Enter the 6 digit code sent to <span className="text-success">{email}</span>
 				</Text.p>
 			</div>
 
-			<form
-				className="flex w-full flex-col items-center gap-8"
-				onSubmit={handleSubmit(onSubmit)}
-			>
+			<form className="flex w-full flex-col items-center gap-8" onSubmit={handleSubmit(onSubmit)}>
 				<div className="relative">
 					<Controller
 						name="otp"
 						control={control}
 						render={({ field: { onChange, value } }) => (
-							<OtpInput
-								value={value}
-								onChange={onChange}
-								numInputs={6}
-							/>
+							<OtpInput value={value} onChange={onChange} numInputs={6} />
 						)}
 					/>
 					<div className="my-2 flex justify-center text-center">

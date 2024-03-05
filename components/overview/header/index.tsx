@@ -20,11 +20,7 @@ import { hasFiveStarReview } from "@/lib/types";
 export const DesktopOverviewHeader = (): ReactElement => {
 	const [referOpen, _setReferOpen] = useState(false);
 	const { _id, firstName } = useUserState();
-	const {
-		data: reviewData,
-		refetch,
-		isLoading,
-	} = useGetTalentReviewById(_id, "1", "100");
+	const { data: reviewData, refetch, isLoading } = useGetTalentReviewById(_id, "1", "100");
 
 	// checking refer availability
 	useEffect(() => {
@@ -46,9 +42,7 @@ export const DesktopOverviewHeader = (): ReactElement => {
 					_setReferOpen(e);
 				}}
 			/>
-			<div className="text-3xl font-bold text-title">
-				Hello {firstName}!
-			</div>
+			<div className="text-3xl font-bold text-title">Hello {firstName}!</div>
 
 			<div className="flex items-center gap-7">
 				{hasFiveStar && (

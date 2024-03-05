@@ -18,10 +18,7 @@ interface StepIndicatorProps {
 	children: React.ReactNode;
 }
 
-export const StepIndicator = ({
-	children,
-	isComplete,
-}: StepIndicatorProps): ReactElement | null => {
+export const StepIndicator = ({ children, isComplete }: StepIndicatorProps): ReactElement | null => {
 	return (
 		<label
 			className={cn(

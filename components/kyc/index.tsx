@@ -47,8 +47,7 @@ const Kyc = (): JSX.Element => {
 			</h3>
 			<div className="flex w-full flex-col sm:flex-row gap-4 sm:gap-0 items-start sm:items-center justify-between rounded-[16px] border border-[#7DDE86] bg-white p-4">
 				<p className="text-base font-normal text-[#6c757d]">
-					KYC is required before performing job creation and wallet
-					withdrawals.
+					KYC is required before performing job creation and wallet withdrawals.
 				</p>
 				<Button
 					variant="secondary"

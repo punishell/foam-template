@@ -51,10 +51,7 @@ export default function MessagesLayout({ children }: Props): ReactElement {
               </span>
             </Button>
           </div> */}
-					<ChatList
-						conversations={conversations}
-						loading={loadingChats}
-					/>
+					<ChatList conversations={conversations} loading={loadingChats} />
 				</div>
 
 				<div className="flex h-full w-full grow flex-col rounded-lg rounded-l-none border border-l-0 border-line bg-white p-6 pt-3">

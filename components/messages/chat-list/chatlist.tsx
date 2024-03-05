@@ -19,10 +19,7 @@ interface ChatListProps {
 	loading: boolean;
 }
 
-export const ChatList = ({
-	conversations,
-	loading,
-}: ChatListProps): ReactElement => {
+export const ChatList = ({ conversations, loading }: ChatListProps): ReactElement => {
 	return (
 		<div className="flex w-full grow flex-col divide-line overflow-y-auto h-full border-t">
 			{loading && (

@@ -57,9 +57,7 @@ const SettingsForm = (): ReactElement => {
 	const validatingErr = useMemo(
 		() => ({
 			isMinLength: newPassword?.length >= 8 || false,
-			checkLowerUpper:
-				(/[A-Z]/.test(newPassword) && /[a-z]/.test(newPassword)) ||
-				false,
+			checkLowerUpper: (/[A-Z]/.test(newPassword) && /[a-z]/.test(newPassword)) || false,
 			checkNumber: !(newPassword?.match(/\d+/g) == null),
 			specialCharacter: spChars.test(newPassword) || false,
 			confirmedPassword:
@@ -94,9 +92,7 @@ const SettingsForm = (): ReactElement => {
 					label="Current Password"
 				/>
 				{form.formState.errors.currentPassword?.message && (
-					<span className="text-sm text-red-500">
-						{form.formState.errors.currentPassword?.message}
-					</span>
+					<span className="text-sm text-red-500">{form.formState.errors.currentPassword?.message}</span>
 				)}
 				<Input
 					{...form.register("newPassword")}
@@ -107,18 +103,12 @@ const SettingsForm = (): ReactElement => {
 				/>
 				<p className="text-sm text-body">Password must contain</p>
 				<div className="flex flex-col gap-4 p-4 text-xs text-body">
-					<PasswordCriteria
-						isValidated={validatingErr.isMinLength}
-						criteria="At least 8 characters"
-					/>
+					<PasswordCriteria isValidated={validatingErr.isMinLength} criteria="At least 8 characters" />
 					<PasswordCriteria
 						isValidated={validatingErr.checkLowerUpper}
 						criteria="Upper and lower case characters"
 					/>
-					<PasswordCriteria
-						isValidated={validatingErr.checkNumber}
-						criteria="1 or more numbers"
-					/>
+					<PasswordCriteria isValidated={validatingErr.checkNumber} criteria="1 or more numbers" />
 					<PasswordCriteria
 						isValidated={validatingErr.specialCharacter}
 						criteria="1 or more special characters"
@@ -136,9 +126,7 @@ const SettingsForm = (): ReactElement => {
 					label="Confirm New Password"
 				/>
 				{form.formState.errors.confirmNewPassword?.message && (
-					<span className="text-sm text-red-500">
-						{form.formState.errors.confirmNewPassword?.message}
-					</span>
+					<span className="text-sm text-red-500">{form.formState.errors.confirmNewPassword?.message}</span>
 				)}
 				<Button
 					title="Save Changes"
@@ -146,9 +134,7 @@ const SettingsForm = (): ReactElement => {
 					size="sm"
 					type="submit"
 					className="min-w-[136px]"
-					disabled={
-						!form.formState.isValid || changePassword.isLoading
-					}
+					disabled={!form.formState.isValid || changePassword.isLoading}
 				>
 					{changePassword.isLoading ? <Spinner /> : "Save Changes"}
 				</Button>

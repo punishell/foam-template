@@ -143,15 +143,8 @@ export const DepositUSDC = ({
 				}}
 			>
 				<div className="flex items-center justify-center gap-2">
-					<span>
-						{" "}
-						{confirmPayment.isLoading
-							? "Confirming Payment"
-							: "Make Payment"}
-					</span>{" "}
-					<span>
-						{(isLoading || confirmPayment.isLoading) && <Spinner />}
-					</span>
+					<span> {confirmPayment.isLoading ? "Confirming Payment" : "Make Payment"}</span>{" "}
+					<span>{(isLoading || confirmPayment.isLoading) && <Spinner />}</span>
 				</div>
 			</Button>
 		</div>

@@ -8,20 +8,12 @@ import { type FC } from "react";
 import { Button } from "pakt-ui";
 import { useRouter } from "next/navigation";
 
-export const JobCancellationRequested: FC<{ closeModal: () => void }> = ({
-	closeModal,
-}) => {
+export const JobCancellationRequested: FC<{ closeModal: () => void }> = ({ closeModal }) => {
 	const router = useRouter();
 	return (
 		<div className="flex h-full items-center justify-center px-4">
 			<div className="flex flex-col items-center gap-9">
-				<svg
-					xmlns="http://www.w3.org/2000/svg"
-					width="227"
-					height="233"
-					fill="none"
-					viewBox="0 0 227 233"
-				>
+				<svg xmlns="http://www.w3.org/2000/svg" width="227" height="233" fill="none" viewBox="0 0 227 233">
 					<g clipPath="url(#clip0_6827_46303)">
 						<mask
 							id="mask0_6827_46303"
@@ -32,10 +24,7 @@ export const JobCancellationRequested: FC<{ closeModal: () => void }> = ({
 							y="0"
 							maskUnits="userSpaceOnUse"
 						>
-							<path
-								fill="#fff"
-								d="M226.75.97H.25v231.06h226.5V.97z"
-							/>
+							<path fill="#fff" d="M226.75.97H.25v231.06h226.5V.97z" />
 						</mask>
 						<g mask="url(#mask0_6827_46303)">
 							<path
@@ -70,17 +59,11 @@ export const JobCancellationRequested: FC<{ closeModal: () => void }> = ({
 					</g>
 					<defs>
 						<clipPath id="clip0_6827_46303">
-							<path
-								fill="#fff"
-								d="M0 0H226.5V231.06H0z"
-								transform="translate(.25 .97)"
-							/>
+							<path fill="#fff" d="M0 0H226.5V231.06H0z" transform="translate(.25 .97)" />
 						</clipPath>
 					</defs>
 				</svg>
-				<p className="text-lg text-body">
-					A cancel request has been sent to the client.
-				</p>
+				<p className="text-lg text-body">A cancel request has been sent to the client.</p>
 				<div className="w-full max-w-[200px]">
 					<Button
 						fullWidth

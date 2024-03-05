@@ -93,21 +93,13 @@ const CreateJobForm = ({ form }: CreateJobFormProps): ReactElement => {
 				<JobDescription form={form} />
 				<JobDeliverables form={form} />
 				<div className="flex flex-col gap-4">
-					<h3 className="text-lg font-medium text-black">
-						Classifications
-					</h3>
+					<h3 className="text-lg font-medium text-black">Classifications</h3>
 					<div className="flex items-center gap-4">
 						<JobCategory form={form} />
 						<JobVisibility form={form} />
 
 						<div className="ml-auto mt-auto w-full max-w-[250px] rounded-xl border border-gray-300">
-							<Button
-								disabled={
-									createJob.isLoading ||
-									!form.formState.isValid
-								}
-								fullWidth
-							>
+							<Button disabled={createJob.isLoading || !form.formState.isValid} fullWidth>
 								{createJob.isLoading ? (
 									<Spinner />
 								) : form.watch("visibility") === "private" ? (

@@ -1,16 +1,6 @@
-export const GallerySvg = ({
-	size = 74,
-}: {
-	size?: number | undefined;
-}): JSX.Element => {
+export const GallerySvg = ({ size = 74 }: { size?: number | undefined }): JSX.Element => {
 	return (
-		<svg
-			xmlns="http://www.w3.org/2000/svg"
-			width={size}
-			height={size}
-			viewBox="0 0 74 74"
-			fill="none"
-		>
+		<svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 74 74" fill="none">
 			<path
 				fillRule="evenodd"
 				clipRule="evenodd"

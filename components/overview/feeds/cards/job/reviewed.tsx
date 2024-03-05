@@ -70,8 +70,8 @@ export const JobReviewedFeed = ({
 			<div className="flex w-full flex-col gap-4 py-4">
 				<div className="flex justify-between">
 					<h3 className="w-[90%] items-center text-xl text-title">
-						{isCreator ? talent.name : creator.name} has reviewed
-						your work on <span className="font-bold">{title}</span>
+						{isCreator ? talent.name : creator.name} has reviewed your work on{" "}
+						<span className="font-bold">{title}</span>
 					</h3>
 					{close && (
 						<X
@@ -85,9 +85,7 @@ export const JobReviewedFeed = ({
 				</div>
 
 				<p className="text-body">
-					{description.length > MAX_LEN
-						? `${description.slice(0, MAX_LEN)}...`
-						: description}
+					{description.length > MAX_LEN ? `${description.slice(0, MAX_LEN)}...` : description}
 				</p>
 
 				<div className="mt-auto flex items-center justify-between">
@@ -107,31 +105,13 @@ export const JobReviewedFeed = ({
 							// @ts-expect-error -- Rating' cannot be used as a JSX component. Its type 'typeof Rating' is not a valid JSX element type.ts(2786)
 							<Rating
 								initialRating={rating}
-								fullSymbol={
-									<Star
-										fill="#15D28E"
-										color="#15D28E"
-										className="mt-[4px]"
-									/>
-								}
-								emptySymbol={
-									<Star
-										fill="transparent"
-										color="#15D28E"
-										className="mt-[4px]"
-									/>
-								}
+								fullSymbol={<Star fill="#15D28E" color="#15D28E" className="mt-[4px]" />}
+								emptySymbol={<Star fill="transparent" color="#15D28E" className="mt-[4px]" />}
 								readonly
 							/>
 						)}
 					</div>
-					<RenderBookMark
-						size={20}
-						isBookmarked={bookmarked}
-						type="feed"
-						id={id}
-						bookmarkId={bookmarkId}
-					/>
+					<RenderBookMark size={20} isBookmarked={bookmarked} type="feed" id={id} bookmarkId={bookmarkId} />
 				</div>
 			</div>
 

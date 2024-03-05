@@ -31,13 +31,7 @@ interface WalletDepositProps {
 	contractAddress?: string;
 }
 
-export const DepositAvax = ({
-	depositAddress,
-	amount,
-	jobId,
-	job,
-	chainId,
-}: WalletDepositProps): ReactElement => {
+export const DepositAvax = ({ depositAddress, amount, jobId, job, chainId }: WalletDepositProps): ReactElement => {
 	const router = useRouter();
 	const searchParams = useSearchParams();
 	const confirmPayment = useConfirmJobPayment();
@@ -87,19 +81,14 @@ export const DepositAvax = ({
 		<div>
 			<Button
 				// eslint-disable-next-line @typescript-eslint/strict-boolean-expressions -- !sendTransaction is not undefined
-				disabled={
-					!sendTransaction || isLoading || confirmPayment.isLoading
-				}
+				disabled={!sendTransaction || isLoading || confirmPayment.isLoading}
 				onClick={() => {
 					sendTransaction?.();
 				}}
 				fullWidth
 			>
 				<div className="flex items-center justify-center gap-2">
-					<span> Make Payment</span>{" "}
-					<span>
-						{(isLoading || confirmPayment.isLoading) && <Spinner />}
-					</span>
+					<span> Make Payment</span> <span>{(isLoading || confirmPayment.isLoading) && <Spinner />}</span>
 				</div>
 			</Button>
 		</div>

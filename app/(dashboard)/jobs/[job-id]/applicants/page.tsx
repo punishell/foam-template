@@ -52,13 +52,11 @@ export default function JobApplications({ params }: Props): React.JSX.Element {
 	const [skillFilters, setSkillFilters] = React.useState<string[]>([]);
 	const [sortBy, setSortBy] = React.useState<"score" | "bid">("score");
 	const [bidSort, setBidSort] = React.useState<SortBy>("highest-to-lowest");
-	const [scoreSort, setScoreSort] =
-		React.useState<SortBy>("highest-to-lowest");
+	const [scoreSort, setScoreSort] = React.useState<SortBy>("highest-to-lowest");
 	const [currentPage, setCurrentPage] = React.useState(1);
 
 	if (jobData.isError) return <PageError className="absolute inset-0" />;
-	if (jobData.isLoading)
-		return <PageLoading className="absolute inset-0" color="#007C5B" />;
+	if (jobData.isLoading) return <PageLoading className="absolute inset-0" color="#007C5B" />;
 
 	const { data: job } = jobData;
 	const { data: account } = accountData;
@@ -94,18 +92,8 @@ export default function JobApplications({ params }: Props): React.JSX.Element {
 				.some((skill) => skillFilters.includes(skill.toLowerCase()));
 		})
 		.sort((a, b) => {
-			const bidSortResult = sortFunction(
-				a,
-				b,
-				(value) => value.paymentFee,
-				bidSort,
-			);
-			const scoreSortResult = sortFunction(
-				a,
-				b,
-				(value) => value.creator.score,
-				scoreSort,
-			);
+			const bidSortResult = sortFunction(a, b, (value) => value.paymentFee, bidSort);
+			const scoreSortResult = sortFunction(a, b, (value) => value.creator.score, scoreSort);
 
 			if (sortBy === "bid") return bidSortResult;
 			if (sortBy === "score") return scoreSortResult;
@@ -115,11 +103,7 @@ export default function JobApplications({ params }: Props): React.JSX.Element {
 	const itemsPerPage = 3;
 	const totalPages = Math.ceil(filteredApplicants.length / itemsPerPage);
 
-	const paginatedApplicants = paginate(
-		filteredApplicants,
-		itemsPerPage,
-		currentPage,
-	);
+	const paginatedApplicants = paginate(filteredApplicants, itemsPerPage, currentPage);
 
 	const skills = job.tagsData.join(",");
 
@@ -127,12 +111,8 @@ export default function JobApplications({ params }: Props): React.JSX.Element {
 		<div className="flex h-full flex-col gap-6">
 			<div className="flex justify-between gap-4 rounded-xl bg-primary-gradient p-4 py-6">
 				<div className="flex max-w-3xl grow flex-col gap-3">
-					<h2 className="max-w-[750px] text-3xl font-bold text-white">
-						{job.name}
-					</h2>
-					<p className="max-w-[750px] text-white">
-						{job.description}
-					</p>
+					<h2 className="max-w-[750px] text-3xl font-bold text-white">{job.name}</h2>
+					<p className="max-w-[750px] text-white">{job.description}</p>
 					<div className="mt-auto flex items-center gap-4">
 						<span className="flex items-center gap-2 rounded-full bg-[#C9F0FF] px-3 py-1 text-[#0065D0]">
 							<Tag size={20} />
@@ -141,13 +121,7 @@ export default function JobApplications({ params }: Props): React.JSX.Element {
 
 						<span className="flex items-center gap-2 rounded-full bg-[#ECFCE5] px-3 py-1 text-[#198155]">
 							<Calendar size={20} />
-							<span>
-								Due{" "}
-								{format(
-									new Date(job.deliveryDate),
-									"MMM dd, yyyy",
-								)}
-							</span>
+							<span>Due {format(new Date(job.deliveryDate), "MMM dd, yyyy")}</span>
 						</span>
 					</div>
 				</div>
@@ -188,28 +162,16 @@ export default function JobApplications({ params }: Props): React.JSX.Element {
 										key={tag}
 										onClick={() => {
 											if (skillFilters.includes(tag)) {
-												setSkillFilters(
-													skillFilters.filter(
-														(skill) =>
-															skill !== tag,
-													),
-												);
+												setSkillFilters(skillFilters.filter((skill) => skill !== tag));
 											} else {
-												setSkillFilters([
-													...skillFilters,
-													tag,
-												]);
+												setSkillFilters([...skillFilters, tag]);
 											}
 										}}
 										className="flex w-full items-center justify-between gap-2 rounded-lg border bg-gray-50 px-3 py-3 duration-300 hover:border-[#7DDE86]"
 										type="button"
 									>
-										<span className="capitalize text-body">
-											{tag}
-										</span>
-										<Checkbox
-											checked={skillFilters.includes(tag)}
-										/>
+										<span className="capitalize text-body">{tag}</span>
+										<Checkbox checked={skillFilters.includes(tag)} />
 									</button>
 								))}
 						</div>
@@ -217,18 +179,13 @@ export default function JobApplications({ params }: Props): React.JSX.Element {
 				</div>
 
 				{applicants.length === 0 && (
-					<PageEmpty
-						className="h-[60vh] rounded-2xl"
-						label="No applicants yet"
-					>
+					<PageEmpty className="h-[60vh] rounded-2xl" label="No applicants yet">
 						<div className="mt-4 w-full">
 							<Button
 								className="w-full"
 								fullWidth
 								onClick={() => {
-									router.push(
-										`/talents${skills ? `?skills=${skills}` : ""}`,
-									);
+									router.push(`/talents${skills ? `?skills=${skills}` : ""}`);
 								}}
 							>
 								Find Talent

@@ -22,10 +22,7 @@ import { NumericInput } from "@/components/common/numeric-input";
 
 const jobApplicationSchema = z.object({
 	message: z.string().nonempty("Message is required"),
-	amount: z.coerce
-		.number()
-		.min(100, { message: "Amount must be at least $100" })
-		.nonnegative(),
+	amount: z.coerce.number().min(100, { message: "Amount must be at least $100" }).nonnegative(),
 });
 
 type JobApplicationFormValues = z.infer<typeof jobApplicationSchema>;
@@ -35,10 +32,7 @@ interface TalentJobApplyModalProps {
 	jobCreator: string;
 }
 
-export const TalentJobApplyModal: FC<TalentJobApplyModalProps> = ({
-	jobId,
-	jobCreator,
-}) => {
+export const TalentJobApplyModal: FC<TalentJobApplyModalProps> = ({ jobId, jobCreator }) => {
 	const jobQuery = useGetJobById({ jobId });
 	const applyToOpenJob = useApplyToOpenJob({ jobCreator, jobId });
 	const [showSuccessMessage, setShowSuccessMessage] = useState(false);
@@ -50,10 +44,7 @@ export const TalentJobApplyModal: FC<TalentJobApplyModalProps> = ({
 		},
 	});
 
-	const onSubmit: SubmitHandler<JobApplicationFormValues> = ({
-		amount,
-		message = "",
-	}) => {
+	const onSubmit: SubmitHandler<JobApplicationFormValues> = ({ amount, message = "" }) => {
 		applyToOpenJob.mutate(
 			{
 				jobId,
@@ -78,10 +69,7 @@ export const TalentJobApplyModal: FC<TalentJobApplyModalProps> = ({
 					</div>
 
 					<h2 className="text-2xl font-medium">Application Sent</h2>
-					<span className="text-body">
-						You will get a notification if the client sends you a
-						message
-					</span>
+					<span className="text-body">You will get a notification if the client sends you a message</span>
 				</div>
 			</div>
 		);
@@ -92,10 +80,7 @@ export const TalentJobApplyModal: FC<TalentJobApplyModalProps> = ({
 				<h2 className="text-2xl font-medium">Propose Price</h2>
 			</div>
 
-			<form
-				className="flex flex-col items-center gap-6"
-				onSubmit={form.handleSubmit(onSubmit)}
-			>
+			<form className="flex flex-col items-center gap-6" onSubmit={form.handleSubmit(onSubmit)}>
 				<div className="flex w-full flex-col gap-2">
 					<label htmlFor="due" className="text-title">
 						Enter Bid
@@ -113,9 +98,7 @@ export const TalentJobApplyModal: FC<TalentJobApplyModalProps> = ({
 					</div>
 
 					{form.formState.errors.amount != null && (
-						<span className="text-sm text-red-500">
-							{form.formState.errors.amount.message}
-						</span>
+						<span className="text-sm text-red-500">{form.formState.errors.amount.message}</span>
 					)}
 				</div>
 
@@ -136,19 +119,11 @@ export const TalentJobApplyModal: FC<TalentJobApplyModalProps> = ({
 					</div>
 
 					{form.formState.errors.message != null && (
-						<span className="text-sm text-red-500">
-							{form.formState.errors.message.message}
-						</span>
+						<span className="text-sm text-red-500">{form.formState.errors.message.message}</span>
 					)}
 				</div>
 
-				<Button fullWidth>
-					{applyToOpenJob.isLoading ? (
-						<Spinner />
-					) : (
-						"Send Application"
-					)}
-				</Button>
+				<Button fullWidth>{applyToOpenJob.isLoading ? <Spinner /> : "Send Application"}</Button>
 			</form>
 		</div>
 	);
