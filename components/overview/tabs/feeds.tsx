@@ -19,6 +19,7 @@ import { PageEmpty } from "../../common/page-empty";
 import { PageLoading } from "../../common/page-loading";
 import { PageError } from "../../common/page-error";
 import { FEED_TYPES } from "@/lib/utils";
+import { useHeaderScroll } from "@/lib/store";
 
 export const Feeds = (): ReactElement => {
 	const { _id: loggedInUser } = useUserState();
@@ -28,9 +29,6 @@ export const Feeds = (): ReactElement => {
 	const [prevPage, setPrevPage] = useState(0);
 	const [currentData, setCurrentData] = useState([]);
 	const [observe, setObserve] = useState(false);
-
-	const [isScrolled, setIsScrolled] = useState(false);
-	const containerRef = useRef(null);
 
 	const {
 		data: timelineData,
@@ -50,6 +48,7 @@ export const Feeds = (): ReactElement => {
 		},
 	});
 
+	const { setScrollPosition } = useHeaderScroll();
 	const scrollParentRef = useRef<HTMLDivElement | null>(null);
 	const observerTarget = useRef<HTMLDivElement | null>(null);
 
@@ -143,47 +142,37 @@ export const Feeds = (): ReactElement => {
 	);
 
 	const onScroll = (event: Event): void => {
-		console.log("window scrolled!", event);
+		const target = event.target as HTMLDivElement;
+		// Update the scroll position state
+		setScrollPosition(target.scrollTop);
 	};
 
-	// example with window based event
 	useEventListener("scroll", onScroll, scrollParentRef);
-	console.log("isScrolled", isScrolled);
-
-	if (isLoading && timelineFeeds.length < 1)
-		return (
-			<PageLoading
-				className="h-[65vh] sm:rounded-2xl border border-line"
-				color="#007C5B"
-			/>
-		);
-	if (isError)
-		return (
-			<PageError className="h-[65vh] sm:rounded-2xl border border-line" />
-		);
-	if (timelineFeeds.length === 0)
-		return (
-			<PageEmpty className="h-[65vh] sm:rounded-2xl border border-line" />
-		);
 
 	return (
 		<div
-			id="timeline-content"
 			ref={scrollParentRef}
-			className="scrollbar-hide h-[calc(100vh-200px)] sm:h-[65vh] w-full rounded-2xl sm:border sm:border-line overflow-y-scroll bg-white sm:p-4 [&:last]:mb-0 [&>*]:mb-5"
+			className="scrollbar-hide min-h-[64vh] max-h-[calc(100vh-200px)] sm:h-[64vh] w-full sm:rounded-2xl sm:border sm:border-line overflow-auto bg-white sm:p-4 [&:last]:mb-0 [&>*]:mb-0 sm:[&>*]:mb-5"
 		>
-			<div className="[&>*]:mb-0 sm:[&>*]:mb-5 ">
-				{timelineFeeds}
-				{isFetchingNextPage && (
-					<div className="mx-auto flex w-full flex-row items-center justify-center text-center">
-						<Loader
-							size={25}
-							className="animate-spin text-center text-black"
-						/>
-					</div>
-				)}
-				<span ref={observerTarget} />
-			</div>
+			{isLoading && timelineFeeds.length < 1 ? (
+				<PageLoading className="h-[64vh]" color="#007C5B" />
+			) : isError ? (
+				<PageError className="h-[64vh]" />
+			) : timelineFeeds.length === 0 ? (
+				<PageEmpty className="h-[64vh]" />
+			) : (
+				timelineFeeds
+			)}
+
+			{isFetchingNextPage && (
+				<div className="mx-auto flex w-full flex-row items-center justify-center text-center">
+					<Loader
+						size={25}
+						className="animate-spin text-center text-black"
+					/>
+				</div>
+			)}
+			<span ref={observerTarget} />
 		</div>
 	);
 };

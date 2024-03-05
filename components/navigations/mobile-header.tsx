@@ -4,7 +4,7 @@
 /*                             External Dependency                            */
 /* -------------------------------------------------------------------------- */
 
-import { type ReactElement, useEffect, useState } from "react";
+import { type ReactElement, useState } from "react";
 import Image from "next/image";
 
 /* -------------------------------------------------------------------------- */
@@ -19,11 +19,13 @@ import { useUserState } from "@/lib/store/account";
 // import { hasFiveStarReview } from "@/lib/types";
 import { AfroProfile } from "@/components/common/afro-profile";
 import { Button } from "../common/button";
+import { useHeaderScroll } from "@/lib/store";
 
 export const MobileHeader = (): ReactElement => {
 	const [referOpen, _setReferOpen] = useState(false);
 	const [expand, setExpand] = useState(false);
 	const { profileCompleteness, profileImage } = useUserState();
+	const { scrollPosition } = useHeaderScroll();
 	// const {
 	// 	data: reviewData,
 	// 	refetch,
@@ -40,9 +42,9 @@ export const MobileHeader = (): ReactElement => {
 	const profileCompleted = value > 70;
 
 	return (
-		<div className="sm:hidden w-full relative overflow-hidden block !z-[99] bg-[#ECFCE5] h-auto max-h-max transition-all duration-300 ">
+		<div className="sm:hidden w-full relative overflow-hidden block !z-[99] bg-[#ECFCE5] h-auto max-h-max">
 			<div
-				className={`absolute -left-1 transition-transform duration-300 transform translate-x-1/2 z-[5] ${expand
+				className={`absolute -left-1 transition-all duration-300 transform translate-x-1/2 z-[5] ${scrollPosition === 0
 						? "scale-[1.6] translate-y-1/2"
 						: "scale-100 top-0 translate-y-[2%]"
 					}`}
@@ -79,7 +81,7 @@ export const MobileHeader = (): ReactElement => {
 				</div>
 			</div>
 			<div
-				className={`flex items-center bg-[#BCF68CD4] w-full px-5 overflow-hidden relative z-[2] transition-all duration-300  ${expand ? "h-[78px]" : "h-[0px]"}`}
+				className={`flex items-center bg-[#BCF68CD4] w-full px-5 overflow-hidden relative z-[2] transition-all duration-300  ${scrollPosition === 0 ? "h-[78px]" : "h-[0px]"}`}
 			>
 				<div className="absolute inset-0 bg-[url(/images/rain.png)] bg-repeat opacity-50 -z-[1]" />
 				<div className="flex items-center justify-between w-full z-20 gap-2">
