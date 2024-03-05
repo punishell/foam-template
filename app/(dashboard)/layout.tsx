@@ -103,9 +103,9 @@ export default function DashboardLayout({
 	};
 
 	const Logout = (): void => {
-		deleteCookie(AUTH_TOKEN_KEY);
-		queryClient.clear();
-		router.push("/login");
+		// deleteCookie(AUTH_TOKEN_KEY);
+		// queryClient.clear();
+		// router.push("/login");
 	};
 
 	useEffect(() => {
@@ -137,7 +137,6 @@ export default function DashboardLayout({
 			<MessagingProvider>
 				<div className="flex sm:flex-row flex-col h-screen w-screen max-w-full overflow-y-hidden">
 					<Sidebar />
-					<MobileHeader />
 					<div className="relative w-full">
 						<div className="absolute inset-0 z-[1]">
 							<div className="isolate">
@@ -223,6 +222,7 @@ export default function DashboardLayout({
 								</div>
 							</div>
 						</Modal>
+						<MobileHeader />
 						<div className="relative isolate z-10 flex h-full flex-1 flex-col sm:px-4 2xl:px-8 sm:pt-5">
 							{children}
 						</div>

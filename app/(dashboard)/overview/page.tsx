@@ -5,7 +5,7 @@
 import { DesktopOverviewHeader } from "@/components/overview/header";
 import { JobHeader } from "@/components/overview/sub-header";
 import { LeaderBoard } from "@/components/overview/leaderboard";
-import Kyc from "@/components/kyc";
+// import Kyc from "@/components/kyc";
 import { FeedTabs } from "@/components/overview/tabs";
 
 export default function Overview(): React.JSX.Element {
@@ -14,7 +14,7 @@ export default function Overview(): React.JSX.Element {
 			<div className="flex h-full w-full justify-start gap-6">
 				<div className="flex h-full w-full grow flex-col sm:gap-7">
 					<DesktopOverviewHeader />
-					<Kyc />
+					{/* <Kyc /> */}
 					<JobHeader />
 					<FeedTabs />
 				</div>
