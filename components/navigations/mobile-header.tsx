@@ -42,9 +42,10 @@ export const MobileHeader = (): ReactElement => {
 	return (
 		<div className="sm:hidden w-full relative overflow-hidden block !z-[99] bg-[#ECFCE5] h-auto max-h-max transition-all duration-300 ">
 			<div
-				className={`absolute -left-1 transition-transform duration-300 transform translate-x-1/2 z-[5] translate-y-1/2 ${
-					expand ? "scale-[1.6]" : "scale-100 top-0 translate-y-0"
-				}`}
+				className={`absolute -left-1 transition-transform duration-300 transform translate-x-1/2 z-[5] ${expand
+						? "scale-[1.6] translate-y-1/2"
+						: "scale-100 top-0 translate-y-[2%]"
+					}`}
 			>
 				<AfroProfile
 					size="sm"

@@ -142,7 +142,7 @@ export const Feeds = (): ReactElement => {
 		[currentData],
 	);
 
-	const onScroll = (event: Event) => {
+	const onScroll = (event: Event): void => {
 		console.log("window scrolled!", event);
 	};
 
