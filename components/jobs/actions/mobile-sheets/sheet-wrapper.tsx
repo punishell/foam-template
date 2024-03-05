@@ -5,17 +5,8 @@
 /* -------------------------------------------------------------------------- */
 
 import { ChevronRight } from "lucide-react";
-import { type Dispatch, type SetStateAction } from "react";
 
-const MobileSubNav = ({
-	closeSheet,
-	from,
-	to,
-}: {
-	closeSheet: Dispatch<SetStateAction<boolean>>;
-	from: string;
-	to: string;
-}): JSX.Element => (
+const MobileSubNav = ({ closeSheet, from, to }: { closeSheet: () => void; from: string; to: string }): JSX.Element => (
 	<div className="sm:hidden w-full h-[43px] px-[35px] py-[11px] bg-neutral-50 border border-gray-200 flex-col justify-start items-start gap-2.5 inline-flex sticky top-0 left-0 z-50">
 		<div className="justify-start items-start inline-flex">
 			<div className="justify-start items-start flex">
@@ -26,10 +17,10 @@ const MobileSubNav = ({
 						tabIndex={0}
 						onClick={(e) => {
 							e.stopPropagation();
-							closeSheet(false);
+							closeSheet();
 						}}
-						onKeyPress={() => {
-							closeSheet(false);
+						onKeyDown={() => {
+							closeSheet();
 						}}
 					>
 						{from}
@@ -46,7 +37,7 @@ const MobileSubNav = ({
 
 interface MobileSheetWrapperProps {
 	children: React.ReactNode;
-	closeSheet: Dispatch<SetStateAction<boolean>>;
+	closeSheet: () => void;
 	isOpen: boolean;
 	from: string;
 	to: string;

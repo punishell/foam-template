@@ -27,6 +27,7 @@ import { TalentJobModal } from "@/components/jobs/actions/desktop-sheets/talent"
 import { ClientJobModalForMobile } from "@/components/jobs/actions/mobile-sheets/client";
 import { TalentJobSheetForMobile } from "@/components/jobs/actions/mobile-sheets/talent";
 import MobileSheetWrapper from "@/components/jobs/actions/mobile-sheets/sheet-wrapper";
+import { useHeaderScroll } from "@/lib/store";
 
 interface TalentJobUpdateProps {
 	id: string;
@@ -77,6 +78,7 @@ export const JobUpdateFeed = ({
 }: TalentJobUpdateProps): ReactElement => {
 	const [isModalOpen, setIsModalOpen] = useState(false);
 	const [isMobileModalOpen, setIsMobileModalOpen] = useState(false);
+	const { setScrollPosition } = useHeaderScroll();
 
 	return (
 		<>
@@ -170,9 +172,10 @@ export const JobUpdateFeed = ({
 				role="button"
 				tabIndex={0}
 				onClick={() => {
+					setScrollPosition(1);
 					setIsMobileModalOpen(true);
 				}}
-				onKeyPress={() => {
+				onKeyDown={() => {
 					setIsMobileModalOpen(true);
 				}}
 				className="cursor-pointer z-10 flex sm:hidden w-full flex-col gap-4 overflow-hidden border-b border-[#9BDCFD] bg-[#F1FBFF] px-[21px] py-4"
@@ -217,7 +220,10 @@ export const JobUpdateFeed = ({
 				</div>
 				{/* Sidebar Sheet */}
 				<MobileSheetWrapper
-					closeSheet={setIsMobileModalOpen}
+					closeSheet={() => {
+						setScrollPosition(0);
+						setIsMobileModalOpen(false);
+					}}
 					isOpen={isMobileModalOpen}
 					from="Jobs"
 					to="Update Job"
