@@ -103,9 +103,9 @@ export default function DashboardLayout({
 	};
 
 	const Logout = (): void => {
-		// deleteCookie(AUTH_TOKEN_KEY);
-		// queryClient.clear();
-		// router.push("/login");
+		deleteCookie(AUTH_TOKEN_KEY);
+		queryClient.clear();
+		router.push("/login");
 	};
 
 	useEffect(() => {

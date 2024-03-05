@@ -22,7 +22,7 @@ import { Button } from "../common/button";
 
 export const MobileHeader = (): ReactElement => {
 	const [referOpen, _setReferOpen] = useState(false);
-	const [expand, setExpand] = useState(true);
+	const [expand, setExpand] = useState(false);
 	const { profileCompleteness, profileImage } = useUserState();
 	// const {
 	// 	data: reviewData,

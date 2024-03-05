@@ -6,6 +6,7 @@
 
 import { type ReactElement, useEffect, useMemo, useRef, useState } from "react";
 import { Loader } from "lucide-react";
+import { useEventListener } from "usehooks-ts";
 
 /* -------------------------------------------------------------------------- */
 /*                             Internal Dependency                            */
@@ -27,6 +28,10 @@ export const Feeds = (): ReactElement => {
 	const [prevPage, setPrevPage] = useState(0);
 	const [currentData, setCurrentData] = useState([]);
 	const [observe, setObserve] = useState(false);
+
+	const [isScrolled, setIsScrolled] = useState(false);
+	const containerRef = useRef(null);
+
 	const {
 		data: timelineData,
 		refetch: feedRefetch,
@@ -136,6 +141,15 @@ export const Feeds = (): ReactElement => {
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 		[currentData],
 	);
+
+	const onScroll = (event: Event) => {
+		console.log("window scrolled!", event);
+	};
+
+	// example with window based event
+	useEventListener("scroll", onScroll, scrollParentRef);
+	console.log("isScrolled", isScrolled);
+
 	if (isLoading && timelineFeeds.length < 1)
 		return (
 			<PageLoading
@@ -151,25 +165,24 @@ export const Feeds = (): ReactElement => {
 		return (
 			<PageEmpty className="h-[65vh] sm:rounded-2xl border border-line" />
 		);
+
 	return (
-		<div className="relative sm:h-[65vh]">
-			<div
-				id="timeline-content"
-				ref={scrollParentRef}
-				className="scrollbar-hide h-full w-full overflow-auto rounded-2xl sm:border sm:border-line bg-white sm:p-4 [&:last]:mb-0 [&>*]:mb-5"
-			>
-				<div className="[&>*]:mb-0 sm:[&>*]:mb-5">
-					{timelineFeeds}
-					{isFetchingNextPage && (
-						<div className="mx-auto flex w-full flex-row items-center justify-center text-center">
-							<Loader
-								size={25}
-								className="animate-spin text-center text-black"
-							/>
-						</div>
-					)}
-					<span ref={observerTarget} />
-				</div>
+		<div
+			id="timeline-content"
+			ref={scrollParentRef}
+			className="scrollbar-hide h-[calc(100vh-200px)] sm:h-[65vh] w-full rounded-2xl sm:border sm:border-line overflow-y-scroll bg-white sm:p-4 [&:last]:mb-0 [&>*]:mb-5"
+		>
+			<div className="[&>*]:mb-0 sm:[&>*]:mb-5 ">
+				{timelineFeeds}
+				{isFetchingNextPage && (
+					<div className="mx-auto flex w-full flex-row items-center justify-center text-center">
+						<Loader
+							size={25}
+							className="animate-spin text-center text-black"
+						/>
+					</div>
+				)}
+				<span ref={observerTarget} />
 			</div>
 		</div>
 	);
