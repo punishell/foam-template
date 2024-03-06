@@ -47,7 +47,9 @@ export const MobileHeader = (): ReactElement => {
 				className={`absolute -left-1 transition-all duration-300 transform translate-x-1/2 z-[5]
 				${scrollPosition === 0 && profileCompleted ? "scale-[1.6] translate-y-1/2" : "scale-100 top-0 translate-y-[2%]"}`}
 			>
-				<AfroProfile size="sm" score={value} src={profileImage?.url} url="/profile" />
+				{profileImage?.url && value && (
+					<AfroProfile size="sm" score={value} src={profileImage?.url} url="/profile" />
+				)}
 			</div>
 			<div className="relative flex items-center justify-between px-5 w-full h-[65px] z-[3]">
 				<div />

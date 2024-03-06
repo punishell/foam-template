@@ -102,7 +102,6 @@ export const JobUpdateFeed = ({
 							/>
 						)}
 					</div>
-					{/* <p className="text-body">{!isCreator ? description : `✅ ${description}`}</p> */}
 					<p className="flex flex-row gap-4 capitalize text-body">
 						{" "}
 						<CheckBox isChecked={isMarked} />{" "}
@@ -110,7 +109,6 @@ export const JobUpdateFeed = ({
 					</p>
 					<div className="mt-auto flex items-center justify-between">
 						<div className="flex w-full items-center gap-2">
-							{/* {progress.progress === 100 && ( */}
 							<Button
 								size="xs"
 								variant="secondary"
@@ -120,7 +118,7 @@ export const JobUpdateFeed = ({
 							>
 								See Update
 							</Button>
-							{/* )} */}
+
 							<Link href={`/messages?userId=${isCreator ? talent._id : creator._id}`}>
 								<Button size="xs" variant="outline">
 									Message

@@ -36,7 +36,7 @@ export const JobUpdates: FC<JobUpdatesProps> = ({ job, requestJobCancellation })
 		_id: jobId,
 	} = job;
 	const deliverables = collections.filter(isJobDeliverable);
-	const [showDescription, setShowDescription] = useState(true);
+	const [showDescription, setShowDescription] = useState(false);
 	return (
 		<>
 			<div className="flex items-start justify-between bg-primary-gradient px-4 py-6 text-3xl font-bold text-white">
@@ -58,7 +58,7 @@ export const JobUpdates: FC<JobUpdatesProps> = ({ job, requestJobCancellation })
 					</PopoverContent>
 				</Popover>
 			</div>
-			<div className="flex h-full flex-col pb-6 h">
+			<div className="flex h-auto flex-col pb-6">
 				<JobUpdateHeader
 					createdAt={createdAt}
 					profile={owner ?? creator}
@@ -66,9 +66,11 @@ export const JobUpdates: FC<JobUpdatesProps> = ({ job, requestJobCancellation })
 					paymentFee={paymentFee}
 					tags={tags}
 				/>
-				<div className="flex flex-col gap-2.5 p-4 border-b relative overflow-hidden w-full h-full">
+				<div
+					className={`flex flex-col gap-2.5 p-4 border-b relative overflow-hidden w-full transition-all duration-300 bg-blue-50 ${showDescription ? "h-[237px]" : "h-[56px]"}`}
+				>
 					<button
-						className="flex justify-between items-center w-full !h-[56px]"
+						className="flex justify-between items-center w-full"
 						type="button"
 						onClick={() => {
 							setShowDescription(!showDescription);
@@ -79,14 +81,10 @@ export const JobUpdates: FC<JobUpdatesProps> = ({ job, requestJobCancellation })
 							className={`h-6 w-6 transform duration-300 ${showDescription ? "rotate-[360deg]" : "rotate-[270deg]"}`}
 						/>
 					</button>
-					<div
-						className={` ${showDescription ? "relative" : "absolute -top-full"} transition-all duration-300`}
-					>
-						<p className="leading-normal tracking-wide text-base">{description}</p>
-					</div>
+					<p className="leading-normal tracking-wide text-base line-clamp-7">{description}</p>
 				</div>
-				<div className="flex flex-col gap-2">
-					<div>
+				<div className="flex flex-col gap-2 p-4">
+					<div className="flex flex-col items-start">
 						<h3 className="text-lg font-bold">Job Deliverables</h3>
 						<p className="text-body">Deliverables will check off as the talent completes them.</p>
 					</div>

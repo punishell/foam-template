@@ -141,7 +141,7 @@ export const DeliverableStep = ({
 				}}
 			/>
 
-			<div className=" w-full rounded-lg border border-line bg-[#F7F9FA] p-2 text-body">
+			<div className=" w-full rounded-lg sm:border border-line bg-slate-50 p-2 text-body">
 				<p
 					style={{
 						textDecoration: isComplete ? "line-through" : "none",

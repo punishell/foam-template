@@ -46,7 +46,7 @@ interface MobileSheetWrapperProps {
 const MobileSheetWrapper = ({ children, closeSheet, isOpen, from, to }: MobileSheetWrapperProps): JSX.Element => {
 	return (
 		<div
-			className={`fixed top-16 z-50 w-full h-[calc(100vh-130px)] overflow-y-scroll bg-[#F1FBFF] transition-all duration-300 ease-in-out ${isOpen ? "right-0" : "-right-full"}`}
+			className={`fixed top-16 z-50 w-full h-[calc(100vh-130px)] overflow-y-scroll bg-white transition-all duration-300 ease-in-out ${isOpen ? "right-0" : "-right-full"}`}
 		>
 			<MobileSubNav closeSheet={closeSheet} from={from} to={to} />
 			<div className="relative h-full w-full">{children}</div>
