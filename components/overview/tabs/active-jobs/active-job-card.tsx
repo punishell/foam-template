@@ -164,7 +164,7 @@ export const ActiveJobCard = ({
 			onKeyDown={() => {
 				setIsMobileModalOpen(true);
 			}}
-			className="relative z-10 flex flex-col w-full gap-4  overflow-hidden border-b border-[#9BDCFD] bg-[#F1FBFF] px-[21px] py-4"
+			className="cursor-pointer z-10 flex flex-col w-full gap-4 overflow-hidden border-b border-[#9BDCFD] bg-[#F1FBFF] px-[21px] py-4"
 		>
 			<div className="flex items-center gap-2 relative -left-[5px]">
 				<AfroProfile

@@ -4,8 +4,8 @@
 /*                             External Dependency                            */
 /* -------------------------------------------------------------------------- */
 
-import { type FC } from "react";
-import { MoreVertical } from "lucide-react";
+import { useState, type FC } from "react";
+import { ChevronDown, MoreVertical } from "lucide-react";
 
 /* -------------------------------------------------------------------------- */
 /*                             Internal Dependency                            */
@@ -36,11 +36,12 @@ export const JobUpdates: FC<JobUpdatesProps> = ({ job, requestJobCancellation })
 		_id: jobId,
 	} = job;
 	const deliverables = collections.filter(isJobDeliverable);
+	const [showDescription, setShowDescription] = useState(false);
 
 	return (
 		<>
 			<div className="flex items-start justify-between bg-primary-gradient px-4 py-6 text-3xl font-bold text-white">
-				<div className="max-w-[90%] break-words">{name}</div>
+				<div className="max-w-[90%] break-words text-lg">{name}</div>
 				<Popover>
 					<PopoverTrigger asChild>
 						<button aria-label="more" type="button">
@@ -59,7 +60,7 @@ export const JobUpdates: FC<JobUpdatesProps> = ({ job, requestJobCancellation })
 					</PopoverContent>
 				</Popover>
 			</div>
-			<div className="flex h-full grow flex-col gap-6 px-4 py-6">
+			<div className="flex h-auto flex-col pb-6">
 				<JobUpdateHeader
 					createdAt={createdAt}
 					profile={creator}
@@ -68,17 +69,30 @@ export const JobUpdates: FC<JobUpdatesProps> = ({ job, requestJobCancellation })
 					tags={tags}
 				/>
 
-				<div className="flex flex-col gap-2">
-					<h3 className="text-lg font-bold">Job Description</h3>
-					<p className="rounded-xl border border-blue-300 bg-[#C9F0FF] p-3">{description}</p>
+				<div
+					className={`flex flex-col gap-2.5 p-4 border-b relative overflow-hidden w-full transition-all duration-300 bg-blue-50 ${showDescription ? "h-[237px]" : "h-[56px]"}`}
+				>
+					<button
+						className="flex justify-between items-center w-full"
+						type="button"
+						onClick={() => {
+							setShowDescription(!showDescription);
+						}}
+					>
+						<h3 className="text-lg font-bold">Job Description</h3>
+						<ChevronDown
+							className={`h-6 w-6 transform duration-300 ${showDescription ? "rotate-[360deg]" : "rotate-[270deg]"}`}
+						/>
+					</button>
+					<p className="leading-normal tracking-wide text-base line-clamp-7">{description}</p>
 				</div>
-				<div className="flex grow flex-col gap-2">
-					<div>
+				<div className="flex grow flex-col gap-2 p-4">
+					<div className="flex flex-col items-start">
 						<h3 className="text-lg font-bold">Job Deliverables</h3>
 						<p className="text-body">Mark the deliverables upon completion</p>
 					</div>
 
-					<div className="h-full grow">
+					<div className="h-full">
 						<DeliverablesStepper
 							jobId={jobId}
 							jobProgress={progress}
