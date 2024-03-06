@@ -72,12 +72,14 @@ export const ActiveJobs = (): ReactElement => {
 							name: `${job?.creator?.firstName} ${job?.creator?.lastName}`,
 							avatar: job?.creator?.profileImage?.url ?? "",
 							score: job?.creator.score,
+							title: job?.creator?.profile?.bio?.title ?? "",
 						}}
 						talent={{
 							_id: job?.owner ? job?.owner._id : "",
 							name: `${job?.owner?.firstName} ${job?.owner?.lastName}`,
 							avatar: job?.owner?.profileImage?.url ?? "",
 							score: job?.owner ? job?.owner.score : 0,
+							title: job?.owner?.profile?.bio?.title ?? "",
 						}}
 						description={job.description}
 						title={job.name}

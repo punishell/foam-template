@@ -197,8 +197,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 						<div className="relative isolate z-10 flex h-full flex-1 flex-col sm:px-4 2xl:px-8 sm:pt-5">
 							{children}
 						</div>
+						<BottomNav />
 					</div>
-					<BottomNav />
 				</div>
 			</MessagingProvider>
 		</AccountWrapper>
