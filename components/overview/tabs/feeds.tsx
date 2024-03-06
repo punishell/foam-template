@@ -20,6 +20,7 @@ import { PageLoading } from "../../common/page-loading";
 import { PageError } from "../../common/page-error";
 import { FEED_TYPES } from "@/lib/utils";
 import { useHeaderScroll } from "@/lib/store";
+import { TabContentWrapper } from "./tab-contents-wrapper";
 
 export const Feeds = (): ReactElement => {
 	const { _id: loggedInUser } = useUserState();
@@ -48,8 +49,6 @@ export const Feeds = (): ReactElement => {
 		},
 	});
 
-	const { setScrollPosition } = useHeaderScroll();
-	const scrollParentRef = useRef<HTMLDivElement | null>(null);
 	const observerTarget = useRef<HTMLDivElement | null>(null);
 
 	const callback = async (): Promise<void> => {
@@ -135,35 +134,23 @@ export const Feeds = (): ReactElement => {
 		[currentData],
 	);
 
-	const onScroll = (event: Event): void => {
-		const target = event.target as HTMLDivElement;
-		// Update the scroll position state
-		setScrollPosition(target.scrollTop);
-	};
-
-	useEventListener("scroll", onScroll, scrollParentRef);
-
 	return (
-		<div
-			ref={scrollParentRef}
-			className="scrollbar-hide min-h-[64vh] max-h-[calc(100vh-200px)] sm:h-[64vh] w-full sm:rounded-2xl sm:border sm:border-line overflow-auto bg-white sm:p-4 [&:last]:mb-0 [&>*]:mb-0 sm:[&>*]:mb-5"
-		>
+		<TabContentWrapper>
 			{isLoading && timelineFeeds.length < 1 ? (
-				<PageLoading className="h-[64vh]" color="#007C5B" />
+				<PageLoading className="h-[35vh] 2xl:h-[50vh]" color="#007C5B" />
 			) : isError ? (
-				<PageError className="h-[64vh]" />
+				<PageError className="h-[35vh] 2xl:h-[50vh]" />
 			) : timelineFeeds.length === 0 ? (
-				<PageEmpty className="h-[64vh]" />
+				<PageEmpty className="h-[35vh] 2xl:h-[50vh]" />
 			) : (
 				timelineFeeds
 			)}
-
 			{isFetchingNextPage && (
-				<div className="mx-auto flex w-full flex-row items-center justify-center text-center">
+				<div className="mx-auto max-sm:my-4 flex w-full flex-row items-center justify-center text-center">
 					<Loader size={25} className="animate-spin text-center text-black" />
 				</div>
 			)}
 			<span ref={observerTarget} />
-		</div>
+		</TabContentWrapper>
 	);
 };

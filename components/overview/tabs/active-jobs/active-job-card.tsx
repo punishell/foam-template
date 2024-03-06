@@ -8,6 +8,7 @@ import { type ReactElement, useState } from "react";
 import Link from "next/link";
 import { Button } from "pakt-ui";
 import { Briefcase } from "lucide-react";
+import { useMediaQuery } from "usehooks-ts";
 
 /* -------------------------------------------------------------------------- */
 /*                             Internal Dependency                            */
@@ -63,6 +64,7 @@ export const ActiveJobCard = ({
 	const { _id: loggedInUser } = useUserState();
 	const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
 	const profileAccount = creator?._id === loggedInUser ? talent : creator;
+	const mobile = useMediaQuery("(min-width: 640px)");
 	return (
 		<div className="relative z-10 flex w-full gap-4  overflow-hidden rounded-2xl border border-[#9BDCFD] bg-[#F1FBFF] px-4 pl-2">
 			<AfroProfile

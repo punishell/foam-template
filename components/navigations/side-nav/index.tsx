@@ -26,33 +26,23 @@ export const Sidebar = (): ReactElement => {
 				</Link>
 			</div>
 			<div className="border-b border-line opacity-20" />
-
 			<div className="mx-auto flex w-fit flex-col gap-4">
 				<NavLink href="/overview">
 					<LayoutDashboard size={20} />
 					<span>Overview</span>
 				</NavLink>
-
 				<NavLink href="/jobs">
 					<LayoutList size={20} />
 					<span>Jobs</span>
 				</NavLink>
-
 				<NavLink href="/talents">
 					<Users size={20} />
 					<span>Talents</span>
 				</NavLink>
-
-				{/* <NavLink href="/projects">
-          <Briefcase size={20} />
-          <span>Projects</span>
-        </NavLink> */}
-
 				<NavLink href="/wallet">
 					<Wallet size={20} />
 					<span>Wallet</span>
 				</NavLink>
-
 				<NavLink href="/messages">
 					<MessageSquare size={20} />
 					<span>Messages</span>
@@ -62,13 +52,11 @@ export const Sidebar = (): ReactElement => {
 						</div>
 					)}
 				</NavLink>
-
 				<NavLink href="/settings">
 					<Settings size={20} />
 					<span>Settings</span>
 				</NavLink>
 			</div>
-
 			<div className="mx-auto mt-auto">
 				<LogOut />
 			</div>

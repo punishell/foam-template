@@ -17,6 +17,7 @@ import { PageError } from "../../../common/page-error";
 import { useGetJobs } from "@/lib/api/job";
 import { type Job } from "@/lib/types";
 import { ActiveJobCard } from "./active-job-card";
+import { TabContentWrapper } from "../tab-contents-wrapper";
 
 const talentAndClientHasReviewed = (job: Job): boolean | undefined => {
 	return (
@@ -88,13 +89,18 @@ export const ActiveJobs = (): ReactElement => {
 			}),
 		[jobData, loggedInUser],
 	);
-	if ((!isFetched || !assignedFetched) && (isFetching || assignedFetching))
-		return <PageLoading className="h-[65vh] rounded-2xl border border-line" color="#007C5B" />;
-	if (isError || assignedError) return <PageError className="h-[85vh] rounded-2xl border border-red-200" />;
-	if (activeJobs.length === 0)
-		return (
-			<PageEmpty className="h-[65vh] rounded-2xl border border-line" label="Your Active Jobs will appear here" />
-		);
 
-	return <div className="flex w-full flex-col gap-5 rounded-2xl border border-line bg-white p-4">{activeJobs}</div>;
+	return (
+		<TabContentWrapper>
+			{(!isFetched || !assignedFetched) && (isFetching || assignedFetching) ? (
+				<PageLoading className="h-[35vh] 2xl:h-[50vh]" color="#007C5B" />
+			) : isError || assignedError ? (
+				<PageError className="h-[35vh] 2xl:h-[50vh]" />
+			) : activeJobs.length === 0 ? (
+				<PageEmpty className="h-[35vh] 2xl:h-[50vh]" label="Your Active Jobs will appear here" />
+			) : (
+				activeJobs
+			)}
+		</TabContentWrapper>
+	);
 };

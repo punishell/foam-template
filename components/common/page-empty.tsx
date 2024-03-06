@@ -23,7 +23,7 @@ export const PageEmpty: FC<Props> = ({ className, label, children }) => {
 		<div
 			aria-live="polite"
 			aria-busy="true"
-			className={cn("flex h-screen w-full items-center justify-center border bg-white", className)}
+			className={cn("flex h-screen w-full items-center justify-center bg-white", className)}
 		>
 			<div className="flex flex-col items-center">
 				<div className="flex w-full max-w-[250px] items-center justify-center">

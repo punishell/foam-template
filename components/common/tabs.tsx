@@ -70,7 +70,7 @@ export const Tabs: FC<Props> = ({ tabs, defaultTab, urlKey, className }) => {
 					</RadixTabs.Trigger>
 				))}
 			</RadixTabs.List>
-			<div className="scrollbar-hide sm:mt-4 w-full grow h-auto overflow-y-auto">
+			<div className="scrollbar-hide sm:mt-2 w-full grow h-auto overflow-y-auto">
 				{tabs.map((tab) => (
 					<RadixTabs.Content
 						key={tab.value}

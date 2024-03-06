@@ -20,13 +20,15 @@ export const UserProfile = (): ReactElement => {
 
 	return (
 		<div className="flex flex-col items-center gap-2">
-			<AfroProfile
-				score={account?.score ?? 0}
-				// size="2xl"
-				src={account?.profileImage?.url}
-				url="/profile"
-				size={size.width > 1530 ? "2xl" : size.width > 768 ? "xl" : "sm"}
-			/>
+			{account && (
+				<AfroProfile
+					score={account.score as number}
+					// size="2xl"
+					src={account?.profileImage?.url}
+					url="/profile"
+					size={size.width > 1530 ? "2xl" : size.width > 768 ? "xl" : "sm"}
+				/>
+			)}
 
 			<div className="flex flex-col gap-0 text-center">
 				<span className="text-lg">
