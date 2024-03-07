@@ -174,9 +174,9 @@ export const ActiveJobCard = ({
 					url={`/talents/${profileAccount._id}`}
 				/>
 				<div className="flex-col justify-start items-start inline-flex">
-					<p className="text-gray-800 text-lg flex leading-[27px] tracking-wide">{talent.name}</p>
+					<p className="text-gray-800 text-lg flex leading-[27px] tracking-wide">{profileAccount.name}</p>
 					<span className="text-gray-500 text-xs leading-[18px] tracking-wide">
-						{titleCase(talent.title)}
+						{titleCase(profileAccount.title)}
 					</span>
 				</div>
 			</div>
