@@ -185,14 +185,10 @@ export const JobUpdateFeed = ({
 				</div>
 			</div>
 			<div className="flex w-full flex-col gap-2">
-				<div className="flex justify-between">
-					<h3 className="w-[90%] items-center text-base text-title">
-						{!isCreator
-							? title
-							: `${talent.name} ${isMarked ? "completed" : "Unchecked"} a deliverable on `}{" "}
-						<span className="font-bold">{jobTitle}</span>
-					</h3>
-				</div>
+				<h3 className="w-[90%] items-center text-base text-title">
+					{!isCreator ? title : `${talent.name} ${isMarked ? "completed" : "Unchecked"} a deliverable on `}{" "}
+					<span className="font-bold">{jobTitle}</span>
+				</h3>
 				<p className="flex flex-row gap-4 capitalize text-body text-base">
 					{description.length > MAX_LEN ? `${description.slice(0, MAX_LEN)}...` : `✅ ${description}`}
 				</p>

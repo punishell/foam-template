@@ -160,6 +160,7 @@ export const ParseFeedView = (
 		case FEED_TYPES.COLLECTION_UPDATE: {
 			const { data } = feed;
 			return (
+				// Done
 				<JobUpdateFeed
 					key={key}
 					talent={talent}
@@ -246,6 +247,7 @@ export const ParseFeedView = (
 		case FEED_TYPES.COLLECTION_COMPLETED:
 		case FEED_TYPES.JOB_COMPLETION:
 			return (
+				// Done
 				<JobCompletionFeed
 					key={key}
 					id={feed?._id}
