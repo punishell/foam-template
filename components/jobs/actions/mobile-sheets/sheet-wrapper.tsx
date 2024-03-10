@@ -7,7 +7,7 @@
 import { ChevronRight } from "lucide-react";
 
 const MobileSubNav = ({ closeSheet, from, to }: { closeSheet: () => void; from: string; to: string }): JSX.Element => (
-	<div className="sm:hidden w-full h-[43px] px-[35px] py-[11px] bg-neutral-50 border border-gray-200 flex-col justify-start items-start gap-2.5 inline-flex sticky top-0 left-0 z-50">
+	<div className="sm:hidden w-full h-[43px] px-[35px] py-[11px] bg-neutral-50 border border-gray-200 flex-col justify-start items-start gap-2.5 inline-flex sticky -top-[1px] left-0 z-50">
 		<div className="justify-start items-start inline-flex">
 			<div className="justify-start items-start flex">
 				<div className="justify-center items-center gap-2 flex">
@@ -46,10 +46,10 @@ interface MobileSheetWrapperProps {
 const MobileSheetWrapper = ({ children, closeSheet, isOpen, from, to }: MobileSheetWrapperProps): JSX.Element => {
 	return (
 		<div
-			className={`fixed top-16 z-50 w-full h-[calc(100vh-130px)] overflow-y-scroll bg-white transition-all duration-300 ease-in-out ${isOpen ? "right-0" : "-right-full"}`}
+			className={`fixed top-16 z-50 w-full h-[calc(100vh-129px)] overflow-y-scroll bg-white transition-all duration-300 ease-in-out ${isOpen ? "right-0" : "-right-full"}`}
 		>
 			<MobileSubNav closeSheet={closeSheet} from={from} to={to} />
-			<div className="relative h-full w-full">{children}</div>
+			<div className="relative h-[calc(100%-43px)] w-full">{children}</div>
 		</div>
 	);
 };

@@ -50,11 +50,11 @@ export const RequestReviewChange: FC<RequestReviewChangeProps> = ({
 					>
 						<ChevronLeft />
 					</button>
-					<span>Review</span>
+					<h3 className="break-words text-lg">Review</h3>
 				</div>
 			</div>
-			<div className="flex h-full grow flex-col gap-6 px-4 py-6">
-				<div className="flex flex-col gap-2 rounded-xl border border-yellow bg-[#FEF4E3] p-3">
+			<div className="flex h-[calc(100%-70px)] flex-col gap-6 px-4 py-4">
+				<div className="flex flex-col gap-2 rounded-xl bg-[#FEF4E3] p-3">
 					If the client approves your request, the job will be reopened. After completion both parties will
 					leave new reviews.
 				</div>

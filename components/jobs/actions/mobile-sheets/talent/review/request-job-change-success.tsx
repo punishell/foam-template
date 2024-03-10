@@ -38,7 +38,8 @@ export const RequestJobChangeSuccess: FC<{ closeModal: () => void }> = ({ closeM
 							<Button
 								fullWidth
 								size="sm"
-								onClick={() => {
+								onClick={(e) => {
+									e.stopPropagation();
 									closeModal();
 									router.push("/overview");
 								}}

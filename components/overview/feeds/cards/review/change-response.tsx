@@ -7,6 +7,7 @@
 import { type ReactElement, useState } from "react";
 import { Button } from "pakt-ui";
 import { X, Briefcase } from "lucide-react";
+import { useMediaQuery } from "usehooks-ts";
 
 /* -------------------------------------------------------------------------- */
 /*                             Internal Dependency                            */
@@ -14,9 +15,17 @@ import { X, Briefcase } from "lucide-react";
 
 import { RenderBookMark } from "@/components/jobs/misc/render-bookmark";
 import { AfroProfile } from "@/components/common/afro-profile";
-import { ClientJobModal } from "@/components/jobs/actions/desktop-sheets/client";
 import { SideModal } from "@/components/common/side-modal";
+import { useHeaderScroll } from "@/lib/store";
+import { titleCase } from "@/lib/utils";
+
+import { ClientJobModal } from "@/components/jobs/actions/desktop-sheets/client";
 import { TalentJobModal } from "@/components/jobs/actions/desktop-sheets/talent";
+
+import { TalentJobSheetForMobile } from "@/components/jobs/actions/mobile-sheets/talent";
+import { ClientJobModalForMobile } from "@/components/jobs/actions/mobile-sheets/client";
+
+import MobileSheetWrapper from "@/components/jobs/actions/mobile-sheets/sheet-wrapper";
 
 interface ReviewResponseChangeProps {
 	id: string;
@@ -27,12 +36,14 @@ interface ReviewResponseChangeProps {
 		name: string;
 		avatar: string;
 		score: number;
+		title: string;
 	};
 	creator: {
 		_id: string;
 		name: string;
 		avatar: string;
 		score: number;
+		title: string;
 	};
 	bookmarked: boolean;
 	bookmarkId: string;
@@ -56,11 +67,15 @@ export const ReviewResponseChangeCard = ({
 	close,
 }: ReviewResponseChangeProps): ReactElement => {
 	const [isModalOpen, setIsModalOpen] = useState(false);
-	return (
+	const [mobileSheet, setMobileSheet] = useState(false);
+	const { setScrollPosition } = useHeaderScroll();
+
+	const tab = useMediaQuery("(min-width: 640px)");
+
+	return tab ? (
 		<div
-			className={`${
-				isDeclined ? "border-[#FF5247] bg-[#FFF4F4]" : "border-[#9BDCFD] bg-[#F1FBFF]"
-			} relative z-10 flex h-[174px] w-full gap-4 overflow-hidden rounded-2xl border p-4`}
+			className={`${isDeclined ? "border-[#FF5247] bg-[#FFF4F4]" : "border-[#9BDCFD] bg-[#F1FBFF]"}
+			relative z-10 flex h-[174px] w-full gap-4 overflow-hidden rounded-2xl border p-4`}
 		>
 			<AfroProfile
 				src={isCreator ? talent.avatar : creator.avatar}
@@ -125,6 +140,75 @@ export const ReviewResponseChangeCard = ({
 					/>
 				)}
 			</SideModal>
+		</div>
+	) : (
+		<div
+			className={`${isDeclined ? "border-[#FF5247] bg-[#FFF4F4]" : "border-[#9BDCFD] bg-[#F1FBFF]"}
+			z-10 flex flex-col w-full gap-4 overflow-hidden border-b px-[21px] py-4`}
+			role="button"
+			tabIndex={0}
+			onClick={() => {
+				setScrollPosition(1);
+				setMobileSheet(true);
+			}}
+			onKeyDown={() => {
+				setMobileSheet(true);
+			}}
+		>
+			<div className="flex items-center gap-2 relative -left-[5px]">
+				<AfroProfile
+					src={isCreator ? talent.avatar : creator.avatar}
+					score={isCreator ? talent.score : creator.score}
+					size="sm"
+					url={`/talents/${isCreator ? talent._id : creator._id}`}
+				/>
+				<div className="flex-col justify-start items-start inline-flex">
+					<p className="text-gray-800 text-lg flex leading-[27px] tracking-wide">{talent.name}</p>
+					<span className="text-gray-500 text-xs leading-[18px] tracking-wide">
+						{titleCase(talent.title)}
+					</span>
+				</div>
+			</div>
+			<div className="flex w-full flex-col gap-2">
+				<h3 className="text-base font-medium text-title">{title}</h3>
+				<div className="mt-auto flex items-center justify-between">
+					<p className="capitalize text-body text-base">{description}</p>
+					<RenderBookMark size={20} isBookmarked={bookmarked} type="feed" id={id} bookmarkId={bookmarkId} />
+				</div>
+			</div>
+
+			{/* Sidebar Sheet */}
+			<MobileSheetWrapper
+				closeSheet={() => {
+					setScrollPosition(0);
+					setMobileSheet(false);
+				}}
+				isOpen={mobileSheet}
+				from="Jobs"
+				to="Finalize & Review"
+			>
+				{isCreator ? (
+					<ClientJobModalForMobile
+						jobId={jobId}
+						talentId={talent._id}
+						closeModal={() => {
+							setScrollPosition(0);
+							setMobileSheet(false);
+						}}
+						extras={id}
+					/>
+				) : (
+					<TalentJobSheetForMobile
+						jobId={jobId}
+						talentId={talent._id}
+						closeModal={() => {
+							setScrollPosition(0);
+							setMobileSheet(false);
+						}}
+						extras={id}
+					/>
+				)}
+			</MobileSheetWrapper>
 		</div>
 	);
 };

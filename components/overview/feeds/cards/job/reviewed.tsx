@@ -8,6 +8,7 @@ import { type ReactElement, useState } from "react";
 import { X, Briefcase, Star } from "lucide-react";
 import Rating from "react-rating";
 import { Button } from "pakt-ui";
+import { useMediaQuery } from "usehooks-ts";
 
 /* -------------------------------------------------------------------------- */
 /*                             Internal Dependency                            */
@@ -15,9 +16,17 @@ import { Button } from "pakt-ui";
 
 import { RenderBookMark } from "@/components/jobs/misc/render-bookmark";
 import { AfroProfile } from "@/components/common/afro-profile";
-import { ClientJobModal } from "@/components/jobs/actions/desktop-sheets/client";
 import { SideModal } from "@/components/common/side-modal";
+import { useHeaderScroll } from "@/lib/store";
+import { titleCase } from "@/lib/utils";
+
+import MobileSheetWrapper from "@/components/jobs/actions/mobile-sheets/sheet-wrapper";
+
+import { ClientJobModal } from "@/components/jobs/actions/desktop-sheets/client";
 import { TalentJobModal } from "@/components/jobs/actions/desktop-sheets/talent";
+
+import { ClientJobModalForMobile } from "@/components/jobs/actions/mobile-sheets/client";
+import { TalentJobSheetForMobile } from "@/components/jobs/actions/mobile-sheets/talent";
 
 const MAX_LEN = 150;
 
@@ -30,6 +39,7 @@ interface ReviewJobProps {
 		name: string;
 		avatar: string;
 		score: number;
+		title: string;
 	};
 	bookmarked: boolean;
 	bookmarkId: string;
@@ -39,6 +49,7 @@ interface ReviewJobProps {
 		name: string;
 		avatar: string;
 		score: number;
+		title: string;
 	};
 	isCreator: boolean;
 	rating?: number;
@@ -59,7 +70,12 @@ export const JobReviewedFeed = ({
 	close,
 }: ReviewJobProps): ReactElement => {
 	const [isModalOpen, setIsModalOpen] = useState(false);
-	return (
+	const [mobileSheet, setMobileSheet] = useState(false);
+	const { setScrollPosition } = useHeaderScroll();
+
+	const tab = useMediaQuery("(min-width: 640px)");
+
+	return tab ? (
 		<div className="relative z-10 flex w-full gap-4 overflow-hidden rounded-2xl border border-[#9BDCFD] bg-[#F1FBFF] px-4 pl-2">
 			<AfroProfile
 				src={isCreator ? talent.avatar : creator.avatar}
@@ -139,6 +155,94 @@ export const JobReviewedFeed = ({
 					/>
 				)}
 			</SideModal>
+		</div>
+	) : (
+		<div
+			className="cursor-pointer z-10 flex sm:hidden w-full flex-col gap-4 overflow-hidden border-b border-[#9BDCFD] bg-[#F1FBFF] px-[21px] py-4"
+			role="button"
+			tabIndex={0}
+			onClick={() => {
+				if (!isCreator) {
+					setScrollPosition(1);
+					setMobileSheet(true);
+				}
+			}}
+			onKeyDown={() => {
+				if (!isCreator) {
+					setScrollPosition(1);
+					setMobileSheet(true);
+				}
+			}}
+		>
+			<div className="flex items-center gap-2 relative -left-[5px]">
+				<AfroProfile
+					src={isCreator ? talent.avatar : creator.avatar}
+					score={isCreator ? talent.score : creator.score}
+					size="sm"
+					url={`/talents/${isCreator ? talent._id : creator._id}`}
+				/>
+				<div className="flex-col justify-start items-start inline-flex">
+					<p className="text-gray-800 text-lg flex leading-[27px] tracking-wide">{talent.name}</p>
+					<span className="text-gray-500 text-xs leading-[18px] tracking-wide">
+						{titleCase(talent.title)}
+					</span>
+				</div>
+			</div>
+			<div className="flex w-full flex-col gap-2">
+				<h3 className="w-[90%] items-center text-base text-title font-medium">
+					{isCreator ? talent.name : creator.name} has reviewed your work on{" "}
+					<span className="font-bold">{title}</span>
+				</h3>
+
+				<p className="capitalize text-body text-base break-words">{description}</p>
+
+				<div className="mt-auto flex items-center justify-between">
+					<div className="flex items-center gap-2">
+						{rating && (
+							// @ts-expect-error -- Rating' cannot be used as a JSX component. Its type 'typeof Rating' is not a valid JSX element type.ts(2786)
+							<Rating
+								initialRating={rating}
+								fullSymbol={<Star fill="#15D28E" color="#15D28E" className="mt-[4px]" />}
+								emptySymbol={<Star fill="transparent" color="#15D28E" className="mt-[4px]" />}
+								readonly
+							/>
+						)}
+					</div>
+					<RenderBookMark size={20} isBookmarked={bookmarked} type="feed" id={id} bookmarkId={bookmarkId} />
+				</div>
+			</div>
+
+			<MobileSheetWrapper
+				closeSheet={() => {
+					setScrollPosition(0);
+					setMobileSheet(false);
+				}}
+				isOpen={mobileSheet}
+				from="Jobs"
+				to="Finalize & Review"
+			>
+				{isCreator ? (
+					<ClientJobModalForMobile
+						jobId={jobId}
+						talentId={talent._id}
+						closeModal={() => {
+							setScrollPosition(0);
+							setMobileSheet(false);
+						}}
+						extras={id}
+					/>
+				) : (
+					<TalentJobSheetForMobile
+						jobId={jobId}
+						talentId={talent._id}
+						closeModal={() => {
+							setScrollPosition(0);
+							setMobileSheet(false);
+						}}
+						extras={id}
+					/>
+				)}
+			</MobileSheetWrapper>
 		</div>
 	);
 };

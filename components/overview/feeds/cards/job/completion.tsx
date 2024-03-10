@@ -62,7 +62,7 @@ export const JobCompletionFeed = ({
 	close,
 }: JobCompletedProps): ReactElement => {
 	const [isModalOpen, setIsModalOpen] = useState(false);
-	const [isMobileModalOpen, setIsMobileModalOpen] = useState(false);
+	const [mobileSheet, setMobileSheet] = useState(false);
 	const { setScrollPosition } = useHeaderScroll();
 
 	const tab = useMediaQuery("(min-width: 640px)");
@@ -136,10 +136,10 @@ export const JobCompletionFeed = ({
 			tabIndex={0}
 			onClick={() => {
 				setScrollPosition(1);
-				setIsMobileModalOpen(true);
+				setMobileSheet(true);
 			}}
 			onKeyDown={() => {
-				setIsMobileModalOpen(true);
+				setMobileSheet(true);
 			}}
 		>
 			<div className="flex items-center gap-2 relative -left-[5px]">
@@ -161,7 +161,7 @@ export const JobCompletionFeed = ({
 					{talent.name} completed all deliverables
 				</h3>
 				<div className="mt-auto flex items-center justify-between">
-					<p className="flex flex-row gap-4 capitalize text-body text-base">{title}</p>
+					<p className="capitalize text-body text-base">{title}</p>
 					<RenderBookMark size={20} isBookmarked={bookmarked} type="feed" id={id} bookmarkId={bookmarkId} />
 				</div>
 			</div>
@@ -169,9 +169,9 @@ export const JobCompletionFeed = ({
 			<MobileSheetWrapper
 				closeSheet={() => {
 					setScrollPosition(0);
-					setIsMobileModalOpen(false);
+					setMobileSheet(false);
 				}}
-				isOpen={isMobileModalOpen}
+				isOpen={mobileSheet}
 				from="Jobs"
 				to="Finalize & Review"
 			>
@@ -180,7 +180,8 @@ export const JobCompletionFeed = ({
 						jobId={jobId}
 						talentId={talent._id}
 						closeModal={() => {
-							setIsModalOpen(false);
+							setScrollPosition(0);
+							setMobileSheet(false);
 						}}
 						extras={id}
 					/>
@@ -189,7 +190,8 @@ export const JobCompletionFeed = ({
 						jobId={jobId}
 						talentId={talent._id}
 						closeModal={() => {
-							setIsModalOpen(false);
+							setScrollPosition(0);
+							setMobileSheet(false);
 						}}
 						extras={id}
 					/>

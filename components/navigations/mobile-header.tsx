@@ -42,7 +42,7 @@ export const MobileHeader = (): ReactElement => {
 	const profileCompleted = value > 70;
 
 	return (
-		<div className="sm:hidden w-full relative overflow-hidden block !z-[99] bg-[#ECFCE5] h-auto max-h-max">
+		<div className="sm:hidden w-full relative overflow-hidden block !z-[9] bg-[#ECFCE5] h-auto max-h-max">
 			<div
 				className={`absolute -left-1 transition-all duration-300 transform translate-x-1/2 z-[5]
 				${scrollPosition === 0 && profileCompleted ? "scale-[1.6] translate-y-1/2" : "scale-100 top-0 translate-y-[2%]"}`}

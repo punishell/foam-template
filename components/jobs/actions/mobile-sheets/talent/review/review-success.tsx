@@ -38,7 +38,8 @@ export const ReviewSuccess: FC<{ closeModal: () => void }> = ({ closeModal }) =>
 							<Button
 								fullWidth
 								size="sm"
-								onClick={() => {
+								onClick={(e) => {
+									e.stopPropagation();
 									closeModal();
 									router.push("/wallet");
 								}}

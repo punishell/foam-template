@@ -4,18 +4,17 @@
 /*                             External Dependency                            */
 /* -------------------------------------------------------------------------- */
 
-import { type FC } from "react";
 import Image from "next/image";
-import { Button } from "pakt-ui";
 import Lottie from "lottie-react";
 
 /* -------------------------------------------------------------------------- */
 /*                             Internal Dependency                            */
 /* -------------------------------------------------------------------------- */
 
-import success from "@/lottiefiles/success.json";
+import { Button } from "@/components/common/button";
+import success from "@/lottiefiles/success-mobile.json";
 
-export const ReviewSuccess: FC<{ closeModal: () => void }> = ({ closeModal }) => {
+export const ReviewSuccess = ({ closeModal }: { closeModal: () => void }): JSX.Element => {
 	return (
 		<div className="flex h-full flex-col items-center justify-center px-4">
 			<div className="flex h-fit flex-col items-center justify-center gap-20">
@@ -24,7 +23,7 @@ export const ReviewSuccess: FC<{ closeModal: () => void }> = ({ closeModal }) =>
 				</div>
 
 				<div className="max-w-[200px]">
-					<Lottie animationData={success} loop={false} />
+					<Lottie animationData={success} loop />
 				</div>
 				<div className="x-mt-40 flex flex-col items-center  gap-9 text-center">
 					<div className="flex flex-col items-center gap-9 text-center">
@@ -32,11 +31,19 @@ export const ReviewSuccess: FC<{ closeModal: () => void }> = ({ closeModal }) =>
 							Your review has been submitted. Payment will be released after talent has submitted their
 							review.
 						</p>
-						<div className="w-full max-w-[200px]">
-							<Button fullWidth size="sm" onClick={closeModal}>
-								Done
-							</Button>
-						</div>
+
+						<Button
+							fullWidth
+							size="lg"
+							onClick={(e) => {
+								e.stopPropagation();
+								closeModal();
+							}}
+							variant="primary"
+							className="w-full max-w-[200px] cursor-pointer"
+						>
+							Go to Dashboard
+						</Button>
 					</div>
 				</div>
 			</div>

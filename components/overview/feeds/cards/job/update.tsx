@@ -218,7 +218,8 @@ export const JobUpdateFeed = ({
 						jobId={jobId}
 						talentId={talent._id}
 						closeModal={() => {
-							setIsModalOpen(false);
+							setScrollPosition(0);
+							setIsMobileModalOpen(false);
 						}}
 						extras={id}
 					/>
@@ -227,7 +228,8 @@ export const JobUpdateFeed = ({
 						jobId={jobId}
 						talentId={talent._id}
 						closeModal={() => {
-							setIsModalOpen(false);
+							setScrollPosition(0);
+							setIsMobileModalOpen(false);
 						}}
 						extras={id}
 					/>
