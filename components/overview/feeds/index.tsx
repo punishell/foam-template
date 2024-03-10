@@ -181,11 +181,13 @@ export const ParseFeedView = (
 		}
 		case FEED_TYPES.REFERRAL_SIGNUP:
 			return (
+				// Done
 				<ReferralSignupFeed
 					key={key}
 					id={feed?._id}
 					name={`${feed?.creator?.firstName ?? ""} ${feed?.creator?.lastName ?? ""}`}
 					title={feed?.title}
+					jobTitle={feed?.creator?.profile?.bio?.title}
 					description={feed?.description}
 					avatar={feed?.creator?.profileImage?.url}
 					userId={feed?.creator?._id}
@@ -197,6 +199,7 @@ export const ParseFeedView = (
 			);
 		case FEED_TYPES.JOB_REVIEW:
 			return (
+				// Done
 				<JobReviewedFeed
 					key={key}
 					id={feed?._id}
@@ -322,6 +325,7 @@ export const ParseFeedView = (
 		case FEED_TYPES.JOB_REVIEW_CHANGE_ACCEPTED:
 		case FEED_TYPES.JOB_REVIEW_CHANGE_DECLINED:
 			return (
+				// Done
 				<ReviewResponseChangeCard
 					key={key}
 					id={feed?._id}

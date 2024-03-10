@@ -154,7 +154,7 @@ export const ReviewChangeCard = ({
 			onKeyDown={() => {
 				setIsMobileModalOpen(true);
 			}}
-			className="cursor-pointer relative z-10 flex flex-col w-full gap-4 overflow-hidden border-b border-[#FF5247] bg-[#FFF4F4] px-[21px] py-4"
+			className="cursor-pointer z-10 flex flex-col w-full gap-4 overflow-hidden border-b border-[#FF5247] bg-[#FFF4F4] px-[21px] py-4"
 		>
 			<div className="flex items-center gap-2 relative -left-[5px]">
 				<AfroProfile
