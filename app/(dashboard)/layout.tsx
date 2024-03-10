@@ -25,6 +25,7 @@ import { Sidebar } from "@/components/navigations/side-nav";
 import { PageLoading } from "@/components/common/page-loading";
 import { BottomNav } from "@/components/navigations/bottom-nav";
 import { MobileHeader } from "@/components/navigations/mobile-header";
+import { MobileLeaderBoard } from "@/components/overview/leaderboard/mobile";
 
 function Loader(): React.JSX.Element {
 	return (
@@ -198,6 +199,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 							{children}
 						</div>
 						<BottomNav />
+						<MobileLeaderBoard />
 					</div>
 				</div>
 			</MessagingProvider>

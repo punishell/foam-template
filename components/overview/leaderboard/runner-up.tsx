@@ -1,6 +1,12 @@
 "use client";
 
 /* -------------------------------------------------------------------------- */
+/*                             External Dependency                            */
+/* -------------------------------------------------------------------------- */
+
+import { useMediaQuery } from "usehooks-ts";
+
+/* -------------------------------------------------------------------------- */
 /*                             Internal Dependency                            */
 /* -------------------------------------------------------------------------- */
 
@@ -9,7 +15,8 @@ import { type LeaderBoardItemProps } from "./types";
 import { AfroProfile } from "@/components/common/afro-profile";
 
 export const RunnerUp = ({ _id, name, score, avatar, place }: LeaderBoardItemProps): React.ReactElement => {
-	return (
+	const tab = useMediaQuery("(min-width: 640px)");
+	return tab ? (
 		<div className="relative">
 			<svg fill="none" preserveAspectRatio="xMaxYMid meet" viewBox="0 0 247 62">
 				<path
@@ -18,6 +25,19 @@ export const RunnerUp = ({ _id, name, score, avatar, place }: LeaderBoardItemPro
 				/>
 			</svg>
 			<div className="absolute inset-0 flex items-center gap-2 p-3 pl-1">
+				<AfroProfile src={avatar} score={Math.round(score)} size="sm" url={`talents/${_id}`} />
+				<div className="grow">
+					<span className="text-base text-[#ECFCE5] ">{truncate(name, 15)}</span>
+					<div className="flex items-center justify-between gap-2">
+						<span className="text-sm text-[#F2F4F5]">Afroscore: {Math.round(score)}</span>
+						<span className="text-sm text-[#CDCFD0]">{place}</span>
+					</div>
+				</div>
+			</div>
+		</div>
+	) : (
+		<div className="relative bg-primary h-[67px] rounded-2xl flex items-center justify-center">
+			<div className="flex items-center gap-2 p-3 pl-1 w-full">
 				<AfroProfile src={avatar} score={Math.round(score)} size="sm" url={`talents/${_id}`} />
 				<div className="grow">
 					<span className="text-base text-[#ECFCE5] ">{truncate(name, 15)}</span>

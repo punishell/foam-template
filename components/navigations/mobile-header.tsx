@@ -15,28 +15,16 @@ import { ChevronRight, UserPlus } from "lucide-react";
 import { UserBalance } from "@/components/common/user-balance";
 import { ReferralSideModal } from "../overview/header/refer";
 import { useUserState } from "@/lib/store/account";
-// import { useGetTalentReviewById } from "@/lib/api";
-// import { hasFiveStarReview } from "@/lib/types";
 import { AfroProfile } from "@/components/common/afro-profile";
 import { Button } from "../common/button";
-import { useHeaderScroll } from "@/lib/store";
+import { useHeaderScroll, useLeaderboard } from "@/lib/store";
 
 export const MobileHeader = (): ReactElement => {
 	const [referOpen, _setReferOpen] = useState(false);
 	const [expand, setExpand] = useState(false);
 	const { profileCompleteness, profileImage } = useUserState();
 	const { scrollPosition } = useHeaderScroll();
-	// const {
-	// 	data: reviewData,
-	// 	refetch,
-	// 	isLoading,
-	// } = useGetTalentReviewById(_id, "1", "100");
-
-	// checking refer availability
-	// useEffect(() => {
-	// 	void refetch();
-	// 	// eslint-disable-next-line react-hooks/exhaustive-deps
-	// }, []);
+	const { setLeaderboardView } = useLeaderboard();
 
 	const value = profileCompleteness ?? 0;
 	const profileCompleted = value > 70;
@@ -80,12 +68,14 @@ export const MobileHeader = (): ReactElement => {
 			>
 				<div className="absolute inset-0 bg-[url(/images/rain.png)] bg-repeat opacity-50 -z-[1]" />
 				<div className="flex items-center justify-between w-full z-20 gap-2">
-					<Button className="w-full h-[38px] bg-white rounded-[10px] border border-primary flex justify-end">
+					<Button
+						className="w-[240px] h-[38px] bg-white rounded-[10px] border border-primary flex justify-end"
+						onClick={() => {
+							setLeaderboardView(true);
+						}}
+					>
 						<div className="flex items-center gap-2">
-							<div className="flex items-center gap-1">
-								<span className="text-primary text-xs">Leaderboard Position:</span>
-								<span className="text-primary text-base">49/750</span>
-							</div>
+							<span className="text-primary text-xs">View Leaderboard</span>
 							<ChevronRight className="text-primary h-4 w-4" />
 						</div>
 					</Button>

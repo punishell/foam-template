@@ -21,3 +21,15 @@ export const useHeaderScroll = create<HeaderScroll>((set) => ({
 		set({ scrollPosition });
 	},
 }));
+
+interface LeaderboardProps {
+	leaderboardView: boolean;
+	setLeaderboardView: (leaderboardView: boolean) => void;
+}
+
+export const useLeaderboard = create<LeaderboardProps>((set) => ({
+	leaderboardView: false,
+	setLeaderboardView: (leaderboardView: boolean) => {
+		set({ leaderboardView });
+	},
+}));
