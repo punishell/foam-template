@@ -38,7 +38,7 @@ export const Breadcrumb: FC<BreadcrumbProps> = ({ items, closeSheet }) => {
 			<div className="justify-start items-start inline-flex">
 				<div className="justify-start items-start flex">
 					<div className="justify-center items-center gap-2 flex">
-						{items.map((item, index) => (
+						{items?.map((item, index) => (
 							<div key={index} className="flex items-center">
 								{index !== 0 && <ChevronRight size={20} className="text-gray-500" />}
 								<Button
