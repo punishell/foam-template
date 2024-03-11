@@ -18,16 +18,14 @@ import { RenderBookMark } from "@/components/jobs/misc/render-bookmark";
 import { AfroProfile } from "@/components/common/afro-profile";
 import { SideModal } from "@/components/common/side-modal";
 import { useHeaderScroll } from "@/lib/store";
+import { MobileSheetWrapper } from "@/components/common/mobile-sheet-wrapper";
+import { titleCase } from "@/lib/utils";
 
 import { ClientJobModal } from "@/components/jobs/actions/desktop-sheets/client";
 import { TalentJobModal } from "@/components/jobs/actions/desktop-sheets/talent";
 
 import { TalentJobSheetForMobile } from "@/components/jobs/actions/mobile-sheets/talent";
 import { ClientJobModalForMobile } from "@/components/jobs/actions/mobile-sheets/client";
-
-import MobileSheetWrapper from "@/components/jobs/actions/mobile-sheets/sheet-wrapper";
-import { titleCase } from "@/lib/utils";
-// import { useUserState } from "@/lib/store/account";
 
 interface ReviewChangeProps {
 	id: string;
@@ -194,15 +192,7 @@ export const ReviewChangeCard = ({
 					<RenderBookMark size={20} isBookmarked={bookmarked} type="feed" id={id} bookmarkId={bookmarkId} />
 				</div>
 			</div>
-			<MobileSheetWrapper
-				closeSheet={() => {
-					setScrollPosition(0);
-					setIsMobileModalOpen(false);
-				}}
-				isOpen={isMobileModalOpen}
-				from="Jobs"
-				to="Update Job"
-			>
+			<MobileSheetWrapper isOpen={isMobileModalOpen}>
 				{isCreator ? (
 					<ClientJobModalForMobile
 						jobId={jobId}

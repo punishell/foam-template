@@ -20,7 +20,7 @@ import { SideModal } from "@/components/common/side-modal";
 import { useHeaderScroll } from "@/lib/store";
 import { titleCase } from "@/lib/utils";
 
-import MobileSheetWrapper from "@/components/jobs/actions/mobile-sheets/sheet-wrapper";
+import { MobileSheetWrapper } from "@/components/common/mobile-sheet-wrapper";
 
 import { ClientJobModal } from "@/components/jobs/actions/desktop-sheets/client";
 import { TalentJobModal } from "@/components/jobs/actions/desktop-sheets/talent";
@@ -212,15 +212,7 @@ export const JobReviewedFeed = ({
 				</div>
 			</div>
 
-			<MobileSheetWrapper
-				closeSheet={() => {
-					setScrollPosition(0);
-					setMobileSheet(false);
-				}}
-				isOpen={mobileSheet}
-				from="Jobs"
-				to="Finalize & Review"
-			>
+			<MobileSheetWrapper isOpen={mobileSheet}>
 				{isCreator ? (
 					<ClientJobModalForMobile
 						jobId={jobId}

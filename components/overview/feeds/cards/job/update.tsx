@@ -19,7 +19,8 @@ import { DeliverableProgressBar } from "@/components/common/deliverable-progress
 import { AfroProfile } from "@/components/common/afro-profile";
 import { SideModal } from "@/components/common/side-modal";
 import { CheckBox } from "@/components/common/checkBox";
-
+import { MobileSheetWrapper } from "@/components/common/mobile-sheet-wrapper";
+import { useHeaderScroll } from "@/lib/store";
 import { titleCase } from "@/lib/utils";
 
 import { ClientJobModal } from "@/components/jobs/actions/desktop-sheets/client";
@@ -27,8 +28,6 @@ import { TalentJobModal } from "@/components/jobs/actions/desktop-sheets/talent"
 
 import { ClientJobModalForMobile } from "@/components/jobs/actions/mobile-sheets/client";
 import { TalentJobSheetForMobile } from "@/components/jobs/actions/mobile-sheets/talent";
-import MobileSheetWrapper from "@/components/jobs/actions/mobile-sheets/sheet-wrapper";
-import { useHeaderScroll } from "@/lib/store";
 
 interface TalentJobUpdateProps {
 	id: string;

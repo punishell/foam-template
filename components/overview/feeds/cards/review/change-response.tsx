@@ -18,14 +18,13 @@ import { AfroProfile } from "@/components/common/afro-profile";
 import { SideModal } from "@/components/common/side-modal";
 import { useHeaderScroll } from "@/lib/store";
 import { titleCase } from "@/lib/utils";
+import { MobileSheetWrapper } from "@/components/common/mobile-sheet-wrapper";
 
 import { ClientJobModal } from "@/components/jobs/actions/desktop-sheets/client";
 import { TalentJobModal } from "@/components/jobs/actions/desktop-sheets/talent";
 
 import { TalentJobSheetForMobile } from "@/components/jobs/actions/mobile-sheets/talent";
 import { ClientJobModalForMobile } from "@/components/jobs/actions/mobile-sheets/client";
-
-import MobileSheetWrapper from "@/components/jobs/actions/mobile-sheets/sheet-wrapper";
 
 interface ReviewResponseChangeProps {
 	id: string;
@@ -178,15 +177,7 @@ export const ReviewResponseChangeCard = ({
 			</div>
 
 			{/* Sidebar Sheet */}
-			<MobileSheetWrapper
-				closeSheet={() => {
-					setScrollPosition(0);
-					setMobileSheet(false);
-				}}
-				isOpen={mobileSheet}
-				from="Jobs"
-				to="Finalize & Review"
-			>
+			<MobileSheetWrapper isOpen={mobileSheet}>
 				{isCreator ? (
 					<ClientJobModalForMobile
 						jobId={jobId}

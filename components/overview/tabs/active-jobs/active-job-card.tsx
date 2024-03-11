@@ -17,14 +17,17 @@ import { useMediaQuery } from "usehooks-ts";
 import { useUserState } from "@/lib/store/account";
 import { DeliverableProgressBar } from "@/components/common/deliverable-progress-bar";
 import { SideModal } from "@/components/common/side-modal";
-import { TalentJobModal } from "@/components/jobs/actions/desktop-sheets/talent";
-import { ClientJobModal } from "@/components/jobs/actions/desktop-sheets/client";
 import { AfroProfile } from "@/components/common/afro-profile";
 import { useHeaderScroll } from "@/lib/store";
 import { titleCase } from "@/lib/utils";
-import MobileSheetWrapper from "@/components/jobs/actions/mobile-sheets/sheet-wrapper";
+
+import { MobileSheetWrapper } from "@/components/common/mobile-sheet-wrapper";
+
 import { TalentJobSheetForMobile } from "@/components/jobs/actions/mobile-sheets/talent";
 import { ClientJobModalForMobile } from "@/components/jobs/actions/mobile-sheets/client";
+
+import { TalentJobModal } from "@/components/jobs/actions/desktop-sheets/talent";
+import { ClientJobModal } from "@/components/jobs/actions/desktop-sheets/client";
 
 interface ActiveJobCardProps {
 	id: string;
@@ -193,21 +196,16 @@ export const ActiveJobCard = ({
 			</div>
 			{/* Sidebar Sheet */}
 			<MobileSheetWrapper
-				closeSheet={() => {
-					setScrollPosition(0);
-					setIsMobileModalOpen(false);
-				}}
 				isOpen={isMobileModalOpen}
-				from="Jobs"
-				to={
-					isCreator && jobProgress < 100
-						? "View Updates"
-						: isCreator && jobProgress === 100
-							? "Review"
-							: !isCreator && jobProgress === 100
-								? "Review"
-								: "Update"
-				}
+				// to={
+				// 	isCreator && jobProgress < 100
+				// 		? "View Updates"
+				// 		: isCreator && jobProgress === 100
+				// 			? "Review"
+				// 			: !isCreator && jobProgress === 100
+				// 				? "Review"
+				// 				: "Update"
+				// }
 			>
 				{!isCreator ? (
 					<TalentJobSheetForMobile
