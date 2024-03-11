@@ -8,6 +8,7 @@ import { useState, type FC } from "react";
 import { Star } from "lucide-react";
 import { Button } from "pakt-ui";
 import Rating from "react-rating";
+import { useRouter } from "next/navigation";
 
 /* -------------------------------------------------------------------------- */
 /*                             Internal Dependency                            */
@@ -17,6 +18,7 @@ import { useCreateJobReview } from "@/lib/api/job";
 import { Spinner } from "@/components/common";
 import { type Job } from "@/lib/types";
 import { AfroProfile } from "@/components/common/afro-profile";
+import { Breadcrumb } from "@/components/common/breadcrumb";
 
 interface ReviewTalentProps {
 	job: Job;
@@ -25,12 +27,24 @@ interface ReviewTalentProps {
 const MAX_COMMENT_LENGTH = 150;
 
 export const ReviewTalentForm: FC<ReviewTalentProps> = ({ job }) => {
+	const router = useRouter();
 	const mutation = useCreateJobReview();
 	const { _id, owner } = job;
 	const [rating, setRating] = useState(0);
 	const [comment, setComment] = useState("");
 	return (
 		<>
+			<Breadcrumb
+				items={[
+					{
+						label: "Jobs",
+						action: () => {
+							router.push("/jobs?skills=&search=&range=%2C100&jobs-type=created");
+						},
+					},
+					{ label: "Review Job", active: true },
+				]}
+			/>
 			<div className="bg-primary-gradient px-4 py-6 text-2xl font-bold text-white">
 				<h3 className="break-words text-lg">Review</h3>
 			</div>

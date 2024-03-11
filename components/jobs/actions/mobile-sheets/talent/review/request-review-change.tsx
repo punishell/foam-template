@@ -6,8 +6,9 @@
 
 import { useState, type FC } from "react";
 import { Button } from "pakt-ui";
-import { ChevronLeft, Star } from "lucide-react";
+import { Star } from "lucide-react";
 import Rating from "react-rating";
+import { useRouter } from "next/navigation";
 
 /* -------------------------------------------------------------------------- */
 /*                             Internal Dependency                            */
@@ -16,6 +17,7 @@ import Rating from "react-rating";
 import { useRequestReviewChange } from "@/lib/api/job";
 import { Spinner } from "@/components/common";
 import { type Job } from "@/lib/types";
+import { Breadcrumb } from "@/components/common/breadcrumb";
 
 interface RequestReviewChangeProps {
 	job: Job;
@@ -32,6 +34,7 @@ export const RequestReviewChange: FC<RequestReviewChangeProps> = ({
 	setRequestReviewChange,
 	setReviewChangeRequestPending,
 }) => {
+	const router = useRouter();
 	const mutation = useRequestReviewChange({ recipientId });
 	const [reason, setReason] = useState("");
 
@@ -39,20 +42,26 @@ export const RequestReviewChange: FC<RequestReviewChangeProps> = ({
 
 	return (
 		<>
-			<div className="bg-primary-gradient px-4 py-6 text-2xl font-bold text-white">
-				<div className="flex items-center gap-2">
-					<button
-						onClick={() => {
+			<Breadcrumb
+				items={[
+					{
+						label: "Jobs",
+						action: () => {
+							router.push("/jobs?skills=&search=&range=%2C100&jobs-type=accepted");
+						},
+					},
+					{
+						label: "Review Job",
+						action: () => {
 							setRequestReviewChange(false);
-						}}
-						type="button"
-						aria-label="Close"
-					>
-						<ChevronLeft />
-					</button>
-					<h3 className="break-words text-lg">Review</h3>
-				</div>
-			</div>
+						},
+					},
+					{
+						label: "Resubmission",
+						active: true,
+					},
+				]}
+			/>
 			<div className="flex h-[calc(100%-70px)] flex-col gap-6 px-4 py-4">
 				<div className="flex flex-col gap-2 rounded-xl bg-[#FEF4E3] p-3">
 					If the client approves your request, the job will be reopened. After completion both parties will

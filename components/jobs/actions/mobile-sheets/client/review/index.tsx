@@ -27,7 +27,7 @@ export const ReviewTalent: FC<ReviewTalentProps> = ({ job, closeModal }) => {
 	const clientHasReviewed = job.ratings?.some((review) => review.owner._id === job.creator._id);
 
 	return reviewChangeRequestPending ? (
-		<ReviewChangeRequested job={job} closeModal={closeModal} />
+		<ReviewChangeRequested job={job} />
 	) : clientHasReviewed ? (
 		<ReviewSuccess closeModal={closeModal} />
 	) : (

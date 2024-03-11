@@ -18,6 +18,7 @@ import { useCreateJobReview, useReleaseJobPayment } from "@/lib/api/job";
 import { Spinner } from "@/components/common";
 import { type Job } from "@/lib/types";
 import { AfroProfile } from "@/components/common/afro-profile";
+import { Breadcrumb } from "@/components/common/breadcrumb";
 
 interface ReviewClientProps {
 	job: Job;
@@ -44,10 +45,20 @@ export const ReviewClientForm: FC<ReviewClientProps> = ({
 
 	return (
 		<>
-			<div className="bg-primary-gradient px-4 py-6 text-2xl font-bold text-white">
-				<h3 className="break-words text-lg">Review</h3>
-			</div>
-
+			<Breadcrumb
+				items={[
+					{
+						label: "Jobs",
+						action: () => {
+							router.push("/jobs?skills=&search=&range=%2C100&jobs-type=accepted");
+						},
+					},
+					{
+						label: "Review Job",
+						active: true,
+					},
+				]}
+			/>
 			<div className="flex h-[calc(100%-70px)] flex-col gap-4 p-4">
 				{clientReview && clientReview.rating < 5 && !reviewChangeRequestCompleted && (
 					<div className="xborder-line flex flex-col gap-3 rounded-xl border border-[#7DDE86] p-3">
