@@ -6,6 +6,7 @@
 
 import { useState, type FC } from "react";
 import { ChevronDown, MoreVertical } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 /* -------------------------------------------------------------------------- */
 /*                             Internal Dependency                            */
@@ -15,6 +16,7 @@ import { JobUpdateHeader } from "./header";
 import { isJobDeliverable, type Job } from "@/lib/types";
 import { DeliverablesStepper } from "@/components/jobs/misc/deliverables-stepper";
 import { Popover, PopoverTrigger, PopoverContent } from "@/components/common/popover";
+import { Breadcrumb } from "@/components/common/breadcrumb";
 
 interface JobUpdatesProps {
 	job: Job;
@@ -22,6 +24,7 @@ interface JobUpdatesProps {
 }
 
 export const JobUpdates: FC<JobUpdatesProps> = ({ job, requestJobCancellation }) => {
+	const router = useRouter();
 	const {
 		name,
 		owner,
@@ -40,6 +43,17 @@ export const JobUpdates: FC<JobUpdatesProps> = ({ job, requestJobCancellation })
 
 	return (
 		<>
+			<Breadcrumb
+				items={[
+					{
+						label: "Jobs",
+						action: () => {
+							router.push("/jobs?skills=&search=&range=%2C100&jobs-type=accepted");
+						},
+					},
+					{ label: "Job Updates", active: true },
+				]}
+			/>
 			<div className="flex items-start justify-between bg-primary-gradient px-4 py-6 text-3xl font-bold text-white">
 				<div className="max-w-[90%] break-words text-lg">{name}</div>
 				<Popover>
@@ -84,7 +98,7 @@ export const JobUpdates: FC<JobUpdatesProps> = ({ job, requestJobCancellation })
 							className={`h-6 w-6 transform duration-300 ${showDescription ? "rotate-[360deg]" : "rotate-[270deg]"}`}
 						/>
 					</button>
-					<p className="leading-normal tracking-wide text-base line-clamp-7">{description}</p>
+					<p className="leading-normal tracking-wide text-base font-normal line-clamp-7">{description}</p>
 				</div>
 				<div className="flex grow flex-col gap-2 p-4">
 					<div className="flex flex-col items-start">

@@ -6,7 +6,7 @@
 
 import { useState, type FC } from "react";
 import { ChevronDown, MoreVertical } from "lucide-react";
-import { useMediaQuery } from "usehooks-ts";
+import { useRouter } from "next/navigation";
 
 /* -------------------------------------------------------------------------- */
 /*                             Internal Dependency                            */
@@ -16,6 +16,7 @@ import { isJobDeliverable, type Job } from "@/lib/types";
 import { DeliverablesStepper } from "@/components/jobs/misc/deliverables-stepper";
 import { Popover, PopoverTrigger, PopoverContent } from "@/components/common/popover";
 import { JobUpdateHeader } from "./header";
+import { Breadcrumb } from "@/components/common/breadcrumb";
 
 interface JobUpdatesProps {
 	job: Job;
@@ -23,6 +24,7 @@ interface JobUpdatesProps {
 }
 
 export const JobUpdates: FC<JobUpdatesProps> = ({ job, requestJobCancellation }) => {
+	const router = useRouter();
 	const {
 		name,
 		tags,
@@ -41,6 +43,17 @@ export const JobUpdates: FC<JobUpdatesProps> = ({ job, requestJobCancellation })
 
 	return (
 		<>
+			<Breadcrumb
+				items={[
+					{
+						label: "Jobs",
+						action: () => {
+							router.push("/jobs?skills=&search=&range=%2C100&jobs-type=created");
+						},
+					},
+					{ label: "Job Updates", active: true },
+				]}
+			/>
 			<div className="flex items-start justify-between bg-primary-gradient px-4 py-6 text-3xl font-bold text-white">
 				<h3 className="max-w-[90%] break-words text-lg">{name}</h3>
 				<Popover>

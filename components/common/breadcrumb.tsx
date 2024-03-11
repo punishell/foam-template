@@ -16,6 +16,7 @@ import { Button } from "@/components/common/button";
 interface BreadcrumbItem {
 	label: string;
 	action?: () => void;
+	active?: boolean;
 }
 
 interface BreadcrumbProps {
@@ -23,7 +24,7 @@ interface BreadcrumbProps {
 }
 
 export const Breadcrumb: FC<BreadcrumbProps> = ({ items }) => {
-	const [activeIndex, setActiveIndex] = useState<number>(0);
+	const [activeIndex, setActiveIndex] = useState<number | null>(null);
 
 	const handleItemClick = (index: number): void => {
 		setActiveIndex(index);
@@ -32,15 +33,15 @@ export const Breadcrumb: FC<BreadcrumbProps> = ({ items }) => {
 		}
 	};
 	return (
-		<div className="sm:hidden w-full h-[43px] px-[35px] py-[11px] bg-neutral-50 border border-gray-200 flex-col justify-start items-start gap-2.5 inline-flex sticky -top-[1px] left-0 z-50">
+		<div className="sm:hidden w-full h-[43px] px-4 bg-neutral-50 border border-gray-200 flex-col justify-start items-start gap-2.5 inline-flex sticky -top-[1px] left-0 z-50">
 			<div className="justify-start items-start inline-flex">
 				<div className="justify-start items-start flex">
 					<div className="justify-center items-center gap-2 flex">
 						{items?.map((item, index) => (
-							<div key={index} className="flex items-center">
+							<div key={index} className="flex items-center gap-2">
 								{index !== 0 && <ChevronRight size={20} className="text-gray-500" />}
 								<Button
-									className={`cursor-pointer text-sm leading-[21px] tracking-wide ${index === activeIndex ? "font-semibold text-primary" : "text-gray-500"}`}
+									className={`cursor-pointer text-sm leading-[21px] tracking-wide p-0 m-0 ${item.active ?? index === activeIndex ? "font-semibold !text-primary" : "!text-gray-500"}`}
 									onClick={(e) => {
 										e.stopPropagation();
 										handleItemClick(index);
