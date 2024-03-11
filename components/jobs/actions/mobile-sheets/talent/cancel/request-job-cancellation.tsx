@@ -57,7 +57,7 @@ export const RequestJobCancellation: FC<RequestJobCancellationProps> = ({
 			</div>
 
 			<div className="flex h-full grow flex-col gap-6 px-4 py-6">
-				<div className="rounded-2xl  border border-yellow-dark bg-[#FEF4E3] p-4">
+				<div className="rounded-2xl bg-[#FEF4E3] p-4">
 					The client will need to accept for the cancellation to be effective.
 				</div>
 

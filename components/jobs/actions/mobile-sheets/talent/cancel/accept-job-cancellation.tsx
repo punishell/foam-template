@@ -48,7 +48,7 @@ export const AcceptJobCancellation: FC<AcceptJobCancellationProps> = ({ setAccep
 
 	return (
 		<>
-			<div className="flex items-center justify-between bg-gradient-to-r from-danger via-red-500 to-red-400 px-4 py-6 text-3xl font-bold text-white">
+			<div className="flex items-center justify-between bg-gradient-to-r from-danger via-red-500 to-red-400 px-4 py-6 text-lg font-bold">
 				<div className="flex items-center gap-2">
 					<button
 						onClick={() => {

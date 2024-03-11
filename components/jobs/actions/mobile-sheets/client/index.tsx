@@ -6,6 +6,7 @@
 
 import { type FC, useState } from "react";
 import Lottie from "lottie-react";
+import { useRouter } from "next/navigation";
 
 /* -------------------------------------------------------------------------- */
 /*                             Internal Dependency                            */
@@ -21,6 +22,7 @@ import { ReviewTalent } from "./review";
 import { JobCancellationRequest } from "./cancel/review-job-cancellation-request";
 import { RequestJobCancellation } from "./cancel/request-job-cancellation";
 import { JobCancellationSuccessRequested } from "./cancel/job-cancellation-request-success";
+import { Button } from "@/components/common/button";
 
 interface ClientJobModalProps {
 	jobId: string;
@@ -30,6 +32,7 @@ interface ClientJobModalProps {
 }
 
 export const ClientJobModalForMobile: FC<ClientJobModalProps> = ({ jobId, talentId, closeModal, extras }) => {
+	const router = useRouter();
 	const query = useGetJobById({ jobId, extras });
 	const [isRequestingJobCancellation, setIsRequestingJobCancellation] = useState(false);
 
@@ -66,6 +69,19 @@ export const ClientJobModalForMobile: FC<ClientJobModalProps> = ({ jobId, talent
 					<Lottie animationData={warning} loop={false} />
 				</div>
 				<span>This Job has been cancelled</span>
+				<div className="w-full max-w-[200px] mt-8">
+					<Button
+						fullWidth
+						size="lg"
+						onClick={() => {
+							closeModal();
+							router.push("/overview");
+						}}
+						variant="primary"
+					>
+						Go To Dashboard
+					</Button>
+				</div>
 			</div>
 		);
 	}

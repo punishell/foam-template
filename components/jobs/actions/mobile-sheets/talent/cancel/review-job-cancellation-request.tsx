@@ -48,12 +48,12 @@ export const ReviewJobCancellationRequest: FC<ReviewJobCancellationRequestProps>
 
 	return (
 		<>
-			<div className="flex items-center justify-between bg-gradient-to-r from-danger via-red-500 to-red-400 px-4 py-6 text-3xl font-bold text-white">
+			<div className="flex items-center justify-between bg-gradient-to-r from-danger via-red-500 to-red-400 px-4 py-6 text-lg font-bold">
 				<div className="flex items-center gap-2">
 					<span>{jobTitle}</span>
 				</div>
 			</div>
-			<div className="flex h-fit min-h-full grow flex-col gap-6 px-4 py-6">
+			<div className="flex h-fit min-h-full grow flex-col pb-6">
 				<JobUpdateHeader
 					status="cancel_requested"
 					createdAt={createdAt}
@@ -64,14 +64,14 @@ export const ReviewJobCancellationRequest: FC<ReviewJobCancellationRequestProps>
 				/>
 
 				<div className="flex flex-col gap-2">
-					<h3 className="text-lg font-bold">Explanation</h3>
-					<div className="flex flex-col gap-2 rounded-xl border border-yellow bg-[#FEF4E3] p-3">
+					<div className="flex flex-col gap-2 border-yellow bg-[#FEF4E3] p-3">
+						<h3 className="text-lg font-bold">Explanation</h3>
 						<h3 className="font-bold">{jobCancellation?.name}</h3>
 						<p>{jobCancellation?.description}</p>
 					</div>
 				</div>
 
-				<div className="flex flex-col gap-2">
+				<div className="flex flex-col gap-2 p-4">
 					<h3 className="text-lg font-bold">Deliverables</h3>
 
 					<DeliverablesStepper
@@ -94,7 +94,7 @@ export const ReviewJobCancellationRequest: FC<ReviewJobCancellationRequestProps>
 						)}
 					/>
 				</div>
-				<div className="pb-6">
+				<div className="pb-6 px-4">
 					<div className="mt-auto rounded-xl border border-red-300">
 						<Button
 							size="sm"

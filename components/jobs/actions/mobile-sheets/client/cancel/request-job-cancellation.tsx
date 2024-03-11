@@ -48,7 +48,7 @@ export const RequestJobCancellation: FC<RequestJobCancellationProps> = ({
 
 	return (
 		<>
-			<div className="flex items-center justify-between bg-primary-gradient px-4 py-6 text-3xl font-bold text-white">
+			<div className="flex items-center justify-between bg-cancel-job-header px-4 py-6 text-lg font-bold">
 				<div className="flex items-center gap-2">
 					<button onClick={cancelJobCancellationRequest} type="button" aria-label="Back">
 						<ChevronLeft />
@@ -58,7 +58,7 @@ export const RequestJobCancellation: FC<RequestJobCancellationProps> = ({
 			</div>
 
 			<div className="flex h-full grow flex-col gap-6 px-4 py-6">
-				<div className="rounded-2xl  border border-yellow-dark bg-[#FEF4E3] p-4">
+				<div className="rounded-2xl  bg-[#FEF4E3] p-4">
 					The talent will need to accept for the cancellation to be effective.
 				</div>
 
