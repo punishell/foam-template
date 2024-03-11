@@ -9,6 +9,12 @@ import { Button, Slider } from "pakt-ui";
 import { ChevronLeft, Star } from "lucide-react";
 import Rating from "react-rating";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
+
+/* -------------------------------------------------------------------------- */
+/*                             Internal Dependency                            */
+/* -------------------------------------------------------------------------- */
+
 import type { Job, UserProfile } from "@/lib/types";
 import { isJobDeliverable } from "@/lib/types";
 import { Spinner } from "@/components/common";
@@ -16,6 +22,7 @@ import { DeliverableProgressBar } from "@/components/common/deliverable-progress
 import { useAcceptJobCancellation } from "@/lib/api/job";
 import { AfroScore } from "@/components/common/afro-profile";
 import { DefaultAvatar } from "@/components/common/default-avatar";
+import { Breadcrumb } from "@/components/common/breadcrumb";
 
 const MAX_REVIEW_LENGTH = 500;
 
@@ -26,6 +33,7 @@ interface AcceptJobCancellationProps {
 }
 
 export const AcceptJobCancellation: FC<AcceptJobCancellationProps> = ({ setAcceptCancellation, talent, job }) => {
+	const router = useRouter();
 	const cancelJobMutation = useAcceptJobCancellation();
 
 	const totalDeliverables = job.collections.filter(isJobDeliverable).length;
@@ -43,7 +51,21 @@ export const AcceptJobCancellation: FC<AcceptJobCancellationProps> = ({ setAccep
 
 	return (
 		<>
-			<div className="flex items-center justify-between bg-gradient-to-r from-danger via-red-500 to-red-400 px-4 py-6 text-3xl font-bold text-white">
+			<Breadcrumb
+				items={[
+					{
+						label: "Jobs",
+						action: () => {
+							router.push("/jobs?skills=&search=&range=%2C100&jobs-type=created");
+						},
+					},
+					{
+						label: "Cancel Job",
+						active: true,
+					},
+				]}
+			/>
+			<div className="flex items-center justify-between bg-gradient-to-r from-danger via-red-500 to-red-400 px-4 py-6 text-lg font-bold">
 				<div className="flex items-center gap-2">
 					<button
 						onClick={() => {
@@ -58,7 +80,7 @@ export const AcceptJobCancellation: FC<AcceptJobCancellationProps> = ({ setAccep
 				</div>
 			</div>
 
-			<div className="flex h-full grow flex-col gap-10 px-4 py-6">
+			<div className="flex h-[calc(100%-70px)] grow flex-col gap-4 px-4 py-6">
 				<DeliverableProgressBar
 					totalDeliverables={totalDeliverables}
 					className="max-w-none text-base"
@@ -68,7 +90,7 @@ export const AcceptJobCancellation: FC<AcceptJobCancellationProps> = ({ setAccep
 				<div className="flex flex-col gap-1">
 					<p className="text-title">Proposed Job Price: ${job.paymentFee}</p>
 
-					<div className="flex flex-col gap-3 rounded-lg border border-gray-200 bg-slate-50 p-3">
+					<div className="flex flex-col gap-3 rounded-lg border border-gray-200 bg-[#F8FFF4] p-3">
 						<p className="flex items-center gap-2 text-body">
 							<span>Amount to pay the Talent:</span>{" "}
 							<span className="font-bold text-green-600">${Math.floor(amountToPay)}</span>
@@ -89,7 +111,7 @@ export const AcceptJobCancellation: FC<AcceptJobCancellationProps> = ({ setAccep
 
 				<div className="flex flex-col gap-1">
 					<span className="text-title">How was your experience with {talent?.firstName}?</span>
-					<div className="flex flex-col gap-3 rounded-lg border border-gray-200 bg-slate-50 p-3">
+					<div className="flex flex-col gap-3 rounded-lg border border-gray-200 bg-[#F8FFF4] p-3">
 						<div className="flex items-center justify-between">
 							<div className="flex items-center gap-2">
 								<AfroScore score={talent?.score ?? 0} size="sm">

@@ -13,7 +13,7 @@ import { Button } from "pakt-ui";
 
 import type { Job } from "@/lib/types";
 import { isJobCancellation, isJobDeliverable } from "@/lib/types";
-import { JobUpdateHeader } from "../../../desktop-sheets/talent/update/header";
+import { JobUpdateHeader } from "../update/header";
 import { DeliverablesStepper } from "@/components/jobs/misc/deliverables-stepper";
 import { AcceptJobCancellation } from "./accept-job-cancellation";
 
@@ -50,12 +50,12 @@ export const JobCancellationRequest: FC<JobCancellationRequestProps> = ({ job })
 
 	return (
 		<>
-			<div className="flex items-center justify-between bg-gradient-to-r from-danger via-red-500 to-red-400 px-4 py-6 text-3xl font-bold text-white">
+			<div className="flex items-center justify-between bg-gradient-to-r from-danger via-red-500 to-red-400 px-4 py-6 text-lg font-bold">
 				<div className="flex items-center gap-2">
 					<span>{jobTitle}</span>
 				</div>
 			</div>
-			<div className="flex h-full grow flex-col gap-6 px-4 py-6 pb-6">
+			<div className="flex h-auto flex-col pb-6">
 				<JobUpdateHeader
 					status="cancel_requested"
 					createdAt={createdAt}
@@ -66,14 +66,14 @@ export const JobCancellationRequest: FC<JobCancellationRequestProps> = ({ job })
 				/>
 
 				<div className="flex flex-col gap-2">
-					<h3 className="text-lg font-bold">Explanation</h3>
-					<div className="flex flex-col gap-2 rounded-xl border border-yellow bg-[#FEF4E3] p-3">
+					<div className="flex flex-col gap-2 bg-[#FEF4E3] p-3">
+						<h3 className="text-lg font-bold">Explanation</h3>
 						<h3 className="font-bold">{jobCancellation?.name}</h3>
 						<p>{jobCancellation?.description}</p>
 					</div>
 				</div>
 
-				<div className="flex flex-col gap-2">
+				<div className="flex flex-col gap-2 p-4">
 					<h3 className="text-lg font-bold">Deliverables</h3>
 					<DeliverablesStepper
 						jobId={jobId}
@@ -95,7 +95,7 @@ export const JobCancellationRequest: FC<JobCancellationRequestProps> = ({ job })
 						)}
 					/>
 				</div>
-				<div className="pb-6">
+				<div className="pb-6 px-4">
 					<div className="mb-6 mt-auto rounded-xl border border-red-300">
 						<Button
 							size="sm"
