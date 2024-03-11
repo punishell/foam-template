@@ -5,7 +5,7 @@
 /* -------------------------------------------------------------------------- */
 
 import { type ReactElement, useEffect, useMemo, useState, useCallback } from "react";
-import { useDebounce } from "usehooks-ts";
+import { useDebounce, useMediaQuery } from "usehooks-ts";
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
 
 /* -------------------------------------------------------------------------- */
@@ -16,6 +16,7 @@ import { useGetTalents } from "@/lib/api";
 import { type AchievementType, createQueryStrings2 } from "@/lib/utils";
 import { TalentList } from "@/components/talent/desktop-talent-list";
 import { TalentHeader } from "@/components/talent/header";
+import { MobileTalentList } from "@/components/talent/mobile-talent-list";
 
 interface TalentProps {
 	_id: string;
@@ -60,6 +61,7 @@ export default function TalentsPage(): ReactElement {
 	const router = useRouter();
 	const pathname = usePathname();
 	const searchParams = useSearchParams();
+	const tab = useMediaQuery("(min-width: 640px)");
 
 	const [searchQuery, setSearchQuery] = useState(searchParams.get("search") ?? "");
 	const debouncedSearchQuery = useDebounce(searchQuery, 300);
@@ -167,14 +169,23 @@ export default function TalentsPage(): ReactElement {
 				maximumPriceQuery={maximumPriceQuery}
 				setMaximumPriceQuery={setMaximumPriceQuery}
 			/>
-
-			<TalentList
-				isLoading={(!isFetched && isFetching) || isSearching}
-				talents={talentLists}
-				totalPages={Number(talentData?.pages)}
-				currentPage={Number(talentData?.page)}
-				handlePagination={handlePagination}
-			/>
+			{tab ? (
+				<TalentList
+					isLoading={(!isFetched && isFetching) || isSearching}
+					talents={talentLists}
+					totalPages={Number(talentData?.pages)}
+					currentPage={Number(talentData?.page)}
+					handlePagination={handlePagination}
+				/>
+			) : (
+				<MobileTalentList
+					isLoading={(!isFetched && isFetching) || isSearching}
+					talents={talentLists}
+					totalPages={Number(talentData?.pages)}
+					currentPage={Number(talentData?.page)}
+					handlePagination={handlePagination}
+				/>
+			)}
 		</div>
 	);
 }
