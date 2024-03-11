@@ -20,15 +20,13 @@ interface BreadcrumbItem {
 
 interface BreadcrumbProps {
 	items: BreadcrumbItem[];
-	closeSheet: () => void;
 }
 
-export const Breadcrumb: FC<BreadcrumbProps> = ({ items, closeSheet }) => {
+export const Breadcrumb: FC<BreadcrumbProps> = ({ items }) => {
 	const [activeIndex, setActiveIndex] = useState<number>(0);
 
 	const handleItemClick = (index: number): void => {
 		setActiveIndex(index);
-		closeSheet();
 		if (items[index]?.action) {
 			items[index]?.action?.();
 		}
@@ -61,17 +59,14 @@ export const Breadcrumb: FC<BreadcrumbProps> = ({ items, closeSheet }) => {
 
 interface MobileSheetWrapperProps {
 	children: React.ReactNode;
-	closeSheet: () => void;
 	isOpen: boolean;
-	items: BreadcrumbItem[];
 }
 
-const MobileSheetWrapper = ({ children, closeSheet, isOpen, items }: MobileSheetWrapperProps): JSX.Element => {
+const MobileSheetWrapper = ({ children, isOpen }: MobileSheetWrapperProps): JSX.Element => {
 	return (
 		<div
 			className={`fixed top-16 z-50 w-full h-[calc(100vh-129px)] overflow-y-scroll bg-white transition-all duration-300 ease-in-out ${isOpen ? "right-0" : "-right-full"}`}
 		>
-			<Breadcrumb closeSheet={closeSheet} items={items} />
 			<div className="relative h-[calc(100%-43px)] w-full">{children}</div>
 		</div>
 	);

@@ -166,7 +166,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 							</div>
 						</div>
 						<div className="absolute inset-0 bg-[url(/images/rain.png)] bg-repeat opacity-50" />
-						<Modal isOpen={isTimeoutModalOpen} closeModal={() => { }} disableClickOutside>
+						<Modal isOpen={isTimeoutModalOpen} closeModal={() => {}} disableClickOutside>
 							<div className="flex w-full flex-col items-center gap-4 rounded-xl bg-white p-4 py-4 text-center">
 								<h2 className="text-2xl font-bold">Session Expiring</h2>
 								<p>

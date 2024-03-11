@@ -204,15 +204,7 @@ export const JobUpdateFeed = ({
 				</div>
 			</div>
 			{/* Sidebar Sheet */}
-			<MobileSheetWrapper
-				closeSheet={() => {
-					setScrollPosition(0);
-					setIsMobileModalOpen(false);
-				}}
-				isOpen={isMobileModalOpen}
-				from="Jobs"
-				to="Update Job"
-			>
+			<MobileSheetWrapper isOpen={isMobileModalOpen}>
 				{isCreator ? (
 					<ClientJobModalForMobile
 						jobId={jobId}
