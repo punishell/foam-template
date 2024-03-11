@@ -11,7 +11,7 @@ export const AchievementBar = ({ achievement }: AchievementBarProps): JSX.Elemen
 	return (
 		<div className="flex flex-col items-center gap-2">
 			<div
-				className="w-[100px] rounded-3xl p-2"
+				className="w-full sm:w-[100px] rounded-3xl p-2"
 				style={{
 					border: `2px solid ${styles.borderColor}`,
 					backgroundColor: styles.outerBackgroundColor,
@@ -42,7 +42,7 @@ export const AchievementBar = ({ achievement }: AchievementBarProps): JSX.Elemen
 					</div>
 				</div>
 			</div>
-			<span className="text-lg text-body">{styles.title}</span>
+			<span className="text-base sm:text-lg text-body">{styles.title}</span>
 		</div>
 	);
 };

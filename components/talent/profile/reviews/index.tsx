@@ -23,10 +23,10 @@ export const Reviews = ({ reviews, loading }: { reviews: ReviewProps[]; loading:
 	const { totalSlides } = sliderInstance;
 
 	return (
-		<div className="rounded-4 w-full basis-0 gap-1 rounded-2xl bg-primary-gradient p-6">
+		<div className="rounded-4 w-full basis-0 gap-1 sm:rounded-2xl bg-primary-gradient p-6">
 			<div className="mb-4 flex w-full flex-row justify-between">
-				<h3 className="text-2xl font-medium text-white">Reviews</h3>
-				<div className="flex flex-row gap-2">
+				<h3 className="text-xl sm:text-2xl font-medium text-white">Reviews</h3>
+				<div className="hidden sm:flex flex-row gap-2">
 					<ArrowLeftCircle
 						size={32}
 						className={`cursor-pointer ${currentSlide === 0 ? "text-body" : "text-white"}`}

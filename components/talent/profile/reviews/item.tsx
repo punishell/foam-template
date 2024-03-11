@@ -8,6 +8,7 @@ import { type ReactElement } from "react";
 import Rating from "react-rating";
 import { Star } from "lucide-react";
 import { format } from "date-fns";
+import { useMediaQuery } from "usehooks-ts";
 
 /* -------------------------------------------------------------------------- */
 /*                             Internal Dependency                            */
@@ -22,10 +23,11 @@ export const Review = ({ body, title, rating, user, date }: ReviewProps): ReactE
 	const { _id: loggedInUser } = useUserState();
 	const MAX_LEN = 150;
 	const navigateUrl = loggedInUser === user._id ? "/profile" : `/talents/${user?._id}`;
+	const tab = useMediaQuery("(min-width: 640px)");
 	return (
 		<div
 			className="flex min-h-full w-full cursor-grab select-none flex-col gap-4 rounded-2xl bg-white p-6"
-			style={{ maxWidth: "50%" }}
+			style={{ maxWidth: tab ? "50%" : "90%" }}
 		>
 			<div
 				className="flex max-w-[100%] flex-1 flex-col gap-4 break-all"

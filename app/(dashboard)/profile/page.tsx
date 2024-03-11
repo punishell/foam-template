@@ -61,7 +61,7 @@ export default function ProfilePage(): ReactElement | null {
 	if (isLoading) return <PageLoading color="#007C5B" />;
 	const reviews = talentReviews?.data ?? [];
 	return (
-		<div className="grid h-fit grid-cols-1 items-start sm:gap-6 overflow-y-auto pb-4">
+		<div className="flex flex-col sm:grid h-auto sm:h-fit sm:grid-cols-1 items-start sm:gap-6 overflow-y-auto pb-4">
 			{tab ? (
 				<ProfileHeader
 					_id={talent.id}
@@ -84,7 +84,7 @@ export default function ProfilePage(): ReactElement | null {
 				/>
 			)}
 
-			<div className="flex w-full gap-6">
+			<div className="flex w-full sm:gap-6 sm:flex-row flex-col">
 				<Bio body={talent.bio} />
 				<Achievements
 					achievements={talent.achievements?.map(({ total, type, value }) => ({
