@@ -6,6 +6,7 @@
 
 import { type ReactElement, useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
+import { useMediaQuery } from "usehooks-ts";
 
 /* -------------------------------------------------------------------------- */
 /*                             Internal Dependency                            */
@@ -18,12 +19,14 @@ import { useUserState } from "@/lib/store/account";
 import { ProfileHeader } from "@/components/talent/profile/header";
 import { Bio } from "@/components/talent/profile/bio";
 import { PageLoading } from "@/components/common/page-loading";
+import { MobileProfileHeader } from "@/components/talent/profile/mobile-header";
 
 export default function ProfilePage(): ReactElement | null {
 	const router = useRouter();
 	const user = useUserState();
 	const talentId = String(user?._id);
 	const { data: talentReviews, isLoading, refetch: FetchTalent } = useGetTalentReviewById(talentId, "1", "20", true);
+	const tab = useMediaQuery("(min-width: 640px)");
 
 	useEffect(() => {
 		if (talentId) {
@@ -57,18 +60,29 @@ export default function ProfilePage(): ReactElement | null {
 
 	if (isLoading) return <PageLoading color="#007C5B" />;
 	const reviews = talentReviews?.data ?? [];
-
 	return (
-		<div className="grid h-fit grid-cols-1 items-start gap-6 overflow-y-auto pb-4">
-			<ProfileHeader
-				_id={talent.id}
-				name={talent.name}
-				position={talent.position}
-				score={talent.score}
-				skills={talent.skills}
-				isOwnProfile
-				profileImage={talent.image}
-			/>
+		<div className="grid h-fit grid-cols-1 items-start sm:gap-6 overflow-y-auto pb-4">
+			{tab ? (
+				<ProfileHeader
+					_id={talent.id}
+					name={talent.name}
+					position={talent.position}
+					score={talent.score}
+					skills={talent.skills}
+					isOwnProfile
+					profileImage={talent.image}
+				/>
+			) : (
+				<MobileProfileHeader
+					_id={talent.id}
+					name={talent.name}
+					position={talent.position}
+					score={talent.score}
+					skills={talent.skills}
+					isOwnProfile
+					profileImage={talent.image}
+				/>
+			)}
 
 			<div className="flex w-full gap-6">
 				<Bio body={talent.bio} />
