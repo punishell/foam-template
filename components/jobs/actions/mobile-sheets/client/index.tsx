@@ -20,7 +20,7 @@ import warning from "@/lottiefiles/warning.json";
 import { ReviewTalent } from "./review";
 import { JobCancellationRequest } from "./cancel/job-cancellation-request";
 import { RequestJobCancellation } from "./cancel/request-job-cancellation";
-import { JobCancellationSuccessRequested } from "./cancel/job-cancellation-success-requested";
+import { JobCancellationSuccessRequested } from "./cancel/job-cancellation-request-success";
 
 interface ClientJobModalProps {
 	jobId: string;

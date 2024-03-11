@@ -14,7 +14,7 @@ import { ChevronLeft } from "lucide-react";
 
 import { Spinner } from "@/components/common";
 import { useRequestJobCancellation } from "@/lib/api/job";
-import { JobCancellationSuccessRequested } from "./job-cancellation-success-requested";
+import { JobCancellationSuccessRequested } from "./job-cancellation-request-success";
 
 const JOB_CANCEL_REASONS = ["Talent is not responsive", "Unforeseeable Circumstances"];
 

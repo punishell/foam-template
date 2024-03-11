@@ -21,7 +21,7 @@ import { ReviewClient } from "./review";
 import { ReviewSuccess } from "./review/review-success";
 import { ReviewJobCancellationRequest } from "./cancel/review-job-cancellation-request";
 import { RequestJobCancellation } from "./cancel/request-job-cancellation";
-import { JobCancellationRequested } from "./cancel/job-cancellation-requested";
+import { JobCancellationRequested } from "./cancel/job-cancellation-request-success";
 
 interface TalentJobModalProps {
 	jobId: string;
