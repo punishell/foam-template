@@ -4,51 +4,74 @@
 /*                             External Dependency                            */
 /* -------------------------------------------------------------------------- */
 
+import { type FC, useState } from "react";
 import { ChevronRight } from "lucide-react";
 
-const MobileSubNav = ({ closeSheet, from, to }: { closeSheet: () => void; from: string; to: string }): JSX.Element => (
-	<div className="sm:hidden w-full h-[43px] px-[35px] py-[11px] bg-neutral-50 border border-gray-200 flex-col justify-start items-start gap-2.5 inline-flex sticky -top-[1px] left-0 z-50">
-		<div className="justify-start items-start inline-flex">
-			<div className="justify-start items-start flex">
-				<div className="justify-center items-center gap-2 flex">
-					<div
-						className="text-gray-500 text-sm leading-[21px] tracking-wide"
-						role="button"
-						tabIndex={0}
-						onClick={(e) => {
-							e.stopPropagation();
-							closeSheet();
-						}}
-						onKeyDown={() => {
-							closeSheet();
-						}}
-					>
-						{from}
-					</div>
-					<ChevronRight size={20} className="text-gray-500" />
-					<div className="text-teal-700 text-sm font-bold font-['Circular Std'] leading-[21px] tracking-wide">
-						{to}
+/* -------------------------------------------------------------------------- */
+/*                             Internal Dependency                            */
+/* -------------------------------------------------------------------------- */
+
+import { Button } from "@/components/common/button";
+
+interface BreadcrumbItem {
+	label: string;
+	action?: () => void;
+}
+
+interface BreadcrumbProps {
+	items: BreadcrumbItem[];
+	closeSheet: () => void;
+}
+
+export const Breadcrumb: FC<BreadcrumbProps> = ({ items, closeSheet }) => {
+	const [activeIndex, setActiveIndex] = useState<number>(0);
+
+	const handleItemClick = (index: number): void => {
+		setActiveIndex(index);
+		closeSheet();
+		if (items[index]?.action) {
+			items[index]?.action?.();
+		}
+	};
+	return (
+		<div className="sm:hidden w-full h-[43px] px-[35px] py-[11px] bg-neutral-50 border border-gray-200 flex-col justify-start items-start gap-2.5 inline-flex sticky -top-[1px] left-0 z-50">
+			<div className="justify-start items-start inline-flex">
+				<div className="justify-start items-start flex">
+					<div className="justify-center items-center gap-2 flex">
+						{items.map((item, index) => (
+							<div key={index} className="flex items-center">
+								{index !== 0 && <ChevronRight size={20} className="text-gray-500" />}
+								<Button
+									className={`cursor-pointer text-sm leading-[21px] tracking-wide ${index === activeIndex ? "font-semibold text-primary" : "text-gray-500"}`}
+									onClick={(e) => {
+										e.stopPropagation();
+										handleItemClick(index);
+									}}
+								>
+									{item.label}
+								</Button>
+							</div>
+						))}
 					</div>
 				</div>
 			</div>
 		</div>
-	</div>
-);
+	);
+};
 
 interface MobileSheetWrapperProps {
 	children: React.ReactNode;
 	closeSheet: () => void;
 	isOpen: boolean;
-	from: string;
-	to: string;
+	items: BreadcrumbItem[];
 }
 
-const MobileSheetWrapper = ({ children, closeSheet, isOpen, from, to }: MobileSheetWrapperProps): JSX.Element => {
+const MobileSheetWrapper = ({ children, closeSheet, isOpen, items }: MobileSheetWrapperProps): JSX.Element => {
 	return (
 		<div
 			className={`fixed top-16 z-50 w-full h-[calc(100vh-129px)] overflow-y-scroll bg-white transition-all duration-300 ease-in-out ${isOpen ? "right-0" : "-right-full"}`}
 		>
-			<MobileSubNav closeSheet={closeSheet} from={from} to={to} />
+			<Breadcrumb closeSheet={closeSheet} items={items} />
 			<div className="relative h-[calc(100%-43px)] w-full">{children}</div>
 		</div>
 	);
