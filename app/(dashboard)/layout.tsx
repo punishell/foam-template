@@ -26,6 +26,7 @@ import { PageLoading } from "@/components/common/page-loading";
 import { BottomNav } from "@/components/navigations/bottom-nav";
 import { MobileHeader } from "@/components/navigations/mobile-header";
 import { MobileLeaderBoard } from "@/components/overview/leaderboard/mobile";
+import JobAction from "@/components/navigations/job-actions";
 
 function Loader(): React.JSX.Element {
 	return (
@@ -198,6 +199,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 						<div className="relative isolate z-10 flex h-full flex-1 flex-col sm:px-4 2xl:px-8 sm:pt-5">
 							{children}
 						</div>
+						<JobAction />
 						<BottomNav />
 						<MobileLeaderBoard />
 					</div>
