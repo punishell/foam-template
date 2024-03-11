@@ -60,7 +60,13 @@ export const MobileHeader = (): ReactElement => {
 				${scrollPosition === 0 && profileCompleted ? "scale-[1.6] translate-y-1/2" : "scale-100 top-0 translate-y-[2%]"}`}
 				>
 					{profileImage?.url && value && (
-						<AfroProfile size="sm" score={value} src={profileImage?.url} url="/profile" />
+						<AfroProfile
+							size="sm"
+							score={value}
+							src={profileImage?.url}
+							url="/profile"
+							className="relative -left-[10px]"
+						/>
 					)}
 				</div>
 				<div className="relative flex items-center justify-between px-5 w-full h-[65px] z-[3]">

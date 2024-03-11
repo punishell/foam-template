@@ -14,7 +14,7 @@ import { useSearchParams, useRouter, usePathname } from "next/navigation";
 
 import { useGetTalents } from "@/lib/api";
 import { type AchievementType, createQueryStrings2 } from "@/lib/utils";
-import { TalentList } from "@/components/talent/talentList";
+import { TalentList } from "@/components/talent/desktop-talent-list";
 import { TalentHeader } from "@/components/talent/header";
 
 interface TalentProps {

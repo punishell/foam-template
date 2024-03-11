@@ -4,8 +4,8 @@
 /*                             Internal Dependency                            */
 /* -------------------------------------------------------------------------- */
 
-import { PageLoading } from "../common/page-loading";
-import { Pagination } from "../common/pagination";
+import { PageLoading } from "../../common/page-loading";
+import { Pagination } from "../../common/pagination";
 import { TalentBox } from "./talent-box";
 import { type AchievementType } from "@/lib/utils";
 
@@ -56,7 +56,7 @@ export const TalentList = ({
 	handlePagination,
 }: TalentListProps): React.JSX.Element => {
 	return (
-		<div className="h-full w-full">
+		<div className="hidden h-full w-full sm:block">
 			{!isLoading ? (
 				<div className="flex h-full flex-col">
 					<div className="grid grid-cols-1 items-center justify-center gap-6 sm:grid-cols-2 md:grid-cols-3">
