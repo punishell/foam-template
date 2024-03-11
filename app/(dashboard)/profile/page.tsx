@@ -62,7 +62,7 @@ export default function ProfilePage(): ReactElement | null {
 	const reviews = talentReviews?.data ?? [];
 
 	return (
-		<div className="flex flex-col sm:grid h-full sm:h-fit sm:grid-cols-1 items-start sm:gap-6 overflow-y-auto sm:pb-4">
+		<div className="flex flex-col sm:grid h-full sm:h-fit sm:grid-cols-1 items-start sm:gap-6 overflow-y-auto sm:pb-4 sm-max:bg-white">
 			{tab ? (
 				<ProfileHeader
 					_id={talent.id}

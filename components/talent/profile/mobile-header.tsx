@@ -4,8 +4,8 @@
 /*                             External Dependency                            */
 /* -------------------------------------------------------------------------- */
 
-import React from "react";
-import { Briefcase, Settings } from "lucide-react";
+import { type FC, useState } from "react";
+import { Briefcase, ChevronRight, Settings } from "lucide-react";
 import Link from "next/link";
 
 /* -------------------------------------------------------------------------- */
@@ -29,16 +29,9 @@ interface Props {
 	isOwnProfile?: boolean;
 }
 
-export const MobileProfileHeader: React.FC<Props> = ({
-	_id,
-	name,
-	position,
-	score,
-	skills,
-	isOwnProfile,
-	profileImage,
-}) => {
-	const [isModalOpen, setIsModalOpen] = React.useState(false);
+export const MobileProfileHeader: FC<Props> = ({ _id, name, position, score, skills, isOwnProfile, profileImage }) => {
+	const [isModalOpen, setIsModalOpen] = useState(false);
+	const [showSkills, setShowSkills] = useState(false);
 	return (
 		<>
 			<InviteTalentModal isOpen={isModalOpen} setIsOpen={setIsModalOpen} talentId={_id} />
@@ -102,9 +95,22 @@ export const MobileProfileHeader: React.FC<Props> = ({
 					</div>
 				</div>
 			</div>
-			<div className="flex h-fit flex-wrap gap-4 border-b border-gray-200 p-4 bg-white">
-				<h4 className="text-neutral-950 text-lg font-bold leading-[27px] tracking-wide">Skills</h4>
-				<div className="flex h-fit flex-wrap gap-2">
+			<div className="flex h-fit flex-wrap border-b border-gray-200 p-4 bg-white">
+				<Button
+					className="!p-0 !m-0 flex items-center justify-between w-full"
+					onClick={() => {
+						setShowSkills(!showSkills);
+					}}
+				>
+					<h4 className="text-neutral-950 text-lg font-bold leading-[27px] tracking-wide">Skills</h4>
+					<ChevronRight
+						className={`h-6 w-6 text-body transition-transform duration-300 ${showSkills ? "transform rotate-90" : ""}`}
+					/>
+				</Button>
+
+				<div
+					className={`flex transition-all duration-300 flex-wrap overflow-hidden gap-2 ${showSkills ? "h-fit mt-4" : "h-0"}`}
+				>
 					{skills.map((skill, i) => (
 						<span
 							key={i}
