@@ -18,7 +18,7 @@ import { PageLoading } from "@/components/common/page-loading";
 import { JobUpdates } from "./update";
 import warning from "@/lottiefiles/warning.json";
 import { ReviewTalent } from "./review";
-import { JobCancellationRequest } from "./cancel/job-cancellation-request";
+import { JobCancellationRequest } from "./cancel/review-job-cancellation-request";
 import { RequestJobCancellation } from "./cancel/request-job-cancellation";
 import { JobCancellationSuccessRequested } from "./cancel/job-cancellation-request-success";
 
