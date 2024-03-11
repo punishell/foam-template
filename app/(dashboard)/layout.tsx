@@ -6,7 +6,7 @@
 
 import { type ReactNode, useState, useEffect } from "react";
 import { getCookie, deleteCookie } from "cookies-next";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useIdleTimer } from "react-idle-timer";
 import { Button } from "pakt-ui";
 import { formatDistance } from "date-fns";
@@ -27,6 +27,7 @@ import { BottomNav } from "@/components/navigations/mobile-nav/footer";
 import { MobileHeader } from "@/components/navigations/mobile-nav/header";
 import { MobileLeaderBoard } from "@/components/overview/leaderboard/mobile";
 import JobAction from "@/components/navigations/job-actions";
+import { useHeaderScroll } from "@/lib/store";
 
 function Loader(): React.JSX.Element {
 	return (
@@ -56,12 +57,15 @@ const SIX_MINUTES_IN_MS = 6 * 60 * 1000;
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }): React.JSX.Element {
 	const router = useRouter();
+	const pathname = usePathname();
 	const queryClient = useQueryClient();
 	const token = getCookie(AUTH_TOKEN_KEY) as string;
 	const [isTokenSet, setIsTokenSet] = useState(false);
 
 	const [remainingTime, setRemainingTime] = useState(0);
 	const [isTimeoutModalOpen, setIsTimeoutModalOpen] = useState(false);
+
+	const { scrollPosition } = useHeaderScroll();
 
 	const onIdle = (): void => {
 		setIsTimeoutModalOpen(false);
@@ -128,7 +132,9 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 			<MessagingProvider>
 				<div className="flex sm:flex-row flex-col h-screen w-screen max-w-full overflow-y-hidden">
 					<Sidebar />
-					<div className="relative w-full">
+					<div
+						className={`relative w-full transition-all duration-300 ${scrollPosition > 0 ? "h-[calc(100vh-129px)]" : "h-[calc(100vh-207px)]"} sm:h-[inherit]`}
+					>
 						<div className="absolute inset-0 z-[1]">
 							<div className="isolate">
 								<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1512 989" fill="none">
@@ -196,10 +202,10 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 							</div>
 						</Modal>
 						<MobileHeader />
-						<div className="relative isolate z-10 flex h-full flex-1 flex-col sm:px-4 2xl:px-8 sm:pt-5">
+						<div className="relative sm:isolate z-10 flex h-full sm:flex-1 flex-col sm:px-4 2xl:px-8 sm:pt-5">
 							{children}
 						</div>
-						<JobAction />
+						{pathname === "/overview" && <JobAction />}
 						<BottomNav />
 						<MobileLeaderBoard />
 					</div>

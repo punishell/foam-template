@@ -16,7 +16,7 @@ interface HeaderScroll {
 }
 
 export const useHeaderScroll = create<HeaderScroll>((set) => ({
-	scrollPosition: 0,
+	scrollPosition: 1,
 	setScrollPosition: (scrollPosition: number) => {
 		set({ scrollPosition });
 	},

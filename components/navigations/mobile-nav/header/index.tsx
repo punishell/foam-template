@@ -6,6 +6,7 @@
 
 import { type ReactElement, useState, useEffect, useMemo } from "react";
 import Image from "next/image";
+import { usePathname } from "next/navigation";
 
 /* -------------------------------------------------------------------------- */
 /*                             Internal Dependency                            */
@@ -22,12 +23,12 @@ import { useGetTalentReviewById } from "@/lib/api";
 import { hasFiveStarReview } from "@/lib/types";
 
 export const MobileHeader = (): ReactElement => {
+	const pathname = usePathname();
 	const [referOpen, _setReferOpen] = useState(false);
 	const [expand, setExpand] = useState(false);
 	const { profileCompleteness, profileImage, _id } = useUserState();
 	const { scrollPosition, setScrollPosition } = useHeaderScroll();
 	const { setLeaderboardView } = useLeaderboard();
-
 	const value = profileCompleteness ?? 0;
 	const profileCompleted = value > 70;
 
@@ -44,6 +45,12 @@ export const MobileHeader = (): ReactElement => {
 		return hasFiveStarReview(reviewData.data);
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [reviewData]);
+
+	useEffect(() => {
+		if (pathname !== "/overview") {
+			setScrollPosition(1);
+		}
+	}, [pathname, setScrollPosition]);
 
 	return (
 		<>

@@ -60,8 +60,9 @@ export default function ProfilePage(): ReactElement | null {
 
 	if (isLoading) return <PageLoading color="#007C5B" />;
 	const reviews = talentReviews?.data ?? [];
+
 	return (
-		<div className="flex flex-col sm:grid h-auto sm:h-fit sm:grid-cols-1 items-start sm:gap-6 overflow-y-auto pb-4">
+		<div className="flex flex-col sm:grid h-full sm:h-fit sm:grid-cols-1 items-start sm:gap-6 overflow-y-auto sm:pb-4">
 			{tab ? (
 				<ProfileHeader
 					_id={talent.id}
@@ -95,7 +96,7 @@ export default function ProfilePage(): ReactElement | null {
 					}))}
 				/>
 			</div>
-			<div className="w-full">
+			<div className="w-full h-auto">
 				<Reviews
 					reviews={
 						reviews

@@ -27,7 +27,7 @@ export const Review = ({ body, title, rating, user, date }: ReviewProps): ReactE
 	return (
 		<div
 			className="flex min-h-full w-full cursor-grab select-none flex-col gap-4 rounded-2xl bg-white p-6"
-			style={{ maxWidth: tab ? "50%" : "90%" }}
+			style={{ maxWidth: tab ? "50%" : "95%" }}
 		>
 			<div
 				className="flex max-w-[100%] flex-1 flex-col gap-4 break-all"

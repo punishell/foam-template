@@ -18,6 +18,7 @@ import { Achievements } from "@/components/talent/profile/achievements";
 import { Reviews } from "@/components/talent/profile/reviews";
 import { ProfileHeader } from "@/components/talent/profile/header";
 import { Bio } from "@/components/talent/profile/bio";
+import { Breadcrumb } from "@/components/common/breadcrumb";
 
 export default function TalentDetailsPage(): ReactElement {
 	const params = useParams();
@@ -39,56 +40,70 @@ export default function TalentDetailsPage(): ReactElement {
 	const reviews = reviewData.data ?? [];
 
 	return (
-		<div className="grid h-fit grid-cols-1 items-start gap-6 overflow-y-auto pb-4">
-			<ProfileHeader
-				_id={talent._id}
-				name={`${talent.firstName} ${talent.lastName}`}
-				position={talent.profile?.bio?.title ?? ""}
-				score={talent.score as number}
-				skills={
-					talent?.profile?.talent?.tagsIds?.map((t) => ({
-						name: t.name,
-						backgroundColor: t.color,
-					})) ?? []
-				}
-				profileImage={talent.profileImage?.url}
+		<>
+			<Breadcrumb
+				items={[
+					{
+						label: "Jobs",
+						// action: () => {
+						// 	router.push("/jobs?skills=&search=&range=%2C100&jobs-type=created");
+						// },
+					},
+					{ label: "Job Updates", active: true },
+				]}
 			/>
 
-			<div className="flex w-full gap-6">
-				<Bio body={talent.profile?.bio?.description ?? ""} />
-				<Achievements
-					achievements={talentData.data.talent.achievements?.map(({ total, type, value }) => ({
-						type,
-						title: type,
-						total: Number(total),
-						value: parseInt(value, 10),
-					}))}
-				/>
-			</div>
-
-			<div className="w-full">
-				<Reviews
-					reviews={
-						reviews?.data
-							.slice()
-							.reverse()
-							.map((a) => ({
-								title: a.data.name,
-								body: a.review,
-								rating: a.rating,
-								date: a.createdAt ?? "",
-								user: {
-									_id: a.owner._id,
-									afroScore: a.owner.score,
-									name: `${a.owner.firstName}${a.owner.lastName}`,
-									title: a.owner.profile?.bio?.title ?? "",
-									avatar: a.owner.profileImage?.url ?? "",
-								},
-							})) ?? []
+			<div className="grid h-fit grid-cols-1 items-start gap-6 overflow-y-auto pb-4">
+				<ProfileHeader
+					_id={talent._id}
+					name={`${talent.firstName} ${talent.lastName}`}
+					position={talent.profile?.bio?.title ?? ""}
+					score={talent.score as number}
+					skills={
+						talent?.profile?.talent?.tagsIds?.map((t) => ({
+							name: t.name,
+							backgroundColor: t.color,
+						})) ?? []
 					}
-					loading={false}
+					profileImage={talent.profileImage?.url}
 				/>
+
+				<div className="flex w-full gap-6">
+					<Bio body={talent.profile?.bio?.description ?? ""} />
+					<Achievements
+						achievements={talentData.data.talent.achievements?.map(({ total, type, value }) => ({
+							type,
+							title: type,
+							total: Number(total),
+							value: parseInt(value, 10),
+						}))}
+					/>
+				</div>
+
+				<div className="w-full">
+					<Reviews
+						reviews={
+							reviews?.data
+								.slice()
+								.reverse()
+								.map((a) => ({
+									title: a.data.name,
+									body: a.review,
+									rating: a.rating,
+									date: a.createdAt ?? "",
+									user: {
+										_id: a.owner._id,
+										afroScore: a.owner.score,
+										name: `${a.owner.firstName}${a.owner.lastName}`,
+										title: a.owner.profile?.bio?.title ?? "",
+										avatar: a.owner.profileImage?.url ?? "",
+									},
+								})) ?? []
+						}
+						loading={false}
+					/>
+				</div>
 			</div>
-		</div>
+		</>
 	);
 }
