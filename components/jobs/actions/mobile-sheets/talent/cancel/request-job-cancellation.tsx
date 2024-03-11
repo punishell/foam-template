@@ -47,7 +47,7 @@ export const RequestJobCancellation: FC<RequestJobCancellationProps> = ({
 
 	return (
 		<>
-			<div className="flex items-center justify-between bg-primary-gradient px-4 py-6 text-3xl font-bold text-white">
+			<div className="flex items-center justify-between bg-cancel-job-header px-4 py-6 text-lg font-bold">
 				<div className="flex items-center gap-2">
 					<button onClick={cancelJobCancellationRequest} aria-label="Back" type="button">
 						<ChevronLeft />

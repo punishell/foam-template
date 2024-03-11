@@ -67,6 +67,7 @@ const config: Config = {
 					"linear-gradient(0deg, rgba(0, 0, 0, 0.20) 0%, rgba(0, 0, 0, 0.20) 100%), linear-gradient(0deg, rgba(0, 0, 0, 0.20) 0%, rgba(0, 0, 0, 0.20) 100%), linear-gradient(31deg, #BBD2C5 2.94%, #536976 83.78%)",
 				"mobile-l3":
 					"linear-gradient(0deg, rgba(0, 0, 0, 0.20) 0%, rgba(0, 0, 0, 0.20) 100%), linear-gradient(77deg, #055A60 3.45%, #1F3439 97.41%);",
+				"cancel-job-header": "linear-gradient(180deg, #FE7F77 0%, #FF9A94 99.99%, #E74E44 100%)",
 			},
 			fontFamily: {
 				sans: ["var(--circular-std-font)", ...fontFamily.sans],
