@@ -155,6 +155,7 @@ export const FEED_TYPES = {
 interface ColorResult {
 	circleColor: string;
 	bgColor: string;
+	borderColor?: string;
 }
 
 export const colorFromScore = (score: number): ColorResult => {
@@ -162,25 +163,30 @@ export const colorFromScore = (score: number): ColorResult => {
 		return {
 			circleColor: "linear-gradient(149deg, #FA042F 0%, #FF6A84 100%)",
 			bgColor: "#FFF8F8",
+			borderColor: "#FF6A84",
 		};
 	if (score >= 21 && score <= 35)
 		return {
 			circleColor: "linear-gradient(171deg, #FFF70A 0%, #EEE600 100%)",
 			bgColor: "#FFFFF0",
+			borderColor: "#EEE600",
 		};
 	if (score >= 36 && score <= 50)
 		return {
 			circleColor: "linear-gradient(166deg, #FFB402 0%, #E19E00 100%)",
 			bgColor: "#FFFFF0",
+			borderColor: "#E19E00",
 		};
 	if (score >= 51 && score <= 79)
 		return {
 			circleColor: "linear-gradient(162deg, #08A7FC 0%, #71CDFF 100%)",
 			bgColor: "#F2FBFF",
+			borderColor: "#71CDFF",
 		};
 	return {
 		circleColor: "linear-gradient(145deg, #05BD2F 0%, #0FF143 100%)",
 		bgColor: "#ECFCE5",
+		borderColor: "#0FF143",
 	};
 };
 

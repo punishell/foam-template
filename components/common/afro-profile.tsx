@@ -13,10 +13,11 @@ import Link from "next/link";
 
 import { DefaultAvatar } from "@/components/common/default-avatar";
 
-type Size = "sm" | "md" | "2md" | "lg" | "xl" | "2xl" | "3xl";
+type Size = "sm" | "2sm" | "md" | "2md" | "lg" | "xl" | "2xl" | "3xl";
 
 const SIZE_TO_PX: Record<Size, number> = {
 	sm: 60,
+	"2sm": 80,
 	md: 110,
 	"2md": 130,
 	lg: 150,

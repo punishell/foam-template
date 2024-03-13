@@ -158,7 +158,7 @@ export default function TalentsPage(): ReactElement {
 	};
 
 	return (
-		<div className="flex h-full flex-col gap-6 overflow-auto">
+		<div className="flex h-full flex-col sm:gap-6 overflow-auto">
 			<TalentHeader
 				searchQuery={searchQuery}
 				setSearchQuery={setSearchQuery}
