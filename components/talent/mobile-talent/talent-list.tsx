@@ -1,9 +1,16 @@
 "use client";
 
 /* -------------------------------------------------------------------------- */
+/*                             External Dependency                            */
+/* -------------------------------------------------------------------------- */
+
+import { Loader } from "lucide-react";
+
+/* -------------------------------------------------------------------------- */
 /*                             Internal Dependency                            */
 /* -------------------------------------------------------------------------- */
 
+import { forwardRef } from "react";
 import { PageLoading } from "../../common/page-loading";
 import { TalentCard } from "./talent-card";
 import { type AchievementType } from "@/lib/utils";
@@ -22,12 +29,11 @@ interface TalentProps {
 	}>;
 }
 
-interface TalentListProps {
+interface MobileTalentListProps {
 	talents: TalentProps[];
-	// currentPage: number;
-	// totalPages: number;
-	// handlePagination: (page: number) => void;
 	isLoading?: boolean;
+	isFetchingNextPage: boolean;
+	isError?: boolean;
 }
 
 const RenderLoading = (): React.JSX.Element => {
@@ -47,36 +53,39 @@ const RenderEmpty = (): React.JSX.Element => {
 	);
 };
 
-export const MobileTalentList = ({
-	isLoading,
-	talents,
-	// currentPage,
-	// totalPages,
-	// handlePagination,
-}: TalentListProps): React.JSX.Element => {
+export const TalentList = forwardRef<HTMLDivElement, MobileTalentListProps>((props, ref): JSX.Element => {
+	const { talents, isLoading, isFetchingNextPage, isError } = props;
 	return (
 		<div className="h-full w-full">
-			{!isLoading ? (
+			{isLoading ? (
+				<RenderLoading />
+			) : talents.length > 0 ? (
 				<div className="flex h-full flex-col">
 					<div className="flex flex-col items-center justify-center">
-						{talents.length > 0 &&
-							talents.map((t: TalentProps, i: number) => (
-								<TalentCard
-									key={i}
-									id={t._id}
-									name={t.name}
-									title={t?.title ?? ""}
-									score={t?.score ?? "0"}
-									imageUrl={t?.image}
-									skills={t?.skills}
-								/>
-							))}
+						{talents.map((t: TalentProps, i: number) => (
+							<TalentCard
+								key={i}
+								id={t._id}
+								name={t.name}
+								title={t?.title ?? ""}
+								score={t?.score ?? "0"}
+								imageUrl={t?.image}
+								skills={t?.skills}
+							/>
+						))}
+						{isFetchingNextPage && (
+							<div className="mx-auto max-sm:my-4 flex w-full flex-row items-center justify-center text-center">
+								<Loader size={25} className="animate-spin text-center text-black" />
+							</div>
+						)}
+						<span ref={ref} />
 					</div>
-					{talents.length === 0 && <RenderEmpty />}
 				</div>
 			) : (
-				<RenderLoading />
+				<RenderEmpty />
 			)}
 		</div>
 	);
-};
+});
+
+TalentList.displayName = "TalentList";

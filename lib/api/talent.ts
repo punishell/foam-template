@@ -2,7 +2,14 @@
 /*                             External Dependency                            */
 /* -------------------------------------------------------------------------- */
 
-import { useQuery, type QueryKey, type UseQueryOptions, type UseQueryResult } from "@tanstack/react-query";
+import {
+	useQuery,
+	type QueryKey,
+	type UseQueryOptions,
+	type UseQueryResult,
+	useInfiniteQuery,
+	type UseInfiniteQueryResult,
+} from "@tanstack/react-query";
 
 /* -------------------------------------------------------------------------- */
 /*                             Internal Dependency                            */
@@ -73,6 +80,22 @@ export const useGetTalents = ({
 	};
 
 	return useQuery(getQueryKey, options);
+};
+
+export const useGetTalentInfinitely = ({
+	limit,
+	page,
+	filter,
+}: talentFetchParams): UseInfiniteQueryResult<[] | User[], GetTalentFetchDetailsError> => {
+	const getQueryKey: QueryKey = [`talents_${limit}_${page}_${JSON.stringify(filter)}`];
+	return useInfiniteQuery(
+		getQueryKey,
+		async ({ pageParam = 1 }) => (await getTalent({ limit, page: pageParam, filter })).data,
+		{
+			getNextPageParam: (_, pages) => pages.length + 1,
+			enabled: true,
+		},
+	);
 };
 
 export const useGetTalentById = (

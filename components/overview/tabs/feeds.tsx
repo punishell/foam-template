@@ -6,7 +6,6 @@
 
 import { type ReactElement, useEffect, useMemo, useRef, useState } from "react";
 import { Loader } from "lucide-react";
-import { useEventListener } from "usehooks-ts";
 
 /* -------------------------------------------------------------------------- */
 /*                             Internal Dependency                            */
@@ -19,7 +18,6 @@ import { PageEmpty } from "../../common/page-empty";
 import { PageLoading } from "../../common/page-loading";
 import { PageError } from "../../common/page-error";
 import { FEED_TYPES } from "@/lib/utils";
-import { useHeaderScroll } from "@/lib/store";
 import { TabContentWrapper } from "./tab-contents-wrapper";
 
 export const Feeds = (): ReactElement => {
@@ -51,6 +49,7 @@ export const Feeds = (): ReactElement => {
 
 	const observerTarget = useRef<HTMLDivElement | null>(null);
 
+	// ====== Dismiss Feed ===== //
 	const callback = async (): Promise<void> => {
 		await Promise.all([feedRefetch()]);
 	};
@@ -64,6 +63,7 @@ export const Feeds = (): ReactElement => {
 			},
 		});
 	};
+	// ====== Dismiss Feed ===== //
 
 	const fetchMore = (): void => {
 		setObserve(false);
