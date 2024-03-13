@@ -5,7 +5,6 @@
 /* -------------------------------------------------------------------------- */
 
 import { PageLoading } from "../../common/page-loading";
-import { Pagination } from "../../common/pagination";
 import { TalentCard } from "./talent-card";
 import { type AchievementType } from "@/lib/utils";
 
@@ -25,9 +24,9 @@ interface TalentProps {
 
 interface TalentListProps {
 	talents: TalentProps[];
-	currentPage: number;
-	totalPages: number;
-	handlePagination: (page: number) => void;
+	// currentPage: number;
+	// totalPages: number;
+	// handlePagination: (page: number) => void;
 	isLoading?: boolean;
 }
 
@@ -51,9 +50,9 @@ const RenderEmpty = (): React.JSX.Element => {
 export const MobileTalentList = ({
 	isLoading,
 	talents,
-	currentPage,
-	totalPages,
-	handlePagination,
+	// currentPage,
+	// totalPages,
+	// handlePagination,
 }: TalentListProps): React.JSX.Element => {
 	return (
 		<div className="h-full w-full">
