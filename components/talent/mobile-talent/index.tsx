@@ -200,9 +200,9 @@ export const MobileTalent = (): React.JSX.Element => {
 		// if (timelineData?.pages) {
 		if (talentData && Array.isArray(talentData.pages)) {
 			for (let i = 0; i < talentData.pages.length; i++) {
-				const timeData = talentData.pages[i];
-				if (Array.isArray(timeData)) {
-					totalData = [...totalData, ...timeData];
+				const talData = talentData.pages[i];
+				if (Array.isArray(talData)) {
+					totalData = [...totalData, ...talData];
 				}
 			}
 		}
@@ -211,14 +211,8 @@ export const MobileTalent = (): React.JSX.Element => {
 		setCurrentData(newData);
 	}, [talentData, talentData?.pages]);
 
-	// const talentLists = useMemo(() => {
-	// 	setIsSearching(false);
-	// 	return ((talentData?.data as TalentProps[]) ?? []).map(mapTalentData);
-	// }, [talentData?.data]);
-
-	console.log(observe);
 	return (
-		<div className="flex h-full flex-col sm:gap-6 overflow-auto">
+		<div className="flex h-full flex-col overflow-auto relative">
 			<TalentHeader
 				searchQuery={searchQuery}
 				setSearchQuery={setSearchQuery}

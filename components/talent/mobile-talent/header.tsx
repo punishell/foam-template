@@ -36,7 +36,7 @@ export const TalentHeader = ({
 	const [showSearch, setShowSearch] = useState(false);
 
 	return (
-		<div className="w-full flex-col px-[21px] h-auto py-[11px] bg-emerald-900 border-t border-white border-opacity-10 justify-center items-center inline-flex relative">
+		<div className="w-full flex-col px-[21px] h-auto py-[11px] bg-emerald-900 border-t border-white border-opacity-10 justify-center items-center inline-flex sticky left-0 top-0 z-20">
 			<div className="w-full h-[53px] py-[11px] justify-between items-center inline-flex z-10 relative">
 				<h3 className="text-neutral-50 text-2xl font-bold leading-[31.20px] tracking-wide">Talents</h3>
 				<Button
