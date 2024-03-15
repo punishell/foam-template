@@ -122,6 +122,20 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 		};
 	}, [router, token]);
 
+	useEffect(() => {
+		// https://css-tricks.com/the-trick-to-viewport-units-on-mobile/
+		const onWindowResize = (): void => {
+			document.documentElement.style.setProperty("--vh", `${window.innerHeight * 0.01}px`);
+		};
+
+		window.addEventListener("resize", onWindowResize, false);
+		onWindowResize();
+
+		return () => {
+			window.removeEventListener("resize", onWindowResize, false);
+		};
+	}, []);
+
 	if (!isTokenSet) {
 		return <Loader />;
 	}
