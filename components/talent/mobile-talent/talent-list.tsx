@@ -56,12 +56,12 @@ const RenderEmpty = (): React.JSX.Element => {
 export const TalentList = forwardRef<HTMLDivElement, MobileTalentListProps>((props, ref): JSX.Element => {
 	const { talents, isLoading, isFetchingNextPage, isError } = props;
 	return (
-		<div className="h-full w-full">
+		<div className="h-[calc(100%-76px)] w-full">
 			{isLoading ? (
 				<RenderLoading />
 			) : talents.length > 0 ? (
 				<div className="flex h-full flex-col">
-					<div className="flex flex-col items-center justify-center">
+					<div className="flex flex-col overflow-y-scroll">
 						{talents.map((t: TalentProps, i: number) => (
 							<TalentCard
 								key={i}

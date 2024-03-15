@@ -289,3 +289,10 @@ export function formatTimestampForDisplay(utcTimestamp: string | number | Date):
 		hour12: false,
 	});
 }
+
+// Empty functions for empty onClick handlers instead of using unnecessary `console.log()`
+export const emptyFunction = (): void => {
+	// Modifying a data structure
+	const arr = [];
+	arr.push(5);
+};

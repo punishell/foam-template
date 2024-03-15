@@ -212,7 +212,7 @@ export const MobileTalent = (): React.JSX.Element => {
 	}, [talentData, talentData?.pages]);
 
 	return (
-		<div className="flex h-full flex-col overflow-auto relative">
+		<div className="flex h-full flex-col relative">
 			<TalentHeader
 				searchQuery={searchQuery}
 				setSearchQuery={setSearchQuery}

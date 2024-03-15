@@ -4,6 +4,8 @@
 /*                             External Dependency                            */
 /* -------------------------------------------------------------------------- */
 
+import Link from "next/link";
+
 /* -------------------------------------------------------------------------- */
 /*                             Internal Dependency                            */
 /* -------------------------------------------------------------------------- */
@@ -24,10 +26,14 @@ export const TalentCard = ({ id, name, title, imageUrl, score, skills }: TalentB
 	const colorCodes = colorFromScore(parseInt(score ?? "0", 10));
 
 	return (
-		<div
+		<Link
 			key={id}
-			className="m-0 h-fit overflow-hidden p-0 w-full"
-			style={{ background: colorCodes.bgColor, borderBottom: `1px solid ${colorCodes.borderColor}` }}
+			className="m-0 h-auto p-0 w-full"
+			style={{
+				background: colorCodes.bgColor,
+				borderBottom: `1px solid ${colorCodes.borderColor}`,
+			}}
+			href={`/talents/${id}`}
 		>
 			<div className="w-full px-[21px] py-4 justify-start items-start inline-flex">
 				<AfroProfile
@@ -75,6 +81,6 @@ export const TalentCard = ({ id, name, title, imageUrl, score, skills }: TalentB
 					</div>
 				</div>
 			</div>
-		</div>
+		</Link>
 	);
 };
