@@ -135,10 +135,10 @@ export const MobileTalent = (): React.JSX.Element => {
 	const {
 		data: talentData,
 		refetch: talentRefetch,
-		isFetched,
-		isFetching,
+		// isFetched,
+		// isFetching,
 		isLoading,
-		isError,
+		// isError,
 		fetchNextPage,
 		hasNextPage,
 		isFetchingNextPage,
@@ -228,7 +228,7 @@ export const MobileTalent = (): React.JSX.Element => {
 				talents={currentData}
 				isFetchingNextPage={isFetchingNextPage}
 				ref={observerTarget}
-				isError={isError}
+				// isError={isError}
 			/>
 		</div>
 	);

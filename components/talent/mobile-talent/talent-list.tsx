@@ -33,7 +33,7 @@ interface MobileTalentListProps {
 	talents: TalentProps[];
 	isLoading?: boolean;
 	isFetchingNextPage: boolean;
-	isError?: boolean;
+	// isError?: boolean;
 }
 
 const RenderLoading = (): React.JSX.Element => {
@@ -54,32 +54,30 @@ const RenderEmpty = (): React.JSX.Element => {
 };
 
 export const TalentList = forwardRef<HTMLDivElement, MobileTalentListProps>((props, ref): JSX.Element => {
-	const { talents, isLoading, isFetchingNextPage, isError } = props;
+	const { talents, isLoading, isFetchingNextPage } = props;
 	return (
 		<div className="h-[calc(100%-76px)] w-full">
 			{isLoading ? (
 				<RenderLoading />
 			) : talents.length > 0 ? (
-				<div className="flex h-full flex-col">
-					<div className="flex flex-col overflow-y-scroll">
-						{talents.map((t: TalentProps, i: number) => (
-							<TalentCard
-								key={i}
-								id={t._id}
-								name={t.name}
-								title={t?.title ?? ""}
-								score={t?.score ?? "0"}
-								imageUrl={t?.image}
-								skills={t?.skills}
-							/>
-						))}
-						{isFetchingNextPage && (
-							<div className="mx-auto max-sm:my-4 flex w-full flex-row items-center justify-center text-center">
-								<Loader size={25} className="animate-spin text-center text-black" />
-							</div>
-						)}
-						<span ref={ref} />
-					</div>
+				<div className="flex flex-col overflow-y-scroll h-full">
+					{talents.map((t: TalentProps, i: number) => (
+						<TalentCard
+							key={i}
+							id={t._id}
+							name={t.name}
+							title={t?.title ?? ""}
+							score={t?.score ?? "0"}
+							imageUrl={t?.image}
+							skills={t?.skills}
+						/>
+					))}
+					{isFetchingNextPage && (
+						<div className="mx-auto max-sm:my-4 flex w-full flex-row items-center justify-center text-center">
+							<Loader size={25} className="animate-spin text-center text-black" />
+						</div>
+					)}
+					<span ref={ref} />
 				</div>
 			) : (
 				<RenderEmpty />

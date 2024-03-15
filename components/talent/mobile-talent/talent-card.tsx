@@ -28,7 +28,7 @@ export const TalentCard = ({ id, name, title, imageUrl, score, skills }: TalentB
 	return (
 		<Link
 			key={id}
-			className="m-0 h-auto p-0 w-full"
+			className="m-0 h-[125.50px] p-0 w-full"
 			style={{
 				background: colorCodes.bgColor,
 				borderBottom: `1px solid ${colorCodes.borderColor}`,
