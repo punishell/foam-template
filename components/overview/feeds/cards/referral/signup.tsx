@@ -4,7 +4,6 @@
 /*                             External Dependency                            */
 /* -------------------------------------------------------------------------- */
 
-import { type ReactElement } from "react";
 import { Button } from "pakt-ui";
 import { X, Briefcase } from "lucide-react";
 import Link from "next/link";

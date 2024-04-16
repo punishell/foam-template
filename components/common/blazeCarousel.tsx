@@ -84,15 +84,16 @@ interface CarouselProps {
 
 export const BlazeCarousel: React.FC<CarouselProps> = ({ elRef, children }) => {
 	return (
-		// <div className='relative w-full'>
 		<div ref={elRef} className="blaze-slider" style={{ ["--slides-to-show" as string | number]: 2 }}>
 			<div className="blaze-container">
 				<div className="blaze-track-container">
-					<div className="blaze-track">{React.Children.map(children, (Child) => Child)}</div>
+					<div className="blaze-track">
+						{/* eslint-disable-next-line @typescript-eslint/promise-function-async */}
+						{React.Children.map(children, (Child) => Child)}
+					</div>
 				</div>
 			</div>
 		</div>
-		// </div>
 	);
 };
 
