@@ -56,7 +56,7 @@ export const MobileHeader = (): ReactElement => {
 		<>
 			<div className="sm:hidden w-full relative overflow-hidden block !z-[9] bg-[#ECFCE5] h-auto max-h-max">
 				<div
-					className={`absolute -left-1 transition-all duration-300 transform translate-x-1/2 z-[5]
+					className={`absolute -left-1 transform translate-x-1/2 z-[5]
 				${scrollPosition === 0 && profileCompleted ? "scale-[1.6] translate-y-1/2" : "scale-100 top-0 translate-y-[2%]"}`}
 				>
 					{profileImage?.url && value && (
@@ -94,7 +94,7 @@ export const MobileHeader = (): ReactElement => {
 					</div>
 				</div>
 				<div
-					className={`flex items-center bg-[#BCF68CD4] w-full px-5 overflow-hidden relative z-[2] transition-all duration-300  ${scrollPosition === 0 && profileCompleted ? "h-[78px]" : "h-[0px]"}`}
+					className={`flex items-center bg-[#BCF68CD4] w-full px-5 overflow-hidden relative z-[2] ${scrollPosition === 0 && profileCompleted ? "h-[78px]" : "h-[0px]"}`}
 				>
 					<div className="absolute inset-0 bg-[url(/images/rain.png)] bg-repeat opacity-50 -z-[1]" />
 					<div className="flex items-center justify-between w-full z-20 gap-2">

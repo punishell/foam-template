@@ -10,8 +10,8 @@ import { useMediaQuery, useIsClient } from "usehooks-ts";
 /*                             Internal Dependency                            */
 /* -------------------------------------------------------------------------- */
 
-import { MobileTalent } from "@/components/talent/mobile-talent";
-import { DesktopTalents } from "@/components/talent/desktop-talent";
+import { MobileTalent } from "@/components/talent/mobile-view";
+import { DesktopTalents } from "@/components/talent/desktop-view";
 
 export default function TalentsPage(): JSX.Element {
 	const tab = useMediaQuery("(min-width: 640px)");

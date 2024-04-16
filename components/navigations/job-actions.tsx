@@ -36,7 +36,7 @@ const JobAction = (): JSX.Element => {
 				</div>
 				<div className="relative">
 					<Button
-						className="bg-primary text-white py-2 px-4 rounded-full z-20 shadow w-[68px] h-[68px] relative cursor-pointer"
+						className="bg-primary text-white py-2 px-4 rounded-full z-20 shadow w-[68px] !opacity-100 h-[68px] relative cursor-pointer hover:!bg-primary"
 						onClick={toggleButtons}
 						type="button"
 					>
