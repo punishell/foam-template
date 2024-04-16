@@ -26,100 +26,113 @@ import { JobCancellationRequested } from "./cancel/job-cancellation-request-succ
 import { Button } from "@/components/common/button";
 
 interface TalentJobModalProps {
-	jobId: string;
-	talentId: string;
-	closeModal: () => void;
-	extras?: string;
+    jobId: string;
+    talentId: string;
+    closeModal: () => void;
+    extras?: string;
 }
 
-export const TalentJobSheetForMobile: FC<TalentJobModalProps> = ({ jobId, talentId, closeModal, extras }) => {
-	const router = useRouter();
-	const query = useGetJobById({ jobId, extras });
-	const [isRequestingJobCancellation, setIsRequestingJobCancellation] = useState(false);
+export const TalentJobSheetForMobile: FC<TalentJobModalProps> = ({
+    jobId,
+    talentId,
+    closeModal,
+    extras,
+}) => {
+    const router = useRouter();
+    const query = useGetJobById({ jobId, extras });
+    const [isRequestingJobCancellation, setIsRequestingJobCancellation] =
+        useState(false);
 
-	if (query.isError) return <PageError className="absolute inset-0" />;
+    if (query.isError) return <PageError className="absolute inset-0" />;
 
-	if (query.isLoading) return <PageLoading className="absolute inset-0" color="#007C5B" />;
+    if (query.isLoading)
+        return <PageLoading className="absolute inset-0" color="#007C5B" />;
 
-	const job = query.data;
+    const job = query.data;
 
-	if (isRequestingJobCancellation) {
-		return (
-			<RequestJobCancellation
-				jobId={jobId}
-				talentId={talentId}
-				closeModal={() => {
-					setIsRequestingJobCancellation(false);
-				}}
-				cancelJobCancellationRequest={() => {
-					setIsRequestingJobCancellation(false);
-				}}
-				type="cancellation"
-			/>
-		);
-	}
+    if (isRequestingJobCancellation) {
+        return (
+            <RequestJobCancellation
+                jobId={jobId}
+                talentId={talentId}
+                closeModal={() => {
+                    setIsRequestingJobCancellation(false);
+                }}
+                cancelJobCancellationRequest={() => {
+                    setIsRequestingJobCancellation(false);
+                }}
+                type="cancellation"
+            />
+        );
+    }
 
-	const jobCancellation = job.collections.find(isJobCancellation);
+    const jobCancellation = job.collections.find(isJobCancellation);
 
-	const talentRequestedCancellation = jobCancellation?.creator._id === job.owner?._id; // problem here
-	const clientRequestedCancellation = jobCancellation?.creator._id === job.creator._id;
+    const talentRequestedCancellation =
+        jobCancellation?.creator._id === job.owner?._id; // problem here
+    const clientRequestedCancellation =
+        jobCancellation?.creator._id === job.creator._id;
 
-	const talentHasReviewed = job.ratings?.some((review) => review.owner._id === job.owner?._id);
-	const clientHasReviewed = job.ratings?.some((review) => review.owner._id === job.creator._id);
+    const talentHasReviewed = job.ratings?.some(
+        (review) => review.owner._id === job.owner?._id
+    );
+    const clientHasReviewed = job.ratings?.some(
+        (review) => review.owner._id === job.creator._id
+    );
 
-	if (job.status === "cancelled") {
-		return (
-			<div className="flex h-full flex-col items-center justify-center bg-red-50 text-red-500">
-				<div className="flex w-[200px] items-center justify-center">
-					<Lottie animationData={warning} loop={false} />
-				</div>
-				<span>This Job has been cancelled</span>
-				<div className="w-full max-w-[200px] mt-8">
-					<Button
-						fullWidth
-						size="lg"
-						onClick={() => {
-							closeModal();
-							router.push("/overview");
-						}}
-						variant="primary"
-					>
-						Go To Dashboard
-					</Button>
-				</div>
-			</div>
-		);
-	}
+    if (job.status === "cancelled") {
+        return (
+            <div className="flex h-full flex-col items-center justify-center bg-red-50 text-red-500">
+                <div className="flex w-[200px] items-center justify-center">
+                    <Lottie animationData={warning} loop={false} />
+                </div>
+                <span>This Job has been cancelled</span>
+                <div className="mt-8 w-full max-w-[200px]">
+                    <Button
+                        fullWidth
+                        size="lg"
+                        onClick={() => {
+                            closeModal();
+                            router.push("/overview");
+                        }}
+                        variant="primary"
+                    >
+                        Go To Dashboard
+                    </Button>
+                </div>
+            </div>
+        );
+    }
 
-	if (jobCancellation && clientRequestedCancellation) {
-		return (
-			<ReviewJobCancellationRequest
-				job={job}
-				closeModal={() => {
-					setIsRequestingJobCancellation(false);
-				}}
-			/>
-		);
-	}
+    if (jobCancellation && clientRequestedCancellation) {
+        return (
+            <ReviewJobCancellationRequest
+                job={job}
+                closeModal={() => {
+                    setIsRequestingJobCancellation(false);
+                }}
+            />
+        );
+    }
 
-	if (jobCancellation && talentRequestedCancellation) {
-		return <JobCancellationRequested closeModal={closeModal} />;
-	}
+    if (jobCancellation && talentRequestedCancellation) {
+        return <JobCancellationRequested closeModal={closeModal} />;
+    }
 
-	if (clientHasReviewed && talentHasReviewed) {
-		return <ReviewSuccess closeModal={closeModal} />;
-	}
+    if (clientHasReviewed && talentHasReviewed) {
+        return <ReviewSuccess closeModal={closeModal} />;
+    }
 
-	if (clientHasReviewed && !talentHasReviewed) {
-		return <ReviewClient job={job} closeModal={closeModal} />;
-	}
+    if (clientHasReviewed && !talentHasReviewed) {
+        return <ReviewClient job={job} closeModal={closeModal} />;
+    }
 
-	return (
-		<JobUpdates
-			job={job}
-			requestJobCancellation={() => {
-				setIsRequestingJobCancellation(true);
-			}}
-		/>
-	);
+    return (
+        <JobUpdates
+            job={job}
+            requestJobCancellation={() => {
+                setIsRequestingJobCancellation(true);
+            }}
+        />
+    );
 };

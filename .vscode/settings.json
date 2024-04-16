@@ -1,11 +1,14 @@
 {
-	"editor.formatOnPaste": true,
-	"editor.formatOnSave": true,
-	"editor.defaultFormatter": "esbenp.prettier-vscode",
-	"editor.codeActionsOnSave": {
-		"source.fixAll.eslint": "explicit",
-		"source.fixAll.format": "explicit"
-	},
-	"reactSnippets.settings.prettierEnabled": true,
-	"cSpell.words": ["Leaderboard"]
+    "editor.formatOnPaste": true,
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.codeActionsOnSave": {
+        "source.fixAll.eslint": "explicit",
+        "source.fixAll.format": "explicit"
+    },
+    "reactSnippets.settings.prettierEnabled": true,
+    "cSpell.words": ["Leaderboard"],
+    "[typescriptreact]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    }
 }

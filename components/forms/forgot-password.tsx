@@ -23,53 +23,71 @@ import { forgotPasswordSchema } from "@/lib/validations";
 type FormValues = z.infer<typeof forgotPasswordSchema>;
 
 const ForgotPasswordForm = (): JSX.Element => {
-	const router = useRouter();
-	const requestPasswordReset = useRequestPasswordReset();
+    const router = useRouter();
+    const requestPasswordReset = useRequestPasswordReset();
 
-	const form = useForm<FormValues>({
-		resolver: zodResolver(forgotPasswordSchema),
-	});
+    const form = useForm<FormValues>({
+        resolver: zodResolver(forgotPasswordSchema),
+    });
 
-	const onSubmit: SubmitHandler<FormValues> = (values) => {
-		requestPasswordReset.mutate(values, {
-			onSuccess: (data) => {
-				router.push(
-					`/forgot-password/reset?${createQueryStrings([
-						{
-							name: "email",
-							value: values.email,
-						},
-						{
-							name: "token",
-							value: data.tempToken.token,
-						},
-					])}`,
-				);
-			},
-		});
-	};
+    const onSubmit: SubmitHandler<FormValues> = (values) => {
+        requestPasswordReset.mutate(values, {
+            onSuccess: (data) => {
+                router.push(
+                    `/forgot-password/reset?${createQueryStrings([
+                        {
+                            name: "email",
+                            value: values.email,
+                        },
+                        {
+                            name: "token",
+                            value: data.tempToken.token,
+                        },
+                    ])}`
+                );
+            },
+        });
+    };
 
-	return (
-		<form
-			className="relative z-[100] mx-auto flex w-full max-w-[600px] flex-col items-center gap-6 rounded-2xl border border-white border-opacity-20 bg-[rgba(0,124,91,0.20)] p-4 sm:px-[40px] sm:py-10 backdrop-blur-md"
-			onSubmit={form.handleSubmit(onSubmit)}
-		>
-			<div className="relative flex w-full flex-col gap-2">
-				<label className="font-sans text-base sm:text-sm text-white" htmlFor="email">
-					Email
-				</label>
-				<Input {...form.register("email")} placeholder="Email" type="email" className="w-full" id="email" />
-			</div>
+    return (
+        <form
+            className="relative z-[100] mx-auto flex w-full max-w-[600px] flex-col items-center gap-6 rounded-2xl border border-white border-opacity-20 bg-[rgba(0,124,91,0.20)] p-4 backdrop-blur-md sm:px-[40px] sm:py-10"
+            onSubmit={form.handleSubmit(onSubmit)}
+        >
+            <div className="relative flex w-full flex-col gap-2">
+                <label
+                    className="font-sans text-base text-white sm:text-sm"
+                    htmlFor="email"
+                >
+                    Email
+                </label>
+                <Input
+                    {...form.register("email")}
+                    placeholder="Email"
+                    type="email"
+                    className="w-full"
+                    id="email"
+                />
+            </div>
 
-			<Button fullWidth disabled={!form.formState.isValid || requestPasswordReset.isLoading}>
-				{requestPasswordReset.isLoading ? <Spinner /> : "Reset Password"}
-			</Button>
+            <Button
+                fullWidth
+                disabled={
+                    !form.formState.isValid || requestPasswordReset.isLoading
+                }
+            >
+                {requestPasswordReset.isLoading ? (
+                    <Spinner />
+                ) : (
+                    "Reset Password"
+                )}
+            </Button>
 
-			<Link href="/login" className="mt-4 font-sans text-sm text-white">
-				Back to login
-			</Link>
-		</form>
-	);
+            <Link href="/login" className="mt-4 font-sans text-sm text-white">
+                Back to login
+            </Link>
+        </form>
+    );
 };
 
 export default ForgotPasswordForm;

@@ -16,63 +16,71 @@ import { BlazeCarousel, useBlazeSlider } from "../../../common/blazeCarousel";
 import { type ReviewProps } from "./types";
 import { Review } from "./item";
 
-export const Reviews = ({ reviews, loading }: { reviews: ReviewProps[]; loading: boolean }): ReactElement => {
-	const sliderInstance = useBlazeSlider();
+export const Reviews = ({
+    reviews,
+    loading,
+}: {
+    reviews: ReviewProps[];
+    loading: boolean;
+}): ReactElement => {
+    const sliderInstance = useBlazeSlider();
 
-	const { currentSlide } = sliderInstance;
-	const { totalSlides } = sliderInstance;
+    const { currentSlide } = sliderInstance;
+    const { totalSlides } = sliderInstance;
 
-	return (
-		<div className="w-full basis-0 gap-1 sm:rounded-2xl bg-primary-gradient p-6">
-			<div className="mb-4 flex w-full flex-row justify-between">
-				<h3 className="text-xl sm:text-2xl font-medium text-white">Reviews</h3>
-				<div className="hidden sm:flex flex-row gap-2">
-					<ArrowLeftCircle
-						size={32}
-						className={`cursor-pointer ${currentSlide === 0 ? "text-body" : "text-white"}`}
-						onClick={() => {
-							sliderInstance.nextSlide();
-						}}
-					/>
-					<ArrowRightCircle
-						size={32}
-						className={`cursor-pointer ${currentSlide === totalSlides ? "text-body" : "text-white"}`}
-						onClick={() => {
-							sliderInstance.prevSlide();
-						}}
-					/>
-				</div>
-			</div>
+    return (
+        <div className="w-full basis-0 gap-1 bg-primary-gradient p-6 sm:rounded-2xl">
+            <div className="mb-4 flex w-full flex-row justify-between">
+                <h3 className="text-xl font-medium text-white sm:text-2xl">
+                    Reviews
+                </h3>
+                <div className="hidden flex-row gap-2 sm:flex">
+                    <ArrowLeftCircle
+                        size={32}
+                        className={`cursor-pointer ${currentSlide === 0 ? "text-body" : "text-white"}`}
+                        onClick={() => {
+                            sliderInstance.nextSlide();
+                        }}
+                    />
+                    <ArrowRightCircle
+                        size={32}
+                        className={`cursor-pointer ${currentSlide === totalSlides ? "text-body" : "text-white"}`}
+                        onClick={() => {
+                            sliderInstance.prevSlide();
+                        }}
+                    />
+                </div>
+            </div>
 
-			{loading ? (
-				<div className="z-20 my-auto flex min-h-[307px] w-full items-center justify-center text-white">
-					<Spinner />
-				</div>
-			) : (
-				<div className="relative h-full basis-0">
-					<BlazeCarousel elRef={sliderInstance?.ref}>
-						{reviews &&
-							reviews.length > 0 &&
-							reviews.map((_review, i) => (
-								<Review
-									key={i}
-									title={_review.title}
-									body={_review.body}
-									rating={_review.rating}
-									user={_review.user}
-									date={_review.date}
-								/>
-							))}
-					</BlazeCarousel>
+            {loading ? (
+                <div className="z-20 my-auto flex min-h-[307px] w-full items-center justify-center text-white">
+                    <Spinner />
+                </div>
+            ) : (
+                <div className="relative h-full basis-0">
+                    <BlazeCarousel elRef={sliderInstance?.ref}>
+                        {reviews &&
+                            reviews.length > 0 &&
+                            reviews.map((_review, i) => (
+                                <Review
+                                    key={i}
+                                    title={_review.title}
+                                    body={_review.body}
+                                    rating={_review.rating}
+                                    user={_review.user}
+                                    date={_review.date}
+                                />
+                            ))}
+                    </BlazeCarousel>
 
-					{!reviews ||
-						(reviews.length === 0 && (
-							<div className="m-auto flex min-h-[207px] w-full items-center text-white">
-								<p className="mx-auto">No Reviews</p>
-							</div>
-						))}
-				</div>
-			)}
-		</div>
-	);
+                    {!reviews ||
+                        (reviews.length === 0 && (
+                            <div className="m-auto flex min-h-[207px] w-full items-center text-white">
+                                <p className="mx-auto">No Reviews</p>
+                            </div>
+                        ))}
+                </div>
+            )}
+        </div>
+    );
 };

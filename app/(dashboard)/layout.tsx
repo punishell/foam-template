@@ -29,143 +29,157 @@ import { LogoutAlert } from "@/components/common/logout-alert";
 import { GlobalBgVector } from "@/components/common/global-gradient-bg-vector";
 
 function Loader(): React.JSX.Element {
-	return (
-		<div aria-live="polite" aria-busy="true" className="flex h-screen w-screen items-center justify-center">
-			<PageLoading color="#007C5B" />
-		</div>
-	);
+    return (
+        <div
+            aria-live="polite"
+            aria-busy="true"
+            className="flex h-screen w-screen items-center justify-center"
+        >
+            <PageLoading color="#007C5B" />
+        </div>
+    );
 }
 
 interface DashProps {
-	children: ReactNode;
-	// eslint-disable-next-line react/require-default-props
-	tokenSet?: boolean;
+    children: ReactNode;
+    // eslint-disable-next-line react/require-default-props
+    tokenSet?: boolean;
 }
 
-function AccountWrapper({ children, tokenSet = false }: DashProps): React.JSX.Element {
-	const { isFetched, isFetching } = useGetAccount();
+function AccountWrapper({
+    children,
+    tokenSet = false,
+}: DashProps): React.JSX.Element {
+    const { isFetched, isFetching } = useGetAccount();
 
-	if (!tokenSet || (!isFetched && isFetching)) {
-		return <Loader />;
-	}
+    if (!tokenSet || (!isFetched && isFetching)) {
+        return <Loader />;
+    }
 
-	return children as React.JSX.Element;
+    return children as React.JSX.Element;
 }
 
 const SIX_MINUTES_IN_MS = 6 * 60 * 1000;
 
-export default function DashboardLayout({ children }: { children: React.ReactNode }): React.JSX.Element {
-	const router = useRouter();
-	const pathname = usePathname();
-	const queryClient = useQueryClient();
-	const token = getCookie(AUTH_TOKEN_KEY) as string;
-	const [isTokenSet, setIsTokenSet] = useState(false);
+export default function DashboardLayout({
+    children,
+}: {
+    children: React.ReactNode;
+}): React.JSX.Element {
+    const router = useRouter();
+    const pathname = usePathname();
+    const queryClient = useQueryClient();
+    const token = getCookie(AUTH_TOKEN_KEY) as string;
+    const [isTokenSet, setIsTokenSet] = useState(false);
 
-	const [remainingTime, setRemainingTime] = useState(0);
-	const [isTimeoutModalOpen, setIsTimeoutModalOpen] = useState(false);
+    const [remainingTime, setRemainingTime] = useState(0);
+    const [isTimeoutModalOpen, setIsTimeoutModalOpen] = useState(false);
 
-	const { scrollPosition } = useHeaderScroll();
+    const { scrollPosition } = useHeaderScroll();
 
-	const onIdle = (): void => {
-		setIsTimeoutModalOpen(false);
-		queryClient.clear();
-		router.push("/login");
-		deleteCookie(AUTH_TOKEN_KEY);
-	};
+    const onIdle = (): void => {
+        setIsTimeoutModalOpen(false);
+        queryClient.clear();
+        router.push("/login");
+        deleteCookie(AUTH_TOKEN_KEY);
+    };
 
-	const onActive = (): void => {
-		setIsTimeoutModalOpen(false);
-	};
+    const onActive = (): void => {
+        setIsTimeoutModalOpen(false);
+    };
 
-	const onPrompt = (): void => {
-		setIsTimeoutModalOpen(true);
-	};
+    const onPrompt = (): void => {
+        setIsTimeoutModalOpen(true);
+    };
 
-	const { getRemainingTime, activate } = useIdleTimer({
-		onIdle,
-		onActive,
-		onPrompt,
-		timeout: SIX_MINUTES_IN_MS,
-		promptBeforeIdle: SIX_MINUTES_IN_MS / 2,
-	});
+    const { getRemainingTime, activate } = useIdleTimer({
+        onIdle,
+        onActive,
+        onPrompt,
+        timeout: SIX_MINUTES_IN_MS,
+        promptBeforeIdle: SIX_MINUTES_IN_MS / 2,
+    });
 
-	const stayActive = (): void => {
-		setIsTimeoutModalOpen(false);
-		setTimeout(() => {
-			activate();
-		}, 1000);
-	};
+    const stayActive = (): void => {
+        setIsTimeoutModalOpen(false);
+        setTimeout(() => {
+            activate();
+        }, 1000);
+    };
 
-	const Logout = (): void => {
-		deleteCookie(AUTH_TOKEN_KEY);
-		queryClient.clear();
-		router.push("/login");
-	};
+    const Logout = (): void => {
+        deleteCookie(AUTH_TOKEN_KEY);
+        queryClient.clear();
+        router.push("/login");
+    };
 
-	useEffect(() => {
-		const intervalId = setInterval(() => {
-			setRemainingTime(getRemainingTime());
-		}, 10);
+    useEffect(() => {
+        const intervalId = setInterval(() => {
+            setRemainingTime(getRemainingTime());
+        }, 10);
 
-		return () => {
-			clearInterval(intervalId);
-		};
-	}, [getRemainingTime]);
+        return () => {
+            clearInterval(intervalId);
+        };
+    }, [getRemainingTime]);
 
-	useEffect(() => {
-		if (token !== "") {
-			axios.defaults.headers.common.Authorization = `Bearer ${token}`;
-			setIsTokenSet(true);
-		}
-		return () => {
-			axios.defaults.headers.common.Authorization = "";
-		};
-	}, [router, token]);
+    useEffect(() => {
+        if (token !== "") {
+            axios.defaults.headers.common.Authorization = `Bearer ${token}`;
+            setIsTokenSet(true);
+        }
+        return () => {
+            axios.defaults.headers.common.Authorization = "";
+        };
+    }, [router, token]);
 
-	useEffect(() => {
-		// https://css-tricks.com/the-trick-to-viewport-units-on-mobile/
-		const onWindowResize = (): void => {
-			document.documentElement.style.setProperty("--vh", `${window.innerHeight * 0.01}px`);
-		};
+    useEffect(() => {
+        // https://css-tricks.com/the-trick-to-viewport-units-on-mobile/
+        const onWindowResize = (): void => {
+            document.documentElement.style.setProperty(
+                "--vh",
+                `${window.innerHeight * 0.01}px`
+            );
+        };
 
-		window.addEventListener("resize", onWindowResize, false);
-		onWindowResize();
+        window.addEventListener("resize", onWindowResize, false);
+        onWindowResize();
 
-		return () => {
-			window.removeEventListener("resize", onWindowResize, false);
-		};
-	}, []);
+        return () => {
+            window.removeEventListener("resize", onWindowResize, false);
+        };
+    }, []);
 
-	if (!isTokenSet) {
-		return <Loader />;
-	}
+    if (!isTokenSet) {
+        return <Loader />;
+    }
 
-	return (
-		<AccountWrapper tokenSet={isTokenSet}>
-			<MessagingProvider>
-				<div className="flex sm:flex-row flex-col h-screen w-screen max-w-full overflow-y-hidden">
-					<Sidebar />
-					<div
-						className={`relative w-full transition-all duration-300 ${scrollPosition > 0 ? "h-[calc(100vh-129px)]" : "h-[calc(100vh-207px)]"} sm:h-[inherit]`}
-					>
-						<GlobalBgVector />
-						<div className="absolute inset-0 bg-[url(/images/rain.png)] bg-repeat opacity-50 max-sm:h-screen" />
-						<LogoutAlert
-							isTimeoutModalOpen={isTimeoutModalOpen}
-							remainingTime={remainingTime}
-							stayActive={stayActive}
-							Logout={Logout}
-						/>
-						<MobileHeader />
-						<div className="relative sm:isolate z-10 flex h-full sm:flex-1 flex-col sm:px-4 2xl:px-8 sm:pt-5">
-							{children}
-						</div>
-						{pathname === "/overview" && <JobAction />}
-						<BottomNav />
-						<MobileLeaderBoard />
-					</div>
-				</div>
-			</MessagingProvider>
-		</AccountWrapper>
-	);
+    return (
+        <AccountWrapper tokenSet={isTokenSet}>
+            <MessagingProvider>
+                <div className="flex h-screen w-screen max-w-full flex-col overflow-y-hidden sm:flex-row">
+                    <Sidebar />
+                    <div
+                        className={`relative w-full transition-all duration-300 ${scrollPosition > 0 ? "h-[calc(100vh-129px)]" : "h-[calc(100vh-207px)]"} sm:h-[inherit]`}
+                    >
+                        <GlobalBgVector />
+                        <div className="absolute inset-0 bg-[url(/images/rain.png)] bg-repeat opacity-50 max-sm:h-screen" />
+                        <LogoutAlert
+                            isTimeoutModalOpen={isTimeoutModalOpen}
+                            remainingTime={remainingTime}
+                            stayActive={stayActive}
+                            Logout={Logout}
+                        />
+                        <MobileHeader />
+                        <div className="relative z-10 flex h-full flex-col sm:isolate sm:flex-1 sm:px-4 sm:pt-5 2xl:px-8">
+                            {children}
+                        </div>
+                        {pathname === "/overview" && <JobAction />}
+                        <BottomNav />
+                        <MobileLeaderBoard />
+                    </div>
+                </div>
+            </MessagingProvider>
+        </AccountWrapper>
+    );
 }

@@ -19,35 +19,46 @@ import { PageError } from "../../common/page-error";
 import { TabContentWrapper } from "./tab-contents-wrapper";
 
 export const FeedsBookmark = (): ReactElement => {
-	const { _id: loggedInUser } = useUserState();
-	const {
-		data: bookmarkData,
-		isFetched,
-		isFetching,
-		refetch,
-		isError,
-	} = useGetBookmarks({ page: 1, limit: 10, filter: { type: "feed" } });
+    const { _id: loggedInUser } = useUserState();
+    const {
+        data: bookmarkData,
+        isFetched,
+        isFetching,
+        refetch,
+        isError,
+    } = useGetBookmarks({ page: 1, limit: 10, filter: { type: "feed" } });
 
-	const bookmarks = useMemo(
-		() =>
-			(bookmarkData?.data ?? []).map((feed, i) =>
-				ParseFeedView({ ...feed.feed, bookmarkId: feed._id, isBookmarked: true }, loggedInUser, i, refetch),
-			),
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-		[bookmarkData?.data],
-	);
+    const bookmarks = useMemo(
+        () =>
+            (bookmarkData?.data ?? []).map((feed, i) =>
+                ParseFeedView(
+                    { ...feed.feed, bookmarkId: feed._id, isBookmarked: true },
+                    loggedInUser,
+                    i,
+                    refetch
+                )
+            ),
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        [bookmarkData?.data]
+    );
 
-	return (
-		<TabContentWrapper>
-			{!isFetched && isFetching ? (
-				<PageLoading className="h-[35vh] 2xl:h-[50vh]" color="#007C5B" />
-			) : isError ? (
-				<PageError className="h-[35vh] 2xl:h-[50vh]" />
-			) : bookmarks.length === 0 ? (
-				<PageEmpty className="h-[35vh] 2xl:h-[50vh]" label="Bookmarked notifications will appear here" />
-			) : (
-				bookmarks
-			)}
-		</TabContentWrapper>
-	);
+    return (
+        <TabContentWrapper>
+            {!isFetched && isFetching ? (
+                <PageLoading
+                    className="h-[35vh] 2xl:h-[50vh]"
+                    color="#007C5B"
+                />
+            ) : isError ? (
+                <PageError className="h-[35vh] 2xl:h-[50vh]" />
+            ) : bookmarks.length === 0 ? (
+                <PageEmpty
+                    className="h-[35vh] 2xl:h-[50vh]"
+                    label="Bookmarked notifications will appear here"
+                />
+            ) : (
+                bookmarks
+            )}
+        </TabContentWrapper>
+    );
 };

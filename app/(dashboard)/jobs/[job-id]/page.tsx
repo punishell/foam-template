@@ -18,33 +18,35 @@ import { ClientJobDetails } from "@/components/jobs/desktop-view/view/client-job
 import { TalentJobDetails } from "@/components/jobs/desktop-view/view/talent-job-details";
 
 interface Props {
-	params: {
-		"job-id": string;
-	};
+    params: {
+        "job-id": string;
+    };
 }
 
 export default function JobDetailsPage({ params }: Props): ReactElement {
-	const jobId = params["job-id"];
-	const accountQuery = useGetAccount();
-	const jobQuery = useGetJobById({ jobId });
-	if (jobQuery.isError || accountQuery.isError) return <PageError className="absolute inset-0" />;
-	if (jobQuery.isLoading || accountQuery.isLoading)
-		return <PageLoading className="absolute inset-0" color="#007C5B" />;
+    const jobId = params["job-id"];
+    const accountQuery = useGetAccount();
+    const jobQuery = useGetJobById({ jobId });
+    if (jobQuery.isError || accountQuery.isError)
+        return <PageError className="absolute inset-0" />;
+    if (jobQuery.isLoading || accountQuery.isLoading)
+        return <PageLoading className="absolute inset-0" color="#007C5B" />;
 
-	const { data: job } = jobQuery;
-	const { data: account } = accountQuery;
-	const USER_ROLE: "client" | "talent" = account?._id === job.creator._id ? "client" : "talent";
+    const { data: job } = jobQuery;
+    const { data: account } = accountQuery;
+    const USER_ROLE: "client" | "talent" =
+        account?._id === job.creator._id ? "client" : "talent";
 
-	const VIEWS = {
-		client: ClientJobDetails,
-		talent: TalentJobDetails,
-	};
+    const VIEWS = {
+        client: ClientJobDetails,
+        talent: TalentJobDetails,
+    };
 
-	const CurrentView = VIEWS[USER_ROLE];
+    const CurrentView = VIEWS[USER_ROLE];
 
-	return (
-		<div className="h-full">
-			<CurrentView job={job} userId={account._id} />
-		</div>
-	);
+    return (
+        <div className="h-full">
+            <CurrentView job={job} userId={account._id} />
+        </div>
+    );
 }

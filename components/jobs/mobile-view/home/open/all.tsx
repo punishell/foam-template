@@ -18,48 +18,77 @@ import { paginate } from "@/lib/utils";
 import { PageLoading } from "@/components/common/page-loading";
 
 interface AllJobsProps {
-	jobs: Job[];
-	onRefresh?: () => void;
-	loading?: boolean;
+    jobs: Job[];
+    onRefresh?: () => void;
+    loading?: boolean;
 }
 
-export const AllJobs = ({ jobs, onRefresh, loading }: AllJobsProps): ReactElement | null => {
-	const itemsPerPage = 6;
-	const [currentPage, setCurrentPage] = React.useState(1);
-	const totalPages = Math.ceil(jobs.length / itemsPerPage);
-	const paginatedJobs = paginate(jobs, itemsPerPage, currentPage);
+export const AllJobs = ({
+    jobs,
+    onRefresh,
+    loading,
+}: AllJobsProps): ReactElement | null => {
+    const itemsPerPage = 6;
+    const [currentPage, setCurrentPage] = React.useState(1);
+    const totalPages = Math.ceil(jobs.length / itemsPerPage);
+    const paginatedJobs = paginate(jobs, itemsPerPage, currentPage);
 
-	if (loading) return <PageLoading className="h-[85vh] rounded-2xl border border-line" color="#007C5B" />;
-	if (!jobs.length)
-		return <PageEmpty label="No open jobs yet." className="h-[70vh] rounded-2xl border border-line" />;
+    if (loading)
+        return (
+            <PageLoading
+                className="h-[85vh] rounded-2xl border border-line"
+                color="#007C5B"
+            />
+        );
+    if (!jobs.length)
+        return (
+            <PageEmpty
+                label="No open jobs yet."
+                className="h-[70vh] rounded-2xl border border-line"
+            />
+        );
 
-	return (
-		<div className="h-[calc(100%-76px)] w-full">
-			<div className="flex flex-col overflow-y-scroll h-full">
-				{paginatedJobs.map(({ _id, paymentFee, name, tags, creator, isBookmarked, bookmarkId }) => {
-					return (
-						<OpenJobCard
-							id={_id}
-							key={_id}
-							price={paymentFee}
-							title={name}
-							skills={tags}
-							creator={{
-								_id: creator._id,
-								paktScore: creator.score,
-								avatar: creator.profileImage?.url,
-								name: `${creator.firstName} ${creator.lastName}`,
-							}}
-							isBookmarked={isBookmarked}
-							bookmarkId={bookmarkId ?? ""}
-							onRefresh={onRefresh}
-						/>
-					);
-				})}
-			</div>
-			<div className="mt-auto">
-				<Pagination currentPage={currentPage} totalPages={totalPages} setCurrentPage={setCurrentPage} />
-			</div>
-		</div>
-	);
+    return (
+        <div className="h-[calc(100%-76px)] w-full">
+            <div className="flex h-full flex-col overflow-y-scroll">
+                {paginatedJobs.map(
+                    ({
+                        _id,
+                        paymentFee,
+                        name,
+                        tags,
+                        creator,
+                        isBookmarked,
+                        bookmarkId,
+                    }) => {
+                        return (
+                            <OpenJobCard
+                                id={_id}
+                                key={_id}
+                                price={paymentFee}
+                                title={name}
+                                skills={tags}
+                                creator={{
+                                    _id: creator._id,
+                                    paktScore: creator.score,
+                                    avatar: creator.profileImage?.url,
+                                    name: `${creator.firstName} ${creator.lastName}`,
+                                }}
+                                isBookmarked={isBookmarked}
+                                bookmarkId={bookmarkId ?? ""}
+                                onRefresh={onRefresh}
+                            />
+                        );
+                    }
+                )}
+            </div>
+            <div className="mt-auto">
+                <Pagination
+                    currentPage={currentPage}
+                    totalPages={totalPages}
+                    setCurrentPage={setCurrentPage}
+                />
+            </div>
+        </div>
+    );
 };

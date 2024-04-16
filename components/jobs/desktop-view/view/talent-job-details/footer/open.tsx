@@ -16,52 +16,52 @@ import { TalentPrivateJobCtas } from "./private";
 import { TalentJobApplyModal } from "../modal/apply";
 
 export interface TalentOpenJobCtasProps {
-	jobId: string;
-	jobCreator: string;
-	inviteId: string | null;
-	hasAlreadyApplied: boolean;
-	hasBeenInvited: boolean;
+    jobId: string;
+    jobCreator: string;
+    inviteId: string | null;
+    hasAlreadyApplied: boolean;
+    hasBeenInvited: boolean;
 }
 
 export const TalentOpenJobCtas: React.FC<TalentOpenJobCtasProps> = ({
-	jobId,
-	jobCreator,
-	hasBeenInvited,
-	inviteId,
-	hasAlreadyApplied,
+    jobId,
+    jobCreator,
+    hasBeenInvited,
+    inviteId,
+    hasAlreadyApplied,
 }) => {
-	const [isApplyModalOpen, setIsApplyModalOpen] = React.useState(false);
-	if (hasBeenInvited)
-		return (
-			<TalentPrivateJobCtas
-				inviteId={inviteId}
-				hasBeenInvited={hasBeenInvited}
-				jobId={jobId}
-				jobCreator={jobCreator}
-			/>
-		);
+    const [isApplyModalOpen, setIsApplyModalOpen] = React.useState(false);
+    if (hasBeenInvited)
+        return (
+            <TalentPrivateJobCtas
+                inviteId={inviteId}
+                hasBeenInvited={hasBeenInvited}
+                jobId={jobId}
+                jobCreator={jobCreator}
+            />
+        );
 
-	return (
-		<div className="ml-auto w-full max-w-[200px]">
-			{!hasAlreadyApplied && (
-				<Button
-					fullWidth
-					onClick={() => {
-						setIsApplyModalOpen(true);
-					}}
-				>
-					Apply
-				</Button>
-			)}
+    return (
+        <div className="ml-auto w-full max-w-[200px]">
+            {!hasAlreadyApplied && (
+                <Button
+                    fullWidth
+                    onClick={() => {
+                        setIsApplyModalOpen(true);
+                    }}
+                >
+                    Apply
+                </Button>
+            )}
 
-			<Modal
-				isOpen={isApplyModalOpen}
-				closeModal={() => {
-					setIsApplyModalOpen(false);
-				}}
-			>
-				<TalentJobApplyModal jobId={jobId} jobCreator={jobCreator} />
-			</Modal>
-		</div>
-	);
+            <Modal
+                isOpen={isApplyModalOpen}
+                closeModal={() => {
+                    setIsApplyModalOpen(false);
+                }}
+            >
+                <TalentJobApplyModal jobId={jobId} jobCreator={jobCreator} />
+            </Modal>
+        </div>
+    );
 };
