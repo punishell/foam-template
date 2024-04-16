@@ -12,9 +12,9 @@ import { usePathname, useSearchParams, useRouter } from "next/navigation";
 /*                             Internal Dependency                            */
 /* -------------------------------------------------------------------------- */
 
-import { OpenJobs } from "@/components/jobs/desktop-view/home/open";
-import { CreatedJobs } from "@/components/jobs/desktop-view/home/created";
-import { AcceptedJobs } from "@/components/jobs/desktop-view/home/accepted";
+import { OpenJobs } from "./home/open";
+import { CreatedJobs } from "./home/created";
+import { AcceptedJobs } from "./home/accepted";
 
 interface TabTriggerProps {
 	value: string;
@@ -66,7 +66,7 @@ export default function JobsMobileView(): React.JSX.Element {
 			value={activeTab}
 			defaultValue="open"
 			onValueChange={handleTabChange}
-			className="flex h-full w-full flex-col gap-4"
+			className="flex h-full w-full flex-col"
 		>
 			<div className="flex w-full items-center justify-center gap-4 bg-emerald-900 py-2 px-5">
 				<RadixTabs.List className="grid w-full grid-cols-3 gap-1 rounded-lg bg-white bg-opacity-10 p-0.5 text-base text-white">

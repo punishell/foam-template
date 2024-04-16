@@ -25,9 +25,10 @@ interface Props {
 	urlKey?: string;
 	defaultTab?: string;
 	className?: string;
+	tabListClassName?: string;
 }
 
-export const Tabs: FC<Props> = ({ tabs, defaultTab, urlKey, className }) => {
+export const Tabs: FC<Props> = ({ tabs, defaultTab, urlKey, className, tabListClassName }) => {
 	const router = useRouter();
 	const pathname = usePathname();
 	const searchParams = useSearchParams();
@@ -59,7 +60,11 @@ export const Tabs: FC<Props> = ({ tabs, defaultTab, urlKey, className }) => {
 				className,
 			)}
 		>
-			<RadixTabs.List className="flex w-full items-center max-sm:justify-between border-b max-sm:h-[64px]">
+			<RadixTabs.List
+				className={cn("flex w-full items-center max-sm:justify-between border-b max-sm:h-[64px]",
+					tabListClassName,
+				)}
+			>
 				{tabs.map((tab) => (
 					<RadixTabs.Trigger
 						key={tab.value}
@@ -81,6 +86,6 @@ export const Tabs: FC<Props> = ({ tabs, defaultTab, urlKey, className }) => {
 					</RadixTabs.Content>
 				))}
 			</div>
-		</RadixTabs.Root>
+		</RadixTabs.Root >
 	);
 };

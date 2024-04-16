@@ -92,7 +92,7 @@ export const OpenJobs = (): ReactElement | null => {
 
 	return (
 		<div className="flex h-full flex-col gap-6">
-			<OpenHeader
+			{/* <OpenHeader
 				searchQuery={searchQuery}
 				setSearchQuery={setSearchQuery}
 				skillsQuery={skillsQuery}
@@ -101,7 +101,7 @@ export const OpenJobs = (): ReactElement | null => {
 				setMinimumPriceQuery={setMinimumPriceQuery}
 				maximumPriceQuery={maximumPriceQuery}
 				setMaximumPriceQuery={setMaximumPriceQuery}
-			/>
+			/> */}
 
 			<div className="flex h-full grow">
 				<Tabs
@@ -125,6 +125,7 @@ export const OpenJobs = (): ReactElement | null => {
 							),
 						},
 					]}
+					tabListClassName="max-sm:justify-normal"
 				/>
 			</div>
 		</div>
