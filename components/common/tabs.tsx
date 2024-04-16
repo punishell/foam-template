@@ -4,7 +4,7 @@
 /*                             External Dependency                            */
 /* -------------------------------------------------------------------------- */
 
-import React, { type FC, useEffect, useState, useRef } from "react";
+import React, { type FC, useEffect } from "react";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import * as RadixTabs from "@radix-ui/react-tabs";
 
