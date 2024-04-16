@@ -4,7 +4,7 @@
 /*                             External Dependency                            */
 /* -------------------------------------------------------------------------- */
 
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useDebounce } from "usehooks-ts";
 
@@ -12,11 +12,8 @@ import { useDebounce } from "usehooks-ts";
 /*                             Internal Dependency                            */
 /* -------------------------------------------------------------------------- */
 
-import { PageLoading } from "../../common/page-loading";
-import { TalentCard } from "./talent-card";
 import { createQueryStrings2, type AchievementType } from "@/lib/utils";
 import { useGetTalentInfinitely } from "@/lib/api";
-import { type User } from "@/lib/types";
 import { TalentHeader } from "./header";
 import { TalentList } from "./talent-list";
 
@@ -75,16 +72,18 @@ const mapTalentData = (talent: TalentProps): MappedTalent => ({
 });
 
 export const MobileTalent = (): React.JSX.Element => {
-	const [isSearching, setIsSearching] = useState(true);
-
 	const router = useRouter();
 	const pathname = usePathname();
 	const searchParams = useSearchParams();
 
 	const observerTarget = useRef<HTMLDivElement | null>(null);
 	const [observe, setObserve] = useState(false);
-	const [prevPage, setPrevPage] = useState(0);
-	const [currentPage, setCurrentPage] = useState(1);
+
+	// eslint-disable-next-line prefer-const
+	let prevPage = 0;
+	// eslint-disable-next-line prefer-const
+	let currentPage = 1;
+
 	const [currentData, setCurrentData] = useState<MappedTalent[]>([]);
 
 	const [searchQuery, setSearchQuery] = useState(searchParams.get("search") ?? "");
@@ -117,20 +116,9 @@ export const MobileTalent = (): React.JSX.Element => {
 	]);
 
 	const queryParams = new URLSearchParams(searchParams);
-	// const Limit = queryParams.get("limit") ?? "6";
-	// const page = queryParams.get("page") ?? "1";
 	const searchQ = queryParams.get("search") ?? "";
 	const skillQ = queryParams.get("skills") ?? "";
 	const rangeQ = queryParams.get("range") ?? "";
-
-	// const createQueryString = useCallback(
-	// 	(name: string, value: string) => {
-	// 		const params = new URLSearchParams(searchParams);
-	// 		params.set(name, value);
-	// 		return params.toString();
-	// 	},
-	// 	[searchParams],
-	// );
 
 	const {
 		data: talentData,
@@ -197,7 +185,6 @@ export const MobileTalent = (): React.JSX.Element => {
 	useEffect(() => {
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		let totalData: any = [];
-		// if (timelineData?.pages) {
 		if (talentData && Array.isArray(talentData.pages)) {
 			for (let i = 0; i < talentData.pages.length; i++) {
 				const talData = talentData.pages[i];
@@ -228,7 +215,6 @@ export const MobileTalent = (): React.JSX.Element => {
 				talents={currentData}
 				isFetchingNextPage={isFetchingNextPage}
 				ref={observerTarget}
-				// isError={isError}
 			/>
 		</div>
 	);
