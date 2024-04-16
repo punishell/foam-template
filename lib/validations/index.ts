@@ -10,28 +10,20 @@ const passwordSchema = z
 	.regex(/[0-9]/, "Password must contain at least one number.")
 	.regex(/[a-z]/, "Password must contain at least one lowercase letter.")
 	.regex(/[A-Z]/, "Password must contain at least one uppercase letter.")
-	.regex(
-		/[^a-zA-Z0-9]/,
-		"Password must contain at least one special character.",
-	);
+	.regex(/[^a-zA-Z0-9]/, "Password must contain at least one special character.");
 
 export const otpSchema = z.object({
 	otp: z.string().min(6, { message: "OTP is required" }),
 });
 
 export const forgotPasswordSchema = z.object({
-	email: z
-		.string()
-		.min(1, { message: "Email is required" })
-		.email("Please enter a valid email address."),
+	email: z.string().min(1, { message: "Email is required" }).email("Please enter a valid email address."),
 });
 
 export const resetPasswordSchema = z
 	.object({
 		password: passwordSchema,
-		confirmPassword: z
-			.string()
-			.min(1, { message: "Confirm password is required" }),
+		confirmPassword: z.string().min(1, { message: "Confirm password is required" }),
 	})
 	.refine((data) => data.password === data.confirmPassword, {
 		path: ["confirmPassword"],
@@ -39,10 +31,7 @@ export const resetPasswordSchema = z
 	});
 
 export const loginSchema = z.object({
-	password: z
-		.string()
-		.min(1, "Password is required")
-		.min(8, "Password is too short"),
+	password: z.string().min(1, "Password is required").min(8, "Password is too short"),
 	email: z.string().min(1, "Email is required").email("Invalid email"),
 });
 
@@ -50,14 +39,9 @@ export const signupSchema = z
 	.object({
 		lastName: z.string().min(1, { message: "Name is required" }),
 		firstName: z.string().min(1, { message: "Name is required" }),
-		email: z
-			.string()
-			.min(1, { message: "Email is required" })
-			.email("Please enter a valid email address."),
+		email: z.string().min(1, { message: "Email is required" }).email("Please enter a valid email address."),
 		password: passwordSchema,
-		confirmPassword: z
-			.string()
-			.min(1, { message: "Confirm password is required" }),
+		confirmPassword: z.string().min(1, { message: "Confirm password is required" }),
 	})
 	.refine((data) => data.password === data.confirmPassword, {
 		path: ["confirmPassword"],
@@ -95,9 +79,7 @@ export const changePasswordFormSchema = z
 				/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})/,
 				"Must Contain 8 Characters, One Uppercase, One Lowercase, One Number and One Special Case Character",
 			),
-		confirmNewPassword: z
-			.string()
-			.min(1, "Confirm New Password is required"),
+		confirmNewPassword: z.string().min(1, "Confirm New Password is required"),
 	})
 	.refine((data) => data.newPassword === data.confirmNewPassword, {
 		message: "Passwords don't match",
@@ -107,9 +89,7 @@ export const changePasswordFormSchema = z
 export const withdrawFormSchema = z.object({
 	coin: z.string().min(1, "Password is required"),
 	address: z.string().min(1, "Address is required"),
-	amount: z
-		.number()
-		.min(1, "$100 is the minimum required amount for withdrawal"),
+	amount: z.number().min(1, "$100 is the minimum required amount for withdrawal"),
 	password: z.string().min(1, "password is required"),
 	confirm: z.literal(true, {
 		errorMap: () => ({ message: "You must accept Terms and Conditions" }),
@@ -123,16 +103,10 @@ export const createJobSchema = z.object({
 	visibility: z.string().nonempty({ message: "Required" }),
 	thirdSkill: z.string().optional().default(""),
 	secondSkill: z.string().optional().default(""),
-	firstSkill: z
-		.string()
-		.nonempty({ message: "At least, one skill is required" }),
-	budget: z.coerce
-		.number()
-		.min(100, { message: "Budget must be at least $100" }),
+	firstSkill: z.string().nonempty({ message: "At least, one skill is required" }),
+	budget: z.coerce.number().min(100, { message: "Budget must be at least $100" }),
 	title: z.string().nonempty({ message: "Job title is required" }),
-	description: z
-		.string()
-		.nonempty({ message: "Job description is required" }),
+	description: z.string().nonempty({ message: "Job description is required" }),
 	category: z.string().nonempty({ message: "Required" }),
 	deliverables: z
 		.array(z.string(), {

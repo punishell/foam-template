@@ -13,13 +13,7 @@ import type * as z from "zod";
 /* -------------------------------------------------------------------------- */
 
 import { type createJobSchema } from "@/lib/validations";
-import {
-	Select,
-	SelectTrigger,
-	SelectValue,
-	SelectContent,
-	SelectItem,
-} from "@/components/common/select";
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/common/select";
 
 const CATEGORY_OPTIONS = [
 	{ label: "Design", value: "design" },
@@ -46,10 +40,7 @@ const JobCategory = ({ form }: JobDescriptionProps): ReactElement => {
 					control={form.control}
 					render={({ field: { onChange, value } }) => {
 						return (
-							<Select
-								defaultValue={value}
-								onValueChange={onChange}
-							>
+							<Select defaultValue={value} onValueChange={onChange}>
 								<SelectTrigger className="h-10 w-[180px] rounded-lg bg-[#F2F4F5] text-base text-title">
 									<SelectValue placeholder="Select Category" />
 								</SelectTrigger>
@@ -73,9 +64,7 @@ const JobCategory = ({ form }: JobDescriptionProps): ReactElement => {
 				/>
 				<span className="absolute -bottom-5 flex w-full">
 					{form.formState.errors.category?.message != null && (
-						<span className="text-sm text-red-500">
-							{form.formState.errors.category?.message}
-						</span>
+						<span className="text-sm text-red-500">{form.formState.errors.category?.message}</span>
 					)}
 				</span>
 			</div>

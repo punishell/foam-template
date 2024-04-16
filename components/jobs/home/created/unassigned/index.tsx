@@ -23,12 +23,7 @@ interface UnassignedJobsProps {
 export const UnassignedJobs: React.FC<UnassignedJobsProps> = ({ jobs }) => {
 	const [currentPage, setCurrentPage] = React.useState(1);
 	if (!jobs.length)
-		return (
-			<PageEmpty
-				label="No open jobs yet."
-				className="h-[80vh] rounded-2xl border border-line"
-			/>
-		);
+		return <PageEmpty label="No open jobs yet." className="h-[80vh] rounded-2xl border border-line" />;
 
 	const ITEMS_PER_PAGE = 6;
 	const TOTAL_PAGES = Math.ceil(jobs.length / ITEMS_PER_PAGE);
@@ -42,11 +37,7 @@ export const UnassignedJobs: React.FC<UnassignedJobsProps> = ({ jobs }) => {
 				})}
 			</div>
 			<div className="mt-auto pt-4">
-				<Pagination
-					currentPage={currentPage}
-					totalPages={TOTAL_PAGES}
-					setCurrentPage={setCurrentPage}
-				/>
+				<Pagination currentPage={currentPage} totalPages={TOTAL_PAGES} setCurrentPage={setCurrentPage} />
 			</div>
 		</div>
 	);

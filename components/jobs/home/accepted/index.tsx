@@ -21,35 +21,20 @@ import { TalentCompletedJobs } from "./talent-completed-jobs";
 export const AcceptedJobs = (): ReactElement => {
 	const jobsData = useGetJobs({ category: "assigned" });
 
-	if (jobsData.isError)
-		return (
-			<PageError className="h-[85vh] rounded-2xl border border-red-200" />
-		);
-	if (jobsData.isLoading)
-		return (
-			<PageLoading
-				className="h-[85vh] rounded-2xl border border-line"
-				color="#007C5B"
-			/>
-		);
+	if (jobsData.isError) return <PageError className="h-[85vh] rounded-2xl border border-red-200" />;
+	if (jobsData.isLoading) return <PageLoading className="h-[85vh] rounded-2xl border border-line" color="#007C5B" />;
 
 	const jobs = jobsData.data.data;
 
 	// sort jobs by latest first
 	const sortedJobs = jobs.sort((a, b) => {
-		return (
-			new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-		);
+		return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
 	});
 
 	const talentAndClientHasReviewed = (job: Job): boolean => {
 		return (
-			job.ratings?.some(
-				(review) => review.owner._id === job.owner?._id,
-			) ??
-			job.ratings?.some(
-				(review) => review.owner._id === job.creator?._id,
-			) ??
+			job.ratings?.some((review) => review.owner._id === job.owner?._id) ??
+			job.ratings?.some((review) => review.owner._id === job.creator?._id) ??
 			false
 		);
 	};
@@ -62,10 +47,7 @@ export const AcceptedJobs = (): ReactElement => {
 			job.status !== "cancelled",
 	);
 	const completedJobs = sortedJobs.filter(
-		(job) =>
-			(job.payoutStatus === "completed" ||
-				talentAndClientHasReviewed(job)) ??
-			job.status === "cancelled",
+		(job) => (job.payoutStatus === "completed" || talentAndClientHasReviewed(job)) ?? job.status === "cancelled",
 	);
 
 	return (

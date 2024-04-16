@@ -4,20 +4,38 @@
 /*                             Internal Dependency                            */
 /* -------------------------------------------------------------------------- */
 
+import { useState } from "react";
+import { ChevronRight } from "lucide-react";
+
+/* -------------------------------------------------------------------------- */
+/*                             Internal Dependency                            */
+/* -------------------------------------------------------------------------- */
+
 import { AchievementBar } from "./bar";
 import { type AchievementType, type AchievementProps } from "./types";
+import { Button } from "@/components/common/button";
 
-export const Achievements = ({
-	achievements = [],
-}: AchievementProps): JSX.Element => {
+export const Achievements = ({ achievements = [] }: AchievementProps): JSX.Element => {
+	const [showAchievements, setShowAchievements] = useState(false);
+
 	achievements.sort((a, b) => b.total - a.total);
 	return (
-		<div className="shrink-0 rounded-2xl bg-primary-gradient p-[4px]">
-			<div className="flex h-full w-fit shrink-0 flex-col items-center gap-4 rounded-xl bg-[#F8FFF4] px-6 py-4">
-				<h3 className="text-center text-2xl font-medium text-title">
-					Achievements
-				</h3>
-				<div className="grid w-full grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+		<div className="shrink-0 bg-white sm:bg-transparent sm:border-primary sm:rounded-2xl p-[4px] border-b sm:border-2">
+			<div className="flex h-full w-full sm:w-fit shrink-0 flex-col items-start sm:items-center sm:gap-4 sm:rounded-xl px-4 sm:px-6 py-4">
+				<Button
+					className="!p-0 !m-0 flex items-center justify-between w-full"
+					onClick={() => {
+						setShowAchievements(!showAchievements);
+					}}
+				>
+					<h3 className="text-center text-lg sm:text-2xl font-medium text-title">Achievements</h3>
+					<ChevronRight
+						className={`h-6 w-6 sm:hidden text-body transition-transform duration-300 ${showAchievements ? "transform rotate-90" : ""}`}
+					/>
+				</Button>
+				<div
+					className={`grid w-full grid-cols-4 gap-2 overflow-hidden transition-all duration-300  ${showAchievements ? " h-fit mt-4" : "h-0"} sm:h-fit sm:mt-0`}
+				>
 					{achievements.length > 0 &&
 						achievements.map(({ total, type, value }) => {
 							return (

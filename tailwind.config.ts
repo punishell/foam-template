@@ -9,6 +9,7 @@ const config: Config = {
 		"./pages/**/*.{js,ts,jsx,tsx,mdx}",
 		"./components/**/*.{js,ts,jsx,tsx,mdx}",
 		"./app/**/*.{js,ts,jsx,tsx,mdx}",
+		"./mobile/**/*.{js,ts,jsx,tsx,mdx}",
 	],
 	theme: {
 		screens: {
@@ -18,6 +19,7 @@ const config: Config = {
 			xl: { min: "1280px" },
 			"2xl": { min: "1536px" },
 			"2xl.max": { min: "1600px" },
+			"max-sm": { max: "639px" },
 		},
 		extend: {
 			colors: {
@@ -46,28 +48,26 @@ const config: Config = {
 				"sky-lighter": "#F7F9FA",
 			},
 			backgroundImage: {
-				"auth-gradient":
-					"linear-gradient(180deg, #007C5B 0%, #00231A 100%)",
-				"sidebar-gradient":
-					"linear-gradient(180deg, #007C5B 0%, #00231A 100%)",
-				"primary-gradient":
-					"linear-gradient(102.28deg, #008D6C 32.23%, #11FFC7 139.92%)",
-				"red-gradient":
-					"linear-gradient(149deg, #FA042F 0%, #FF6A84 100%)",
-				"yellow-gradient":
-					"linear-gradient(171deg, #FFF70A 0%, #EEE600 100%)",
-				"orange-gradient":
-					"linear-gradient(166deg, #FFB402 0%, #E19E00 100%)",
-				"blue-gradient":
-					"linear-gradient(162deg, #08A7FC 0%, #71CDFF 100%)",
-				"green-gradient":
-					"linear-gradient(145deg, #05BD2F 0%, #0FF143 100%)",
-				"gradient-leaderboard":
-					"linear-gradient(360deg, #007C5B 0%, #00231A 100%)",
+				"auth-gradient": "linear-gradient(180deg, #007C5B 0%, #00231A 100%)",
+				"sidebar-gradient": "linear-gradient(180deg, #007C5B 0%, #00231A 100%)",
+				"primary-gradient": "linear-gradient(102.28deg, #008D6C 32.23%, #11FFC7 139.92%)",
+				"red-gradient": "linear-gradient(149deg, #FA042F 0%, #FF6A84 100%)",
+				"yellow-gradient": "linear-gradient(171deg, #FFF70A 0%, #EEE600 100%)",
+				"orange-gradient": "linear-gradient(166deg, #FFB402 0%, #E19E00 100%)",
+				"blue-gradient": "linear-gradient(162deg, #08A7FC 0%, #71CDFF 100%)",
+				"green-gradient": "linear-gradient(145deg, #05BD2F 0%, #0FF143 100%)",
+				"gradient-leaderboard": "linear-gradient(360deg, #007C5B 0%, #00231A 100%)",
 				"blur-bg": 'url("/images/backbg.svg")',
 				"pakt-score-gradient":
 					"conic-gradient(from 180deg at 50.00% 50.00%, #61C454 0.048630565870553255deg, #03A328 0.8480448368936777deg, #00BA2A 24.784035086631775deg, #18CD42 40.25028795003891deg, #35E45D 50.94634473323822deg, #35E45D 60.361735224723816deg, #0079AE 71.8717110157013deg, #04A4FC 105.73829054832458deg, #2CCCF9 123.79844069480896deg, #63D2EA 138.19416761398315deg, #FFA500 155.15244483947754deg, #FFC203 192.3530101776123deg, #FFF50A 230.82940578460693deg, #FFF90A 284.43509101867676deg, #FFC0CB 292.38030910491943deg, #FA1039 316.4574694633484deg, #FA002C 359.07697677612305deg)",
 				none: "none",
+				"mobile-l1":
+					"linear-gradient(0deg, rgba(0, 0, 0, 0.20) 0%, rgba(0, 0, 0, 0.20) 100%), linear-gradient(135deg, #FFC462 0%, #A05E03 99.26%)",
+				"mobile-l2":
+					"linear-gradient(0deg, rgba(0, 0, 0, 0.20) 0%, rgba(0, 0, 0, 0.20) 100%), linear-gradient(0deg, rgba(0, 0, 0, 0.20) 0%, rgba(0, 0, 0, 0.20) 100%), linear-gradient(31deg, #BBD2C5 2.94%, #536976 83.78%)",
+				"mobile-l3":
+					"linear-gradient(0deg, rgba(0, 0, 0, 0.20) 0%, rgba(0, 0, 0, 0.20) 100%), linear-gradient(77deg, #055A60 3.45%, #1F3439 97.41%);",
+				"cancel-job-header": "linear-gradient(180deg, #FE7F77 0%, #FF9A94 99.99%, #E74E44 100%)",
 			},
 			fontFamily: {
 				sans: ["var(--circular-std-font)", ...fontFamily.sans],

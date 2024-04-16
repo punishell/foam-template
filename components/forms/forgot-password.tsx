@@ -51,33 +51,18 @@ const ForgotPasswordForm = (): JSX.Element => {
 
 	return (
 		<form
-			className="bg-[rgba(0, 124, 91, 0.20)] relative z-[100] mx-auto flex w-full max-w-[600px] flex-col items-center gap-6 rounded-2xl border border-white border-opacity-20 bg-[rgba(0,124,91,0.20)] px-[40px] py-10 backdrop-blur-md"
+			className="relative z-[100] mx-auto flex w-full max-w-[600px] flex-col items-center gap-6 rounded-2xl border border-white border-opacity-20 bg-[rgba(0,124,91,0.20)] p-4 sm:px-[40px] sm:py-10 backdrop-blur-md"
 			onSubmit={form.handleSubmit(onSubmit)}
 		>
 			<div className="relative flex w-full flex-col gap-2">
-				<label className="font-sans text-sm text-white" htmlFor="email">
+				<label className="font-sans text-base sm:text-sm text-white" htmlFor="email">
 					Email
 				</label>
-				<Input
-					{...form.register("email")}
-					placeholder="Email"
-					type="email"
-					className="w-full"
-					id="email"
-				/>
+				<Input {...form.register("email")} placeholder="Email" type="email" className="w-full" id="email" />
 			</div>
 
-			<Button
-				fullWidth
-				disabled={
-					!form.formState.isValid || requestPasswordReset.isLoading
-				}
-			>
-				{requestPasswordReset.isLoading ? (
-					<Spinner />
-				) : (
-					"Reset Password"
-				)}
+			<Button fullWidth disabled={!form.formState.isValid || requestPasswordReset.isLoading}>
+				{requestPasswordReset.isLoading ? <Spinner /> : "Reset Password"}
 			</Button>
 
 			<Link href="/login" className="mt-4 font-sans text-sm text-white">

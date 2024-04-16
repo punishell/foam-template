@@ -29,10 +29,7 @@ const otpSchema = z.object({
 
 type AuthAppOtpFormValues = z.infer<typeof otpSchema>;
 
-export const VerifyDeactivateAuthApp = ({
-	goToNextSlide,
-	isActive,
-}: SlideItemProps): React.JSX.Element => {
+export const VerifyDeactivateAuthApp = ({ goToNextSlide, isActive }: SlideItemProps): React.JSX.Element => {
 	const { closeModal } = useAuthApp2FAState();
 	const { mutate, isLoading } = useDeActivate2FA();
 	const { setIsInput6DigitCode } = useMscState();
@@ -69,27 +66,17 @@ export const VerifyDeactivateAuthApp = ({
 			<div className="flex w-full flex-col gap-4">
 				<div className="flex w-full flex-row justify-between">
 					<Text.h3 size="xs">Authenticator App</Text.h3>
-					<XCircleIcon
-						className="my-auto cursor-pointer text-body"
-						onClick={closeModal}
-					/>
+					<XCircleIcon className="my-auto cursor-pointer text-body" onClick={closeModal} />
 				</div>
 				<Text.p size="base">Enter the 6 digit code </Text.p>
 			</div>
-			<form
-				className="flex flex-col gap-4 w-full"
-				onSubmit={handleSubmit(onSubmit)}
-			>
+			<form className="flex flex-col gap-4 w-full" onSubmit={handleSubmit(onSubmit)}>
 				<div className="relative mx-auto">
 					<Controller
 						name="otp"
 						control={control}
 						render={({ field: { onChange, value } }) => (
-							<OtpInput
-								value={value}
-								onChange={onChange}
-								numInputs={6}
-							/>
+							<OtpInput value={value} onChange={onChange} numInputs={6} />
 						)}
 					/>
 					<div className="child:!relative child:!bottom-0 my-2 flex justify-center text-center">
@@ -97,10 +84,7 @@ export const VerifyDeactivateAuthApp = ({
 					</div>
 				</div>
 
-				<Button
-					className="mt-auto w-full justify-end self-end justify-self-end"
-					fullWidth
-				>
+				<Button className="mt-auto w-full justify-end self-end justify-self-end" fullWidth>
 					{isLoading ? <Spinner /> : "Deactivate"}
 				</Button>
 			</form>

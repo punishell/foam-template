@@ -59,21 +59,19 @@ interface SecurityQuestion2FAState {
 	openModal: () => void;
 }
 
-export const useSecurityQuestion2FAState = create<SecurityQuestion2FAState>(
-	(set) => ({
-		isModalOpen: false,
-		securityQuestions: [],
-		setSecurityQuestions: (securityQuestions: string[]) => {
-			set({ securityQuestions });
-		},
-		openModal: () => {
-			set({ isModalOpen: true });
-		},
-		closeModal: () => {
-			set({ isModalOpen: false });
-		},
-	}),
-);
+export const useSecurityQuestion2FAState = create<SecurityQuestion2FAState>((set) => ({
+	isModalOpen: false,
+	securityQuestions: [],
+	setSecurityQuestions: (securityQuestions: string[]) => {
+		set({ securityQuestions });
+	},
+	openModal: () => {
+		set({ isModalOpen: true });
+	},
+	closeModal: () => {
+		set({ isModalOpen: false });
+	},
+}));
 
 interface MscState {
 	isInput6DigitCode?: boolean;

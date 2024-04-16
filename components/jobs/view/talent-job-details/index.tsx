@@ -25,25 +25,17 @@ interface TalentJobDetailsProps {
 	userId: string;
 }
 
-export const TalentJobDetails: FC<TalentJobDetailsProps> = ({
-	job,
-	userId,
-}) => {
+export const TalentJobDetails: FC<TalentJobDetailsProps> = ({ job, userId }) => {
 	const searchParams = useSearchParams();
 	const inviteId = job?.invite?._id ?? searchParams.get("invite-id");
 	const JOB_TYPE: "private" | "open" = job.isPrivate ? "private" : "open";
 
 	const jobApplicants = job.collections.filter(isJobApplicant);
 
-	const hasAlreadyApplied = jobApplicants.some(
-		(applicant) => applicant.creator._id === userId,
-	);
-	const hasBeenInvited = Boolean(
-		String(job?.invite?.receiver._id) === String(userId),
-	);
+	const hasAlreadyApplied = jobApplicants.some((applicant) => applicant.creator._id === userId);
+	const hasBeenInvited = Boolean(String(job?.invite?.receiver._id) === String(userId));
 
-	const jobIsAssignedToAnotherTalent =
-		job?.owner != null && job?.owner._id !== userId;
+	const jobIsAssignedToAnotherTalent = job?.owner != null && job?.owner._id !== userId;
 
 	const JobCtas = CTAS[JOB_TYPE];
 
@@ -66,17 +58,13 @@ export const TalentJobDetails: FC<TalentJobDetailsProps> = ({
 					<JobSkills skills={job.tags ?? []} />
 					<JobDescription description={job.description} />
 					<JobDeliverables
-						deliverables={job.collections
-							.filter(isJobDeliverable)
-							.map((collection) => collection.name)}
+						deliverables={job.collections.filter(isJobDeliverable).map((collection) => collection.name)}
 					/>
 
 					{hasAlreadyApplied && (
 						<div className="my-3 flex w-full items-center gap-2 rounded-lg border border-blue-300 bg-blue-50 p-4 text-blue-500">
 							<Info size={20} />
-							<span className="text-center text-body">
-								You have applied to this job
-							</span>
+							<span className="text-center text-body">You have applied to this job</span>
 						</div>
 					)}
 
@@ -103,8 +91,7 @@ export const TalentJobDetails: FC<TalentJobDetailsProps> = ({
 						<div className="my-3 flex w-full items-center gap-2 rounded-lg border border-red-300 bg-red-50 p-4 text-red-500">
 							<Info size={20} />
 							<span className="text-center text-red-500">
-								This job is already assigned to another talent.
-								You can apply to other jobs.
+								This job is already assigned to another talent. You can apply to other jobs.
 							</span>
 						</div>
 					)}

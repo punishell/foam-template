@@ -11,12 +11,7 @@ interface OtpInputProps {
 	onChange: (otp: string) => void;
 }
 
-export const OtpInput: FC<OtpInputProps> = ({
-	numInputs,
-	onChange,
-	value,
-	...props
-}) => {
+export const OtpInput: FC<OtpInputProps> = ({ numInputs, onChange, value, ...props }) => {
 	return (
 		<ReactOtpInput
 			numInputs={numInputs}

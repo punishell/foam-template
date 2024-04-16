@@ -19,13 +19,7 @@ interface Props {
 	disableClickOutside?: boolean;
 }
 
-export const Modal: FC<Props> = ({
-	children,
-	isOpen,
-	onOpenChange,
-	className,
-	disableClickOutside,
-}) => {
+export const Modal: FC<Props> = ({ children, isOpen, onOpenChange, className, disableClickOutside }) => {
 	return (
 		<Dialog.Root open={isOpen} onOpenChange={onOpenChange}>
 			<Dialog.Portal>

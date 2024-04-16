@@ -22,15 +22,11 @@ interface JobListProps {
 	talentId: string;
 }
 
-export const JobList = ({
-	jobs,
-	talentId,
-}: JobListProps): ReactElement | null => {
+export const JobList = ({ jobs, talentId }: JobListProps): ReactElement | null => {
 	const router = useRouter();
 	const [jobId, setJobId] = useState<string | null>(null);
 
-	if (jobs.length === 0)
-		return <PageEmpty label="Your Created Jobs Will Appear Here" />;
+	if (jobs.length === 0) return <PageEmpty label="Your Created Jobs Will Appear Here" />;
 
 	return (
 		<div className="flex h-full flex-col gap-2 ">
@@ -45,14 +41,7 @@ export const JobList = ({
 			</div>
 			<div className="flex grow flex-col gap-4 overflow-y-auto px-4">
 				{jobs.map((job) => {
-					return (
-						<JobCard
-							job={job}
-							key={job._id}
-							isSelected={jobId === job._id}
-							setJobId={setJobId}
-						/>
-					);
+					return <JobCard job={job} key={job._id} isSelected={jobId === job._id} setJobId={setJobId} />;
 				})}
 			</div>
 			<div className="px-4 py-4">
@@ -63,9 +52,7 @@ export const JobList = ({
 					disabled={!jobId}
 					onClick={() => {
 						if (!jobId) return;
-						router.push(
-							`/jobs/${jobId}/edit/?talent-id=${talentId}`,
-						);
+						router.push(`/jobs/${jobId}/edit/?talent-id=${talentId}`);
 					}}
 				>
 					Continue

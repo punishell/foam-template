@@ -51,21 +51,15 @@ const Message = ({
 	};
 
 	return (
-		<div
-			className={` w-fit max-w-[37.5rem] whitespace-pre-line break-words flex items-end px-5 py-2 ${className}`}
-		>
+		<div className={` w-fit max-w-[37.5rem] whitespace-pre-line break-words flex items-end px-5 py-2 ${className}`}>
 			<p>{renderContentWithLinks()}</p>
-			<span className="float-right text-sm ml-4 whitespace-pre">
-				{formatTimestampForDisplay(timestamp)}
-			</span>
+			<span className="float-right text-sm ml-4 whitespace-pre">{formatTimestampForDisplay(timestamp)}</span>
 		</div>
 	);
 };
 
 export const Messages = ({ messages }: MessagesProps): ReactElement => {
-	function groupMessagesByDate(
-		msgs: ConversationMessage[],
-	): Array<[string, ConversationMessage[]]> {
+	function groupMessagesByDate(msgs: ConversationMessage[]): Array<[string, ConversationMessage[]]> {
 		// Helper function to extract just the date part from the timestamp
 		const extractDate = (timestamp: string): string => {
 			const date = new Date(timestamp);
@@ -73,37 +67,26 @@ export const Messages = ({ messages }: MessagesProps): ReactElement => {
 		};
 
 		// Grouping the messages by date
-		const grouped = msgs.reduce<Record<string, ConversationMessage[]>>(
-			(acc, message) => {
-				const dateKey = extractDate(message.timestamp);
-				if (!acc[dateKey]) {
-					acc[dateKey] = [];
-				}
-				acc[dateKey]?.push(message);
-				return acc;
-			},
-			{},
-		);
+		const grouped = msgs.reduce<Record<string, ConversationMessage[]>>((acc, message) => {
+			const dateKey = extractDate(message.timestamp);
+			if (!acc[dateKey]) {
+				acc[dateKey] = [];
+			}
+			acc[dateKey]?.push(message);
+			return acc;
+		}, {});
 
 		// Converting the object into an array and sorting by date
-		return Object.entries(grouped).sort(
-			(a, b) => new Date(a[0]).getTime() - new Date(b[0]).getTime(),
-		);
+		return Object.entries(grouped).sort((a, b) => new Date(a[0]).getTime() - new Date(b[0]).getTime());
 	}
 
 	const groupedMessages = groupMessagesByDate(messages);
 	return (
 		<>
 			{messages.length > 0 && (
-				<div
-					id="chat_div"
-					className="flex h-full basis-0 flex-col overflow-y-auto py-6"
-				>
+				<div id="chat_div" className="flex h-full basis-0 flex-col overflow-y-auto py-6">
 					{groupedMessages.map(([date, messagesForDate]) => (
-						<div
-							className="flex flex-col items-center justify-center w-full"
-							key={date}
-						>
+						<div className="flex flex-col items-center justify-center w-full" key={date}>
 							<h2 className="text-[#DEDEDE] h-[48px] text-center flex items-center">
 								{dayjs(date).format("MMMM D, YYYY")}
 							</h2>
@@ -123,9 +106,7 @@ export const Messages = ({ messages }: MessagesProps): ReactElement => {
 													content={message.content}
 													className="rounded-r-[1.875rem] rounded-tl-[1.875rem] bg-[#ECFCE5] text-title"
 													linkClassName="underline"
-													timestamp={
-														message.timestamp
-													}
+													timestamp={message.timestamp}
 												/>
 											)}
 										</div>
@@ -143,9 +124,7 @@ export const Messages = ({ messages }: MessagesProps): ReactElement => {
 													content={message.content}
 													className="rounded-l-[1.875rem] rounded-tr-[1.875rem] bg-[#007C5B] text-white"
 													linkClassName="underline"
-													timestamp={
-														message.timestamp
-													}
+													timestamp={message.timestamp}
 												/>
 											)}
 										</div>
@@ -158,9 +137,7 @@ export const Messages = ({ messages }: MessagesProps): ReactElement => {
 			)}
 			{messages.length === 0 && (
 				<div className="flex h-full w-full grow flex-col items-center justify-center gap-1">
-					<div className="text-2xl text-slate-300">
-						No messages yet
-					</div>
+					<div className="text-2xl text-slate-300">No messages yet</div>
 				</div>
 			)}
 		</>

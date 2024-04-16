@@ -42,12 +42,7 @@ async function postFeed({
 	return res.data.data;
 }
 
-export function useCreateFeed(): UseMutationResult<
-	unknown,
-	ApiError,
-	createFeedPayload,
-	unknown
-> {
+export function useCreateFeed(): UseMutationResult<unknown, ApiError, createFeedPayload, unknown> {
 	return useMutation({
 		mutationFn: postFeed,
 		mutationKey: ["post-feed"],

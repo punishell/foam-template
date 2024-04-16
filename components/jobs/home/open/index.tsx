@@ -26,24 +26,16 @@ export const OpenJobs = (): ReactElement | null => {
 	const pathname = usePathname();
 	const searchParams = useSearchParams();
 
-	const [searchQuery, setSearchQuery] = useState(
-		searchParams.get("search") ?? "",
-	);
+	const [searchQuery, setSearchQuery] = useState(searchParams.get("search") ?? "");
 	const debouncedSearchQuery = useDebounce(searchQuery, 300);
 
-	const [skillsQuery, setSkillsQuery] = useState(
-		searchParams.get("skills") ?? "",
-	);
+	const [skillsQuery, setSkillsQuery] = useState(searchParams.get("skills") ?? "");
 	const debouncedSkillsQuery = useDebounce(skillsQuery, 300);
 
-	const [minimumPriceQuery, setMinimumPriceQuery] = useState(
-		searchParams.get("range")?.split(",")[0] ?? "",
-	);
+	const [minimumPriceQuery, setMinimumPriceQuery] = useState(searchParams.get("range")?.split(",")[0] ?? "");
 	const debouncedMinimumPriceQuery = useDebounce(minimumPriceQuery, 300);
 
-	const [maximumPriceQuery, setMaximumPriceQuery] = useState(
-		searchParams.get("range")?.split(",")[1] ?? 100,
-	);
+	const [maximumPriceQuery, setMaximumPriceQuery] = useState(searchParams.get("range")?.split(",")[1] ?? 100);
 	const debouncedMaximumPriceQuery = useDebounce(maximumPriceQuery, 300);
 
 	React.useEffect(() => {
@@ -88,9 +80,7 @@ export const OpenJobs = (): ReactElement | null => {
 
 	// sort jobs by latest first
 	const sortedJobs = jobs?.sort((a, b) => {
-		return (
-			new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-		);
+		return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
 	});
 
 	const onRefresh = async (): Promise<void> => {
@@ -98,9 +88,7 @@ export const OpenJobs = (): ReactElement | null => {
 	};
 
 	if (jobsData.isError || bookmarkData.isError)
-		return (
-			<PageError className="h-[85vh] rounded-2xl border border-red-200 bg-red-50" />
-		);
+		return <PageError className="h-[85vh] rounded-2xl border border-red-200 bg-red-50" />;
 	// if (jobsData.isLoading) return <PageLoading className="h-[85vh] rounded-2xl border border-line" color="#007C5B" />;
 
 	return (
@@ -123,13 +111,7 @@ export const OpenJobs = (): ReactElement | null => {
 						{
 							label: "All",
 							value: "all",
-							content: (
-								<AllJobs
-									jobs={sortedJobs}
-									onRefresh={onRefresh}
-									loading={jobsData?.isLoading}
-								/>
-							),
+							content: <AllJobs jobs={sortedJobs} onRefresh={onRefresh} loading={jobsData?.isLoading} />,
 						},
 						{
 							label: "Saved",

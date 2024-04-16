@@ -106,7 +106,7 @@ const SignupVerificationForm = (): React.JSX.Element => {
 
 	return (
 		<form
-			className="bg-[rgba(0, 124, 91, 0.20)] relative z-[100] mx-auto flex w-full max-w-[600px] flex-col items-center gap-6 rounded-2xl border border-white border-opacity-20 bg-[rgba(0,124,91,0.20)] px-[40px] py-10 backdrop-blur-md"
+			className="relative z-[100] mx-auto flex w-full sm:max-w-[600px] flex-col items-center gap-6 rounded-2xl border border-white border-opacity-20 bg-[rgba(0,124,91,0.20)] p-4 sm:px-[40px] sm:py-10 backdrop-blur-md"
 			onSubmit={form.handleSubmit(onSubmit)}
 		>
 			<div className="flex w-fit flex-col gap-4">
@@ -121,16 +121,14 @@ const SignupVerificationForm = (): React.JSX.Element => {
 								shouldAutoFocus
 								numInputs={6}
 								containerStyle="gap-3 flex"
-								inputStyle={{
-									width: "46px",
-									height: "46px",
-									borderRadius: "4px",
-									border: "1px solid #D0DDD5",
-								}}
 								renderInput={(props) => (
 									<input
 										{...props}
-										className="w-full !select-none rounded-md px-3 py-2 focus:outline-none focus:ring-1 focus:ring-primary"
+										className="!select-none rounded-md px-3 py-2 focus:outline-none focus:ring-1 focus:ring-primary h-[40px] w-[40px] sm:h-[46px] sm:w-[46px]"
+										style={{
+											borderRadius: "4px",
+											border: "1px solid #D0DDD5",
+										}}
 									/>
 								)}
 							/>
@@ -138,43 +136,27 @@ const SignupVerificationForm = (): React.JSX.Element => {
 					}}
 				/>
 
-				<Button
-					fullWidth
-					disabled={verifyEmail.isLoading || !form.formState.isValid}
-				>
+				<Button fullWidth disabled={verifyEmail.isLoading || !form.formState.isValid}>
 					{verifyEmail.isLoading ? <Spinner /> : "Verify Email"}
 				</Button>
 
 				<div className="flex w-full flex-col items-center gap-4">
-					<span className="text-white">
-						{formatCountdown(countdown)}
-					</span>
+					<span className="text-white">{formatCountdown(countdown)}</span>
 					<div className="w-full max-w-[150px]">
 						<Button
 							size="xs"
 							fullWidth
 							variant="outline"
-							onClick={
-								!(resendOTP.isLoading || isResendDisabled)
-									? handleResendOTP
-									: () => {}
-							}
+							onClick={!(resendOTP.isLoading || isResendDisabled) ? handleResendOTP : () => {}}
 							disabled={resendOTP.isLoading || isResendDisabled}
 							className="!border-white !text-white"
 							style={{
-								opacity:
-									resendOTP.isLoading || isResendDisabled
-										? 0.2
-										: 1,
+								opacity: resendOTP.isLoading || isResendDisabled ? 0.2 : 1,
 							}}
 						>
 							<span className="flex flex-row gap-2">
 								<Timer size={16} className="text-white" />
-								{resendOTP.isLoading ? (
-									<Spinner size={16} />
-								) : (
-									"Resend Code"
-								)}
+								{resendOTP.isLoading ? <Spinner size={16} /> : "Resend Code"}
 							</span>
 						</Button>
 					</div>

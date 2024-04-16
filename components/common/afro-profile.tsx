@@ -13,10 +13,11 @@ import Link from "next/link";
 
 import { DefaultAvatar } from "@/components/common/default-avatar";
 
-type Size = "sm" | "md" | "2md" | "lg" | "xl" | "2xl" | "3xl";
+type Size = "sm" | "2sm" | "md" | "2md" | "lg" | "xl" | "2xl" | "3xl";
 
 const SIZE_TO_PX: Record<Size, number> = {
 	sm: 60,
+	"2sm": 80,
 	md: 110,
 	"2md": 130,
 	lg: 150,
@@ -29,6 +30,7 @@ interface AfroScoreProps {
 	size: Size;
 	score: number;
 	children?: React.ReactNode;
+	style?: React.CSSProperties;
 }
 
 const progressToColor = (progress: number): string => {
@@ -44,11 +46,7 @@ const progressToColor = (progress: number): string => {
 	return "#17a753";
 };
 
-export const AfroScore: FC<AfroScoreProps> = ({
-	size,
-	score: initialScore = 63,
-	children,
-}) => {
+export const AfroScore: FC<AfroScoreProps> = ({ size, score: initialScore = 63, children, style }) => {
 	const id = useId();
 	const svgRef = useRef<SVGSVGElement>(null);
 	const sizeInPx = SIZE_TO_PX[size];
@@ -78,10 +76,8 @@ export const AfroScore: FC<AfroScoreProps> = ({
 	const progressArcPath = progressArcGenerator();
 
 	// Add a knob to the progress arc
-	const knobX =
-		(radius - thickness / 2) * Math.cos(progressAngle - Math.PI / 2);
-	const knobY =
-		(radius - thickness / 2) * Math.sin(progressAngle - Math.PI / 2);
+	const knobX = (radius - thickness / 2) * Math.cos(progressAngle - Math.PI / 2);
+	const knobY = (radius - thickness / 2) * Math.sin(progressAngle - Math.PI / 2);
 
 	// @ts-expect-error --- Unused variable
 	const [knobPosition, setKnobPosition] = useState({ x: knobX, y: knobY });
@@ -104,7 +100,7 @@ export const AfroScore: FC<AfroScoreProps> = ({
 	// };
 
 	return (
-		<div className="relative flex items-center justify-center">
+		<div className="relative flex items-center justify-center" style={style}>
 			<div
 				style={{
 					height: radius * 2,
@@ -146,9 +142,7 @@ export const AfroScore: FC<AfroScoreProps> = ({
           `}
 				</style>
 
-				<g
-					transform={`translate(${(sizeInPx + knobRadius) / 2}, ${(sizeInPx + knobRadius) / 2})`}
-				>
+				<g transform={`translate(${(sizeInPx + knobRadius) / 2}, ${(sizeInPx + knobRadius) / 2})`}>
 					<clipPath id={id}>
 						<path
 							d={progressArcPath}
@@ -222,19 +216,12 @@ export const AfroScore: FC<AfroScoreProps> = ({
 type AfroProfileProps = Omit<AfroScoreProps, "children"> & {
 	src?: string;
 	url?: string;
+	className?: string;
 };
 
-export const AfroProfile: FC<AfroProfileProps> = ({
-	size,
-	score,
-	src,
-	url,
-}) => {
+export const AfroProfile: FC<AfroProfileProps> = ({ size, score, src, url, style, className }) => {
 	return (
-		<Link
-			href={url ?? ""}
-			className="relative flex items-center justify-center"
-		>
+		<Link href={url ?? ""} className={`relative flex items-center justify-center ${className}`} style={style}>
 			<AfroScore score={score} size={size}>
 				{src ? (
 					<Image

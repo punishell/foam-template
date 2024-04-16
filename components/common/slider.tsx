@@ -43,10 +43,7 @@ export const Slider = ({ items }: SliderProps): ReactElement => {
 	};
 
 	return (
-		<div
-			ref={wrapperRef}
-			className="relative flex h-full flex-col overflow-hidden"
-		>
+		<div ref={wrapperRef} className="relative flex h-full flex-col overflow-hidden">
 			<motion.div
 				className="flex h-full grow items-stretch "
 				animate={{ translateX: -currentSlide * wrapperWidth }}
@@ -59,11 +56,7 @@ export const Slider = ({ items }: SliderProps): ReactElement => {
 			>
 				{items.map(({ SlideItem }, index) => {
 					const slideItemElement = (
-						<SlideItem
-							goToNextSlide={handleNext}
-							goToPreviousSlide={handlePrevious}
-							key={index}
-						/>
+						<SlideItem goToNextSlide={handleNext} goToPreviousSlide={handlePrevious} key={index} />
 					);
 					if (React.isValidElement(slideItemElement)) {
 						return React.cloneElement(slideItemElement, {

@@ -21,18 +21,12 @@ interface ModalProps {
 	disableClickOutside?: boolean;
 }
 
-export const Modal: FC<ModalProps> = ({
-	children,
-	isOpen,
-	closeModal,
-	className,
-	disableClickOutside,
-}) => {
+export const Modal: FC<ModalProps> = ({ children, isOpen, closeModal, className, disableClickOutside }) => {
 	return (
 		<Transition appear show={isOpen} as={Fragment}>
 			<Dialog
 				as="div"
-				className="relative z-10"
+				className="relative z-50"
 				onClose={() => {
 					if (!disableClickOutside) {
 						closeModal();

@@ -59,9 +59,7 @@ export const JobCancelled = ({
 			/>
 			<div className="flex w-full flex-col gap-4 py-4">
 				<div className="flex items-center justify-between">
-					<h3 className="text-xl font-bold text-title">
-						{creator.name} Cancelled the Job
-					</h3>
+					<h3 className="text-xl font-bold text-title">{creator.name} Cancelled the Job</h3>
 					{close && (
 						<X
 							size={20}
@@ -81,13 +79,7 @@ export const JobCancelled = ({
 							</Button>
 						</Link>
 					</div>
-					<RenderBookMark
-						size={20}
-						isBookmarked={bookmarked}
-						type="feed"
-						id={id}
-						bookmarkId={bookmarkId}
-					/>
+					<RenderBookMark size={20} isBookmarked={bookmarked} type="feed" id={id} bookmarkId={bookmarkId} />
 				</div>
 			</div>
 

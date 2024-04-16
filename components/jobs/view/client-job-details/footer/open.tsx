@@ -17,10 +17,7 @@ export interface ClientOpenJobCtasProps {
 	openDeleteModal: () => void;
 }
 
-export const ClientOpenJobCtas: React.FC<ClientOpenJobCtasProps> = ({
-	jobId,
-	openDeleteModal,
-}) => {
+export const ClientOpenJobCtas: React.FC<ClientOpenJobCtasProps> = ({ jobId, openDeleteModal }) => {
 	const router = useRouter();
 
 	return (

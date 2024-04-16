@@ -2,12 +2,7 @@
 /*                             External Dependency                            */
 /* -------------------------------------------------------------------------- */
 
-import {
-	useMutation,
-	type UseMutationResult,
-	type UseQueryResult,
-	useQuery,
-} from "@tanstack/react-query";
+import { useMutation, type UseMutationResult, type UseQueryResult, useQuery } from "@tanstack/react-query";
 
 /* -------------------------------------------------------------------------- */
 /*                             	Internal Dependency                            */
@@ -68,10 +63,7 @@ async function getConnectionPreference(): Promise<GetConnectionPreferenceRespons
 	return res.data.data;
 }
 
-export function useGetConnectionPreference(): UseQueryResult<
-	GetConnectionPreferenceResponse,
-	ApiError
-> {
+export function useGetConnectionPreference(): UseQueryResult<GetConnectionPreferenceResponse, ApiError> {
 	return useQuery({
 		queryFn: getConnectionPreference,
 		queryKey: ["get-connection-preference"],

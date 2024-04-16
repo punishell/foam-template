@@ -10,17 +10,11 @@ interface PasswordCriteriaProps {
 	isSignUp?: boolean;
 }
 
-export const PasswordCriteria = ({
-	isValidated,
-	criteria,
-	isSignUp,
-}: PasswordCriteriaProps): React.JSX.Element => {
+export const PasswordCriteria = ({ isValidated, criteria, isSignUp }: PasswordCriteriaProps): React.JSX.Element => {
 	return (
 		<div
 			className={`flex flex-row items-center gap-4 ${
-				isValidated
-					? "text-success"
-					: `${isSignUp ? "text-white" : "text-body"}`
+				isValidated ? "text-success" : `${isSignUp ? "text-white" : "text-body"}`
 			}`}
 		>
 			<Check size={15} />

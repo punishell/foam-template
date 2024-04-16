@@ -96,12 +96,7 @@ export const UserAvatar: FC<Props> = ({ image, score = 0, size = "md" }) => {
 	);
 };
 
-export const UserAvatar2: FC<Props> = ({
-	image,
-	size = "md",
-	useUpload = false,
-	onUploadComplete,
-}) => {
+export const UserAvatar2: FC<Props> = ({ image, size = "md", useUpload = false, onUploadComplete }) => {
 	const [showUpload, setShowUpload] = useState(false);
 	const [uploadProgress, setUploadProgress] = useState(0);
 	const uploadImage = useUploadImage();
@@ -110,10 +105,7 @@ export const UserAvatar2: FC<Props> = ({
 		preview: string;
 	} | null>(null);
 
-	const onEnterLeave = (
-		e: React.MouseEvent<HTMLDivElement, MouseEvent>,
-		value: boolean,
-	): void => {
+	const onEnterLeave = (e: React.MouseEvent<HTMLDivElement, MouseEvent>, value: boolean): void => {
 		e.preventDefault();
 		if (!useUpload) {
 			setShowUpload(false);
@@ -173,12 +165,7 @@ export const UserAvatar2: FC<Props> = ({
 		>
 			<div className="absolute inset-0 flex items-center justify-center">
 				{PreviewImg ? (
-					<Image
-						src={PreviewImg}
-						alt="profile picture"
-						layout="fill"
-						objectFit="cover"
-					/>
+					<Image src={PreviewImg} alt="profile picture" layout="fill" objectFit="cover" />
 				) : (
 					<span className="visible text-2xl uppercase">HE</span>
 				)}
@@ -194,9 +181,7 @@ export const UserAvatar2: FC<Props> = ({
 					</div>
 					<span className="flex flex-col gap-1 text-xs text-body">
 						<span>
-							<span className="font-bold text-[#23C16B]">
-								Click to upload
-							</span>
+							<span className="font-bold text-[#23C16B]">Click to upload</span>
 						</span>
 					</span>
 				</div>

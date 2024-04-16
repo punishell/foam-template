@@ -6,15 +6,7 @@
 
 import { getCookie } from "cookies-next";
 import type React from "react";
-import {
-	createContext,
-	useCallback,
-	useContext,
-	useEffect,
-	useMemo,
-	useRef,
-	useState,
-} from "react";
+import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 import { io, type Socket } from "socket.io-client";
 import { usePathname, useRouter } from "next/navigation";
 
@@ -91,11 +83,7 @@ export const SocketContext = createContext<SocketContextType>(defaultContext);
 
 const prefix = "messages";
 
-export const MessagingProvider = ({
-	children,
-}: {
-	children: React.ReactNode;
-}): React.JSX.Element => {
+export const MessagingProvider = ({ children }: { children: React.ReactNode }): React.JSX.Element => {
 	const authToken = getCookie(AUTH_TOKEN_KEY);
 	const [socket, setSocket] = useState<Socket | null>(null);
 
@@ -103,8 +91,7 @@ export const MessagingProvider = ({
 
 	const { _id: loggedInUser } = useUserState();
 
-	const [currentConversation, setCurrentConversation] =
-		useState<ConversationProps | null>(null);
+	const [currentConversation, setCurrentConversation] = useState<ConversationProps | null>(null);
 	const [conversations, setConversations] = useState<ConversationProps[]>([]);
 
 	// @ts-expect-error --- Unused variable
@@ -124,38 +111,24 @@ export const MessagingProvider = ({
 
 	const { setErrorMessage } = useErrorService();
 
-	const getSender = (
-		recipients: RecipientResponseProps[] = [],
-	): RecipientResponseProps | undefined => {
-		return recipients.find(
-			(r: RecipientResponseProps) => r._id !== loggedInUser,
-		);
+	const getSender = (recipients: RecipientResponseProps[] = []): RecipientResponseProps | undefined => {
+		return recipients.find((r: RecipientResponseProps) => r._id !== loggedInUser);
 	};
-	const getRecipient = (
-		recipients: RecipientResponseProps[] = [],
-	): RecipientResponseProps | undefined => {
-		return recipients.find(
-			(r: RecipientResponseProps) => r._id === loggedInUser,
-		);
+	const getRecipient = (recipients: RecipientResponseProps[] = []): RecipientResponseProps | undefined => {
+		return recipients.find((r: RecipientResponseProps) => r._id === loggedInUser);
 	};
 
 	const getUnreadCount = (messages: MessageResponseProps[]): number =>
 		messages.filter(
-			(r: MessageResponseProps) =>
-				!(r.readBy && !!r.readBy.includes(loggedInUser)) &&
-				r.user !== loggedInUser,
+			(r: MessageResponseProps) => !(r.readBy && !!r.readBy.includes(loggedInUser)) && r.user !== loggedInUser,
 		).length;
 
-	const getLastMessage = (
-		messages: MessageResponseProps[],
-	): string | null => {
+	const getLastMessage = (messages: MessageResponseProps[]): string | null => {
 		const lastMessage = messages[messages.length - 1];
 		return lastMessage ? lastMessage.content : null;
 	};
 
-	const getLastMessageTime = (
-		messages: MessageResponseProps[],
-	): string | null => {
+	const getLastMessageTime = (messages: MessageResponseProps[]): string | null => {
 		const lastMessage = messages[messages.length - 1];
 		return lastMessage ? lastMessage.createdAt : null;
 	};
@@ -167,9 +140,7 @@ export const MessagingProvider = ({
 
 	const getConversationById = useCallback(
 		(id: string): ConversationProps | undefined => {
-			const convo = conversations.find(
-				(c: ConversationProps) => c.id === id,
-			);
+			const convo = conversations.find((c: ConversationProps) => c.id === id);
 			return convo;
 		},
 		[conversations],
@@ -183,9 +154,7 @@ export const MessagingProvider = ({
 		[getConversationById],
 	);
 
-	const parseMessageAttachments = (
-		attachments: AttachmentsResponseProps[],
-	): ParsedAttachmentProps[] =>
+	const parseMessageAttachments = (attachments: AttachmentsResponseProps[]): ParsedAttachmentProps[] =>
 		attachments && attachments.length > 0
 			? attachments.map((a: AttachmentsResponseProps) => ({
 					_id: a._id,
@@ -196,9 +165,7 @@ export const MessagingProvider = ({
 				}))
 			: [];
 
-	const parseMessages = (
-		messages: MessageResponseProps[],
-	): ParsedMessagesProps[] =>
+	const parseMessages = (messages: MessageResponseProps[]): ParsedMessagesProps[] =>
 		messages.map((m: MessageResponseProps) => ({
 			content: m.content,
 			isSent: m.user === loggedInUser,
@@ -224,9 +191,7 @@ export const MessagingProvider = ({
 				avatar: string;
 				_id?: undefined;
 		  } => {
-		const sender = conversation.recipients?.find(
-			(r: RecipientResponseProps) => r._id !== loggedInUser,
-		);
+		const sender = conversation.recipients?.find((r: RecipientResponseProps) => r._id !== loggedInUser);
 
 		return conversation.type === "DIRECT"
 			? {
@@ -249,13 +214,9 @@ export const MessagingProvider = ({
 			payload.map(
 				(c: ConversationResponseProps): ConversationProps => ({
 					id: c._id,
-					messages: parseMessages(
-						c.messages,
-					) as ConversationMessage[],
+					messages: parseMessages(c.messages) as ConversationMessage[],
 					sender: getSender(c.recipients) as ConversationUserProps,
-					recipient: getRecipient(
-						c.recipients,
-					) as ConversationUserProps,
+					recipient: getRecipient(c.recipients) as ConversationUserProps,
 					recipients: c.recipients,
 					header: getConversationHeader(c) as ConversationHeaderProps,
 					// createdAt: dayjs(c.createdAt).format("MMMM D, YYYY"),
@@ -269,9 +230,7 @@ export const MessagingProvider = ({
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 		[],
 	);
-	const activeConversationId = pathname.includes(prefix)
-		? pathname.split("/")[2]
-		: null;
+	const activeConversationId = pathname.includes(prefix) ? pathname.split("/")[2] : null;
 	// Fetch Updated Chats
 	const fetchUserChats = useCallback(
 		async (currentConversationId?: string): Promise<void> => {
@@ -294,16 +253,13 @@ export const MessagingProvider = ({
 							// && activeConversationId === currentConversationId
 						) {
 							const cOV = parsedConversation.find(
-								(c: ConversationProps) =>
-									c.id === currentConversationId,
+								(c: ConversationProps) => c.id === currentConversationId,
 							);
 							setCurrentConversation(cOV ?? null);
 							// eslint-disable-next-line @typescript-eslint/no-use-before-define
 							void markUserMessageAsSeen(currentConversationId);
 						}
-						return payload.map(
-							(c: ConversationResponseProps) => c.messages,
-						);
+						return payload.map((c: ConversationResponseProps) => c.messages);
 					}
 					return null;
 				},
@@ -328,9 +284,7 @@ export const MessagingProvider = ({
 				// set upload progress for images
 				if (currentMessage) {
 					const attachments = currentMessage.attachments ?? [];
-					const index = attachments.findIndex(
-						(img) => img._id === id,
-					);
+					const index = attachments.findIndex((img) => img._id === id);
 					if (index !== -1) {
 						attachments[index] = {
 							...attachments[index],
@@ -450,8 +404,7 @@ export const MessagingProvider = ({
 			} catch (error) {
 				toast.error(
 					// @ts-expect-error --- TODO: Fix this
-					error?.response?.data.message ??
-						"Failed to Send Message Try again",
+					error?.response?.data.message ?? "Failed to Send Message Try again",
 				);
 			}
 		},
@@ -485,9 +438,7 @@ export const MessagingProvider = ({
 						recipientId,
 						type: "DIRECT",
 					},
-					async (
-						response: SocketResponse<InitializeMessageProps>,
-					) => {
+					async (response: SocketResponse<InitializeMessageProps>) => {
 						if (response.error) {
 							toast.error(response.message);
 							router.push("/messages");
@@ -525,9 +476,7 @@ export const MessagingProvider = ({
 					{ userId: loggedInUser },
 					(response: SocketResponse<GetAllChatsResponseProps>) => {
 						if (!response.error) {
-							const parsedConversation = parseUserChats(
-								response.data.messages,
-							);
+							const parsedConversation = parseUserChats(response.data.messages);
 							setConversations(parsedConversation);
 							setLoadingChats(false);
 							setUnreadChats(parsedConversation);
@@ -612,48 +561,35 @@ export const MessagingProvider = ({
 	// ===========  LISTEN TO POPUP EVENTS =========== //
 	useEffect(() => {
 		// Here we listen to popup events
-		socket?.on(
-			conversationEnums.POPUP_MESSAGE,
-			async (response: SocketResponse<PopUpConversationDataProps>) => {
-				const c = response.data;
-				if (c.currentMessage) {
-					const messageContent =
-						c.currentMessage.content?.length > MIN_LEN
-							? `${c.currentMessage.content.slice(0, MIN_LEN)}...`
-							: c.currentMessage.content;
-					if (messageContent) {
-						await fetchUserChats(c._id);
+		socket?.on(conversationEnums.POPUP_MESSAGE, async (response: SocketResponse<PopUpConversationDataProps>) => {
+			const c = response.data;
+			if (c.currentMessage) {
+				const messageContent =
+					c.currentMessage.content?.length > MIN_LEN
+						? `${c.currentMessage.content.slice(0, MIN_LEN)}...`
+						: c.currentMessage.content;
+				if (messageContent) {
+					await fetchUserChats(c._id);
 
-						// notify user
-						const messageSender = c.recipients?.find(
-							(r: PopUpRecipientProps) => r._id !== loggedInUser,
-						);
-						if (messageSender) {
-							const messageTitle = `${messageSender.firstName} ${messageSender.lastName}`;
-							const senderImage =
-								messageSender?.profileImage?.url;
-							const senderScore = messageSender?.score ?? 0;
-							const senderId = messageSender._id;
-							const messageId = c._id;
-							const audio = new Audio("/sound/notification.mp3");
-							void audio.play();
-							// show toast if not on messaging screen
-							if (!messagingScreen) {
-								// Play notification sound
-								toast.message(
-									messageTitle,
-									messageContent,
-									senderId,
-									senderImage,
-									senderScore,
-									messageId,
-								);
-							}
+					// notify user
+					const messageSender = c.recipients?.find((r: PopUpRecipientProps) => r._id !== loggedInUser);
+					if (messageSender) {
+						const messageTitle = `${messageSender.firstName} ${messageSender.lastName}`;
+						const senderImage = messageSender?.profileImage?.url;
+						const senderScore = messageSender?.score ?? 0;
+						const senderId = messageSender._id;
+						const messageId = c._id;
+						const audio = new Audio("/sound/notification.mp3");
+						void audio.play();
+						// show toast if not on messaging screen
+						if (!messagingScreen) {
+							// Play notification sound
+							toast.message(messageTitle, messageContent, senderId, senderImage, senderScore, messageId);
 						}
 					}
 				}
-			},
-		);
+			}
+		});
 
 		return () => {
 			socket?.off(conversationEnums.POPUP_MESSAGE);
@@ -687,9 +623,7 @@ export const MessagingProvider = ({
 		socket?.on(conversationEnums.SENDER_IS_TYPING, (data: TypingProps) => {
 			const { message, sender: id } = data;
 			// Get user that is typing
-			const sender = currentConversation?.recipients.find(
-				(r: ConversationUserProps) => r._id === id,
-			);
+			const sender = currentConversation?.recipients.find((r: ConversationUserProps) => r._id === id);
 			// Get sender name
 			const senderName = `${sender?.firstName} ${sender?.lastName}`;
 			// Show typing notification
@@ -701,14 +635,11 @@ export const MessagingProvider = ({
 		});
 
 		// Listen for when user stops typing
-		socket?.on(
-			conversationEnums.SENDER_STOPS_TYPING,
-			(data: TypingProps) => {
-				if (data.sender) {
-					setIsTyping("");
-				}
-			},
-		);
+		socket?.on(conversationEnums.SENDER_STOPS_TYPING, (data: TypingProps) => {
+			if (data.sender) {
+				setIsTyping("");
+			}
+		});
 
 		return () => {
 			clearTimeout(typingTimer.current as NodeJS.Timeout);
@@ -754,16 +685,11 @@ export const MessagingProvider = ({
 		],
 	);
 
-	return (
-		<SocketContext.Provider value={SocketServer}>
-			{children}
-		</SocketContext.Provider>
-	);
+	return <SocketContext.Provider value={SocketServer}>{children}</SocketContext.Provider>;
 };
 
 export const useMessaging = (): SocketContextType => {
 	const context = useContext(SocketContext);
-	if (!context)
-		throw new Error("useSocket must be use inside SocketProvider");
+	if (!context) throw new Error("useSocket must be use inside SocketProvider");
 	return context;
 };

@@ -44,12 +44,7 @@ export const ReferralJobCompletion = ({
 }: ReferralJobCompletionProps): ReactElement => {
 	return (
 		<div className="relative z-10 flex w-full gap-4 overflow-hidden  rounded-2xl border border-[#CDCFD0] bg-[#F9F9F9] p-4">
-			<AfroProfile
-				src={talent.avatar}
-				score={talent.score}
-				size="lg"
-				url={`/talents/${talent._id}`}
-			/>
+			<AfroProfile src={talent.avatar} score={talent.score} size="lg" url={`/talents/${talent._id}`} />
 			<div className="flex w-full flex-col gap-4">
 				<div className="flex items-center justify-between">
 					<h3 className="text-xl font-bold text-title">
@@ -59,12 +54,8 @@ export const ReferralJobCompletion = ({
 							<Rating
 								readonly
 								initialRating={rating || 0}
-								fullSymbol={
-									<Star fill="#15D28E" color="#15D28E" />
-								}
-								emptySymbol={
-									<Star fill="transparent" color="#15D28E" />
-								}
+								fullSymbol={<Star fill="#15D28E" color="#15D28E" />}
+								emptySymbol={<Star fill="transparent" color="#15D28E" />}
 							/>
 						}{" "}
 						completed a job
@@ -87,13 +78,7 @@ export const ReferralJobCompletion = ({
 							See Review
 						</Button>
 					</div>
-					<RenderBookMark
-						size={20}
-						isBookmarked={bookmarked}
-						type="feed"
-						id={id}
-						bookmarkId={bookmarkId}
-					/>
+					<RenderBookMark size={20} isBookmarked={bookmarked} type="feed" id={id} bookmarkId={bookmarkId} />
 				</div>
 			</div>
 

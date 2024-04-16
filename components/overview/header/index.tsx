@@ -17,14 +17,10 @@ import { useUserState } from "@/lib/store/account";
 import { useGetTalentReviewById } from "@/lib/api";
 import { hasFiveStarReview } from "@/lib/types";
 
-export const OverviewHeader = (): ReactElement => {
+export const DesktopOverviewHeader = (): ReactElement => {
 	const [referOpen, _setReferOpen] = useState(false);
 	const { _id, firstName } = useUserState();
-	const {
-		data: reviewData,
-		refetch,
-		isLoading,
-	} = useGetTalentReviewById(_id, "1", "100");
+	const { data: reviewData, refetch, isLoading } = useGetTalentReviewById(_id, "1", "100");
 
 	// checking refer availability
 	useEffect(() => {
@@ -39,16 +35,14 @@ export const OverviewHeader = (): ReactElement => {
 	}, [reviewData]);
 
 	return (
-		<div className="flex items-center justify-between">
+		<div className="hidden sm:flex items-center justify-between">
 			<ReferralSideModal
 				isOpen={referOpen}
 				onOpenChange={(e) => {
 					_setReferOpen(e);
 				}}
 			/>
-			<div className="text-3xl font-bold text-title">
-				Hello {firstName}!
-			</div>
+			<div className="text-3xl font-bold text-title">Hello {firstName}!</div>
 
 			<div className="flex items-center gap-7">
 				{hasFiveStar && (

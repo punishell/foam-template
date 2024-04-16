@@ -34,11 +34,7 @@ interface timelineFetchParams {
 	filter: Record<string, unknown>;
 }
 
-async function getTimelineFeeds({
-	page,
-	limit,
-	filter,
-}: timelineFetchParams): Promise<GetFeedsResponse> {
+async function getTimelineFeeds({ page, limit, filter }: timelineFetchParams): Promise<GetFeedsResponse> {
 	const res = await axios.get(`/feeds`, {
 		params: {
 			page,
@@ -53,14 +49,10 @@ export const useGetTimeline = ({
 	page,
 	limit,
 	filter,
-}: timelineFetchParams): UseInfiniteQueryResult<
-	[] | DataFeedResponse[],
-	unknown
-> => {
+}: timelineFetchParams): UseInfiniteQueryResult<[] | DataFeedResponse[], unknown> => {
 	return useInfiniteQuery(
 		[`get-timeline_${page}_${limit}`],
-		async ({ pageParam = 1 }) =>
-			(await getTimelineFeeds({ page: pageParam, limit, filter })).data,
+		async ({ pageParam = 1 }) => (await getTimelineFeeds({ page: pageParam, limit, filter })).data,
 		{
 			getNextPageParam: (_, pages) => pages.length + 1,
 			enabled: true,
@@ -94,16 +86,11 @@ interface GetTimelineResponse {
 }
 
 async function getLeaderBoard(): Promise<GetTimelineResponse> {
-	const res = await axios.get(
-		`/account/user?limit=10&sort=score&range=1,100`,
-	);
+	const res = await axios.get(`/account/user?limit=10&sort=score&range=1,100`);
 	return res.data.data;
 }
 
-export const useGetLeaderBoard = (): UseQueryResult<
-	GetTimelineResponse,
-	ApiError
-> => {
+export const useGetLeaderBoard = (): UseQueryResult<GetTimelineResponse, ApiError> => {
 	return useQuery({
 		queryFn: async () => getLeaderBoard(),
 		queryKey: ["get-leader-board"],
@@ -123,12 +110,7 @@ async function dismissFeed(id: string): Promise<void> {
 	return res.data.data;
 }
 
-export function useDismissFeed(): UseMutationResult<
-	void,
-	ApiError,
-	string,
-	unknown
-> {
+export function useDismissFeed(): UseMutationResult<void, ApiError, string, unknown> {
 	const queryClient = useQueryClient();
 	return useMutation({
 		mutationFn: dismissFeed,
@@ -152,12 +134,7 @@ async function dismissAllFeed(): Promise<void> {
 	return res.data.data;
 }
 
-export function useDismissAllFeed(): UseMutationResult<
-	void,
-	ApiError,
-	void,
-	unknown
-> {
+export function useDismissAllFeed(): UseMutationResult<void, ApiError, void, unknown> {
 	return useMutation({
 		mutationFn: dismissAllFeed,
 		mutationKey: ["dismiss-all-feed"],

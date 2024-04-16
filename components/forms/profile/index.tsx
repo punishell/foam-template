@@ -6,11 +6,7 @@
 
 import { type ReactElement } from "react";
 import type * as z from "zod";
-import {
-	Controller,
-	type SubmitHandler,
-	type UseFormReturn,
-} from "react-hook-form";
+import { Controller, type SubmitHandler, type UseFormReturn } from "react-hook-form";
 import { Button, Input } from "pakt-ui";
 
 /* -------------------------------------------------------------------------- */
@@ -44,15 +40,10 @@ const ProfileForm = ({ form, updateAccountFunc }: FormProps): ReactElement => {
 	const countryValue = form.watch("country");
 
 	return (
-		<form
-			className="flex min-h-full w-4/5 flex-col overflow-y-auto"
-			onSubmit={form.handleSubmit(onSubmit)}
-		>
+		<form className="flex min-h-full w-4/5 flex-col overflow-y-auto" onSubmit={form.handleSubmit(onSubmit)}>
 			<div className="mb-4 rounded-lg bg-white p-4">
 				<div className="mb-4 flex h-[50px] flex-row items-center justify-between">
-					<p className="text-lg font-bold text-title">
-						Edit Profile Details
-					</p>
+					<p className="text-lg font-bold text-title">Edit Profile Details</p>
 					<Button
 						title="Save Changes"
 						variant="secondary"
@@ -65,10 +56,7 @@ const ProfileForm = ({ form, updateAccountFunc }: FormProps): ReactElement => {
 				</div>
 				<div className="flex">
 					<div className="relative mx-auto mb-8 flex w-full flex-col gap-6">
-						<div
-							id="input-row"
-							className="flex w-full flex-row justify-between gap-4"
-						>
+						<div id="input-row" className="flex w-full flex-row justify-between gap-4">
 							<div className="relative w-1/2">
 								<Input
 									{...form.register("firstName")}
@@ -77,13 +65,9 @@ const ProfileForm = ({ form, updateAccountFunc }: FormProps): ReactElement => {
 									label="First Name"
 								/>
 								<span className="absolute -bottom-6 flex w-full">
-									{form.formState.errors.firstName
-										?.message && (
+									{form.formState.errors.firstName?.message && (
 										<span className="text-sm text-red-500">
-											{
-												form.formState.errors.firstName
-													?.message
-											}
+											{form.formState.errors.firstName?.message}
 										</span>
 									)}
 								</span>
@@ -96,22 +80,15 @@ const ProfileForm = ({ form, updateAccountFunc }: FormProps): ReactElement => {
 									label="Last Name"
 								/>
 								<span className="absolute -bottom-6 flex w-full">
-									{form.formState.errors.lastName
-										?.message && (
+									{form.formState.errors.lastName?.message && (
 										<span className="text-sm text-red-500">
-											{
-												form.formState.errors.lastName
-													?.message
-											}
+											{form.formState.errors.lastName?.message}
 										</span>
 									)}
 								</span>
 							</div>
 						</div>
-						<div
-							id="input-row"
-							className="flex w-full flex-row justify-between gap-4"
-						>
+						<div id="input-row" className="flex w-full flex-row justify-between gap-4">
 							<div className="relative w-1/2">
 								<Input
 									{...form.register("title")}
@@ -122,10 +99,7 @@ const ProfileForm = ({ form, updateAccountFunc }: FormProps): ReactElement => {
 								<span className="absolute -bottom-6 flex w-full">
 									{form.formState.errors.title?.message && (
 										<span className="text-sm text-red-500">
-											{
-												form.formState.errors.title
-													?.message
-											}
+											{form.formState.errors.title?.message}
 										</span>
 									)}
 								</span>
@@ -141,33 +115,22 @@ const ProfileForm = ({ form, updateAccountFunc }: FormProps): ReactElement => {
 								<span className="absolute -bottom-6 flex w-full">
 									{form.formState.errors.email?.message && (
 										<span className="text-sm text-red-500">
-											{
-												form.formState.errors.email
-													?.message
-											}
+											{form.formState.errors.email?.message}
 										</span>
 									)}
 								</span>
 							</div>
 						</div>
-						<div
-							id="input-row"
-							className="flex w-full flex-row justify-between gap-4"
-						>
+						<div id="input-row" className="flex w-full flex-row justify-between gap-4">
 							<div className="relative w-1/2">
 								<Controller
 									name="country"
 									control={form.control}
-									render={({
-										field: { onChange, value },
-									}) => {
+									render={({ field: { onChange, value } }) => {
 										return (
 											<div className="flex w-full flex-col gap-2">
 												<label>Country</label>
-												<CountryDropdown
-													onChange={onChange}
-													value={value}
-												/>
+												<CountryDropdown onChange={onChange} value={value} />
 											</div>
 										);
 									}}
@@ -176,10 +139,7 @@ const ProfileForm = ({ form, updateAccountFunc }: FormProps): ReactElement => {
 								<span className="absolute -bottom-6 flex w-full">
 									{form.formState.errors.country?.message && (
 										<span className="text-sm text-red-500">
-											{
-												form.formState.errors.country
-													?.message
-											}
+											{form.formState.errors.country?.message}
 										</span>
 									)}
 								</span>
@@ -188,9 +148,7 @@ const ProfileForm = ({ form, updateAccountFunc }: FormProps): ReactElement => {
 								<Controller
 									name="location"
 									control={form.control}
-									render={({
-										field: { onChange, value },
-									}) => {
+									render={({ field: { onChange, value } }) => {
 										return (
 											<div className="flex w-full flex-col gap-2">
 												<label>Region</label>
@@ -204,13 +162,9 @@ const ProfileForm = ({ form, updateAccountFunc }: FormProps): ReactElement => {
 									}}
 								/>
 								<span className="absolute -bottom-6 flex w-full">
-									{form.formState.errors.location
-										?.message && (
+									{form.formState.errors.location?.message && (
 										<span className="text-sm text-red-500">
-											{
-												form.formState.errors.location
-													?.message
-											}
+											{form.formState.errors.location?.message}
 										</span>
 									)}
 								</span>

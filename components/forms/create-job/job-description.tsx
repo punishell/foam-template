@@ -38,9 +38,7 @@ const JobDescription = ({ form }: JobDescriptionProps): ReactElement => {
 				</div>
 				<span className="absolute -bottom-4 flex w-full">
 					{form.formState.errors.description?.message != null && (
-						<span className="text-sm text-red-500">
-							{form.formState.errors.description?.message}
-						</span>
+						<span className="text-sm text-red-500">{form.formState.errors.description?.message}</span>
 					)}
 				</span>
 			</div>

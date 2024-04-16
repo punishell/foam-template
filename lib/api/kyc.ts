@@ -32,12 +32,7 @@ async function postKycSession(): Promise<KycProps> {
 	return res.data.data;
 }
 
-export function useCreateKycSession(): UseMutationResult<
-	KycProps,
-	ApiError,
-	unknown,
-	unknown
-> {
+export function useCreateKycSession(): UseMutationResult<KycProps, ApiError, unknown, unknown> {
 	return useMutation({
 		mutationFn: postKycSession,
 		mutationKey: ["kyc"],

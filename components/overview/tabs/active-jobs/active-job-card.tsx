@@ -8,6 +8,7 @@ import { type ReactElement, useState } from "react";
 import Link from "next/link";
 import { Button } from "pakt-ui";
 import { Briefcase } from "lucide-react";
+import { useMediaQuery } from "usehooks-ts";
 
 /* -------------------------------------------------------------------------- */
 /*                             Internal Dependency                            */
@@ -16,9 +17,17 @@ import { Briefcase } from "lucide-react";
 import { useUserState } from "@/lib/store/account";
 import { DeliverableProgressBar } from "@/components/common/deliverable-progress-bar";
 import { SideModal } from "@/components/common/side-modal";
-import { TalentJobModal } from "@/components/jobs/home/accepted/talent-card/modal";
-import { ClientJobModal } from "@/components/jobs/home/created/client-card/modal";
 import { AfroProfile } from "@/components/common/afro-profile";
+import { useHeaderScroll } from "@/lib/store";
+import { titleCase } from "@/lib/utils";
+
+import { MobileSheetWrapper } from "@/components/common/mobile-sheet-wrapper";
+
+import { TalentJobSheetForMobile } from "@/components/jobs/actions/mobile-sheets/talent";
+import { ClientJobModalForMobile } from "@/components/jobs/actions/mobile-sheets/client";
+
+import { TalentJobModal } from "@/components/jobs/actions/desktop-sheets/talent";
+import { ClientJobModal } from "@/components/jobs/actions/desktop-sheets/client";
 
 interface ActiveJobCardProps {
 	id: string;
@@ -29,6 +38,7 @@ interface ActiveJobCardProps {
 		name: string;
 		avatar: string;
 		score: number;
+		title: string;
 	};
 	// bookmarked?: boolean;
 	// bookmarkId?: string;
@@ -38,6 +48,7 @@ interface ActiveJobCardProps {
 		name: string;
 		avatar: string;
 		score: number;
+		title: string;
 	};
 	isCreator: boolean;
 	progress: {
@@ -60,10 +71,17 @@ export const ActiveJobCard = ({
 	// bookmarked,
 	jobProgress,
 }: ActiveJobCardProps): ReactElement => {
-	const { _id: loggedInUser } = useUserState();
+	const [isMobileModalOpen, setIsMobileModalOpen] = useState(false);
 	const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
+
+	const { setScrollPosition } = useHeaderScroll();
+	const { _id: loggedInUser } = useUserState();
+
 	const profileAccount = creator?._id === loggedInUser ? talent : creator;
-	return (
+
+	const tab = useMediaQuery("(min-width: 640px)");
+
+	return tab ? (
 		<div className="relative z-10 flex w-full gap-4  overflow-hidden rounded-2xl border border-[#9BDCFD] bg-[#F1FBFF] px-4 pl-2">
 			<AfroProfile
 				src={profileAccount.avatar}
@@ -94,9 +112,7 @@ export const ActiveJobCard = ({
 											? "Review"
 											: "Update"}
 							</Button>
-							<Link
-								href={`/messages?userId=${isCreator ? talent._id : creator._id}`}
-							>
+							<Link href={`/messages?userId=${isCreator ? talent._id : creator._id}`}>
 								<Button size="xs" variant="outline">
 									Message
 								</Button>
@@ -139,6 +155,76 @@ export const ActiveJobCard = ({
 					/>
 				)}
 			</SideModal>
+		</div>
+	) : (
+		<div
+			role="button"
+			tabIndex={0}
+			onClick={() => {
+				setScrollPosition(1);
+				setIsMobileModalOpen(true);
+			}}
+			onKeyDown={() => {
+				setIsMobileModalOpen(true);
+			}}
+			className="cursor-pointer z-10 flex flex-col w-full gap-4 overflow-hidden border-b border-[#9BDCFD] bg-[#F1FBFF] px-[21px] py-4"
+		>
+			<div className="flex items-center gap-2 relative -left-[5px]">
+				<AfroProfile
+					src={profileAccount.avatar}
+					score={profileAccount.score}
+					size="sm"
+					url={`/talents/${profileAccount._id}`}
+				/>
+				<div className="flex-col justify-start items-start inline-flex">
+					<p className="text-gray-800 text-lg flex leading-[27px] tracking-wide">{profileAccount.name}</p>
+					<span className="text-gray-500 text-xs leading-[18px] tracking-wide">
+						{titleCase(profileAccount.title)}
+					</span>
+				</div>
+			</div>
+			<div className="flex w-full flex-col gap-2">
+				<h3 className="text-xl font-bold text-title">{title}</h3>
+				<p className="flex flex-row gap-4 capitalize text-body text-base">{description.slice(0, 250)}</p>
+				<div className="flex">
+					<DeliverableProgressBar
+						percentageProgress={progress.progress}
+						totalDeliverables={progress.total}
+						className="w-full max-w-[300px]"
+					/>
+				</div>
+			</div>
+			{/* Sidebar Sheet */}
+			<MobileSheetWrapper
+				isOpen={isMobileModalOpen}
+				// to={
+				// 	isCreator && jobProgress < 100
+				// 		? "View Updates"
+				// 		: isCreator && jobProgress === 100
+				// 			? "Review"
+				// 			: !isCreator && jobProgress === 100
+				// 				? "Review"
+				// 				: "Update"
+				// }
+			>
+				{!isCreator ? (
+					<TalentJobSheetForMobile
+						jobId={id}
+						talentId={creator._id}
+						closeModal={() => {
+							setIsUpdateModalOpen(false);
+						}}
+					/>
+				) : (
+					<ClientJobModalForMobile
+						jobId={id}
+						talentId={talent._id}
+						closeModal={() => {
+							setIsUpdateModalOpen(false);
+						}}
+					/>
+				)}
+			</MobileSheetWrapper>
 		</div>
 	);
 };

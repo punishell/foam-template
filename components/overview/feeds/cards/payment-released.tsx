@@ -55,54 +55,80 @@ export const PaymentReleased = ({
 	close,
 }: PaymentReleasedProps): ReactElement => {
 	return (
-		<div className="relative z-10 flex w-full gap-4 overflow-hidden rounded-2xl border border-[#7DDE86] bg-[#FBFFFA] px-4 pl-2">
-			<AfroProfile
-				src={isCreator ? talent.avatar : creator.avatar}
-				score={isCreator ? talent.score : creator.score}
-				size="lg"
-				url={`/talents/${isCreator ? talent._id : creator._id}`}
-			/>
-			<div className="flex w-full flex-col gap-4 py-4">
-				<div className="flex w-full items-center justify-between">
-					<h3 className="text-xl font-bold text-body">
-						{isCreator ? "Job Completed" : "Payment Released"}
-					</h3>
-					{close && (
-						<X
-							size={20}
-							className="cursor-pointer"
-							onClick={() => {
-								close(id);
-							}}
-						/>
-					)}
-				</div>
-				<p className="text-3xl text-title">
-					{isCreator
-						? `${title}`
-						: `$${amount} has been added to Your Wallet! 💰`}
-				</p>
-				<div className="mt-auto flex items-center justify-between">
-					<div className="flex items-center gap-2">
-						<Link href="/wallet">
-							<Button size="xs" variant="secondary">
-								View Wallet
-							</Button>
-						</Link>
+		<>
+			<div className="relative z-10 hidden sm:flex w-full gap-4 overflow-hidden rounded-2xl border border-[#7DDE86] bg-[#FBFFFA] px-4 pl-2">
+				<AfroProfile
+					src={isCreator ? talent.avatar : creator.avatar}
+					score={isCreator ? talent.score : creator.score}
+					size="lg"
+					url={`/talents/${isCreator ? talent._id : creator._id}`}
+				/>
+				<div className="flex w-full flex-col gap-4 py-4">
+					<div className="flex w-full items-center justify-between">
+						<h3 className="text-xl font-bold text-body">
+							{isCreator ? "Job Completed" : "Payment Released"}
+						</h3>
+						{close && (
+							<X
+								size={20}
+								className="cursor-pointer"
+								onClick={() => {
+									close(id);
+								}}
+							/>
+						)}
 					</div>
-					<RenderBookMark
-						size={20}
-						isBookmarked={bookmarked}
-						type="feed"
-						id={id}
-						bookmarkId={bookmarkId}
-					/>
+					<p className="text-3xl text-title">
+						{isCreator ? `${title}` : `$${amount} has been added to Your Wallet! 💰`}
+					</p>
+					<div className="mt-auto flex items-center justify-between">
+						<div className="flex items-center gap-2">
+							<Link href="/wallet">
+								<Button size="xs" variant="secondary">
+									View Wallet
+								</Button>
+							</Link>
+						</div>
+						<RenderBookMark
+							size={20}
+							isBookmarked={bookmarked}
+							type="feed"
+							id={id}
+							bookmarkId={bookmarkId}
+						/>
+					</div>
+				</div>
+
+				<div className="absolute right-0 top-16 -z-[1] translate-x-1/3">
+					<Briefcase size={200} color="#ECFCE5" />
 				</div>
 			</div>
+			{/* Mobile */}
+			<Link
+				href="/wallet"
+				className="relative z-10 flex sm:hidden w-full gap-4 overflow-hidden border-b border-[#7DDE86] bg-[#FBFFFA] px-[21px] py-4"
+			>
+				<div className="flex w-full flex-col gap-4">
+					<div className="flex w-full items-center justify-between">
+						<h3 className="text-base text-body leading-normal tracking-tight font-medium">
+							{isCreator ? "Job Completed" : "💰 Payment Released"}
+						</h3>
+					</div>
 
-			<div className="absolute right-0 top-16 -z-[1] translate-x-1/3">
-				<Briefcase size={200} color="#ECFCE5" />
-			</div>
-		</div>
+					<div className="flex items-end gap-2 justify-between">
+						<p className="text-lg text-black">
+							{isCreator ? `${title}` : `$${amount} has been added to Your Wallet! 💰`}
+						</p>
+						<RenderBookMark
+							size={20}
+							isBookmarked={bookmarked}
+							type="feed"
+							id={id}
+							bookmarkId={bookmarkId}
+						/>
+					</div>
+				</div>
+			</Link>
+		</>
 	);
 };

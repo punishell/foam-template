@@ -23,11 +23,7 @@ import BasicInfo from "./basic-info";
 export type EditProfileFormValues = z.infer<typeof editProfileFormSchema>;
 
 export const ProfileView = (): ReactElement => {
-	const {
-		data: userAccount,
-		refetch: refetchUser,
-		isLoading: accountIsLoading,
-	} = useGetAccount();
+	const { data: userAccount, refetch: refetchUser, isLoading: accountIsLoading } = useGetAccount();
 	const updateAccount = useUpdateAccount();
 	const router = useRouter();
 

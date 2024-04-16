@@ -10,10 +10,8 @@ export function cn(...inputs: ClassValue[]): string {
 	return twMerge(clsx(inputs));
 }
 
-export const AUTH_TOKEN_KEY =
-	process.env.NEXT_PUBLIC_AUTH_TOKEN_KEY ?? "auth-token";
-export const TEMP_AUTH_TOKEN_KEY =
-	process.env.NEXT_PUBLIC_TEMP_AUTH_TOKEN_KEY ?? "temp-auth-token";
+export const AUTH_TOKEN_KEY = process.env.NEXT_PUBLIC_AUTH_TOKEN_KEY ?? "auth-token";
+export const TEMP_AUTH_TOKEN_KEY = process.env.NEXT_PUBLIC_TEMP_AUTH_TOKEN_KEY ?? "temp-auth-token";
 
 export const createQueryString = (name: string, value: string): string => {
 	const params = new URLSearchParams();
@@ -59,17 +57,7 @@ export function formatBytes(bytes: number, decimals = 2): string {
 
 	const k = 1024;
 	const dm = decimals < 0 ? 0 : decimals;
-	const sizes = [
-		"Bytes",
-		"KiB",
-		"MiB",
-		"GiB",
-		"TiB",
-		"PiB",
-		"EiB",
-		"ZiB",
-		"YiB",
-	];
+	const sizes = ["Bytes", "KiB", "MiB", "GiB", "TiB", "PiB", "EiB", "ZiB", "YiB"];
 
 	const i = Math.floor(Math.log(bytes) / Math.log(k));
 
@@ -81,8 +69,7 @@ export const hasFiveStarReview = (reviews: Review[]): boolean => {
 	return hasFiveStar.length > 0;
 };
 
-export const CopyText = async (text: string): Promise<void> =>
-	navigator.clipboard.writeText(text);
+export const CopyText = async (text: string): Promise<void> => navigator.clipboard.writeText(text);
 
 export function sentenceCase(str: string): string {
 	return str.charAt(0).toUpperCase() + str.slice(1);
@@ -168,6 +155,7 @@ export const FEED_TYPES = {
 interface ColorResult {
 	circleColor: string;
 	bgColor: string;
+	borderColor?: string;
 }
 
 export const colorFromScore = (score: number): ColorResult => {
@@ -175,25 +163,30 @@ export const colorFromScore = (score: number): ColorResult => {
 		return {
 			circleColor: "linear-gradient(149deg, #FA042F 0%, #FF6A84 100%)",
 			bgColor: "#FFF8F8",
+			borderColor: "#FF6A84",
 		};
 	if (score >= 21 && score <= 35)
 		return {
 			circleColor: "linear-gradient(171deg, #FFF70A 0%, #EEE600 100%)",
 			bgColor: "#FFFFF0",
+			borderColor: "#EEE600",
 		};
 	if (score >= 36 && score <= 50)
 		return {
 			circleColor: "linear-gradient(166deg, #FFB402 0%, #E19E00 100%)",
 			bgColor: "#FFFFF0",
+			borderColor: "#E19E00",
 		};
 	if (score >= 51 && score <= 79)
 		return {
 			circleColor: "linear-gradient(162deg, #08A7FC 0%, #71CDFF 100%)",
 			bgColor: "#F2FBFF",
+			borderColor: "#71CDFF",
 		};
 	return {
 		circleColor: "linear-gradient(145deg, #05BD2F 0%, #0FF143 100%)",
 		bgColor: "#ECFCE5",
+		borderColor: "#0FF143",
 	};
 };
 
@@ -241,23 +234,11 @@ export const emptyAchievement = [
 
 export type AchievementType = "review" | "referral" | "five-star" | "squad";
 
-export const getAchievementData = (
-	type: AchievementType,
-): EmptyAchievementProps | undefined => {
+export const getAchievementData = (type: AchievementType): EmptyAchievementProps | undefined => {
 	return emptyAchievement.find(({ id }) => id === type);
 };
 
-const allowedFileTypes = [
-	"pdf",
-	"doc",
-	"ai",
-	"avi",
-	"docx",
-	"csv",
-	"ppt",
-	"zip",
-	"rar",
-];
+const allowedFileTypes = ["pdf", "doc", "ai", "avi", "docx", "csv", "ppt", "zip", "rar"];
 
 interface PreviewResult {
 	preview: string;
@@ -271,8 +252,7 @@ export function getPreviewByType(file: File): PreviewResult {
 		preview = URL.createObjectURL(file);
 	} else {
 		const typP = type.split("/")[1];
-		if (typP && allowedFileTypes.includes(typP))
-			preview = `/images/thumbnail/${typP.toUpperCase()}.png`;
+		if (typP && allowedFileTypes.includes(typP)) preview = `/images/thumbnail/${typP.toUpperCase()}.png`;
 		else preview = "/images/thumbnail/TXT.png";
 	}
 	return { preview, type };
@@ -284,22 +264,14 @@ export function getPreviewByTypeUrl(url: string, type: string): PreviewResult {
 		preview = url;
 	} else {
 		const typP = type.split("/")[1];
-		if (typP && allowedFileTypes.includes(typP))
-			preview = `/images/thumbnail/${typP}.png`;
+		if (typP && allowedFileTypes.includes(typP)) preview = `/images/thumbnail/${typP}.png`;
 		else preview = "/images/thumbnail/TXT.png";
 	}
 	return { preview, type };
 }
 
-export const paginate = <T>(
-	array: T[],
-	itemsPerPage: number,
-	currentPage: number,
-): T[] => {
-	return array.slice(
-		(currentPage - 1) * itemsPerPage,
-		currentPage * itemsPerPage,
-	);
+export const paginate = <T>(array: T[], itemsPerPage: number, currentPage: number): T[] => {
+	return array.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 };
 
 export function filterEmptyStrings(arr: string[]): string[] {
@@ -308,9 +280,7 @@ export function filterEmptyStrings(arr: string[]): string[] {
 	});
 }
 
-export function formatTimestampForDisplay(
-	utcTimestamp: string | number | Date,
-): string {
+export function formatTimestampForDisplay(utcTimestamp: string | number | Date): string {
 	const localTimestamp = new Date(utcTimestamp);
 	// Only show the time
 	return localTimestamp.toLocaleString("en-US", {
@@ -319,3 +289,10 @@ export function formatTimestampForDisplay(
 		hour12: false,
 	});
 }
+
+// Empty functions for empty onClick handlers instead of using unnecessary `console.log()`
+export const emptyFunction = (): void => {
+	// Modifying a data structure
+	const arr = [];
+	arr.push(5);
+};

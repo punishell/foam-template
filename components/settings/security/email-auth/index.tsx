@@ -29,10 +29,7 @@ interface Email2FAProps {
 	disabled?: boolean;
 }
 
-export const EmailAuth2FA = ({
-	isEnabled,
-	disabled,
-}: Email2FAProps): React.JSX.Element => {
+export const EmailAuth2FA = ({ isEnabled, disabled }: Email2FAProps): React.JSX.Element => {
 	const { isModalOpen, closeModal, openModal } = useEmail2FAState();
 	const [isActive, _setIsActive] = useState(isEnabled);
 
@@ -52,21 +49,12 @@ export const EmailAuth2FA = ({
 					<Checkbox checked={isEnabled} />
 				</div>
 				<div className="flex h-[100px] items-center">
-					<Image
-						src="/icons/email-auth.svg"
-						width={76}
-						height={76}
-						alt=""
-					/>
+					<Image src="/icons/email-auth.svg" width={76} height={76} alt="" />
 				</div>
 				<Text.p size="lg">Email Auth</Text.p>
 			</button>
 
-			<Modal
-				isOpen={isModalOpen}
-				onOpenChange={closeModal}
-				className="rounded-2xl bg-white p-6"
-			>
+			<Modal isOpen={isModalOpen} onOpenChange={closeModal} className="rounded-2xl bg-white p-6">
 				{isActive ? (
 					<Slider
 						items={[

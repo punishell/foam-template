@@ -3,10 +3,7 @@
 /* -------------------------------------------------------------------------- */
 
 import { ClientOpenJobCtas, type ClientOpenJobCtasProps } from "./open";
-import {
-	ClientPrivateJobCtas,
-	type ClientPrivateJobCtasProps,
-} from "./private";
+import { ClientPrivateJobCtas, type ClientPrivateJobCtasProps } from "./private";
 
 export const CTAS: {
 	open: React.FC<ClientOpenJobCtasProps>;

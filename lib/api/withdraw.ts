@@ -2,11 +2,7 @@
 /*                             External Dependency                            */
 /* -------------------------------------------------------------------------- */
 
-import {
-	type UseMutationResult,
-	useMutation,
-	useQueryClient,
-} from "@tanstack/react-query";
+import { type UseMutationResult, useMutation, useQueryClient } from "@tanstack/react-query";
 
 /* -------------------------------------------------------------------------- */
 /*                             Internal Dependency                            */
@@ -24,19 +20,12 @@ interface WithdrawalParams {
 	otp?: string;
 }
 
-async function postWithdrawalRequest(
-	payload: WithdrawalParams,
-): Promise<WithdrawalParams> {
+async function postWithdrawalRequest(payload: WithdrawalParams): Promise<WithdrawalParams> {
 	const res = await axios.post(`/withdrawals`, payload);
 	return res.data.data;
 }
 
-export function useWithdraw(): UseMutationResult<
-	WithdrawalParams,
-	ApiError,
-	WithdrawalParams,
-	unknown
-> {
+export function useWithdraw(): UseMutationResult<WithdrawalParams, ApiError, WithdrawalParams, unknown> {
 	const queryClient = useQueryClient();
 	const { refetch } = useGetWalletDetails();
 	return useMutation({

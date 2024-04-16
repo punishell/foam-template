@@ -16,12 +16,7 @@ import { Table } from "@/components/common/table";
 
 type TransactionTypeProps = "withdrawal" | "deposit";
 
-type TransactionStatusProps =
-	| "processing"
-	| "pending"
-	| "completed"
-	| "failed"
-	| "reprocessing";
+type TransactionStatusProps = "processing" | "pending" | "completed" | "failed" | "reprocessing";
 
 type TransactionStatusColors = {
 	[key in TransactionStatusProps]: { bgColor: string; textColor: string };
@@ -35,29 +30,17 @@ const TRANSACTION_STATUS_COLORS: TransactionStatusColors = {
 	reprocessing: { bgColor: "bg-yellow-dark", textColor: "text-yellow" },
 };
 
-const TransactionStatus = ({
-	status,
-}: {
-	status: TransactionStatusProps;
-}): React.JSX.Element => (
+const TransactionStatus = ({ status }: { status: TransactionStatusProps }): React.JSX.Element => (
 	<div
 		className={`${
 			TRANSACTION_STATUS_COLORS[status].bgColor || "bg-gray-300"
 		} flex w-fit items-center gap-2 rounded-full bg-opacity-10 px-3 py-0.5 capitalize`}
 	>
-		<span
-			className={`text-sm ${TRANSACTION_STATUS_COLORS[status].textColor || "text-title"}`}
-		>
-			{status}
-		</span>
+		<span className={`text-sm ${TRANSACTION_STATUS_COLORS[status].textColor || "text-title"}`}>{status}</span>
 	</div>
 );
 
-const TransactionType = ({
-	type,
-}: {
-	type: TransactionTypeProps;
-}): React.JSX.Element => {
+const TransactionType = ({ type }: { type: TransactionTypeProps }): React.JSX.Element => {
 	let color: string;
 	let Icon: React.ElementType;
 
@@ -78,9 +61,7 @@ const TransactionType = ({
 
 	return (
 		<div className="flex items-center gap-2">
-			<div
-				className={`flex rounded-full bg-opacity-20 p-0.5 bg-${color}`}
-			>
+			<div className={`flex rounded-full bg-opacity-20 p-0.5 bg-${color}`}>
 				<Icon className={`text-${color}`} size={12} />
 			</div>
 			<span className="text-sm capitalize">{type}</span>
@@ -107,9 +88,7 @@ const TABLE_COLUMNS: Array<ColumnDef<WalletTransactionsProps>> = [
 	{
 		header: "Type",
 		accessorFn: (data) => data.type,
-		cell: ({ getValue }) => (
-			<TransactionType type={getValue<TransactionTypeProps>()} />
-		),
+		cell: ({ getValue }) => <TransactionType type={getValue<TransactionTypeProps>()} />,
 	},
 	{
 		header: "Description",
@@ -130,9 +109,7 @@ const TABLE_COLUMNS: Array<ColumnDef<WalletTransactionsProps>> = [
 	{
 		header: "Status",
 		accessorFn: (data) => data.status,
-		cell: ({ getValue }) => (
-			<TransactionStatus status={getValue<TransactionStatusProps>()} />
-		),
+		cell: ({ getValue }) => <TransactionStatus status={getValue<TransactionStatusProps>()} />,
 	},
 	{
 		header: " ",

@@ -13,13 +13,7 @@ import type * as z from "zod";
 /* -------------------------------------------------------------------------- */
 
 import { type createJobSchema } from "@/lib/validations";
-import {
-	Select,
-	SelectTrigger,
-	SelectValue,
-	SelectContent,
-	SelectItem,
-} from "@/components/common/select";
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/common/select";
 
 type FormValues = z.infer<typeof createJobSchema>;
 
@@ -37,24 +31,15 @@ const JobVisibility = ({ form }: JobDescriptionProps): ReactElement => {
 					control={form.control}
 					render={({ field: { onChange, value } }) => {
 						return (
-							<Select
-								defaultValue={value}
-								onValueChange={onChange}
-							>
+							<Select defaultValue={value} onValueChange={onChange}>
 								<SelectTrigger className="h-10 w-[180px] rounded-lg bg-[#F2F4F5] text-base text-title">
 									<SelectValue placeholder="Select Visibility" />
 								</SelectTrigger>
 								<SelectContent>
-									<SelectItem
-										value="private"
-										className="rounded py-2 hover:bg-[#ECFCE5]"
-									>
+									<SelectItem value="private" className="rounded py-2 hover:bg-[#ECFCE5]">
 										Private
 									</SelectItem>
-									<SelectItem
-										value="public"
-										className="rounded py-2 hover:bg-[#ECFCE5]"
-									>
+									<SelectItem value="public" className="rounded py-2 hover:bg-[#ECFCE5]">
 										Public
 									</SelectItem>
 								</SelectContent>

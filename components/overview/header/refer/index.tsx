@@ -45,26 +45,20 @@ interface ReferralDataProps {
 
 type LoginFormValues = z.infer<typeof referralSchema>;
 
-export function ReferralSideModal({
-	isOpen,
-	onOpenChange,
-}: ReferralModalProps): React.ReactElement {
+export function ReferralSideModal({ isOpen, onOpenChange }: ReferralModalProps): React.ReactElement {
 	const [isSentEmail, setIsSentEmail] = useState(false);
 	const { data } = useGetReferral({ page: 1, limit: 5, filter: {} });
 	const sendInvite = useSendReferralInvite();
 
 	const referralLink = data?.stats.referralLink;
-	const remainingInvites =
-		(data?.stats?.totalAllowedInvites ?? 0) -
-		(data?.stats?.inviteSent ?? 0);
+	const remainingInvites = (data?.stats?.totalAllowedInvites ?? 0) - (data?.stats?.inviteSent ?? 0);
 	const inviteDuration = data?.stats?.duration ?? "week";
 
 	const recentReferrals = useMemo(
 		() =>
 			(data?.referrals?.data ?? []).map((u: ReferralDataProps) => ({
 				_id: u?.referral?._id ?? "",
-				name:
-					`${u?.referral?.firstName} ${u?.referral?.lastName}` ?? "",
+				name: `${u?.referral?.firstName} ${u?.referral?.lastName}` ?? "",
 				title: u?.referral?.profile?.bio?.title ?? "",
 				score: u?.referral?.score,
 				image: u?.referral?.profileImage?.url,
@@ -88,11 +82,7 @@ export function ReferralSideModal({
 	const copyLink = async (): Promise<void> => CopyText(String(referralLink));
 
 	return (
-		<SideModal
-			isOpen={isOpen}
-			onOpenChange={onOpenChange}
-			className="flex flex-col"
-		>
+		<SideModal isOpen={isOpen} onOpenChange={onOpenChange} className="flex flex-col">
 			<div className="flex flex-row gap-4 bg-primary-gradient p-6 text-2xl font-bold text-white">
 				{/* <ChevronLeft
           size={32}
@@ -103,26 +93,18 @@ export function ReferralSideModal({
 			</div>
 			{!isSentEmail ? (
 				<div className="flex flex-col gap-2 p-6">
-					<h3 className="text-2xl font-semibold">
-						Invite your friends, increase your Afroscore
-					</h3>
+					<h3 className="text-2xl font-semibold">Invite your friends, increase your Afroscore</h3>
 					<p className="text-base">
-						You can invite up to {remainingInvites} people per{" "}
-						{inviteDuration}.
+						You can invite up to {remainingInvites} people per {inviteDuration}.
 					</p>
 					<div className="my-4 w-full rounded-2xl border border-primary-darker bg-primary-brighter p-4">
 						<h3 className="text-lg font-bold">Email Invite</h3>
-						<form
-							onSubmit={form.handleSubmit(onSubmit)}
-							className="relative my-4 flex w-full flex-col"
-						>
+						<form onSubmit={form.handleSubmit(onSubmit)} className="relative my-4 flex w-full flex-col">
 							<div className="rounded-2xl border bg-input-bg p-1">
 								<Controller
 									name="emails"
 									control={form.control}
-									render={({
-										field: { onChange, value = [] },
-									}) => (
+									render={({ field: { onChange, value = [] } }) => (
 										<TagInput2
 											tags={value}
 											setTags={onChange}
@@ -136,26 +118,17 @@ export function ReferralSideModal({
 								<Button
 									className="min-h-[50px]"
 									variant="primary"
-									disabled={
-										!form.formState.isValid ||
-										sendInvite.isLoading
-									}
+									disabled={!form.formState.isValid || sendInvite.isLoading}
 									fullWidth
 								>
-									{sendInvite.isLoading ? (
-										<Spinner />
-									) : (
-										"Send"
-									)}
+									{sendInvite.isLoading ? <Spinner /> : "Send"}
 								</Button>
 							</div>
 						</form>
 					</div>
 					<div className="relative w-full">
 						<div className="absolute top-2 -z-10 w-full border" />
-						<div className="z-20 mx-auto w-24 bg-white text-center font-bold text-body">
-							OR
-						</div>
+						<div className="z-20 mx-auto w-24 bg-white text-center font-bold text-body">OR</div>
 					</div>
 					<div className="my-4">
 						<h3 className="text-lg font-bold">Referral Link</h3>
@@ -178,12 +151,8 @@ export function ReferralSideModal({
 						</div>
 					</div>
 					<div className="flex flex-col gap-2">
-						<h3 className="text-2xl font-bold">
-							Recently Referred
-						</h3>
-						<p className="text-base font-thin">
-							Your referrals that joined the Platform
-						</p>
+						<h3 className="text-2xl font-bold">Recently Referred</h3>
+						<p className="text-base font-thin">Your referrals that joined the Platform</p>
 						<div className="my-4 flex flex-col gap-2">
 							{recentReferrals.length > 0 &&
 								recentReferrals.map(
@@ -197,15 +166,11 @@ export function ReferralSideModal({
 											dated: string;
 										},
 										i: number,
-									) => (
-										<RecentReferral key={i} referral={r} />
-									),
+									) => <RecentReferral key={i} referral={r} />,
 								)}
 							{recentReferrals.length === 0 && (
 								<div className="flex min-h-[139px] items-center rounded-2xl bg-sky-lighter p-4">
-									<p className="m-auto text-base text-body">
-										Talents you refer will appear here
-									</p>
+									<p className="m-auto text-base text-body">Talents you refer will appear here</p>
 								</div>
 							)}
 						</div>
@@ -215,8 +180,7 @@ export function ReferralSideModal({
 				<div className="flex h-full flex-col p-10 text-center">
 					<Lottie animationData={email} loop={false} />
 					<p className="mb-8 text-base text-body">
-						Your Invite has been sent. You’ll be notified when a
-						user signs up with your referral link
+						Your Invite has been sent. You’ll be notified when a user signs up with your referral link
 					</p>
 					<div className="mx-auto w-1/2">
 						<Button

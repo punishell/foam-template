@@ -29,7 +29,7 @@ import { JobReviewedFeed } from "./cards/job/reviewed";
 import { ReferralJobCompletion } from "./cards/referral/job-completion";
 import { PaymentReleased } from "./cards/payment-released";
 import { JobCompletionFeed } from "./cards/job/completion";
-import { ReviewResponseChangeCard } from "./cards/review/response-change";
+import { ReviewResponseChangeCard } from "./cards/review/change-response";
 import { ReviewChangeCard } from "./cards/review/change";
 import { JobCancelled } from "./cards/job/cancelled";
 
@@ -51,6 +51,7 @@ export const ParseFeedView = (
 		avatar: feed?.creator?.profileImage?.url ?? "",
 		name: `${feed?.creator?.firstName ?? ""} ${feed?.creator?.lastName ?? ""}`,
 		score: feed?.creator?.score ?? 0,
+		title: feed?.creator?.profile?.bio?.title ?? "",
 	};
 
 	const inviter = {
@@ -58,6 +59,7 @@ export const ParseFeedView = (
 		avatar: feed?.data?.creator?.profileImage?.url ?? "",
 		name: `${feed?.data?.creator?.firstName ?? ""} ${feed?.data?.creator?.lastName ?? ""}`,
 		score: feed?.data?.creator?.score ?? 0,
+		title: feed?.data?.creator?.profile?.bio?.title ?? "",
 	};
 
 	const talent = {
@@ -65,12 +67,11 @@ export const ParseFeedView = (
 		avatar: feed?.data?.owner?.profileImage?.url ?? "",
 		name: `${feed?.data?.owner?.firstName ?? ""} ${feed?.data?.owner?.lastName ?? ""}`,
 		score: feed?.data?.owner?.score ?? 0,
+		title: feed?.data?.owner?.profile?.bio?.title ?? "",
 	};
 
 	// console.log(feed?.data);
-	const deliverableTotal = (feed?.data?.collections ?? []).filter(
-		(f) => f.type === "deliverable",
-	).length;
+	const deliverableTotal = (feed?.data?.collections ?? []).filter((f) => f.type === "deliverable").length;
 	const currentProgress = feed?.meta?.value;
 	const deliverableCountPercentage = {
 		total: deliverableTotal,
@@ -81,6 +82,7 @@ export const ParseFeedView = (
 		case FEED_TYPES.COLLECTION_CREATED:
 		case FEED_TYPES.PUBLIC_JOB_CREATED:
 			return (
+				// Done
 				<PublicJobCreatedFeed
 					key={key}
 					creator={inviter}
@@ -96,6 +98,7 @@ export const ParseFeedView = (
 		case FEED_TYPES.COLLECTION_INVITE:
 		case FEED_TYPES.JOB_INVITATION_RECEIVED:
 			return (
+				// Done
 				<JobFeedCard
 					key={key}
 					id={_id}
@@ -116,19 +119,16 @@ export const ParseFeedView = (
 		case FEED_TYPES.COLLECTION_INVITE_REJECTED:
 		case FEED_TYPES.COLLECTION_INVITE_CANCELLED:
 			return (
+				// Done
 				<JobFeedCard
 					key={key}
 					id={_id}
 					title={feed?.data?.name}
 					type="job-invite-response"
 					accepted={
-						feed?.type ===
-						(FEED_TYPES.JOB_INVITATION_ACCEPTED ||
-							FEED_TYPES.COLLECTION_INVITE_ACCEPTED)
+						feed?.type === (FEED_TYPES.JOB_INVITATION_ACCEPTED || FEED_TYPES.COLLECTION_INVITE_ACCEPTED)
 					}
-					cancelled={
-						feed?.type === FEED_TYPES.COLLECTION_INVITE_CANCELLED
-					}
+					cancelled={feed?.type === FEED_TYPES.COLLECTION_INVITE_CANCELLED}
 					bookmarked={isBookmarked}
 					jobId={feed?.data?._id}
 					bookmarkId={bookmarkId}
@@ -138,6 +138,7 @@ export const ParseFeedView = (
 			);
 		case FEED_TYPES.JOB_APPLICATION_SUBMITTED:
 			return (
+				// Done
 				<JobApplicationCard
 					key={key}
 					id={feed?._id}
@@ -147,6 +148,7 @@ export const ParseFeedView = (
 						name: `${feed?.data?.creator.firstName} ${feed?.data?.creator?.lastName}`,
 						avatar: feed?.data?.creator?.profileImage?.url ?? "",
 						score: feed?.data?.creator?.score,
+						title: feed?.data?.creator?.profile?.bio?.title ?? "",
 					}}
 					bookmarked={isBookmarked}
 					bookmarkId={bookmarkId}
@@ -158,6 +160,7 @@ export const ParseFeedView = (
 		case FEED_TYPES.COLLECTION_UPDATE: {
 			const { data } = feed;
 			return (
+				// Done
 				<JobUpdateFeed
 					key={key}
 					talent={talent}
@@ -178,11 +181,13 @@ export const ParseFeedView = (
 		}
 		case FEED_TYPES.REFERRAL_SIGNUP:
 			return (
+				// Done
 				<ReferralSignupFeed
 					key={key}
 					id={feed?._id}
 					name={`${feed?.creator?.firstName ?? ""} ${feed?.creator?.lastName ?? ""}`}
 					title={feed?.title}
+					jobTitle={feed?.creator?.profile?.bio?.title}
 					description={feed?.description}
 					avatar={feed?.creator?.profileImage?.url}
 					userId={feed?.creator?._id}
@@ -194,6 +199,7 @@ export const ParseFeedView = (
 			);
 		case FEED_TYPES.JOB_REVIEW:
 			return (
+				// Done
 				<JobReviewedFeed
 					key={key}
 					id={feed?._id}
@@ -225,6 +231,7 @@ export const ParseFeedView = (
 			);
 		case FEED_TYPES.JOB_PAYMENT_RELEASED:
 			return (
+				// Done
 				<PaymentReleased
 					key={key}
 					id={feed?._id}
@@ -243,6 +250,7 @@ export const ParseFeedView = (
 		case FEED_TYPES.COLLECTION_COMPLETED:
 		case FEED_TYPES.JOB_COMPLETION:
 			return (
+				// Done
 				<JobCompletionFeed
 					key={key}
 					id={feed?._id}
@@ -275,6 +283,7 @@ export const ParseFeedView = (
 		case FEED_TYPES.JOB_CANCELLED_REQUEST:
 		case FEED_TYPES.JOB_CANCELLED_ACCEPTED:
 			return (
+				// Done
 				<ReviewChangeCard
 					key={key}
 					id={feed?._id}
@@ -291,14 +300,13 @@ export const ParseFeedView = (
 							: `${feedCreator.name} requested to cancel a job`
 					}
 					description={feed?.description}
-					isAccepted={
-						feed?.type === FEED_TYPES.JOB_CANCELLED_ACCEPTED
-					}
+					isAccepted={feed?.type === FEED_TYPES.JOB_CANCELLED_ACCEPTED}
 					rating={feed?.meta?.value}
 				/>
 			);
 		case FEED_TYPES.JOB_REVIEW_CHANGE:
 			return (
+				// Done
 				<ReviewChangeCard
 					key={key}
 					id={feed?._id}
@@ -317,6 +325,7 @@ export const ParseFeedView = (
 		case FEED_TYPES.JOB_REVIEW_CHANGE_ACCEPTED:
 		case FEED_TYPES.JOB_REVIEW_CHANGE_DECLINED:
 			return (
+				// Done
 				<ReviewResponseChangeCard
 					key={key}
 					id={feed?._id}
@@ -329,9 +338,7 @@ export const ParseFeedView = (
 					bookmarkId={bookmarkId}
 					title={feed?.title}
 					description={feed?.description}
-					isDeclined={
-						feed?.type === FEED_TYPES.JOB_REVIEW_CHANGE_DECLINED
-					}
+					isDeclined={feed?.type === FEED_TYPES.JOB_REVIEW_CHANGE_DECLINED}
 				/>
 			);
 

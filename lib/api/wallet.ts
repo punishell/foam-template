@@ -2,12 +2,7 @@
 /*                             External Dependency                            */
 /* -------------------------------------------------------------------------- */
 
-import {
-	type QueryKey,
-	useQuery,
-	type UseQueryOptions,
-	type UseQueryResult,
-} from "@tanstack/react-query";
+import { type QueryKey, useQuery, type UseQueryOptions, type UseQueryResult } from "@tanstack/react-query";
 
 /* -------------------------------------------------------------------------- */
 /*                             Internal Dependency                            */
@@ -36,8 +31,7 @@ const getWalletQueryKey: QueryKey = ["wallet-details"];
 const getWalletTxQueryKey: QueryKey = ["wallet-txs"];
 
 // fetch wallets
-const fetchWallet = async (): Promise<ApiResponse<IWallet>> =>
-	axios.get(`/wallet`);
+const fetchWallet = async (): Promise<ApiResponse<IWallet>> => axios.get(`/wallet`);
 
 // transactions
 
@@ -97,10 +91,7 @@ export const fetchWalletStats = async ({
 //     }
 // };
 
-export const useGetWalletDetails = (): UseQueryResult<
-	ApiResponse<IWallet>,
-	ApiError<null>
-> => {
+export const useGetWalletDetails = (): UseQueryResult<ApiResponse<IWallet>, ApiError<null>> => {
 	const { setWallet } = useWalletState();
 	const options: UseQueryOptions<ApiResponse<IWallet>, ApiError<null>> = {
 		queryFn: async () => {
@@ -133,11 +124,7 @@ interface ITransaction {
 	filters: Record<string, unknown>;
 }
 
-const fetchWalletTransactions = async ({
-	limit,
-	page,
-	filters,
-}: ITransaction): Promise<AxiosResponse<IWalletTx>> => {
+const fetchWalletTransactions = async ({ limit, page, filters }: ITransaction): Promise<AxiosResponse<IWalletTx>> => {
 	return axios.get(`/transaction`, {
 		params: {
 			page,
@@ -188,19 +175,13 @@ const fetchPaymentCoins = async (): Promise<PaymentCoinsProps[]> => {
 	return res.data.data.reverse();
 };
 
-export const useGetPaymentCoins = (): UseQueryResult<
-	PaymentCoinsProps[],
-	ApiError
-> => {
+export const useGetPaymentCoins = (): UseQueryResult<PaymentCoinsProps[], ApiError> => {
 	const getQueryIdKey = ["payment-coin"];
 	return useQuery({
 		queryFn: fetchPaymentCoins,
 		queryKey: getQueryIdKey,
 		onError: (error: ApiError) => {
-			toast.error(
-				error.response?.data.message ??
-					"An error fetching talents occurred",
-			);
+			toast.error(error.response?.data.message ?? "An error fetching talents occurred");
 		},
 	});
 };
@@ -225,10 +206,7 @@ export const useGetActiveRPC = (): UseQueryResult<ActiveRPCProps, unknown> => {
 		queryFn: fetchRPCServer,
 		queryKey: getQueryIdKey,
 		onError: (error: ApiError) => {
-			toast.error(
-				error.response?.data.message ??
-					"An error fetching talents occurred",
-			);
+			toast.error(error.response?.data.message ?? "An error fetching talents occurred");
 		},
 	});
 };

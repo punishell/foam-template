@@ -45,11 +45,7 @@ interface Props {
 const MB_IN_BYTES = 1024 * 1024;
 const maxSize = 2 * MB_IN_BYTES; // 2MB
 
-export const UploadAvatar: FC<Props> = ({
-	image,
-	size: previewImageSize = 180,
-	onUploadComplete,
-}) => {
+export const UploadAvatar: FC<Props> = ({ image, size: previewImageSize = 180, onUploadComplete }) => {
 	const uploadImage = useUploadImage();
 	const updateAccount = useUpdateAccount();
 	const [uploadProgress, setUploadProgress] = useState(0);
@@ -75,23 +71,19 @@ export const UploadAvatar: FC<Props> = ({
 		};
 	}, [previewImage]);
 
-	const { getRootProps, getInputProps, fileRejections, isDragReject } =
-		useDropzone({
-			onDrop,
-			maxSize,
-			minSize: 0,
-			maxFiles: 1,
+	const { getRootProps, getInputProps, fileRejections, isDragReject } = useDropzone({
+		onDrop,
+		maxSize,
+		minSize: 0,
+		maxFiles: 1,
 
-			accept: {
-				"image/png": [],
-				"image/jpg": [],
-				"image/jpeg": [],
-			},
-		});
-	const isFileTooLarge =
-		fileRejections.length > 0 &&
-		fileRejections[0] &&
-		fileRejections[0].file.size > maxSize;
+		accept: {
+			"image/png": [],
+			"image/jpg": [],
+			"image/jpeg": [],
+		},
+	});
+	const isFileTooLarge = fileRejections.length > 0 && fileRejections[0] && fileRejections[0].file.size > maxSize;
 
 	const handleUpload = async (): Promise<void> => {
 		if (!previewImage) return;
@@ -136,19 +128,9 @@ export const UploadAvatar: FC<Props> = ({
 
 				<div className="absolute inset-0 flex items-center justify-center overflow-hidden rounded-full">
 					{previewImage ? (
-						<Image
-							src={previewImage.preview}
-							alt="profile picture"
-							layout="fill"
-							objectFit="cover"
-						/>
+						<Image src={previewImage.preview} alt="profile picture" layout="fill" objectFit="cover" />
 					) : image ? (
-						<Image
-							src={image}
-							alt="profile picture"
-							layout="fill"
-							objectFit="cover"
-						/>
+						<Image src={image} alt="profile picture" layout="fill" objectFit="cover" />
 					) : (
 						<DefaultAvatar />
 					)}
@@ -178,9 +160,7 @@ export const UploadAvatar: FC<Props> = ({
 				</div>
 			</div>
 
-			{uploadImage.isLoading && (
-				<UploadProgress progress={uploadProgress} />
-			)}
+			{uploadImage.isLoading && <UploadProgress progress={uploadProgress} />}
 
 			{previewImage && !uploadImage.isLoading && !isFileTooLarge && (
 				<button

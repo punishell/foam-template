@@ -5,6 +5,7 @@
 /* -------------------------------------------------------------------------- */
 
 import Image from "next/image";
+import { useMediaQuery } from "usehooks-ts";
 
 /* -------------------------------------------------------------------------- */
 /*                             Internal Dependency                            */
@@ -14,19 +15,11 @@ import { type LeaderBoardItemProps } from "./types";
 import { truncate } from "@/lib/utils";
 import { AfroProfile } from "../../common/afro-profile";
 
-export const FirstPlace = ({
-	_id,
-	name,
-	score,
-	avatar,
-}: LeaderBoardItemProps): React.ReactElement => {
-	return (
+export const FirstPlace = ({ _id, name, score, avatar }: LeaderBoardItemProps): React.ReactElement => {
+	const tab = useMediaQuery("(min-width: 640px)");
+	return tab ? (
 		<div className="relative">
-			<svg
-				fill="none"
-				preserveAspectRatio="xMaxYMid meet"
-				viewBox="0 0 247 68"
-			>
+			<svg fill="none" preserveAspectRatio="xMaxYMid meet" viewBox="0 0 247 68">
 				<path
 					fill="url(#paint0_linear_4642_135011)"
 					d="M246.5 18.755v31.49c0 7.796-5.8 14.238-13.556 14.738C216.244 66.06 182.83 67.5 123.5 67.5c-59.33 0-92.744-1.44-109.444-2.517C6.3 64.483.5 58.04.5 50.245v-31.49C.5 10.42 7.056 3.585 15.38 3.29 42.27 2.337 97.454.5 123.5.5c26.047 0 81.231 1.837 108.119 2.79 8.325.295 14.881 7.131 14.881 15.465z"
@@ -66,26 +59,25 @@ export const FirstPlace = ({
 				</defs>
 			</svg>
 			<div className="absolute inset-0 flex items-center gap-2 p-3 pl-1">
-				<AfroProfile
-					src={avatar}
-					score={Math.round(score)}
-					size="sm"
-					url={`talents/${_id}`}
-				/>
+				<AfroProfile src={avatar} score={Math.round(score)} size="sm" url={`talents/${_id}`} />
 				<div className="grow">
-					<span className="text-base text-[#ECFCE5]">
-						{truncate(name, 15)}
-					</span>
+					<span className="text-base text-[#ECFCE5]">{truncate(name, 15)}</span>
 					<div className="flex items-center justify-between gap-2">
-						<span className="text-sm text-[#F2F4F5]">
-							Afroscore: {Math.round(score)}
-						</span>
-						<Image
-							src="/icons/medal-1.png"
-							width={28}
-							height={28}
-							alt=""
-						/>
+						<span className="text-sm text-[#F2F4F5]">Afroscore: {Math.round(score)}</span>
+						<Image src="/icons/medal-1.png" width={28} height={28} alt="" />
+					</div>
+				</div>
+			</div>
+		</div>
+	) : (
+		<div className="relative bg-mobile-l1 border-[#FFC462] border rounded-2xl h-[67px] flex items-center justify-center">
+			<div className="flex items-center gap-2 p-3 pl-1 w-full">
+				<AfroProfile src={avatar} score={Math.round(score)} size="sm" url={`talents/${_id}`} />
+				<div className="grow">
+					<span className="text-base text-[#ECFCE5]">{truncate(name, 15)}</span>
+					<div className="flex items-center justify-between gap-2">
+						<span className="text-sm text-[#F2F4F5]">Afroscore: {Math.round(score)}</span>
+						<Image src="/icons/medal-1.png" width={28} height={28} alt="" />
 					</div>
 				</div>
 			</div>

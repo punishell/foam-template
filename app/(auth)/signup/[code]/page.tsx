@@ -67,11 +67,12 @@ export default function SignupReferralPage(): React.JSX.Element {
 				)}
 			</Container>
 			{!isLoading && !errorMsg && (
-				<Container className="flex h-full w-full max-w-2xl flex-col items-center justify-center gap-6">
+				<Container className="mt-[42px] pb-[42px] sm:mt-0 flex h-auto sm:h-full w-full max-w-2xl flex-col items-center justify-center gap-6">
 					<div className="flex flex-col items-center gap-2 text-center text-white">
-						<h3 className="font-sans text-3xl font-bold">
-							Create Your Account
-						</h3>
+						<h3 className="font-sans text-3xl font-bold">Create Your Account</h3>
+						<p className="font-sans text-base leading-normal tracking-tight">
+							Join Afrofund to Connect Globally
+						</p>
 					</div>
 					<SignupReferralForm referralCode={referralCode} />
 				</Container>
@@ -82,16 +83,13 @@ export default function SignupReferralPage(): React.JSX.Element {
 				</div>
 			)}
 			{!isLoading && errorMsg && (
-				<Container className="bg-[rgba(0, 124, 91, 0.20)] mx-auto mt-28 flex w-full max-w-xl flex-col items-center justify-center gap-2  rounded-2xl border border-white border-opacity-20 bg-[rgba(0,124,91,0.20)] p-8 px-[40px] py-10 text-center text-white backdrop-blur-md">
+				<Container className="mx-auto mt-28 flex w-full max-w-xl flex-col items-center justify-center gap-2  rounded-2xl border border-white border-opacity-20 bg-[rgba(0,124,91,0.20)] py-6 px-4 sm:px-[40px] sm:py-10 text-center text-white backdrop-blur-md">
 					<div className="flex w-full max-w-[150px] items-center justify-center">
 						<Lottie animationData={warning} />
 					</div>
-					<h3 className="text-3xl font-bold">
-						Invalid Referral Code
-					</h3>
+					<h3 className="text-3xl font-bold">Invalid Referral Code</h3>
 					<h6 className="flex-wrap text-lg font-thin opacity-[0.8]">
-						You need a valid referral code to be able to sign up to
-						Afrofund.{" "}
+						You need a valid referral code to be able to sign up to Afrofund.{" "}
 					</h6>
 				</Container>
 			)}

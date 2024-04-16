@@ -24,44 +24,31 @@ export interface ChartDataProps {
 	yearly: TransformedData[];
 }
 
-export const WalletBalanceChart = ({
-	data,
-}: {
-	data: ChartDataProps;
-}): React.JSX.Element => {
+export const WalletBalanceChart = ({ data }: { data: ChartDataProps }): React.JSX.Element => {
 	const modifiedWeeklyData = [...data.weekly];
 	const modifiedMonthlyData = [...data.monthly];
 	const modifiedYearlyData = [...data.yearly];
 
 	if (modifiedWeeklyData.length > 0) {
-		const lastData = modifiedWeeklyData[
-			modifiedWeeklyData.length - 1
-		] as TransformedData;
+		const lastData = modifiedWeeklyData[modifiedWeeklyData.length - 1] as TransformedData;
 		const additionalDataPoint = { date: "", amt: lastData.amt };
 		modifiedWeeklyData.push(additionalDataPoint);
 	}
 
 	if (modifiedMonthlyData.length > 0) {
-		const lastData = modifiedMonthlyData[
-			modifiedMonthlyData.length - 1
-		] as TransformedData;
+		const lastData = modifiedMonthlyData[modifiedMonthlyData.length - 1] as TransformedData;
 		const additionalDataPoint = { date: "", amt: lastData.amt };
 		modifiedMonthlyData.push(additionalDataPoint);
 	}
 
 	if (modifiedYearlyData.length > 0) {
-		const lastData = modifiedYearlyData[
-			modifiedYearlyData.length - 1
-		] as TransformedData;
+		const lastData = modifiedYearlyData[modifiedYearlyData.length - 1] as TransformedData;
 		const additionalDataPoint = { date: "", amt: lastData.amt };
 		modifiedYearlyData.push(additionalDataPoint);
 	}
 
 	return (
-		<Tabs.Root
-			defaultValue="week"
-			className="flex flex-col gap-2 rounded-lg border border-line bg-white p-2"
-		>
+		<Tabs.Root defaultValue="week" className="flex flex-col gap-2 rounded-lg border border-line bg-white p-2">
 			<div className="flex items-center justify-between gap-2">
 				<span className="text-lg font-medium text-title">Balance</span>
 
@@ -88,29 +75,13 @@ export const WalletBalanceChart = ({
 			</div>
 			<div className="h-full">
 				<Tabs.Content value="week" className="h-full">
-					<Chart
-						data={modifiedWeeklyData}
-						dataKey="amt"
-						xAxisKey="date"
-						height="md"
-					/>
+					<Chart data={modifiedWeeklyData} dataKey="amt" xAxisKey="date" height="md" />
 				</Tabs.Content>
 				<Tabs.Content value="month" className="h-full">
-					<Chart
-						data={modifiedMonthlyData}
-						dataKey="amt"
-						xAxisKey="date"
-						height="md"
-						isMonth
-					/>
+					<Chart data={modifiedMonthlyData} dataKey="amt" xAxisKey="date" height="md" isMonth />
 				</Tabs.Content>
 				<Tabs.Content value="year" className="h-full">
-					<Chart
-						data={modifiedYearlyData}
-						dataKey="amt"
-						xAxisKey="date"
-						height="md"
-					/>
+					<Chart data={modifiedYearlyData} dataKey="amt" xAxisKey="date" height="md" />
 				</Tabs.Content>
 			</div>
 		</Tabs.Root>

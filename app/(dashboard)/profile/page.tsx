@@ -6,6 +6,7 @@
 
 import { type ReactElement, useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
+import { useMediaQuery } from "usehooks-ts";
 
 /* -------------------------------------------------------------------------- */
 /*                             Internal Dependency                            */
@@ -18,16 +19,14 @@ import { useUserState } from "@/lib/store/account";
 import { ProfileHeader } from "@/components/talent/profile/header";
 import { Bio } from "@/components/talent/profile/bio";
 import { PageLoading } from "@/components/common/page-loading";
+import { MobileProfileHeader } from "@/components/talent/profile/mobile-header";
 
 export default function ProfilePage(): ReactElement | null {
 	const router = useRouter();
 	const user = useUserState();
 	const talentId = String(user?._id);
-	const {
-		data: talentReviews,
-		isLoading,
-		refetch: FetchTalent,
-	} = useGetTalentReviewById(talentId, "1", "20", true);
+	const { data: talentReviews, isLoading, refetch: FetchTalent } = useGetTalentReviewById(talentId, "1", "20", true);
+	const tab = useMediaQuery("(min-width: 640px)");
 
 	useEffect(() => {
 		if (talentId) {
@@ -63,31 +62,41 @@ export default function ProfilePage(): ReactElement | null {
 	const reviews = talentReviews?.data ?? [];
 
 	return (
-		<div className="grid h-fit grid-cols-1 items-start gap-6 overflow-y-auto pb-4">
-			<ProfileHeader
-				_id={talent.id}
-				name={talent.name}
-				position={talent.position}
-				score={talent.score}
-				skills={talent.skills}
-				isOwnProfile
-				profileImage={talent.image}
-			/>
+		<div className="flex flex-col sm:grid h-full sm:h-fit sm:grid-cols-1 items-start sm:gap-6 overflow-y-auto sm:pb-4 sm-max:bg-white">
+			{tab ? (
+				<ProfileHeader
+					_id={talent.id}
+					name={talent.name}
+					position={talent.position}
+					score={talent.score}
+					skills={talent.skills}
+					isOwnProfile
+					profileImage={talent.image}
+				/>
+			) : (
+				<MobileProfileHeader
+					_id={talent.id}
+					name={talent.name}
+					position={talent.position}
+					score={talent.score}
+					skills={talent.skills}
+					isOwnProfile
+					profileImage={talent.image}
+				/>
+			)}
 
-			<div className="flex w-full gap-6">
+			<div className="flex w-full sm:gap-6 sm:flex-row flex-col">
 				<Bio body={talent.bio} />
 				<Achievements
-					achievements={talent.achievements?.map(
-						({ total, type, value }) => ({
-							type,
-							title: type,
-							total: Number(total),
-							value: parseInt(String(value), 10),
-						}),
-					)}
+					achievements={talent.achievements?.map(({ total, type, value }) => ({
+						type,
+						title: type,
+						total: Number(total),
+						value: parseInt(String(value), 10),
+					}))}
 				/>
 			</div>
-			<div className="w-full">
+			<div className="w-full h-auto">
 				<Reviews
 					reviews={
 						reviews

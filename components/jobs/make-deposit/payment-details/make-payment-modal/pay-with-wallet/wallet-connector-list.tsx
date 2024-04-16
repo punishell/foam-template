@@ -23,8 +23,7 @@ export const WalletConnectorList: FC = () => {
 		<div className="flex flex-col gap-6">
 			{/* @ts-expect-error -- Connector can't be used as types */}
 			{connectors.map((connector: Connector) => {
-				const isActive =
-					isConnected && activeConnector?.id === connector.id;
+				const isActive = isConnected && activeConnector?.id === connector.id;
 				const logo = WALLET_LOGO[connector.name];
 
 				return (
@@ -36,31 +35,19 @@ export const WalletConnectorList: FC = () => {
 							connect({ connector });
 						}}
 						className={`flex items-center justify-between rounded-2xl border border-[#DFDFE6] p-1 px-4 py-3 text-left duration-300 hover:border-primary hover:!border-opacity-30 ${
-							isActive
-								? "border-primary !border-opacity-60 bg-green-50"
-								: "border-[#DFDFE6]"
+							isActive ? "border-primary !border-opacity-60 bg-green-50" : "border-[#DFDFE6]"
 						}`}
 					>
 						<span className="flex w-full items-center gap-2">
 							<span>{connector.name}</span>
-							{isLoading &&
-								pendingConnector?.id === connector.id && (
-									<span className="animate-spin">
-										<Loader2 size={16} />
-									</span>
-								)}
-						</span>
-
-						<span>
-							{logo != null && (
-								<Image
-									src={logo}
-									width={20}
-									height={20}
-									alt=""
-								/>
+							{isLoading && pendingConnector?.id === connector.id && (
+								<span className="animate-spin">
+									<Loader2 size={16} />
+								</span>
 							)}
 						</span>
+
+						<span>{logo != null && <Image src={logo} width={20} height={20} alt="" />}</span>
 					</button>
 				);
 			})}

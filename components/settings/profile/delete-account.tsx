@@ -38,16 +38,11 @@ const DeleteAccount = (): ReactElement => {
 					<div className="flex flex-row gap-4 rounded-lg bg-yellow p-4">
 						<InfoIcon size={40} />
 						<div>
-							<p className="text-base font-bold text-title">
-								You’re Deleting Your Account
-							</p>
+							<p className="text-base font-bold text-title">You’re Deleting Your Account</p>
 							<p className="text-sm font-thin leading-5 text-title">
-								Deleting your account will permanently remove
-								all data associated with it, including projects,
-								APIs, and analytics. This action cannot be
-								undone. Please make sure you have downloaded any
-								necessary data or backups before proceeding with
-								account deletion.
+								Deleting your account will permanently remove all data associated with it, including
+								projects, APIs, and analytics. This action cannot be undone. Please make sure you have
+								downloaded any necessary data or backups before proceeding with account deletion.
 							</p>
 						</div>
 					</div>
@@ -62,11 +57,7 @@ const DeleteAccount = (): ReactElement => {
 							/>
 							I confirm my account deletion
 						</div>
-						<Button
-							variant="danger"
-							size="md"
-							disabled={!acceptedDelete}
-						>
+						<Button variant="danger" size="md" disabled={!acceptedDelete}>
 							Delete
 						</Button>
 					</div>

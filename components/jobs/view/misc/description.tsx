@@ -10,9 +10,7 @@ interface JobDescriptionProps {
 	description: string;
 }
 
-export const JobDescription = ({
-	description,
-}: JobDescriptionProps): ReactElement => {
+export const JobDescription = ({ description }: JobDescriptionProps): ReactElement => {
 	return (
 		<div className="flex w-full flex-col gap-2">
 			<h3 className="text-lg font-bold text-title">Job Description</h3>

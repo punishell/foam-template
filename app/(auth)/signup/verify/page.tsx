@@ -11,8 +11,7 @@ export default function SignupVerificationPage(): React.JSX.Element {
 			<div className="flex flex-col items-center gap-2 text-center text-white">
 				<h3 className="font-sans text-3xl font-bold">Verify Email</h3>
 				<p className="font-sans text-base">
-					A code has been sent to your email address. Enter it to
-					verify your email.
+					A code has been sent to your email address. Enter it to verify your email.
 				</p>
 			</div>
 			<SignupVerificationForm />

@@ -16,19 +16,10 @@ import moment from "moment";
 /*                             Internal Dependency                            */
 /* -------------------------------------------------------------------------- */
 
-import {
-	type TransformedData,
-	WalletBalanceChart,
-	type ChartDataProps,
-} from "@/components/wallet/chart";
+import { type TransformedData, WalletBalanceChart, type ChartDataProps } from "@/components/wallet/chart";
 import { WalletTransactions } from "@/components/wallet/transactions";
 import { WithdrawalModal } from "@/components/wallet/withdrawal-modal";
-import {
-	fetchWalletStats,
-	useGetActiveRPC,
-	useGetWalletDetails,
-	useGetWalletTxs,
-} from "@/lib/api/wallet";
+import { fetchWalletStats, useGetActiveRPC, useGetWalletDetails, useGetWalletTxs } from "@/lib/api/wallet";
 import { formatUsd } from "@/lib/utils";
 import Kyc from "@/components/kyc";
 
@@ -78,8 +69,7 @@ export default function WalletPage(): React.JSX.Element {
 	});
 	const { data: walletData } = useGetWalletDetails();
 	const wallets: WalletProps[] = walletData?.data.data.wallets ?? [];
-	const totalWalletBalance =
-		walletData?.data.data.totalWalletBalance ?? "0.00";
+	const totalWalletBalance = walletData?.data.data.totalWalletBalance ?? "0.00";
 	const {
 		data: walletTx,
 		refetch: fetchWalletTx,
@@ -110,17 +100,11 @@ export default function WalletPage(): React.JSX.Element {
 					usdValue: formatUsd(tx.usdValue),
 					status: tx.status,
 					transactionHash:
-						tx.responseData !== null &&
-						tx.responseData !== undefined
-							? JSON.parse(tx.responseData).data.tx
-									.transactionHash
+						tx.responseData !== null && tx.responseData !== undefined
+							? JSON.parse(tx.responseData).data.tx.transactionHash
 							: "",
 				}))
-				.sort(
-					(a, b) =>
-						new Date(b?.date).getTime() -
-						new Date(a?.date).getTime(),
-				),
+				.sort((a, b) => new Date(b?.date).getTime() - new Date(a?.date).getTime()),
 		[walletTx?.data?.data],
 	);
 
@@ -133,10 +117,7 @@ export default function WalletPage(): React.JSX.Element {
 
 		// ===== Weekly ===== //
 		const weeklyStats: TransformedData[] = response[0]
-			.sort(
-				(a: ChartData, b: ChartData) =>
-					new Date(a._id).getTime() - new Date(b._id).getTime(),
-			)
+			.sort((a: ChartData, b: ChartData) => new Date(a._id).getTime() - new Date(b._id).getTime())
 			.map((c: ChartData) => {
 				return {
 					date: moment(c._id).utc().format("ddd"),
@@ -148,10 +129,7 @@ export default function WalletPage(): React.JSX.Element {
 		// ===== Monthly ===== //
 
 		const monthlyStats = response[1]
-			.sort(
-				(a: ChartData, b: ChartData) =>
-					new Date(a._id).getTime() - new Date(b._id).getTime(),
-			)
+			.sort((a: ChartData, b: ChartData) => new Date(a._id).getTime() - new Date(b._id).getTime())
 			.map((c: ChartData) => {
 				return {
 					date: moment(c._id).utc().format("DD MMM"),
@@ -161,10 +139,7 @@ export default function WalletPage(): React.JSX.Element {
 
 		// ===== Monthly ===== //
 		const yearlyStats = response[2]
-			.sort(
-				(a: ChartData, b: ChartData) =>
-					new Date(a._id).getTime() - new Date(b._id).getTime(),
-			)
+			.sort((a: ChartData, b: ChartData) => new Date(a._id).getTime() - new Date(b._id).getTime())
 			.map((c: ChartData) => {
 				return {
 					date: moment(c._id).utc().format("MMM YY"),
@@ -213,13 +188,9 @@ export default function WalletPage(): React.JSX.Element {
 					<div className=" grid grid-rows-2 items-center gap-6">
 						<div className="flex w-full items-center justify-between gap-2 rounded-lg border border-primary bg-[#ECFCE5] px-6 py-8 text-primary">
 							<div className="flex flex-col gap-2">
-								<span className="text-sm">
-									Total Wallet Balance
-								</span>
+								<span className="text-sm">Total Wallet Balance</span>
 								<span className="text-3xl font-semibold">
-									{formatUsd(
-										parseFloat(totalWalletBalance) ?? 0.0,
-									)}
+									{formatUsd(parseFloat(totalWalletBalance) ?? 0.0)}
 								</span>
 							</div>
 							<Button
@@ -245,60 +216,36 @@ export default function WalletPage(): React.JSX.Element {
 									borderColor: "#5538EE",
 								}}
 							>
-								<Image
-									src={getWalletIcon(
-										wallets[1] as WalletProps,
-									)}
-									width={75}
-									height={75}
-									alt=""
-								/>
+								<Image src={getWalletIcon(wallets[1] as WalletProps)} width={75} height={75} alt="" />
 								<div className="flex flex-col gap-1">
 									<div className="flex flex-col gap-1">
 										<span className="text-sm text-body">
-											{wallets?.[1]?.coin.toUpperCase()}{" "}
-											Wallet Balance
+											{wallets?.[1]?.coin.toUpperCase()} Wallet Balance
 										</span>
 										<span className="text-2xl font-semibold text-title">
-											{wallets[0]?.amount.toFixed(2) ??
-												"0.00"}
+											{wallets[0]?.amount.toFixed(2) ?? "0.00"}
 										</span>
 									</div>
 
 									<span className="mt-auto text-sm text-body">
-										{formatUsd(
-											(wallets[1]?.usdValue as number) ??
-												0.0,
-										)}
+										{formatUsd((wallets[1]?.usdValue as number) ?? 0.0)}
 									</span>
 								</div>
 							</div>
 							<div className="flex h-full w-full items-center gap-2 rounded-lg border border-[#A05E03] bg-[#FEF4E3] p-4">
-								<Image
-									src={getWalletIcon(
-										wallets[0] as WalletProps,
-									)}
-									width={75}
-									height={75}
-									alt=""
-								/>
+								<Image src={getWalletIcon(wallets[0] as WalletProps)} width={75} height={75} alt="" />
 								<div className="flex flex-col gap-1">
 									<div className="flex flex-col gap-1">
 										<span className="text-sm text-body">
-											{wallets[0]?.coin.toUpperCase()}{" "}
-											Wallet Balance
+											{wallets[0]?.coin.toUpperCase()} Wallet Balance
 										</span>
 										<span className="text-2xl font-semibold text-title">
-											{wallets[0]?.amount.toFixed(2) ??
-												"0.00"}
+											{wallets[0]?.amount.toFixed(2) ?? "0.00"}
 										</span>
 									</div>
 
 									<span className="mt-auto text-sm text-body">
-										{formatUsd(
-											(wallets[0]?.usdValue as number) ??
-												0.0,
-										)}
+										{formatUsd((wallets[0]?.usdValue as number) ?? 0.0)}
 									</span>
 								</div>
 							</div>
@@ -311,10 +258,7 @@ export default function WalletPage(): React.JSX.Element {
 						data={walletTransactions}
 						page={parseInt(walletTx?.data?.data?.page ?? "1", 10)}
 						// limit={parseInt(walletTx?.data?.data?.limit ?? "10", 10)}
-						pageSize={parseInt(
-							walletTx?.data?.data?.pages ?? "1",
-							10,
-						)}
+						pageSize={parseInt(walletTx?.data?.data?.pages ?? "1", 10)}
 						onPageChange={setPagination}
 						loading={!walletFetched && walletIsFetching}
 					/>

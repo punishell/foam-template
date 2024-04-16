@@ -8,6 +8,7 @@ import { type ReactElement } from "react";
 import Rating from "react-rating";
 import { Star } from "lucide-react";
 import { format } from "date-fns";
+import { useMediaQuery } from "usehooks-ts";
 
 /* -------------------------------------------------------------------------- */
 /*                             Internal Dependency                            */
@@ -18,21 +19,15 @@ import { useUserState } from "@/lib/store/account";
 import { sentenceCase } from "@/lib/utils";
 import { type ReviewProps } from "./types";
 
-export const Review = ({
-	body,
-	title,
-	rating,
-	user,
-	date,
-}: ReviewProps): ReactElement => {
+export const Review = ({ body, title, rating, user, date }: ReviewProps): ReactElement => {
 	const { _id: loggedInUser } = useUserState();
 	const MAX_LEN = 150;
-	const navigateUrl =
-		loggedInUser === user._id ? "/profile" : `/talents/${user?._id}`;
+	const navigateUrl = loggedInUser === user._id ? "/profile" : `/talents/${user?._id}`;
+	const tab = useMediaQuery("(min-width: 640px)");
 	return (
 		<div
 			className="flex min-h-full w-full cursor-grab select-none flex-col gap-4 rounded-2xl bg-white p-6"
-			style={{ maxWidth: "50%" }}
+			style={{ maxWidth: tab ? "50%" : "95%" }}
 		>
 			<div
 				className="flex max-w-[100%] flex-1 flex-col gap-4 break-all"
@@ -54,20 +49,11 @@ export const Review = ({
 			<div className="flex items-center justify-between">
 				<div className="grid grid-cols-3 gap-2">
 					<div className="relative flex">
-						<AfroProfile
-							size="sm"
-							score={user.afroScore as number}
-							src={user?.avatar}
-							url={navigateUrl}
-						/>
+						<AfroProfile size="sm" score={user.afroScore as number} src={user?.avatar} url={navigateUrl} />
 					</div>
 					<div className="col-span-2 my-auto flex flex-col">
-						<span className="text-sm font-medium text-title">
-							{user.name}
-						</span>
-						<span className="text-sm text-body">
-							{sentenceCase(user.title)}
-						</span>
+						<span className="text-sm font-medium text-title">{user.name}</span>
+						<span className="text-sm text-body">{sentenceCase(user.title)}</span>
 					</div>
 				</div>
 				{/* @ts-expect-error --- Types Error */}

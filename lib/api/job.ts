@@ -29,9 +29,7 @@ interface AttachDeliverablesToJobParams {
 	deliverables: string[];
 }
 
-async function postAttachDeliverablesToJob(
-	params: AttachDeliverablesToJobParams,
-): Promise<unknown> {
+async function postAttachDeliverablesToJob(params: AttachDeliverablesToJobParams): Promise<unknown> {
 	const deliverables = params.deliverables.map((deliverable) => ({
 		name: deliverable,
 		description: deliverable,
@@ -58,10 +56,7 @@ export function useAttachDeliverablesToJob(): UseMutationResult<
 		mutationFn: postAttachDeliverablesToJob,
 		mutationKey: ["assign-job-deliverables"],
 		onError: (error: ApiError) => {
-			toast.error(
-				error?.response?.data.message ??
-					"Assigning deliverables failed",
-			);
+			toast.error(error?.response?.data.message ?? "Assigning deliverables failed");
 		},
 		onSuccess: (_, { jobId }) => {
 			void queryClient.refetchQueries({
@@ -93,12 +88,7 @@ async function postCreateJob(params: CreateJobParams): Promise<Job> {
 	return res.data.data;
 }
 
-export function useCreateJob(): UseMutationResult<
-	Job,
-	ApiError,
-	CreateJobParams,
-	unknown
-> {
+export function useCreateJob(): UseMutationResult<Job, ApiError, CreateJobParams, unknown> {
 	const assignJobDeliverables = useAttachDeliverablesToJob();
 	const createFeed = useCreateFeed();
 
@@ -108,10 +98,7 @@ export function useCreateJob(): UseMutationResult<
 		onError: (error: ApiError) => {
 			toast.error(error?.response?.data.message ?? "An error occurred");
 		},
-		onSuccess: async (
-			{ _id, name, isPrivate, description, creator },
-			{ deliverables = [] },
-		) => {
+		onSuccess: async ({ _id, name, isPrivate, description, creator }, { deliverables = [] }) => {
 			assignJobDeliverables.mutate({
 				jobId: _id,
 				deliverables,
@@ -163,9 +150,7 @@ async function getJobs(params: GetJobsParams): Promise<GetJobsResponse> {
 	return res.data.data;
 }
 
-export function useGetJobs(
-	params: GetJobsParams,
-): UseQueryResult<GetJobsResponse, ApiError> {
+export function useGetJobs(params: GetJobsParams): UseQueryResult<GetJobsResponse, ApiError> {
 	return useQuery({
 		// eslint-disable-next-line @typescript-eslint/promise-function-async
 		queryFn: () => getJobs(params),
@@ -185,16 +170,12 @@ interface GetJobByIdParams {
 
 interface GetJobByIdResponse extends Job {}
 
-async function getJobById(
-	params: GetJobByIdParams,
-): Promise<GetJobByIdResponse> {
+async function getJobById(params: GetJobByIdParams): Promise<GetJobByIdResponse> {
 	const res = await axios.get(`/collection/${params.jobId}`);
 	return res.data.data;
 }
 
-export function useGetJobById(
-	params: GetJobByIdParams,
-): UseQueryResult<GetJobByIdResponse, ApiError> {
+export function useGetJobById(params: GetJobByIdParams): UseQueryResult<GetJobByIdResponse, ApiError> {
 	return useQuery({
 		queryFn: async () => getJobById(params),
 		queryKey: ["get-job-by-id", params],
@@ -228,12 +209,7 @@ async function postUpdateJob(params: UpdateJobParams): Promise<Job> {
 	return res.data.data;
 }
 
-export function useUpdateJob(): UseMutationResult<
-	Job,
-	ApiError,
-	UpdateJobParams,
-	unknown
-> {
+export function useUpdateJob(): UseMutationResult<Job, ApiError, UpdateJobParams, unknown> {
 	const updateJobDeliverables = useAttachDeliverablesToJob();
 
 	return useMutation({
@@ -251,10 +227,7 @@ export function useUpdateJob(): UseMutationResult<
 				},
 				{
 					onError: (error: ApiError) => {
-						toast.error(
-							error?.response?.data.message ??
-								"An error occurred updating deliverables",
-						);
+						toast.error(error?.response?.data.message ?? "An error occurred updating deliverables");
 					},
 				},
 			);
@@ -274,9 +247,7 @@ interface MarkDeliverableAsCompleteParams {
 	meta: Record<string, any>;
 }
 
-async function postToggleDeliverableCompletion(
-	params: MarkDeliverableAsCompleteParams,
-): Promise<ApiResponse> {
+async function postToggleDeliverableCompletion(params: MarkDeliverableAsCompleteParams): Promise<ApiResponse> {
 	const res = await axios.patch(`/collection/${params.deliverableId}`, {
 		progress: params.isComplete ? 100 : 0,
 		meta: params.meta,
@@ -288,12 +259,7 @@ export function useToggleDeliverableCompletion({
 	description,
 }: {
 	description: string;
-}): UseMutationResult<
-	ApiResponse,
-	ApiError,
-	MarkDeliverableAsCompleteParams,
-	unknown
-> {
+}): UseMutationResult<ApiResponse, ApiError, MarkDeliverableAsCompleteParams, unknown> {
 	const createFeed = useCreateFeed();
 	const queryClient = useQueryClient();
 
@@ -301,21 +267,9 @@ export function useToggleDeliverableCompletion({
 		mutationFn: postToggleDeliverableCompletion,
 		mutationKey: ["mark-deliverable-as-complete"],
 		onError: (error: ApiError) => {
-			toast.error(
-				error?.response?.data.message ??
-					"Marking deliverable as complete failed",
-			);
+			toast.error(error?.response?.data.message ?? "Marking deliverable as complete failed");
 		},
-		onSuccess: async (
-			_,
-			{
-				completedDeliverables,
-				jobId,
-				jobCreator,
-				totalDeliverables,
-				isComplete,
-			},
-		) => {
+		onSuccess: async (_, { completedDeliverables, jobId, jobCreator, totalDeliverables, isComplete }) => {
 			await Promise.all([
 				queryClient.refetchQueries({
 					queryKey: ["get-jobs", { category: "assigned" }],
@@ -325,9 +279,7 @@ export function useToggleDeliverableCompletion({
 				}),
 			]);
 			// if (isComplete) {
-			const completedD = isComplete
-				? completedDeliverables + 1
-				: completedDeliverables - 1;
+			const completedD = isComplete ? completedDeliverables + 1 : completedDeliverables - 1;
 			createFeed.mutate({
 				type: FEED_TYPES.JOB_DELIVERABLE_UPDATE,
 				owners: [jobCreator],
@@ -341,9 +293,7 @@ export function useToggleDeliverableCompletion({
 				},
 			});
 			// }
-			toast.success(
-				`Deliverable marked as ${isComplete ? "complete" : "incomplete"} successfully`,
-			);
+			toast.success(`Deliverable marked as ${isComplete ? "complete" : "incomplete"} successfully`);
 		},
 	});
 }
@@ -354,9 +304,7 @@ interface UpdateJobProgressParams {
 	progress: number;
 }
 
-async function postUpdateJobProgress(
-	params: UpdateJobProgressParams,
-): Promise<ApiResponse> {
+async function postUpdateJobProgress(params: UpdateJobProgressParams): Promise<ApiResponse> {
 	const res = await axios.patch(`/collection/${params.jobId}`, {
 		progress: params.progress,
 	});
@@ -376,15 +324,10 @@ export function useUpdateJobProgress({
 		mutationFn: postUpdateJobProgress,
 		mutationKey: ["update-job-progress"],
 		onError: (error: ApiError) => {
-			toast.error(
-				error?.response?.data.message ?? "Updating job progress failed",
-			);
+			toast.error(error?.response?.data.message ?? "Updating job progress failed");
 		},
 		onSuccess: async (_, { jobId, progress }) => {
-			await Promise.all([
-				jobsQuery.refetch(),
-				queryClient.refetchQueries(["get-job-by-id", { jobId }]),
-			]);
+			await Promise.all([jobsQuery.refetch(), queryClient.refetchQueries(["get-job-by-id", { jobId }])]);
 			if (creatorId && progress === 100) {
 				createFeed.mutate({
 					owners: [creatorId],
@@ -408,21 +351,14 @@ interface MarkJobAsCompleteParams {
 	talentId?: string;
 }
 
-async function postMarkJobAsComplete(
-	params: MarkJobAsCompleteParams,
-): Promise<ApiResponse> {
+async function postMarkJobAsComplete(params: MarkJobAsCompleteParams): Promise<ApiResponse> {
 	const res = await axios.patch(`/collection/${params.jobId}`, {
 		status: "completed",
 	});
 	return res.data.data;
 }
 
-export function useMarkJobAsComplete(): UseMutationResult<
-	ApiResponse,
-	ApiError,
-	MarkJobAsCompleteParams,
-	unknown
-> {
+export function useMarkJobAsComplete(): UseMutationResult<ApiResponse, ApiError, MarkJobAsCompleteParams, unknown> {
 	const queryClient = useQueryClient();
 	const jobsQuery = useGetJobs({ category: "assigned" });
 	// const createFeed = useCreateFeed();
@@ -431,10 +367,7 @@ export function useMarkJobAsComplete(): UseMutationResult<
 		mutationFn: postMarkJobAsComplete,
 		mutationKey: ["mark-job-as-complete"],
 		onError: (error: ApiError) => {
-			toast.error(
-				error?.response?.data.message ??
-					"Marking job as complete failed",
-			);
+			toast.error(error?.response?.data.message ?? "Marking job as complete failed");
 		},
 		onSuccess: async (_, { jobId }) => {
 			await jobsQuery.refetch();
@@ -452,9 +385,7 @@ interface CreateJobReviewParams {
 	recipientId: string;
 }
 
-async function postCreateJobReview(
-	params: CreateJobReviewParams,
-): Promise<ApiResponse> {
+async function postCreateJobReview(params: CreateJobReviewParams): Promise<ApiResponse> {
 	const res = await axios.post(`/reviews`, {
 		review: params.review,
 		rating: params.rating,
@@ -464,12 +395,7 @@ async function postCreateJobReview(
 	return res.data.data;
 }
 
-export function useCreateJobReview(): UseMutationResult<
-	ApiResponse,
-	ApiError,
-	CreateJobReviewParams,
-	unknown
-> {
+export function useCreateJobReview(): UseMutationResult<ApiResponse, ApiError, CreateJobReviewParams, unknown> {
 	const queryClient = useQueryClient();
 	const createFeed = useCreateFeed();
 	return useMutation({
@@ -503,9 +429,7 @@ interface ReleaseJobPaymentParams {
 	owner?: string;
 }
 
-async function postReleaseJobPayment(
-	params: ReleaseJobPaymentParams,
-): Promise<ApiResponse> {
+async function postReleaseJobPayment(params: ReleaseJobPaymentParams): Promise<ApiResponse> {
 	const res = await axios.post(`/payment/release`, {
 		collection: params.jobId,
 		amount: params.amount,
@@ -513,12 +437,7 @@ async function postReleaseJobPayment(
 	return res.data.data;
 }
 
-export function useReleaseJobPayment(): UseMutationResult<
-	ApiResponse,
-	ApiError,
-	ReleaseJobPaymentParams,
-	unknown
-> {
+export function useReleaseJobPayment(): UseMutationResult<ApiResponse, ApiError, ReleaseJobPaymentParams, unknown> {
 	const queryClient = useQueryClient();
 	const jobsQuery = useGetJobs({ category: "assigned" });
 	const createFeed = useCreateFeed();
@@ -553,9 +472,7 @@ interface InviteTalentToJobParams {
 	talentId: string;
 }
 
-async function postInviteTalentToJob(
-	params: InviteTalentToJobParams,
-): Promise<ApiResponse> {
+async function postInviteTalentToJob(params: InviteTalentToJobParams): Promise<ApiResponse> {
 	const res = await axios.post(`/invite`, {
 		collection: params.jobId,
 		recipient: params.talentId,
@@ -575,10 +492,7 @@ export function useInviteTalentToJob({
 		mutationFn: postInviteTalentToJob,
 		mutationKey: ["invite-talent-to-private-job"],
 		onError: (error: ApiError) => {
-			toast.error(
-				error?.response?.data.message ??
-					"An error occurred inviting talent",
-			);
+			toast.error(error?.response?.data.message ?? "An error occurred inviting talent");
 		},
 		onSuccess: () => {
 			if (!job.isPrivate) {
@@ -609,19 +523,12 @@ interface CancelJobInviteParams {
 	inviteId: string;
 }
 
-async function postCancelJobInvite(
-	params: CancelJobInviteParams,
-): Promise<ApiResponse> {
+async function postCancelJobInvite(params: CancelJobInviteParams): Promise<ApiResponse> {
 	const res = await axios.post(`/invite/${params.inviteId}/cancel`);
 	return res.data.data;
 }
 
-export function useCancelJobInvite(): UseMutationResult<
-	ApiResponse,
-	ApiError,
-	CancelJobInviteParams,
-	unknown
-> {
+export function useCancelJobInvite(): UseMutationResult<ApiResponse, ApiError, CancelJobInviteParams, unknown> {
 	const queryClient = useQueryClient();
 	return useMutation({
 		mutationFn: postCancelJobInvite,
@@ -641,9 +548,7 @@ interface AcceptPrivateJobInviteParams {
 	inviteId: string;
 }
 
-async function postAcceptPrivateJobInvite(
-	params: AcceptPrivateJobInviteParams,
-): Promise<ApiResponse> {
+async function postAcceptPrivateJobInvite(params: AcceptPrivateJobInviteParams): Promise<ApiResponse> {
 	const res = await axios.post(`/invite/${params.inviteId}/accept`);
 	return res.data.data;
 }
@@ -671,9 +576,7 @@ interface DeclinePrivateJobInviteParams {
 	inviteId: string;
 }
 
-async function postDeclinePrivateJobInvite(
-	params: DeclinePrivateJobInviteParams,
-): Promise<ApiResponse> {
+async function postDeclinePrivateJobInvite(params: DeclinePrivateJobInviteParams): Promise<ApiResponse> {
 	const res = await axios.post(`/invite/${params.inviteId}/decline`);
 	return res.data.data;
 }
@@ -767,9 +670,7 @@ export interface PostJobPaymentDetailsResponse {
 	chainId: number;
 }
 
-async function postJobPaymentDetails(
-	params: PostJobPaymentDetailsParams,
-): Promise<PostJobPaymentDetailsResponse> {
+async function postJobPaymentDetails(params: PostJobPaymentDetailsParams): Promise<PostJobPaymentDetailsResponse> {
 	const res = await axios.post(`/payment`, {
 		coin: params.coin,
 		collection: params.jobId,
@@ -799,9 +700,7 @@ interface ConfirmJobPaymentParams {
 	delay?: number;
 }
 
-async function postConfirmJobPayment(
-	params: ConfirmJobPaymentParams,
-): Promise<ApiResponse> {
+async function postConfirmJobPayment(params: ConfirmJobPaymentParams): Promise<ApiResponse> {
 	await new Promise((resolve): void => {
 		setTimeout(resolve, params.delay ?? 0);
 	});
@@ -811,12 +710,7 @@ async function postConfirmJobPayment(
 	return res.data.data;
 }
 
-export function useConfirmJobPayment(): UseMutationResult<
-	ApiResponse,
-	ApiError,
-	ConfirmJobPaymentParams,
-	unknown
-> {
+export function useConfirmJobPayment(): UseMutationResult<ApiResponse, ApiError, ConfirmJobPaymentParams, unknown> {
 	return useMutation({
 		mutationFn: postConfirmJobPayment,
 		mutationKey: ["confirm-job-payment"],
@@ -837,12 +731,7 @@ async function postDeleteJob(params: DeleteJobParams): Promise<Job> {
 	return res.data.data;
 }
 
-export function useDeleteJob(): UseMutationResult<
-	Job,
-	ApiError,
-	DeleteJobParams,
-	unknown
-> {
+export function useDeleteJob(): UseMutationResult<Job, ApiError, DeleteJobParams, unknown> {
 	return useMutation({
 		mutationFn: postDeleteJob,
 		mutationKey: ["delete-job"],
@@ -864,9 +753,7 @@ interface RequestJobCancellationParams {
 	explanation?: string;
 }
 
-async function requestJobCancellation(
-	params: RequestJobCancellationParams,
-): Promise<ApiResponse> {
+async function requestJobCancellation(params: RequestJobCancellationParams): Promise<ApiResponse> {
 	const res = await axios.post(`/collection`, {
 		type: params.type,
 		name: params.reason,
@@ -881,12 +768,7 @@ export function useRequestJobCancellation({
 	talentId,
 }: {
 	talentId: string;
-}): UseMutationResult<
-	ApiResponse,
-	ApiError,
-	RequestJobCancellationParams,
-	unknown
-> {
+}): UseMutationResult<ApiResponse, ApiError, RequestJobCancellationParams, unknown> {
 	const queryClient = useQueryClient();
 	const createFeed = useCreateFeed();
 
@@ -894,10 +776,7 @@ export function useRequestJobCancellation({
 		mutationFn: requestJobCancellation,
 		mutationKey: ["request-job-cancellation"],
 		onError: (error: ApiError) => {
-			toast.error(
-				error?.response?.data.message ??
-					"Error requesting job cancellation",
-			);
+			toast.error(error?.response?.data.message ?? "Error requesting job cancellation");
 		},
 		onSuccess: (_, { jobId }) => {
 			void queryClient.refetchQueries({
@@ -926,9 +805,7 @@ interface AcceptJobCancellationParams {
 	recipientId: string;
 }
 
-async function acceptJobCancellation(
-	params: AcceptJobCancellationParams,
-): Promise<ApiResponse> {
+async function acceptJobCancellation(params: AcceptJobCancellationParams): Promise<ApiResponse> {
 	let res;
 
 	res = await axios.post(`/reviews`, {
@@ -963,10 +840,7 @@ export function useAcceptJobCancellation(): UseMutationResult<
 		mutationFn: acceptJobCancellation,
 		mutationKey: ["accept-job-cancellation"],
 		onError: (error: ApiError) => {
-			toast.error(
-				error?.response?.data.message ??
-					"Error accepting job cancellation",
-			);
+			toast.error(error?.response?.data.message ?? "Error accepting job cancellation");
 		},
 		onSuccess: async (_, { jobId, recipientId, rating, review }) => {
 			const jobRefetch = queryClient.refetchQueries({
@@ -1006,9 +880,7 @@ interface RequestReviewChangeParams {
 	reason: string;
 }
 
-async function requestReviewChange(
-	params: RequestReviewChangeParams,
-): Promise<ApiResponse> {
+async function requestReviewChange(params: RequestReviewChangeParams): Promise<ApiResponse> {
 	const res = await axios.post(`/collection`, {
 		status: "pending",
 		parent: params.jobId,
@@ -1024,12 +896,7 @@ export function useRequestReviewChange({
 	recipientId,
 }: {
 	recipientId: string;
-}): UseMutationResult<
-	ApiResponse,
-	ApiError,
-	RequestReviewChangeParams,
-	unknown
-> {
+}): UseMutationResult<ApiResponse, ApiError, RequestReviewChangeParams, unknown> {
 	const queryClient = useQueryClient();
 	const createFeed = useCreateFeed();
 
@@ -1037,10 +904,7 @@ export function useRequestReviewChange({
 		mutationFn: requestReviewChange,
 		mutationKey: ["request-review-change"],
 		onError: (error: ApiError) => {
-			toast.error(
-				error?.response?.data.message ??
-					"Error requesting review change",
-			);
+			toast.error(error?.response?.data.message ?? "Error requesting review change");
 		},
 		onSuccess: async (_, { jobId }) => {
 			await queryClient.refetchQueries({
@@ -1069,9 +933,7 @@ interface AcceptReviewChangeParams {
 }
 
 // this basically deletes the review, sets all deliverables to 0
-async function acceptReviewChange(
-	params: AcceptReviewChangeParams,
-): Promise<ApiResponse> {
+async function acceptReviewChange(params: AcceptReviewChangeParams): Promise<ApiResponse> {
 	let res;
 
 	res = await axios.delete(`/reviews/${params.reviewId}`);
@@ -1100,12 +962,7 @@ export function useAcceptReviewChange({
 }: {
 	jobId: string;
 	recipientId: string;
-}): UseMutationResult<
-	ApiResponse,
-	ApiError,
-	AcceptReviewChangeParams,
-	unknown
-> {
+}): UseMutationResult<ApiResponse, ApiError, AcceptReviewChangeParams, unknown> {
 	const queryClient = useQueryClient();
 	const createFeed = useCreateFeed();
 
@@ -1113,10 +970,7 @@ export function useAcceptReviewChange({
 		mutationFn: acceptReviewChange,
 		mutationKey: ["accept-review-change"],
 		onError: (error: ApiError) => {
-			toast.error(
-				error?.response?.data.message ??
-					"Error accepting review change",
-			);
+			toast.error(error?.response?.data.message ?? "Error accepting review change");
 		},
 		onSuccess: async () => {
 			await queryClient.refetchQueries({
@@ -1142,15 +996,10 @@ interface DeclineReviewChangeParams {
 	reviewChangeRequestId: string;
 }
 
-async function declineReviewChange(
-	params: DeclineReviewChangeParams,
-): Promise<ApiResponse> {
-	const res = await axios.patch(
-		`/collection/${params.reviewChangeRequestId}`,
-		{
-			status: "completed",
-		},
-	);
+async function declineReviewChange(params: DeclineReviewChangeParams): Promise<ApiResponse> {
+	const res = await axios.patch(`/collection/${params.reviewChangeRequestId}`, {
+		status: "completed",
+	});
 
 	return res.data.data;
 }
@@ -1161,12 +1010,7 @@ export function useDeclineReviewChange({
 }: {
 	jobId: string;
 	recipientId: string;
-}): UseMutationResult<
-	ApiResponse,
-	ApiError,
-	DeclineReviewChangeParams,
-	unknown
-> {
+}): UseMutationResult<ApiResponse, ApiError, DeclineReviewChangeParams, unknown> {
 	const queryClient = useQueryClient();
 	const createFeed = useCreateFeed();
 
@@ -1174,10 +1018,7 @@ export function useDeclineReviewChange({
 		mutationFn: declineReviewChange,
 		mutationKey: ["decline-review-change"],
 		onError: (error: ApiError) => {
-			toast.error(
-				error?.response?.data.message ??
-					"Error declining review change",
-			);
+			toast.error(error?.response?.data.message ?? "Error declining review change");
 		},
 		onSuccess: async () => {
 			await queryClient.refetchQueries({

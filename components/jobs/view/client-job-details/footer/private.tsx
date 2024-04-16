@@ -18,22 +18,13 @@ export interface ClientPrivateJobCtasProps {
 	skills?: string[];
 }
 
-export const ClientPrivateJobCtas: React.FC<ClientPrivateJobCtasProps> = ({
-	jobId,
-	skills = [],
-	openDeleteModal,
-}) => {
+export const ClientPrivateJobCtas: React.FC<ClientPrivateJobCtasProps> = ({ jobId, skills = [], openDeleteModal }) => {
 	const router = useRouter();
 
 	return (
 		<div className="mt-auto flex w-full items-center justify-between gap-4">
 			<div className="w-full max-w-[160px] rounded-xl border border-red-400">
-				<Button
-					fullWidth
-					variant="danger"
-					onClick={openDeleteModal}
-					size="sm"
-				>
+				<Button fullWidth variant="danger" onClick={openDeleteModal} size="sm">
 					Delete Job
 				</Button>
 			</div>

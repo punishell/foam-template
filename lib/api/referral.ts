@@ -3,12 +3,7 @@
 /*                             External Dependency                            */
 /* -------------------------------------------------------------------------- */
 
-import {
-	useQuery,
-	useMutation,
-	type UseQueryResult,
-	type UseMutationResult,
-} from "@tanstack/react-query";
+import { useQuery, useMutation, type UseQueryResult, type UseMutationResult } from "@tanstack/react-query";
 
 /* -------------------------------------------------------------------------- */
 /*                             Internal Dependency                            */
@@ -40,10 +35,7 @@ interface SendReferralInviteParams {
 	emails: string[];
 }
 
-async function fetchReferrals({
-	limit,
-	page,
-}: FetchParams): Promise<GetReferrals> {
+async function fetchReferrals({ limit, page }: FetchParams): Promise<GetReferrals> {
 	const res = await axios.get(`/referrals?limit=${limit}&page=${page}`);
 	return res.data.data;
 }
@@ -53,9 +45,7 @@ async function fetchReferralStats(): Promise<GetReferralStat> {
 	return res.data.data;
 }
 
-async function postReferralInvite(
-	values: SendReferralInviteParams,
-): Promise<any> {
+async function postReferralInvite(values: SendReferralInviteParams): Promise<any> {
 	const res = await axios.post("/referrals/invite", values);
 	return res.data.data;
 }
@@ -78,10 +68,7 @@ export const useGetReferral = ({
 > => {
 	return useQuery({
 		queryFn: async () => {
-			const response = await Promise.all([
-				fetchReferrals({ page, limit, filter }),
-				fetchReferralStats(),
-			]);
+			const response = await Promise.all([fetchReferrals({ page, limit, filter }), fetchReferralStats()]);
 			return { referrals: response[0], stats: response[1] };
 		},
 		queryKey: [`get-bookmark_req_${page}`, filter],
@@ -94,12 +81,7 @@ export const useGetReferral = ({
 	});
 };
 
-export function useSendReferralInvite(): UseMutationResult<
-	any,
-	ApiError,
-	SendReferralInviteParams,
-	unknown
-> {
+export function useSendReferralInvite(): UseMutationResult<any, ApiError, SendReferralInviteParams, unknown> {
 	return useMutation({
 		mutationFn: postReferralInvite,
 		mutationKey: ["send_referral_invite"],

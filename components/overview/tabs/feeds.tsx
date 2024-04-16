@@ -18,6 +18,7 @@ import { PageEmpty } from "../../common/page-empty";
 import { PageLoading } from "../../common/page-loading";
 import { PageError } from "../../common/page-error";
 import { FEED_TYPES } from "@/lib/utils";
+import { TabContentWrapper } from "./tab-contents-wrapper";
 
 export const Feeds = (): ReactElement => {
 	const { _id: loggedInUser } = useUserState();
@@ -27,6 +28,7 @@ export const Feeds = (): ReactElement => {
 	const [prevPage, setPrevPage] = useState(0);
 	const [currentData, setCurrentData] = useState([]);
 	const [observe, setObserve] = useState(false);
+
 	const {
 		data: timelineData,
 		refetch: feedRefetch,
@@ -45,9 +47,9 @@ export const Feeds = (): ReactElement => {
 		},
 	});
 
-	const scrollParentRef = useRef<HTMLDivElement | null>(null);
 	const observerTarget = useRef<HTMLDivElement | null>(null);
 
+	// ====== Dismiss Feed ===== //
 	const callback = async (): Promise<void> => {
 		await Promise.all([feedRefetch()]);
 	};
@@ -61,6 +63,7 @@ export const Feeds = (): ReactElement => {
 			},
 		});
 	};
+	// ====== Dismiss Feed ===== //
 
 	const fetchMore = (): void => {
 		setObserve(false);
@@ -117,10 +120,7 @@ export const Feeds = (): ReactElement => {
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		const newData = totalData.sort((a: any, b: any) => {
 			if (a && b) {
-				return (
-					new Date(b.createdAt).getTime() -
-					new Date(a.createdAt).getTime()
-				);
+				return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
 			}
 			return 0;
 		});
@@ -129,49 +129,28 @@ export const Feeds = (): ReactElement => {
 	}, [timelineData, timelineData?.pages]);
 
 	const timelineFeeds = useMemo(
-		() =>
-			(currentData || []).map((feed, i) =>
-				ParseFeedView(feed, loggedInUser, i, callback, dismissByID),
-			),
+		() => (currentData || []).map((feed, i) => ParseFeedView(feed, loggedInUser, i, callback, dismissByID)),
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 		[currentData],
 	);
-	if (isLoading && timelineFeeds.length < 1)
-		return (
-			<PageLoading
-				className="h-[65vh] rounded-2xl border border-line"
-				color="#007C5B"
-			/>
-		);
-	if (isError)
-		return (
-			<PageError className="h-[65vh] rounded-2xl border border-line" />
-		);
-	if (timelineFeeds.length === 0)
-		return (
-			<PageEmpty className="h-[65vh] rounded-2xl border border-line" />
-		);
+
 	return (
-		<div className="relative h-[65vh]">
-			<div
-				id="timeline-content"
-				ref={scrollParentRef}
-				className="scrollbar-hide h-full w-full overflow-auto rounded-2xl  border border-line bg-white p-4 [&:last]:mb-0 [&>*]:mb-5"
-			>
-				<div className="[&>*]:mb-5">
-					{timelineFeeds}
-					{isFetchingNextPage && (
-						<div className="mx-auto flex w-full flex-row items-center justify-center text-center">
-							<Loader
-								size={25}
-								className="animate-spin text-center text-black"
-							/>
-						</div>
-					)}
-					<span ref={observerTarget} />
+		<TabContentWrapper>
+			{isLoading && timelineFeeds.length < 1 ? (
+				<PageLoading className="h-[35vh] 2xl:h-[50vh]" color="#007C5B" />
+			) : isError ? (
+				<PageError className="h-[35vh] 2xl:h-[50vh]" />
+			) : timelineFeeds.length === 0 ? (
+				<PageEmpty className="h-[35vh] 2xl:h-[50vh]" />
+			) : (
+				timelineFeeds
+			)}
+			{isFetchingNextPage && (
+				<div className="mx-auto max-sm:my-4 flex w-full flex-row items-center justify-center text-center">
+					<Loader size={25} className="animate-spin text-center text-black" />
 				</div>
-			</div>
-			{/* <div className="absolute left-0 right-0 -bottom-[0px] h-10 z-50 bg-gradient-to-b from-transparent via-transparent to-green-50 rounded-2xl"></div> */}
-		</div>
+			)}
+			<span ref={observerTarget} />
+		</TabContentWrapper>
 	);
 };

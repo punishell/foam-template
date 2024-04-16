@@ -24,17 +24,14 @@ export const IssueResolutionRaiseFeed = (): ReactElement => {
 
 			<div className="flex w-full flex-col gap-4">
 				<div className="flex items-center justify-between">
-					<h3 className="text-xl font-bold text-title">
-						Jane Cooper Has Raised An Issue
-					</h3>
+					<h3 className="text-xl font-bold text-title">Jane Cooper Has Raised An Issue</h3>
 
 					<X size={20} />
 				</div>
 
 				<p className="text-base text-body">
-					Your job “Design of landing page” has been submitted for
-					Issue Resolution arbitration. You have 48 hours to submit
-					materials to defend your case to the 5-person jury.
+					Your job “Design of landing page” has been submitted for Issue Resolution arbitration. You have 48
+					hours to submit materials to defend your case to the 5-person jury.
 				</p>
 
 				<div className="mt-auto flex items-center justify-between">

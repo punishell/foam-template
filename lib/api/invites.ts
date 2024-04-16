@@ -2,12 +2,7 @@
 /*                             External Dependency                            */
 /* -------------------------------------------------------------------------- */
 
-import {
-	type UseMutationResult,
-	useMutation,
-	useQuery,
-	type UseQueryResult,
-} from "@tanstack/react-query";
+import { type UseMutationResult, useMutation, useQuery, type UseQueryResult } from "@tanstack/react-query";
 
 /* -------------------------------------------------------------------------- */
 /*                             Internal Dependency                            */
@@ -63,11 +58,7 @@ interface GetInviteResponse {
 	pages: number;
 }
 
-async function getInvites({
-	page = 1,
-	limit = 10,
-	filter,
-}: getInviteParams): Promise<GetInviteResponse> {
+async function getInvites({ page = 1, limit = 10, filter }: getInviteParams): Promise<GetInviteResponse> {
 	const res = await axios.get("/invite", {
 		params: {
 			page,
@@ -99,20 +90,12 @@ interface AcceptInviteResponse {
 	message: string;
 }
 
-async function acceptInvite({
-	id,
-}: {
-	id: string;
-}): Promise<AcceptInviteResponse> {
+async function acceptInvite({ id }: { id: string }): Promise<AcceptInviteResponse> {
 	const res = await axios.post(`/invite/${id}/accept`);
 	return res.data.data;
 }
 
-export function useAcceptInvite(): UseMutationResult<
-	AcceptInviteResponse,
-	ApiError,
-	unknown
-> {
+export function useAcceptInvite(): UseMutationResult<AcceptInviteResponse, ApiError, unknown> {
 	// const createFeed = useCreateFeed();
 	// @ts-expect-error ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
 	return useMutation({
@@ -143,11 +126,7 @@ interface DeclineInviteResponse {
 	message: string;
 }
 
-async function declineInvite({
-	id,
-}: {
-	id: string;
-}): Promise<DeclineInviteResponse> {
+async function declineInvite({ id }: { id: string }): Promise<DeclineInviteResponse> {
 	const res = await axios.post(`/invite/${id}/decline`);
 	return res.data.data;
 }
@@ -165,12 +144,7 @@ async function declineInvite({
 //     },
 //     unknown
 // > {
-export function useDeclineInvite(): UseMutationResult<
-	DeclineInviteResponse,
-	ApiError,
-	{ id: string },
-	unknown
-> {
+export function useDeclineInvite(): UseMutationResult<DeclineInviteResponse, ApiError, { id: string }, unknown> {
 	// const createFeed = useCreateFeed();
 	return useMutation({
 		mutationFn: declineInvite,

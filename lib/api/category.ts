@@ -32,9 +32,7 @@ async function getLeaderBoard(search: string): Promise<CategoryResponse> {
 	return res.data.data;
 }
 
-export const useGetCategory = (
-	search: string,
-): UseQueryResult<CategoryResponse, ApiError> => {
+export const useGetCategory = (search: string): UseQueryResult<CategoryResponse, ApiError> => {
 	return useQuery({
 		queryFn: async () => getLeaderBoard(search),
 		queryKey: [`category_${JSON.stringify(search)}`],
