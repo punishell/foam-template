@@ -12,7 +12,7 @@ import Link from "next/link";
 /* -------------------------------------------------------------------------- */
 
 import { AfroProfile } from "@/components/common/afro-profile";
-import { RenderBookMark } from "../../../misc/render-bookmark";
+import { RenderBookMark } from "../../../../misc/render-bookmark";
 
 interface OpenJobProps {
 	id: string;

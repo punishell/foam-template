@@ -14,8 +14,8 @@ import { useGetJobById } from "@/lib/api/job";
 import { useGetAccount } from "@/lib/api/account";
 import { PageError } from "@/components/common/page-error";
 import { PageLoading } from "@/components/common/page-loading";
-import { ClientJobDetails } from "@/components/jobs/view/client-job-details";
-import { TalentJobDetails } from "@/components/jobs/view/talent-job-details";
+import { ClientJobDetails } from "@/components/jobs/desktop-view/view/client-job-details";
+import { TalentJobDetails } from "@/components/jobs/desktop-view/view/talent-job-details";
 
 interface Props {
 	params: {

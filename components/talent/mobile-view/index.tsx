@@ -71,7 +71,7 @@ const mapTalentData = (talent: TalentProps): MappedTalent => ({
 	})),
 });
 
-export const MobileTalent = (): React.JSX.Element => {
+export const TalentsMobileView = (): React.JSX.Element => {
 	const router = useRouter();
 	const pathname = usePathname();
 	const searchParams = useSearchParams();

@@ -13,7 +13,7 @@ import { type ReactElement } from "react";
 import { PageEmpty } from "@/components/common/page-empty";
 import { PageError } from "@/components/common/page-error";
 import { PageLoading } from "@/components/common/page-loading";
-import { OpenJobCard } from "@/components/jobs/home/open/open-card";
+import { OpenJobCard } from "@/components/jobs/desktop-view/home/open/open-card";
 import type { Bookmark } from "@/lib/types";
 
 interface SavedJobsProps {

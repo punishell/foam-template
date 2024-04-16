@@ -21,7 +21,7 @@ import { avalanche, avalancheFuji, base, baseGoerli } from "@wagmi/core/chains";
 import { useGetJobById, usePostJobPaymentDetails } from "@/lib/api/job";
 import { type PaymentCoinsProps, useGetPaymentCoins } from "@/lib/api/wallet";
 import { cn } from "@/lib/utils";
-import { PaymentDetails } from "@/components/jobs/make-deposit";
+import { PaymentDetails } from "@/components/jobs/desktop-view/make-deposit";
 
 const { chains, publicClient, webSocketPublicClient } = configureChains(
 	[avalancheFuji, avalanche, base, baseGoerli],

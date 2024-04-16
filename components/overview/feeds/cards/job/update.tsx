@@ -23,11 +23,11 @@ import { MobileSheetWrapper } from "@/components/common/mobile-sheet-wrapper";
 import { useHeaderScroll } from "@/lib/store";
 import { titleCase } from "@/lib/utils";
 
-import { ClientJobModal } from "@/components/jobs/actions/desktop-sheets/client";
-import { TalentJobModal } from "@/components/jobs/actions/desktop-sheets/talent";
+import { ClientJobModal } from "@/components/jobs/desktop-view/sheets/client";
+import { TalentJobModal } from "@/components/jobs/desktop-view/sheets/talent";
 
-import { ClientJobModalForMobile } from "@/components/jobs/actions/mobile-sheets/client";
-import { TalentJobSheetForMobile } from "@/components/jobs/actions/mobile-sheets/talent";
+import { ClientJobModalForMobile } from "@/components/jobs/mobile-view/sheets/client";
+import { TalentJobSheetForMobile } from "@/components/jobs/mobile-view/sheets/talent";
 
 interface TalentJobUpdateProps {
 	id: string;

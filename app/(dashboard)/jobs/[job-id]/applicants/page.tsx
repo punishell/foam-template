@@ -23,7 +23,7 @@ import { PageError } from "@/components/common/page-error";
 import { PageEmpty } from "@/components/common/page-empty";
 import { Pagination } from "@/components/common/pagination";
 import { PageLoading } from "@/components/common/page-loading";
-import { ApplicantCard } from "@/components/jobs/applicant/card";
+import { ApplicantCard } from "@/components/jobs/desktop-view/applicant/card";
 
 interface Props {
 	params: {

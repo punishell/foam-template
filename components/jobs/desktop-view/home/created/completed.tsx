@@ -10,22 +10,22 @@ import React from "react";
 /*                             Internal Dependency                            */
 /* -------------------------------------------------------------------------- */
 
-import { isReviewChangeRequest, type Job } from "@/lib/types";
-import { ClientJobCard } from "@/components/jobs/home/created/client-card";
+import { type Job } from "@/lib/types";
+import { ClientJobCard } from "@/components/jobs/desktop-view/home/created/client-card";
 import { paginate } from "@/lib/utils";
 import { PageEmpty } from "@/components/common/page-empty";
 import { Pagination } from "@/components/common/pagination";
 
-interface OngoingJobsProps {
+interface CompletedJobsProps {
 	jobs: Job[];
 }
 
-export const OngoingJobs: React.FC<OngoingJobsProps> = ({ jobs }) => {
+export const CompletedJobs: React.FC<CompletedJobsProps> = ({ jobs }) => {
 	const [currentPage, setCurrentPage] = React.useState(1);
 	if (!jobs.length)
 		return (
 			<PageEmpty
-				label="Your ongoing jobs will appear here."
+				label="Your completed jobs will appear here."
 				className="h-[80vh] rounded-2xl border border-line"
 			/>
 		);
@@ -37,10 +37,15 @@ export const OngoingJobs: React.FC<OngoingJobsProps> = ({ jobs }) => {
 	return (
 		<div className="flex h-full min-h-[80vh] flex-col">
 			<div className="grid grid-cols-2 gap-4 overflow-y-auto pb-20">
-				{paginatedJobs.map(({ _id, paymentFee, name, collections, owner, progress }) => {
-					const reviewRequestChange = collections.find(isReviewChangeRequest);
+				{paginatedJobs.map(({ _id, paymentFee, name, collections, status, owner, creator, ratings }) => {
+					const talentHasReviewed = ratings?.some((review) => review.owner._id === owner?._id);
+					const clientHasReviewed = ratings?.some((review) => review.owner._id === creator._id);
+
 					return (
 						<ClientJobCard
+							jobId={_id}
+							isCancelled={status === "cancelled"}
+							isCompleted={(talentHasReviewed && clientHasReviewed) ?? status === "cancelled"}
 							totalDeliverables={
 								collections.filter((collection) => collection.type === "deliverable").length
 							}
@@ -49,8 +54,6 @@ export const OngoingJobs: React.FC<OngoingJobsProps> = ({ jobs }) => {
 									(collection) => collection.type === "deliverable" && collection.progress === 100,
 								).length
 							}
-							reviewRequestChange={reviewRequestChange}
-							jobId={_id}
 							key={_id}
 							price={paymentFee}
 							title={name}
@@ -60,7 +63,6 @@ export const OngoingJobs: React.FC<OngoingJobsProps> = ({ jobs }) => {
 								avatar: owner?.profileImage?.url,
 								name: `${owner?.firstName} ${owner?.lastName}`,
 							}}
-							jobProgress={progress}
 						/>
 					);
 				})}

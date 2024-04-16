@@ -11,21 +11,24 @@ import { type ReactElement, useState } from "react";
 /* -------------------------------------------------------------------------- */
 
 import type { Job } from "@/lib/types";
-import { TalentJobCard } from "@/components/jobs/home/accepted/talent-card";
+import { TalentJobCard } from "@/components/jobs/desktop-view/home/accepted/talent-card";
 import { paginate } from "@/lib/utils";
 import { PageEmpty } from "@/components/common/page-empty";
 import { Pagination } from "@/components/common/pagination";
 
-interface OngoingJobsProps {
+interface CompletedJobsProps {
 	jobs: Job[];
 }
 
-export const TalentOngoingJobs = ({ jobs }: OngoingJobsProps): ReactElement => {
+export const TalentCompletedJobs = ({ jobs }: CompletedJobsProps): ReactElement => {
 	const [currentPage, setCurrentPage] = useState(1);
 
 	if (!jobs.length)
 		return (
-			<PageEmpty label="Your ongoing jobs will appear here." className="h-[80vh] rounded-lg border border-line" />
+			<PageEmpty
+				label="Your completed jobs will appear here."
+				className="h-[80vh] rounded-lg border border-line"
+			/>
 		);
 
 	const ITEMS_PER_PAGE = 6;
@@ -35,14 +38,18 @@ export const TalentOngoingJobs = ({ jobs }: OngoingJobsProps): ReactElement => {
 	return (
 		<div className="flex h-full min-h-[80vh] flex-col">
 			<div className="grid grid-cols-2 gap-4 overflow-y-auto pb-20">
-				{paginatedJobs.map(({ _id, paymentFee, name, creator, collections, status }) => {
+				{paginatedJobs.map(({ _id, paymentFee, name, creator, collections, status, ratings, owner }) => {
+					const talentHasReviewed = ratings?.some((review) => review.owner._id === owner?._id);
+					const clientHasReviewed = ratings?.some((review) => review.owner._id === creator._id);
+
 					return (
 						<TalentJobCard
-							status={status}
 							jobId={_id}
+							status={status}
 							key={_id}
 							price={paymentFee}
 							title={name}
+							isCompleted={(talentHasReviewed && clientHasReviewed) ?? status === "cancelled"}
 							totalDeliverables={
 								collections.filter((collection) => collection.type === "deliverable").length
 							}

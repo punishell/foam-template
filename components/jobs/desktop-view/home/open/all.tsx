@@ -12,7 +12,7 @@ import React, { type ReactElement } from "react";
 
 import { PageEmpty } from "@/components/common/page-empty";
 import { Pagination } from "@/components/common/pagination";
-import { OpenJobCard } from "@/components/jobs/home/open/open-card";
+import { OpenJobCard } from "@/components/jobs/desktop-view/home/open/open-card";
 import type { Job } from "@/lib/types";
 import { paginate } from "@/lib/utils";
 import { PageLoading } from "@/components/common/page-loading";

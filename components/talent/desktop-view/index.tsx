@@ -54,7 +54,7 @@ interface MappedTalent {
 	}>;
 }
 
-export const DesktopTalents = (): ReactElement => {
+export const TalentsDesktopView = (): ReactElement => {
 	const [isSearching, setIsSearching] = useState(true);
 
 	const router = useRouter();

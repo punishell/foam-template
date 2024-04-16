@@ -4,7 +4,7 @@
 /*                             External Dependency                            */
 /* -------------------------------------------------------------------------- */
 
-import { type FC, useState, useEffect } from "react";
+import { type FC, useState } from "react";
 import { Button } from "pakt-ui";
 import { useRouter } from "next/navigation";
 
@@ -12,64 +12,60 @@ import { useRouter } from "next/navigation";
 /*                             Internal Dependency                            */
 /* -------------------------------------------------------------------------- */
 
-import { type JobStatus } from "@/lib/types";
+import { type ReviewChangeRequest } from "@/lib/types";
 import { SideModal } from "@/components/common/side-modal";
 import { AfroProfile } from "@/components/common/afro-profile";
-import { TalentJobModal } from "@/components/jobs/actions/desktop-sheets/talent";
+import { ClientJobModal } from "@/components/jobs/desktop-view/sheets/client";
 import { DeliverableProgressBar } from "@/components/common/deliverable-progress-bar";
-import { useErrorService } from "@/lib/store/error-service";
 
-interface TalentJobCardProps {
+interface ClientJobCardProps {
 	jobId: string;
 	title: string;
 	price: number;
-	status?: JobStatus;
 	isCompleted?: boolean;
+	isCancelled?: boolean;
 	totalDeliverables: number;
 	completedDeliverables: number;
-	client: {
+	talent: {
 		id: string;
 		name: string;
 		avatar?: string;
 		paktScore: number;
 	};
+	reviewRequestChange?: ReviewChangeRequest;
+	jobProgress?: number;
 }
 
-export const TalentJobCard: FC<TalentJobCardProps> = ({
-	client,
+export const ClientJobCard: FC<ClientJobCardProps> = ({
+	talent,
 	price,
 	title,
 	jobId,
-	status,
-	isCompleted,
+	isCancelled,
 	totalDeliverables,
 	completedDeliverables,
+	isCompleted,
+	reviewRequestChange,
+	jobProgress,
 }) => {
 	const router = useRouter();
 	const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
 	const progress = Math.floor((completedDeliverables / totalDeliverables) * 100);
-	const { setErrorMessage } = useErrorService();
-
-	useEffect(() => {
-		setErrorMessage({
-			title: "This is a temporary useEffect",
-			message: status,
-		});
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, []);
 
 	return (
-		<div
-			className={`flex w-full grow flex-col gap-1 rounded-3xl border  p-4 pt-0 ${status === "cancelled" ? "border-[#FF5247] bg-[#FFF4F4]" : "border-line bg-white"}`}
-		>
+		<div className="flex w-full grow flex-col gap-1 rounded-3xl border border-line bg-white p-4 pt-0">
 			<div className="flex w-full gap-4">
 				<div className="-ml-3">
-					<AfroProfile score={client.paktScore} size="2md" src={client.avatar} />
+					<AfroProfile
+						score={talent.paktScore}
+						size="2md"
+						src={talent.avatar}
+						url={`/talents/${talent.id}`}
+					/>
 				</div>
 				<div className="-ml-3 flex grow flex-col gap-2 pt-4">
 					<div className="flex items-center justify-between gap-2">
-						<span className="text-lg font-bold text-body">{client.name}</span>
-
+						<span className="text-lg font-bold text-body">{talent.name}</span>
 						<span className="inline-flex rounded-full bg-[#B2E9AA66] px-3 text-base text-title">
 							${price}
 						</span>
@@ -82,36 +78,29 @@ export const TalentJobCard: FC<TalentJobCardProps> = ({
 					{!isCompleted && (
 						<Button
 							size="xs"
-							variant={status === "cancelled" ? "danger" : "secondary"}
+							variant="secondary"
 							onClick={() => {
 								setIsUpdateModalOpen(true);
 							}}
-							disabled={status === "cancelled"}
 						>
-							{status === "cancelled"
-								? "Cancelled"
-								: progress < 100
-									? "Update"
-									: progress === 100
-										? "Review"
-										: "Update"}
+							{jobProgress === 100 ? (reviewRequestChange ? "View Request" : "Review") : "See Updates"}
 						</Button>
 					)}
-
 					<Button
 						size="xs"
 						variant="outline"
 						onClick={() => {
-							router.push(`/messages?userId=${client.id}`);
+							router.push(`/messages?userId=${talent.id}`);
 						}}
 					>
-						Message Client
+						Message Talent
 					</Button>
 				</div>
 
 				<DeliverableProgressBar
-					totalDeliverables={totalDeliverables}
+					isCancelled={isCancelled}
 					percentageProgress={progress}
+					totalDeliverables={totalDeliverables}
 					className="w-full max-w-none"
 				/>
 
@@ -122,9 +111,9 @@ export const TalentJobCard: FC<TalentJobCardProps> = ({
 					}}
 					className="flex flex-col"
 				>
-					<TalentJobModal
-						talentId={client.id}
+					<ClientJobModal
 						jobId={jobId}
+						talentId={talent.id}
 						closeModal={() => {
 							setIsUpdateModalOpen(false);
 						}}

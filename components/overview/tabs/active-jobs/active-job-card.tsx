@@ -23,11 +23,11 @@ import { titleCase } from "@/lib/utils";
 
 import { MobileSheetWrapper } from "@/components/common/mobile-sheet-wrapper";
 
-import { TalentJobSheetForMobile } from "@/components/jobs/actions/mobile-sheets/talent";
-import { ClientJobModalForMobile } from "@/components/jobs/actions/mobile-sheets/client";
+import { TalentJobSheetForMobile } from "@/components/jobs/mobile-view/sheets/talent";
+import { ClientJobModalForMobile } from "@/components/jobs/mobile-view/sheets/client";
 
-import { TalentJobModal } from "@/components/jobs/actions/desktop-sheets/talent";
-import { ClientJobModal } from "@/components/jobs/actions/desktop-sheets/client";
+import { TalentJobModal } from "@/components/jobs/desktop-view/sheets/talent";
+import { ClientJobModal } from "@/components/jobs/desktop-view/sheets/client";
 
 interface ActiveJobCardProps {
 	id: string;
@@ -197,15 +197,15 @@ export const ActiveJobCard = ({
 			{/* Sidebar Sheet */}
 			<MobileSheetWrapper
 				isOpen={isMobileModalOpen}
-				// to={
-				// 	isCreator && jobProgress < 100
-				// 		? "View Updates"
-				// 		: isCreator && jobProgress === 100
-				// 			? "Review"
-				// 			: !isCreator && jobProgress === 100
-				// 				? "Review"
-				// 				: "Update"
-				// }
+			// to={
+			// 	isCreator && jobProgress < 100
+			// 		? "View Updates"
+			// 		: isCreator && jobProgress === 100
+			// 			? "Review"
+			// 			: !isCreator && jobProgress === 100
+			// 				? "Review"
+			// 				: "Update"
+			// }
 			>
 				{!isCreator ? (
 					<TalentJobSheetForMobile
