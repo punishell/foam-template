@@ -10,29 +10,34 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 interface Props {
-	children: React.ReactNode;
+    children: React.ReactNode;
 }
 
 const CLARITY_ID = "k5s9fhhnjg";
 
 export function Providers({ children }: Props): React.JSX.Element {
-	const [queryClient] = React.useState(
-		() =>
-			new QueryClient({
-				defaultOptions: {
-					queries: {},
-				},
-			}),
-	);
+    const [queryClient] = React.useState(
+        () =>
+            new QueryClient({
+                defaultOptions: {
+                    queries: {
+                        refetchInterval: 10000,
+                        refetchOnWindowFocus: false,
+                        retry: 1,
+                        retryDelay: 10000,
+                    },
+                },
+            })
+    );
 
-	React.useEffect(() => {
-		clarity.init(CLARITY_ID);
-	}, []);
+    React.useEffect(() => {
+        clarity.init(CLARITY_ID);
+    }, []);
 
-	return (
-		<QueryClientProvider client={queryClient}>
-			{children}
-			<ReactQueryDevtools initialIsOpen={false} />
-		</QueryClientProvider>
-	);
+    return (
+        <QueryClientProvider client={queryClient}>
+            {children}
+            <ReactQueryDevtools initialIsOpen={false} />
+        </QueryClientProvider>
+    );
 }

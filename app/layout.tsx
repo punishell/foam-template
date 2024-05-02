@@ -17,24 +17,30 @@ import { Providers } from "@/app/providers";
 import { circularStd } from "./font";
 
 export const metadata: Metadata = {
-	title: "Afrofund",
-	description: "",
+    title: "Afrofund",
+    description: "",
 };
 
 interface Props {
-	children: React.ReactNode;
+    children: React.ReactNode;
 }
 
 export default function RootLayout({ children }: Props): React.JSX.Element {
-	return (
-		<html lang="en" suppressHydrationWarning className="h-screen">
-			<Script type="module" src="https://cdn.jsdelivr.net/npm/ldrs/dist/auto/zoomies.js" defer />
-			<head />
+    return (
+        <html lang="en" suppressHydrationWarning className="h-screen">
+            <Script
+                type="module"
+                src="https://cdn.jsdelivr.net/npm/ldrs/dist/auto/zoomies.js"
+                defer
+            />
+            <head />
 
-			<body className={`${circularStd.variable} min-h-screen font-sans antialiased`}>
-				<Toaster position="top-right" gutter={8} />
-				<Providers>{children}</Providers>
-			</body>
-		</html>
-	);
+            <body
+                className={`${circularStd.variable} min-h-screen font-sans antialiased`}
+            >
+                <Toaster position="top-right" gutter={8} />
+                <Providers>{children}</Providers>
+            </body>
+        </html>
+    );
 }
