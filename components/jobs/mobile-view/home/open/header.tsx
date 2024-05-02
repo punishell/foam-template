@@ -1,9 +1,15 @@
 /* -------------------------------------------------------------------------- */
+/*                             External Dependency                            */
+/* -------------------------------------------------------------------------- */
+
+import { ChevronDown } from "lucide-react";
+
+/* -------------------------------------------------------------------------- */
 /*                             Internal Dependency                            */
 /* -------------------------------------------------------------------------- */
 
-import type React from "react";
 import { NumericInput } from "@/components/common/numeric-input";
+import { Button } from "@/components/common/button";
 
 interface OpenHeaderProps {
     searchQuery: string;
@@ -14,6 +20,8 @@ interface OpenHeaderProps {
     setMinimumPriceQuery: (value: string) => void;
     maximumPriceQuery: string | number;
     setMaximumPriceQuery: (value: string | number) => void;
+    viewAll: boolean;
+    setViewAll: (value: boolean) => void;
 }
 
 export const OpenHeader = ({
@@ -25,13 +33,14 @@ export const OpenHeader = ({
     setMinimumPriceQuery,
     maximumPriceQuery,
     setMaximumPriceQuery,
-}: OpenHeaderProps): React.JSX.Element => {
+    viewAll,
+    setViewAll,
+}: OpenHeaderProps): JSX.Element => {
     return (
-        <div className="flex w-full items-end gap-4 rounded-2xl border border-[#7DDE86] bg-white p-6">
+        <div
+            className={`transition-height flex w-full flex-col gap-4 overflow-hidden duration-300 ${viewAll ? "h-auto" : "h-[80px]"}`}
+        >
             <div className="relative flex grow flex-col gap-1">
-                <label htmlFor="" className="text-sm">
-                    Search
-                </label>
                 <input
                     type="text"
                     value={searchQuery}
@@ -42,14 +51,20 @@ export const OpenHeader = ({
                     className="h-11 rounded-lg border border-line bg-gray-50 px-3 focus:outline-none"
                 />
             </div>
+            <Button
+                className={`!m-0 items-center justify-center gap-4 !p-0 text-base leading-normal tracking-tight text-white !text-opacity-50 ${viewAll ? "hidden" : "flex"}`}
+                onClick={() => {
+                    setViewAll(!viewAll);
+                }}
+            >
+                View all
+                <ChevronDown className="h-[18px] w-[18px] transition-transform duration-300" />
+            </Button>
             <div className="relative flex grow flex-col gap-1">
-                <label htmlFor="" className="text-sm">
-                    Skill
-                </label>
                 <input
                     type="text"
                     value={skillsQuery}
-                    placeholder="Java, Solidity, etc."
+                    placeholder="Skills: e.g Java, Solidity, etc."
                     onChange={(e) => {
                         setSkillsQuery(e.target.value);
                     }}
@@ -57,14 +72,11 @@ export const OpenHeader = ({
                 />
             </div>
             <div className="relative flex grow flex-col gap-1">
-                <label htmlFor="" className="text-sm">
-                    Afroscore
-                </label>
                 <div className="flex h-11 gap-2 rounded-lg border border-line bg-gray-50 py-2">
                     <NumericInput
                         type="text"
                         value={minimumPriceQuery}
-                        placeholder="From"
+                        placeholder="Price (min)"
                         onChange={(e) => {
                             setMinimumPriceQuery(e.target.value);
                         }}

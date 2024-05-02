@@ -26,6 +26,9 @@ interface Props {
     defaultTab?: string;
     className?: string;
     tabListClassName?: string;
+    tabTriggerClassName?: string;
+    customExtraComponent?: React.ReactNode;
+    customExtraItem?: React.ReactNode;
 }
 
 export const Tabs: FC<Props> = ({
@@ -34,6 +37,9 @@ export const Tabs: FC<Props> = ({
     urlKey,
     className,
     tabListClassName,
+    tabTriggerClassName,
+    customExtraComponent,
+    customExtraItem,
 }) => {
     const router = useRouter();
     const pathname = usePathname();
@@ -76,12 +82,17 @@ export const Tabs: FC<Props> = ({
                     <RadixTabs.Trigger
                         key={tab.value}
                         value={tab.value}
-                        className="border-b-2 border-transparent p-4 text-center text-sm font-medium text-gray-500 transition-all duration-200 hover:text-primary radix-state-active:border-primary radix-state-active:text-title sm:min-w-[100px] sm:px-8 sm:py-2"
+                        className={cn(
+                            "border-b-2 border-transparent p-4 text-center text-sm font-medium text-gray-500 transition-all duration-200 hover:text-primary radix-state-active:border-primary radix-state-active:text-title sm:min-w-[100px] sm:px-8 sm:py-2",
+                            tabTriggerClassName
+                        )}
                     >
                         {tab.label}
                     </RadixTabs.Trigger>
                 ))}
+                {customExtraItem}
             </RadixTabs.List>
+            {customExtraComponent}
             <div className="scrollbar-hide h-auto w-full grow overflow-y-auto sm:mt-2">
                 {tabs.map((tab) => (
                     <RadixTabs.Content

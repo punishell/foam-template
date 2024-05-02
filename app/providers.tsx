@@ -20,7 +20,12 @@ export function Providers({ children }: Props): React.JSX.Element {
         () =>
             new QueryClient({
                 defaultOptions: {
-                    queries: {},
+                    queries: {
+                        refetchInterval: 10000,
+                        refetchOnWindowFocus: false,
+                        retry: 1,
+                        retryDelay: 10000,
+                    },
                 },
             })
     );

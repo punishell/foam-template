@@ -25,7 +25,7 @@ function TabTrigger({ label, value }: TabTriggerProps): React.JSX.Element {
     return (
         <RadixTabs.Trigger
             value={value}
-            className="flex items-center justify-center rounded-lg px-6 py-1 duration-200 hover:bg-white radix-state-active:bg-white radix-state-active:text-black"
+            className="flex items-center justify-center rounded-lg px-6 py-1 duration-200 hover:bg-white hover:text-black radix-state-active:bg-white radix-state-active:text-black"
         >
             {label}
         </RadixTabs.Trigger>
@@ -69,7 +69,7 @@ export default function JobsMobileView(): React.JSX.Element {
             className="flex h-full w-full flex-col"
         >
             <div className="flex w-full items-center justify-center gap-4 bg-emerald-900 px-5 py-2">
-                <RadixTabs.List className="grid w-full grid-cols-3 gap-1 rounded-lg bg-white bg-opacity-10 p-0.5 text-base text-white">
+                <RadixTabs.List className="grid w-full grid-cols-3 gap-1 rounded-lg bg-white bg-opacity-10 p-1 text-base text-white ">
                     <TabTrigger value="open" label="Open" />
                     <TabTrigger value="created" label="Created" />
                     <TabTrigger value="accepted" label="Accepted" />

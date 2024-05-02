@@ -71,7 +71,7 @@ async function getTalentReview(
     );
     return review.data.data;
 }
-
+// ========================= Get Talents ========================= //
 export const useGetTalents = ({
     limit,
     page,
@@ -124,6 +124,7 @@ export const useGetTalentInfinitely = ({
         }
     );
 };
+// ========================= Get Talents ========================= //
 
 export const useGetTalentById = (
     id: string,

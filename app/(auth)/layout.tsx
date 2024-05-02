@@ -4,6 +4,7 @@
 /*                             External Dependency                            */
 /* -------------------------------------------------------------------------- */
 
+import { useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 
@@ -13,7 +14,6 @@ import Image from "next/image";
 
 import { Container } from "@/components/common/container";
 
-// import { useEffect } from "react";
 // import { getCookie } from "cookies-next";
 // import { useRouter } from "next/navigation";
 
@@ -32,6 +32,22 @@ export default function AuthLayout({ children }: Props): React.JSX.Element {
     //     router.push("/overview");
     //   }
     // }, [])
+    // useEffect(() => {
+    //     // https://css-tricks.com/the-trick-to-viewport-units-on-mobile/
+    //     const onWindowResize = (): void => {
+    //         document.documentElement.style.setProperty(
+    //             "--vh",
+    //             `${window.innerHeight * 0.01}px`
+    //         );
+    //     };
+
+    //     window.addEventListener("resize", onWindowResize, false);
+    //     onWindowResize();
+
+    //     return () => {
+    //         window.removeEventListener("resize", onWindowResize, false);
+    //     };
+    // }, []);
     return (
         <div className="h-screen w-full overflow-auto">
             <div className="fixed inset-0 bg-auth-gradient" />

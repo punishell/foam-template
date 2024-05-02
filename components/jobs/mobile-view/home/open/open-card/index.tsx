@@ -23,6 +23,7 @@ interface OpenJobProps {
         name: string;
         avatar?: string;
         paktScore: number;
+        title: string;
     };
     skills: Array<{
         type: "tags";
@@ -45,31 +46,37 @@ export const OpenJobCard: React.FC<OpenJobProps> = ({
     onRefresh,
 }) => {
     return (
-        <div className="flex w-full grow flex-col gap-4 rounded-3xl border border-line bg-white p-4">
-            <Link href={`/jobs/${id}`} className="flex w-full gap-4">
-                <AfroProfile
-                    src={creator.avatar}
-                    score={creator.paktScore}
-                    size="md"
-                    url={`talents/${creator._id}`}
-                />
+        <div className="flex w-full flex-col gap-4 border-b border-green-300 bg-[#FDFFFC] p-4">
+            <div className="flex items-center justify-between gap-2">
+                <Link
+                    href={`/jobs/${id}`}
+                    className="relative -left-2 flex w-full items-center gap-2"
+                >
+                    <AfroProfile
+                        src={creator.avatar}
+                        score={creator.paktScore}
+                        size="2sm"
+                        url={`talents/${creator._id}`}
+                    />
 
-                <div className="flex grow flex-col gap-2">
-                    <div className="flex items-center justify-between gap-2">
-                        <div className="flex items-center gap-2">
-                            <span className="text-lg font-medium text-body">
-                                {creator.name}
-                            </span>
-                            <span className="inline-flex rounded-full bg-[#B2E9AA66] px-3 text-base text-title">
-                                ${price}
-                            </span>
+                    <div className="flex flex-col items-start">
+                        <div className="text-lg leading-[27px] tracking-wide text-gray-800">
+                            {creator.name}
                         </div>
+
+                        <span className="text-xs leading-[18px] tracking-wide text-gray-500">
+                            {creator.title}
+                        </span>
                     </div>
-                    <div className="break-word flex grow items-center text-2xl text-title">
-                        {title}
-                    </div>
-                </div>
-            </Link>
+                </Link>
+
+                <span className="inline-flex rounded-full bg-[#B2E9AA66] px-3 text-base text-title">
+                    ${price}
+                </span>
+            </div>
+            <p className="text-lg leading-[27px] tracking-wide text-gray-800">
+                {title}
+            </p>
             <div className="mt-auto flex items-center justify-between gap-2">
                 <div className="flex flex-wrap items-center gap-2 lg:flex-nowrap">
                     {skills.slice(0, 3).map((skill) => (
@@ -89,7 +96,7 @@ export const OpenJobCard: React.FC<OpenJobProps> = ({
                     isBookmarked={isBookmarked}
                     bookmarkId={bookmarkId}
                     callback={onRefresh}
-                    useCheck
+                    // useCheck
                 />
             </div>
         </div>

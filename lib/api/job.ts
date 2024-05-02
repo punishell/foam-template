@@ -9,6 +9,9 @@ import {
     useQuery,
     useQueryClient,
     type UseQueryResult,
+    useInfiniteQuery,
+    type UseInfiniteQueryResult,
+    type QueryKey,
 } from "@tanstack/react-query";
 
 /* -------------------------------------------------------------------------- */
@@ -161,7 +164,7 @@ async function getJobs(params: GetJobsParams): Promise<GetJobsResponse> {
     });
     return res.data.data;
 }
-
+// ========================= Get Jobs ========================= //
 export function useGetJobs(
     params: GetJobsParams
 ): UseQueryResult<GetJobsResponse, ApiError> {
@@ -174,6 +177,33 @@ export function useGetJobs(
         },
     });
 }
+
+export const useGetJobsInfinitely = (
+    params: GetJobsParams
+): UseInfiniteQueryResult<GetJobsResponse, ApiError> => {
+    const getQueryKey: QueryKey = [
+        `get-jobs_${params.filter?.limit}_${params.filter?.page}_${JSON.stringify(params.filter)}`,
+    ];
+
+    return useInfiniteQuery(
+        getQueryKey,
+        async ({ pageParam = 1 }) =>
+            (
+                await getJobs({
+                    ...params,
+                    filter: {
+                        ...params.filter,
+                        page: pageParam,
+                    },
+                })
+            ).data,
+        {
+            getNextPageParam: (_, pages) => pages.length + 1,
+            enabled: true,
+        }
+    );
+};
+// ========================= Get Jobs ========================= //
 
 // Get Job By Id
 

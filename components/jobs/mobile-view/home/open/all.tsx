@@ -4,91 +4,77 @@
 /*                             External Dependency                            */
 /* -------------------------------------------------------------------------- */
 
-import React, { type ReactElement } from "react";
+import React, { forwardRef } from "react";
+import { Loader } from "lucide-react";
 
 /* -------------------------------------------------------------------------- */
 /*                             Internal Dependency                            */
 /* -------------------------------------------------------------------------- */
 
 import { PageEmpty } from "@/components/common/page-empty";
-import { Pagination } from "@/components/common/pagination";
-import { OpenJobCard } from "@/components/jobs/desktop-view/home/open/open-card";
 import type { Job } from "@/lib/types";
-import { paginate } from "@/lib/utils";
 import { PageLoading } from "@/components/common/page-loading";
+import { OpenJobCard } from "./open-card";
 
 interface AllJobsProps {
     jobs: Job[];
     onRefresh?: () => void;
     loading?: boolean;
+    isFetchingNextPage: boolean;
 }
 
-export const AllJobs = ({
-    jobs,
-    onRefresh,
-    loading,
-}: AllJobsProps): ReactElement | null => {
-    const itemsPerPage = 6;
-    const [currentPage, setCurrentPage] = React.useState(1);
-    const totalPages = Math.ceil(jobs.length / itemsPerPage);
-    const paginatedJobs = paginate(jobs, itemsPerPage, currentPage);
-
-    if (loading)
+export const AllJobs = forwardRef<HTMLDivElement, AllJobsProps>(
+    (props, ref): JSX.Element => {
+        const { jobs, onRefresh, loading, isFetchingNextPage } = props;
         return (
-            <PageLoading
-                className="h-[85vh] rounded-2xl border border-line"
-                color="#007C5B"
-            />
-        );
-    if (!jobs.length)
-        return (
-            <PageEmpty
-                label="No open jobs yet."
-                className="h-[70vh] rounded-2xl border border-line"
-            />
-        );
-
-    return (
-        <div className="h-[calc(100%-76px)] w-full">
-            <div className="flex h-full flex-col overflow-y-scroll">
-                {paginatedJobs.map(
-                    ({
-                        _id,
-                        paymentFee,
-                        name,
-                        tags,
-                        creator,
-                        isBookmarked,
-                        bookmarkId,
-                    }) => {
-                        return (
-                            <OpenJobCard
-                                id={_id}
-                                key={_id}
-                                price={paymentFee}
-                                title={name}
-                                skills={tags}
-                                creator={{
-                                    _id: creator._id,
-                                    paktScore: creator.score,
-                                    avatar: creator.profileImage?.url,
-                                    name: `${creator.firstName} ${creator.lastName}`,
-                                }}
-                                isBookmarked={isBookmarked}
-                                bookmarkId={bookmarkId ?? ""}
-                                onRefresh={onRefresh}
-                            />
-                        );
-                    }
+            <div className="flex h-full w-full flex-col overflow-y-scroll">
+                {loading ? (
+                    <PageLoading className="" color="#007C5B" />
+                ) : !jobs.length ? (
+                    <PageEmpty label="No open jobs yet." className="" />
+                ) : (
+                    jobs.map(
+                        ({
+                            _id,
+                            paymentFee,
+                            name,
+                            tags,
+                            creator,
+                            isBookmarked,
+                            bookmarkId,
+                        }) => {
+                            return (
+                                <OpenJobCard
+                                    id={_id}
+                                    key={_id}
+                                    price={paymentFee}
+                                    title={name}
+                                    skills={tags}
+                                    creator={{
+                                        _id: creator._id,
+                                        paktScore: creator.score,
+                                        avatar: creator.profileImage?.url,
+                                        name: `${creator.firstName} ${creator.lastName}`,
+                                        title: creator.profile.bio.title,
+                                    }}
+                                    isBookmarked={isBookmarked}
+                                    bookmarkId={bookmarkId ?? ""}
+                                    onRefresh={onRefresh}
+                                />
+                            );
+                        }
+                    )
                 )}
+                {isFetchingNextPage && (
+                    <div className="mx-auto flex w-full flex-row items-center justify-center text-center max-sm:my-4">
+                        <Loader
+                            size={25}
+                            className="animate-spin text-center text-black"
+                        />
+                    </div>
+                )}
+                <span ref={ref} />
             </div>
-            <div className="mt-auto">
-                <Pagination
-                    currentPage={currentPage}
-                    totalPages={totalPages}
-                    setCurrentPage={setCurrentPage}
-                />
-            </div>
-        </div>
-    );
-};
+        );
+    }
+);
