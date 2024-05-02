@@ -95,6 +95,9 @@ export const CreatedJobs = (): ReactElement => {
                         content: <UnassignedJobs jobs={unassignedJobs} />,
                     },
                 ]}
+                className="relative h-full border-none"
+                tabListClassName="max-sm:justify-normal bg-emerald-900 border-none px-5 max-sm:h-auto"
+                tabTriggerClassName="radix-state-active:text-white text-white radix-state-active:border-white border-b-[3px] py-[11px]"
             />
         </div>
     );

@@ -100,7 +100,7 @@ export const OpenJobs = (): JSX.Element | null => {
             tags: skillQ,
             range: searchQuery ? rangeQ : "",
             page: currentPage,
-            limit: 3,
+            limit: 12,
         },
     });
 
@@ -186,74 +186,72 @@ export const OpenJobs = (): JSX.Element | null => {
     return jobIsError || bookmarkData.isError ? (
         <PageError className="h-full rounded-2xl border border-red-200 bg-red-50" />
     ) : (
-        <div className="flex h-full flex-col gap-6">
-            <div className="flex h-full grow">
-                <Tabs
-                    urlKey="open-jobs"
-                    tabs={[
-                        {
-                            label: "All",
-                            value: "all",
-                            content: (
-                                <AllJobs
-                                    jobs={sortedJobs}
-                                    onRefresh={onRefresh}
-                                    loading={jobIsLoading}
-                                    isFetchingNextPage={isFetchingNextPage}
-                                    ref={observerTarget}
-                                />
-                            ),
-                        },
-                        {
-                            label: "Saved",
-                            value: "saved",
-                            content: (
-                                <SavedJobs
-                                    jobs={bookmarkData.data?.data ?? []}
-                                    isError={bookmarkData.isError}
-                                    isLoading={bookmarkData.isLoading}
-                                    onRefresh={onRefresh}
-                                />
-                            ),
-                        },
-                    ]}
-                    className="relative h-full border-none"
-                    tabListClassName="max-sm:justify-normal bg-emerald-900 border-none px-5"
-                    tabTriggerClassName="radix-state-active:text-white text-white radix-state-active:border-white border-b-[3px] py-[11px]"
-                    customExtraItem={
-                        <Button
-                            className="absolute right-6 z-10 !m-0 flex items-center justify-center !p-0"
-                            onClick={() => {
-                                setShowSearch(!showSearch);
-                            }}
-                        >
-                            {showSearch ? (
-                                <X className="h-6 w-6 text-white transition-transform duration-300" />
-                            ) : (
-                                <Search className="h-6 w-6 text-white transition-transform duration-300" />
-                            )}
-                        </Button>
-                    }
-                    customExtraComponent={
-                        <div
-                            className={`relative z-10 flex h-auto w-full flex-col bg-emerald-900 p-4 ${!showSearch ? "hidden" : ""}`}
-                        >
-                            <OpenHeader
-                                searchQuery={searchQuery}
-                                setSearchQuery={setSearchQuery}
-                                skillsQuery={skillsQuery}
-                                setSkillsQuery={setSkillsQuery}
-                                minimumPriceQuery={minimumPriceQuery}
-                                setMinimumPriceQuery={setMinimumPriceQuery}
-                                maximumPriceQuery={maximumPriceQuery}
-                                setMaximumPriceQuery={setMaximumPriceQuery}
-                                viewAll={viewAll}
-                                setViewAll={setViewAll}
+        <div className="flex h-full grow">
+            <Tabs
+                urlKey="open-jobs"
+                tabs={[
+                    {
+                        label: "All",
+                        value: "all",
+                        content: (
+                            <AllJobs
+                                jobs={sortedJobs}
+                                onRefresh={onRefresh}
+                                loading={jobIsLoading}
+                                isFetchingNextPage={isFetchingNextPage}
+                                ref={observerTarget}
                             />
-                        </div>
-                    }
-                />
-            </div>
+                        ),
+                    },
+                    {
+                        label: "Saved",
+                        value: "saved",
+                        content: (
+                            <SavedJobs
+                                jobs={bookmarkData.data?.data ?? []}
+                                isError={bookmarkData.isError}
+                                isLoading={bookmarkData.isLoading}
+                                onRefresh={onRefresh}
+                            />
+                        ),
+                    },
+                ]}
+                className="relative h-full border-none"
+                tabListClassName="max-sm:justify-normal bg-emerald-900 border-none px-5 max-sm:h-auto"
+                tabTriggerClassName="radix-state-active:text-white text-white radix-state-active:border-white border-b-[3px] py-[11px]"
+                customExtraItem={
+                    <Button
+                        className="absolute right-6 z-10 !m-0 flex items-center justify-center !p-0"
+                        onClick={() => {
+                            setShowSearch(!showSearch);
+                        }}
+                    >
+                        {showSearch ? (
+                            <X className="h-6 w-6 text-white transition-transform duration-300" />
+                        ) : (
+                            <Search className="h-6 w-6 text-white transition-transform duration-300" />
+                        )}
+                    </Button>
+                }
+                customExtraComponent={
+                    <div
+                        className={`relative z-10 flex h-auto w-full flex-col bg-emerald-900 p-4 ${!showSearch ? "hidden" : ""}`}
+                    >
+                        <OpenHeader
+                            searchQuery={searchQuery}
+                            setSearchQuery={setSearchQuery}
+                            skillsQuery={skillsQuery}
+                            setSkillsQuery={setSkillsQuery}
+                            minimumPriceQuery={minimumPriceQuery}
+                            setMinimumPriceQuery={setMinimumPriceQuery}
+                            maximumPriceQuery={maximumPriceQuery}
+                            setMaximumPriceQuery={setMaximumPriceQuery}
+                            viewAll={viewAll}
+                            setViewAll={setViewAll}
+                        />
+                    </div>
+                }
+            />
         </div>
     );
 };

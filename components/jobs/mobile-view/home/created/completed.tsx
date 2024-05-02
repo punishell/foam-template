@@ -1,43 +1,27 @@
 "use client";
 
 /* -------------------------------------------------------------------------- */
-/*                             External Dependency                            */
-/* -------------------------------------------------------------------------- */
-
-import React from "react";
-
-/* -------------------------------------------------------------------------- */
 /*                             Internal Dependency                            */
 /* -------------------------------------------------------------------------- */
 
 import { type Job } from "@/lib/types";
-import { ClientJobCard } from "@/components/jobs/desktop-view/home/created/client-card";
-import { paginate } from "@/lib/utils";
+import { ClientJobCard } from "./client-card";
 import { PageEmpty } from "@/components/common/page-empty";
-import { Pagination } from "@/components/common/pagination";
 
 interface CompletedJobsProps {
     jobs: Job[];
 }
 
-export const CompletedJobs: React.FC<CompletedJobsProps> = ({ jobs }) => {
-    const [currentPage, setCurrentPage] = React.useState(1);
-    if (!jobs.length)
-        return (
-            <PageEmpty
-                label="Your completed jobs will appear here."
-                className="h-[80vh] rounded-2xl border border-line"
-            />
-        );
-
-    const ITEMS_PER_PAGE = 6;
-    const TOTAL_PAGES = Math.ceil(jobs.length / ITEMS_PER_PAGE);
-    const paginatedJobs = paginate(jobs, ITEMS_PER_PAGE, currentPage);
-
+export const CompletedJobs = ({ jobs }: CompletedJobsProps): JSX.Element => {
     return (
-        <div className="flex h-full min-h-[80vh] flex-col">
-            <div className="grid grid-cols-2 gap-4 overflow-y-auto pb-20">
-                {paginatedJobs.map(
+        <div className="flex h-full w-full flex-col overflow-y-scroll">
+            {!jobs.length ? (
+                <PageEmpty
+                    label="Your completed jobs will appear here."
+                    className=""
+                />
+            ) : (
+                jobs.map(
                     ({
                         _id,
                         paymentFee,
@@ -45,23 +29,24 @@ export const CompletedJobs: React.FC<CompletedJobsProps> = ({ jobs }) => {
                         collections,
                         status,
                         owner,
-                        creator,
+                        // creator,
                         ratings,
                     }) => {
-                        const talentHasReviewed = ratings?.some(
-                            (review) => review.owner._id === owner?._id
-                        );
-                        const clientHasReviewed = ratings?.some(
-                            (review) => review.owner._id === creator._id
-                        );
+                        // const talentHasReviewed = ratings?.some(
+                        //     (review) => review.owner._id === owner?._id
+                        // );
+                        // const clientHasReviewed = ratings?.some(
+                        //     (review) => review.owner._id === creator._id
+                        // );
 
                         return (
                             <ClientJobCard
                                 jobId={_id}
                                 isCancelled={status === "cancelled"}
                                 isCompleted={
-                                    (talentHasReviewed && clientHasReviewed) ??
-                                    status === "cancelled"
+                                    // (talentHasReviewed && clientHasReviewed) ??
+                                    status === "cancelled" ||
+                                    status === "completed"
                                 }
                                 totalDeliverables={
                                     collections.filter(
@@ -79,24 +64,20 @@ export const CompletedJobs: React.FC<CompletedJobsProps> = ({ jobs }) => {
                                 key={_id}
                                 price={paymentFee}
                                 title={name}
+                                reviewText={ratings?.[0]?.review ?? ""}
+                                ratingCount={ratings?.[0]?.rating ?? 0}
                                 talent={{
                                     id: owner?._id ?? "",
                                     paktScore: owner?.score ?? 0,
                                     avatar: owner?.profileImage?.url,
                                     name: `${owner?.firstName} ${owner?.lastName}`,
+                                    title: owner?.profile.bio.title ?? "",
                                 }}
                             />
                         );
                     }
-                )}
-            </div>
-            <div className="mt-auto pt-4">
-                <Pagination
-                    currentPage={currentPage}
-                    totalPages={TOTAL_PAGES}
-                    setCurrentPage={setCurrentPage}
-                />
-            </div>
+                )
+            )}
         </div>
     );
 };

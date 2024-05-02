@@ -43,21 +43,21 @@ export const UnAssignedJobCard: FC<UnAssignedJobCardProps> = ({ job }) => {
     const creationDate = format(new Date(createdAt), "dd MMM yyyy");
 
     return (
-        <div className="flex w-full grow flex-col gap-4 rounded-3xl border border-line bg-white p-4">
+        <div className="flex w-full flex-col gap-4 border border-line bg-white p-4">
             <div className="flex w-full gap-4">
                 <div className="flex grow flex-col gap-2">
                     <div className="flex items-center justify-between gap-2">
                         <div className="flex items-center gap-2">
-                            <span className="text-lg text-body">
-                                {creationDate}
+                            <span className="text-sm leading-[21px] tracking-wide text-zinc-900">
+                                Created: {creationDate}
                             </span>
                         </div>
 
-                        <span className="inline-flex rounded-full border border-green-200 bg-[#B2E9AA66] px-3 text-lg text-title">
+                        <span className="inline-flex rounded-full border border-green-200 bg-[#B2E9AA66] px-3 text-lg font-bold text-title">
                             ${paymentFee}
                         </span>
                     </div>
-                    <div className="min-h-[58px] grow break-words text-2xl text-title">
+                    <div className="grow text-lg leading-[27px] tracking-wide text-gray-800">
                         {title}
                     </div>
                 </div>

@@ -13,6 +13,7 @@ import Link from "next/link";
 
 import { AfroProfile } from "@/components/common/afro-profile";
 import { RenderBookMark } from "../../../../misc/render-bookmark";
+import { titleCase } from "@/lib/utils";
 
 interface OpenJobProps {
     id: string;
@@ -65,7 +66,7 @@ export const OpenJobCard: React.FC<OpenJobProps> = ({
                         </div>
 
                         <span className="text-xs leading-[18px] tracking-wide text-gray-500">
-                            {creator.title}
+                            {titleCase(creator.title)}
                         </span>
                     </div>
                 </Link>

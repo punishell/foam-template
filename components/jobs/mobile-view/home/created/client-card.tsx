@@ -5,24 +5,27 @@
 /* -------------------------------------------------------------------------- */
 
 import { type FC, useState } from "react";
-import { Button } from "pakt-ui";
-import { useRouter } from "next/navigation";
+import Rating from "react-rating";
+import { Star } from "lucide-react";
+// import { useRouter } from "next/navigation";
 
 /* -------------------------------------------------------------------------- */
 /*                             Internal Dependency                            */
 /* -------------------------------------------------------------------------- */
 
-import { type ReviewChangeRequest } from "@/lib/types";
+// import { type ReviewChangeRequest } from "@/lib/types";
 import { SideModal } from "@/components/common/side-modal";
 import { AfroProfile } from "@/components/common/afro-profile";
 import { ClientJobModal } from "@/components/jobs/desktop-view/sheets/client";
 import { DeliverableProgressBar } from "@/components/common/deliverable-progress-bar";
+import { titleCase } from "@/lib/utils";
 
 interface ClientJobCardProps {
     jobId: string;
     title: string;
+    reviewText?: string;
+    ratingCount?: number;
     price: number;
-    isCompleted?: boolean;
     isCancelled?: boolean;
     totalDeliverables: number;
     completedDeliverables: number;
@@ -31,9 +34,9 @@ interface ClientJobCardProps {
         name: string;
         avatar?: string;
         paktScore: number;
+        title: string;
     };
-    reviewRequestChange?: ReviewChangeRequest;
-    jobProgress?: number;
+    isCompleted?: boolean;
 }
 
 export const ClientJobCard: FC<ClientJobCardProps> = ({
@@ -45,68 +48,79 @@ export const ClientJobCard: FC<ClientJobCardProps> = ({
     totalDeliverables,
     completedDeliverables,
     isCompleted,
-    reviewRequestChange,
-    jobProgress,
+    reviewText,
+    ratingCount,
+    // reviewRequestChange,
+    // jobProgress,
 }) => {
-    const router = useRouter();
     const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
     const progress = Math.floor(
         (completedDeliverables / totalDeliverables) * 100
     );
 
     return (
-        <div className="flex w-full grow flex-col gap-1 rounded-3xl border border-line bg-white p-4 pt-0">
+        <div
+            className="flex w-full flex-col gap-1 border-b border-gray-200 bg-neutral-50 p-4 pt-0"
+            onMouseDown={() => {
+                setIsUpdateModalOpen(true);
+            }}
+            role="button"
+            tabIndex={0}
+        >
             <div className="flex w-full gap-4">
                 <div className="-ml-3">
                     <AfroProfile
                         score={talent.paktScore}
-                        size="2md"
+                        size="2sm"
                         src={talent.avatar}
                         url={`/talents/${talent.id}`}
                     />
                 </div>
-                <div className="-ml-3 flex grow flex-col gap-2 pt-4">
-                    <div className="flex items-center justify-between gap-2">
-                        <span className="text-lg font-bold text-body">
+                <div className="flex w-full items-center justify-between gap-2">
+                    <div className="-ml-3 flex flex-col">
+                        <span className="text-lg leading-[27px] tracking-wide text-gray-800">
                             {talent.name}
                         </span>
-                        <span className="inline-flex rounded-full bg-[#B2E9AA66] px-3 text-base text-title">
-                            ${price}
+                        <span className="text-xs leading-[18px] tracking-wide text-gray-500">
+                            {titleCase(talent.title)}
                         </span>
                     </div>
-                    <div className="flex grow items-center break-words text-2xl text-title">
-                        {title}
-                    </div>
+                    <span className="inline-flex rounded-full bg-[#B2E9AA66] px-3 text-base font-bold text-title">
+                        ${price}
+                    </span>
                 </div>
             </div>
-            <div className="mt-auto flex w-full items-center justify-between gap-4">
-                <div className="flex items-center gap-2">
-                    {!isCompleted && (
-                        <Button
-                            size="xs"
-                            variant="secondary"
-                            onClick={() => {
-                                setIsUpdateModalOpen(true);
-                            }}
-                        >
-                            {jobProgress === 100
-                                ? reviewRequestChange
-                                    ? "View Request"
-                                    : "Review"
-                                : "See Updates"}
-                        </Button>
-                    )}
-                    <Button
-                        size="xs"
-                        variant="outline"
-                        onClick={() => {
-                            router.push(`/messages?userId=${talent.id}`);
-                        }}
-                    >
-                        Message Talent
-                    </Button>
+            {!isCompleted && (
+                <div className="text-base font-medium leading-normal tracking-tight text-gray-500">
+                    Completed a Deliverables
                 </div>
-
+            )}
+            <div className="flex grow items-center break-words text-lg text-gray-800">
+                {title}
+            </div>
+            {isCompleted && (
+                <div className="text-base leading-normal tracking-tight text-gray-500">
+                    {reviewText}
+                </div>
+            )}
+            <div className="mt-auto flex w-full flex-col items-start gap-2">
+                {isCompleted && (
+                    /*  @ts-expect-error --- */
+                    <Rating
+                        readonly
+                        initialRating={ratingCount ?? 0}
+                        fullSymbol={
+                            <Star fill="#15D28E" color="#15D28E" size={18} />
+                        }
+                        emptySymbol={
+                            <Star
+                                fill="transparent"
+                                color="#15D28E"
+                                size={18}
+                            />
+                        }
+                    />
+                )}
                 <DeliverableProgressBar
                     isCancelled={isCancelled}
                     percentageProgress={progress}
