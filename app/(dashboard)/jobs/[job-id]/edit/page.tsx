@@ -18,11 +18,13 @@ interface Props {
 export default function EditJobPage({ params }: Props): React.JSX.Element {
     const jobId = params["job-id"];
     const jobQuery = useGetJobById({ jobId });
+    const { data: job, isError, isLoading } = jobQuery;
 
-    if (jobQuery.isError) return <PageError className="absolute inset-0" />;
-    if (jobQuery.isLoading)
-        return <PageLoading className="absolute inset-0" color="#007C5B" />;
-    const { data: job } = jobQuery;
-
-    return <EditJobForm job={job} />;
+    return isError ? (
+        <PageError className="absolute inset-0" />
+    ) : isLoading ? (
+        <PageLoading className="absolute inset-0" color="#007C5B" />
+    ) : (
+        <EditJobForm job={job} />
+    );
 }

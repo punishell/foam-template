@@ -19,7 +19,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { type Job, isJobDeliverable } from "@/lib/types";
 import { useUpdateJob, useInviteTalentToJob } from "@/lib/api/job";
 import { Spinner } from "@/components/common";
-import { filterEmptyStrings } from "@/lib/utils";
+import { filterEmptyStrings, limitString } from "@/lib/utils";
 import Steps from "@/components/jobs/misc/steps";
 import JobTitle from "@/components/forms/create-job/job-title";
 import JobProposedPrice from "@/components/forms/create-job/job-proposed-price";
@@ -30,6 +30,7 @@ import JobDeliverables from "@/components/forms/create-job/job-deliverables";
 import JobCategory from "@/components/forms/create-job/job-category";
 import JobVisibility from "@/components/forms/create-job/job-visibility";
 import { createJobSchema } from "@/lib/validations";
+import { Breadcrumb } from "../common/breadcrumb";
 
 type FormValues = z.infer<typeof createJobSchema>;
 
@@ -44,17 +45,6 @@ export const EditJobForm: FC<JobEditFormProps> = ({ job }) => {
     const updateJob = useUpdateJob();
     const talentId = params.get("talent-id") ?? "";
     const inviteTalent = useInviteTalentToJob({ talentId, job });
-
-    // const [files, setFiles] = React.useState<File[]>([]);
-    // const [uploadProgress, setUploadProgress] = React.useState(0);
-
-    // const onDrop = React.useCallback(async (acceptedFiles: File[]) => {}, []);
-
-    // const { getRootProps, getInputProps } = useDropzone({
-    //   onDrop,
-    //   maxFiles: 5,
-    //   accept: {},
-    // });
 
     const form = useForm<FormValues>({
         reValidateMode: "onChange",
@@ -151,44 +141,61 @@ export const EditJobForm: FC<JobEditFormProps> = ({ job }) => {
     };
 
     return (
-        <div className="flex h-full gap-6 pb-10">
-            <div className="w-full overflow-hidden overflow-y-auto rounded-2xl border border-line">
-                {/* eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions -- Error Triggered due to the addition of `onKeyDown` attribute */}
-                <form
-                    onSubmit={form.handleSubmit(onSubmit)}
-                    onKeyDown={(e) => {
-                        if (e.key === "Enter") {
-                            e.preventDefault();
-                        }
-                    }}
-                    className="flex h-fit grow flex-col rounded-2xl bg-white"
-                >
-                    <div className="flex flex-col gap-10 rounded-t-2xl bg-primary-gradient p-6 pb-8">
-                        <JobTitle form={form} />
+        <div className="flex h-full w-full overflow-y-auto sm:gap-6 sm:pb-10 max-sm:flex-col max-sm:bg-white">
+            <Breadcrumb
+                items={[
+                    {
+                        label: limitString(job?.name, 30),
+                        action: () => {
+                            router.push(`/jobs/${job?._id}`);
+                        },
+                    },
+                    {
+                        label: "Edit Job",
+                        active: true,
+                        action: () => {
+                            router.push(`/jobs/${job?._id}/edit`);
+                        },
+                    },
+                ]}
+            />
 
-                        <div className="flex w-fit max-w-lg gap-4">
-                            <JobProposedPrice form={form} />
-                            <JobDueDate form={form} />
+            {/* eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions -- Error Triggered due to the addition of `onKeyDown` attribute */}
+            <form
+                onSubmit={form.handleSubmit(onSubmit)}
+                onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                        e.preventDefault();
+                    }
+                }}
+                className="flex h-fit grow flex-col bg-white sm:rounded-2xl sm:border max-sm:w-full"
+            >
+                <div className="flex w-full flex-col gap-10 bg-primary-gradient px-5 py-6 sm:rounded-t-2xl sm:p-6 sm:pb-8">
+                    <JobTitle form={form} />
+
+                    <div className="flex w-full gap-2 sm:max-w-lg sm:gap-4">
+                        <JobProposedPrice form={form} />
+                        <JobDueDate form={form} />
+                    </div>
+                </div>
+                <div className="flex w-full grow flex-col gap-6 px-5 py-6 sm:p-6">
+                    <PreferredSkills form={form} isEdit />
+                    <JobDescription form={form} />
+                    <JobDeliverables form={form} isEdit />
+
+                    <div className="flex flex-col gap-4">
+                        <h3 className="text-lg font-medium text-black">
+                            Classification
+                        </h3>
+                        <div className="flex items-center gap-4">
+                            <JobCategory form={form} />
+                            <JobVisibility form={form} />
                         </div>
                     </div>
-                    <div className="flex grow flex-col gap-6 p-6">
-                        <PreferredSkills form={form} isEdit />
-                        <JobDescription form={form} />
-                        <JobDeliverables form={form} isEdit />
+                </div>
+            </form>
 
-                        <div className="flex flex-col gap-4">
-                            <h3 className="text-lg font-medium text-black">
-                                Classification
-                            </h3>
-                            <div className="flex items-center gap-4">
-                                <JobCategory form={form} />
-                                <JobVisibility form={form} />
-                            </div>
-                        </div>
-                    </div>
-                </form>
-            </div>
-            <div className="flex shrink-0 grow-0 basis-[300px] flex-col gap-6 ">
+            <div className="flex flex-col gap-6 sm:shrink-0 sm:grow-0 sm:basis-[300px] max-sm:px-5 max-sm:py-6">
                 <Steps jobSteps={jobSteps} isEdit />
 
                 <div className="flex w-full gap-4">
@@ -253,20 +260,6 @@ export const EditJobForm: FC<JobEditFormProps> = ({ job }) => {
                         </div>
                     )}
                 </div>
-                {/* <div className="bg-white p-6 rounded-xl min-h-[250px] border border-line flex flex-col gap-4">
-          <div className="flex items-center gap-2">
-            <span className="text-lg font-bold">Attachments</span>{' '}
-            <span className="text-body text-sm font-normal">(optional)</span>
-          </div>
-
-          <div
-            className="border border-dashed rounded-3xl p-4 text-center grow flex items-center justify-center hover:bg-gray-50 duration-200 cursor-pointer"
-            {...getRootProps()}
-          >
-            <input {...getInputProps()} />
-            <span className="flex text-body">Click to browse or drag and drop your files</span>
-          </div>
-        </div> */}
             </div>
         </div>
     );
