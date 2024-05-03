@@ -157,10 +157,10 @@ export default function DashboardLayout({
     return (
         <AccountWrapper tokenSet={isTokenSet}>
             <MessagingProvider>
-                <div className="flex h-screen w-screen max-w-full flex-col overflow-y-hidden sm:flex-row">
+                <div className="flex h-full w-screen max-w-full flex-col overflow-y-hidden sm:flex-row">
                     <Sidebar />
                     <div
-                        className={`relative w-full transition-all duration-300 ${scrollPosition > 0 ? "h-[calc(100vh-129px)]" : "h-[calc(100vh-207px)]"} sm:h-[inherit]`}
+                        className={`relative w-full transition-all duration-300 ${scrollPosition > 0 ? "h-[calc(100%-129px)]" : "h-[calc(100%-207px)]"} sm:h-[inherit]`}
                     >
                         <GlobalBgVector />
                         <div className="absolute inset-0 bg-[url(/images/rain.png)] bg-repeat opacity-50 max-sm:h-screen" />
