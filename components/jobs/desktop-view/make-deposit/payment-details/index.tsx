@@ -74,7 +74,7 @@ export const PaymentDetails = ({
             >
                 <h2 className="text-lg font-bold">Payment Details</h2>
 
-                <div className="flex flex-col gap-6 text-lg">
+                <div className="flex flex-col gap-6 text-base 2xl:text-lg">
                     <div className="flex items-center justify-between">
                         <span>Amount</span>
                         <span>${paymentDetails?.collectionAmount}</span>
@@ -102,22 +102,39 @@ export const PaymentDetails = ({
             <div className="flex flex-col items-center gap-4 rounded-2xl border border-line bg-[#FCFCFC] p-6">
                 <div className="flex items-center gap-4">
                     <Image
-                        src="/icons/metamask.svg"
+                        src="/icons/w-1.png"
                         alt="Coinbase"
                         width={50}
                         height={50}
+                        className="h-[34px] w-[34px] rounded-full border border-gray-200 sm:h-[50px] sm:w-[50px]"
                     />
                     <Image
-                        src="/icons/coinbase.svg"
+                        src="/icons/w-2.png"
                         alt="Coinbase"
                         width={50}
                         height={50}
+                        className="h-[34px] w-[34px] rounded-full border border-gray-200 sm:h-[50px] sm:w-[50px]"
                     />
                     <Image
-                        src="/icons/wallet-connect.svg"
+                        src="/icons/w-3.png"
                         alt="Coinbase"
                         width={50}
                         height={50}
+                        className="h-[34px] w-[34px] rounded-full border border-gray-200 sm:h-[50px] sm:w-[50px]"
+                    />
+                    <Image
+                        src="/icons/w-4.png"
+                        alt="Coinbase"
+                        width={50}
+                        height={50}
+                        className="h-[34px] w-[34px] rounded-full border border-gray-200 sm:h-[50px] sm:w-[50px]"
+                    />
+                    <Image
+                        src="/icons/w-5.png"
+                        alt="Coinbase"
+                        width={50}
+                        height={50}
+                        className="h-[34px] w-[34px] rounded-full border border-gray-200 sm:h-[50px] sm:w-[50px]"
                     />
                 </div>
                 <p className="text-body">
