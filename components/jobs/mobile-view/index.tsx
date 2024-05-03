@@ -79,10 +79,16 @@ export default function JobsMobileView(): React.JSX.Element {
             <RadixTabs.Content value="open" className="h-full overflow-y-auto">
                 <OpenJobs />
             </RadixTabs.Content>
-            <RadixTabs.Content value="created" className="h-full">
+            <RadixTabs.Content
+                value="created"
+                className="h-full overflow-y-auto"
+            >
                 <CreatedJobs />
             </RadixTabs.Content>
-            <RadixTabs.Content value="accepted" className="h-full">
+            <RadixTabs.Content
+                value="accepted"
+                className="h-full overflow-y-auto"
+            >
                 <AcceptedJobs />
             </RadixTabs.Content>
         </RadixTabs.Root>

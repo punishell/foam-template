@@ -162,11 +162,8 @@ export const ActiveJobCard = ({
         <div
             role="button"
             tabIndex={0}
-            onClick={() => {
-                setScrollPosition(1);
-                setIsMobileModalOpen(true);
-            }}
             onKeyDown={() => {
+                setScrollPosition(1);
                 setIsMobileModalOpen(true);
             }}
             className="z-10 flex w-full cursor-pointer flex-col gap-4 overflow-hidden border-b border-[#9BDCFD] bg-[#F1FBFF] px-[21px] py-4"
