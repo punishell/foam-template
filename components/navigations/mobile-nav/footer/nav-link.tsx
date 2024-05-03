@@ -23,7 +23,7 @@ export const MobileNavLink: FC<Props> = ({ href, label, icon }) => {
         <Link
             href={href}
             className={`group flex w-full items-center justify-center gap-1.5 rounded-lg px-3 py-2 text-base font-normal text-white duration-200 hover:bg-transparent
-      ${isActive ? "!rounded-[100px] bg-emerald-900" : ""}
+      ${isActive ? "!rounded-[100px] !bg-emerald-900" : ""}
       `}
         >
             {icon}
