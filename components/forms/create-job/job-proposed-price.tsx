@@ -24,17 +24,17 @@ interface JobProposedPriceProps {
 
 const JobProposedPrice = ({ form }: JobProposedPriceProps): ReactElement => {
     return (
-        <div className="relative">
+        <div className="relative max-sm:w-1/2">
             <div className="flex h-[45px] items-center rounded-lg border-[#198155] bg-[#ECFCE5] p-2 text-primary">
                 <DollarIcon />
                 <NumericInput
                     type="text"
                     {...form.register("budget")}
                     placeholder="Enter Proposed Price"
-                    className="h-full  bg-transparent text-base placeholder:text-primary focus:outline-none"
+                    className="h-full  bg-transparent text-base placeholder:text-primary focus:outline-none max-sm:text-sm"
                 />
             </div>
-            <span className="absolute -bottom-5 flex w-full">
+            <span className="mt-2 flex w-full">
                 {form.formState.errors.budget?.message != null && (
                     <span className="text-sm text-red-200">
                         {form.formState.errors.budget?.message}

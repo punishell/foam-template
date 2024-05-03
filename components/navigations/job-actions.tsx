@@ -6,6 +6,7 @@
 
 import { useState } from "react";
 import { Plus, Search } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 /* -------------------------------------------------------------------------- */
 /*                             Internal Dependency                            */
@@ -15,6 +16,7 @@ import { Button } from "../common/button";
 
 const JobAction = (): JSX.Element => {
     const [showButtons, setShowButtons] = useState(false);
+    const router = useRouter();
 
     const toggleButtons = (e: React.MouseEvent<HTMLButtonElement>): void => {
         e.stopPropagation();
@@ -31,6 +33,9 @@ const JobAction = (): JSX.Element => {
                         className="flex items-center gap-2.5"
                         variant="primary"
                         size="lg"
+                        onClick={() => {
+                            router.push("/jobs/create");
+                        }}
                     >
                         <Plus size={20} /> Create Job
                     </Button>
@@ -38,6 +43,9 @@ const JobAction = (): JSX.Element => {
                         className="flex items-center gap-2.5"
                         variant="secondary"
                         size="lg"
+                        onClick={() => {
+                            router.push("/jobs");
+                        }}
                     >
                         <Search size={20} /> Find Job
                     </Button>

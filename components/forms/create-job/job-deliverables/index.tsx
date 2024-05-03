@@ -28,10 +28,10 @@ const JobDeliverables = ({
 }: JobDeliverablesProps): ReactElement => {
     return (
         <div className="flex flex-col gap-2">
-            <h3 className="text-lg font-medium text-black">
+            <h3 className="flex flex-col items-start text-lg font-bold text-black sm:flex-row sm:items-center sm:gap-4 sm:font-medium">
                 Deliverables{" "}
                 {!isEdit && (
-                    <span className="ml-4 text-sm font-thin text-body">
+                    <span className="text-sm font-thin text-body">
                         You can create up to five deliverables
                     </span>
                 )}

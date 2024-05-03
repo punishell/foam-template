@@ -88,7 +88,7 @@ export const SkillInput = ({ form, name }: SkillInputProps): JSX.Element => {
             control={form?.control}
             render={({ field: { onChange, value } }) => {
                 return (
-                    <div className="relative">
+                    <div className="relative w-full">
                         <input
                             type="text"
                             placeholder="Enter skill"
@@ -105,7 +105,7 @@ export const SkillInput = ({ form, name }: SkillInputProps): JSX.Element => {
                         />
                         {isOpened && (
                             <div
-                                className="absolute z-50 max-h-[200px] min-w-[271px] translate-x-1 translate-y-2 gap-4 overflow-hidden overflow-y-auto rounded-lg border border-green-300 bg-white p-4 shadow"
+                                className="absolute z-50 max-h-[200px] min-w-[271px] translate-x-1 translate-y-2 gap-4 overflow-hidden overflow-y-auto rounded-lg border border-green-300 bg-white p-4 shadow max-sm:hidden"
                                 ref={ref}
                             >
                                 {isFetching || isLoading ? (

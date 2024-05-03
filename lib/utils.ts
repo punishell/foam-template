@@ -332,3 +332,15 @@ export const emptyFunction = (): void => {
     const arr = [];
     arr.push(5);
 };
+
+/**
+ * Checks the input string and rejects special characters.
+ * Allows only alphanumeric characters, spaces, and some basic punctuation.
+ *
+ * @param {string} input - The input string to validate.
+ * @return {boolean} - Returns true if the input contains only allowed characters, false otherwise.
+ */
+export const rejectSpecialCharacters = (input: string): boolean => {
+    const pattern = /^[a-zA-Z0-9 ,.-]+$/;
+    return pattern.test(input);
+};
