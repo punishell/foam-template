@@ -134,8 +134,8 @@ export const ActiveJobCard = ({
             </div>
             <SideModal
                 isOpen={isUpdateModalOpen}
-                onOpenChange={() => {
-                    setIsUpdateModalOpen(false);
+                onOpenChange={(e) => {
+                    setIsUpdateModalOpen(e);
                 }}
                 className="flex flex-col"
             >
@@ -162,6 +162,11 @@ export const ActiveJobCard = ({
         <div
             role="button"
             tabIndex={0}
+            onClick={() => {
+                setScrollPosition(1);
+                setIsMobileModalOpen(true);
+            }}
+            // Doesn't work
             onKeyDown={() => {
                 setScrollPosition(1);
                 setIsMobileModalOpen(true);
@@ -198,24 +203,13 @@ export const ActiveJobCard = ({
                 </div>
             </div>
             {/* Sidebar Sheet */}
-            <MobileSheetWrapper
-                isOpen={isMobileModalOpen}
-                // to={
-                // 	isCreator && jobProgress < 100
-                // 		? "View Updates"
-                // 		: isCreator && jobProgress === 100
-                // 			? "Review"
-                // 			: !isCreator && jobProgress === 100
-                // 				? "Review"
-                // 				: "Update"
-                // }
-            >
+            <MobileSheetWrapper isOpen={isMobileModalOpen}>
                 {!isCreator ? (
                     <TalentJobSheetForMobile
                         jobId={id}
                         talentId={creator._id}
                         closeModal={() => {
-                            setIsUpdateModalOpen(false);
+                            setIsMobileModalOpen(false);
                         }}
                     />
                 ) : (
@@ -223,7 +217,7 @@ export const ActiveJobCard = ({
                         jobId={id}
                         talentId={talent._id}
                         closeModal={() => {
-                            setIsUpdateModalOpen(false);
+                            setIsMobileModalOpen(false);
                         }}
                     />
                 )}

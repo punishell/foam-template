@@ -13,12 +13,12 @@ import { Star } from "lucide-react";
 /* -------------------------------------------------------------------------- */
 
 import { type JobStatus } from "@/lib/types";
-import { SideModal } from "@/components/common/side-modal";
 import { AfroProfile } from "@/components/common/afro-profile";
-import { TalentJobModal } from "@/components/jobs/desktop-view/sheets/talent";
 import { DeliverableProgressBar } from "@/components/common/deliverable-progress-bar";
 import { useErrorService } from "@/lib/store/error-service";
 import { titleCase } from "@/lib/utils";
+import { MobileSheetWrapper } from "@/components/common/mobile-sheet-wrapper";
+import { TalentJobSheetForMobile } from "@/components/jobs/mobile-view/sheets/talent";
 
 interface TalentJobCardProps {
     jobId: string;
@@ -37,6 +37,7 @@ interface TalentJobCardProps {
         paktScore: number;
         title: string;
     };
+    setScrollPosition: (position: number) => void;
 }
 
 export const TalentJobCard: FC<TalentJobCardProps> = ({
@@ -50,6 +51,7 @@ export const TalentJobCard: FC<TalentJobCardProps> = ({
     completedDeliverables,
     reviewText,
     ratingCount,
+    setScrollPosition,
 }) => {
     const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
     const progress = Math.floor(
@@ -69,6 +71,7 @@ export const TalentJobCard: FC<TalentJobCardProps> = ({
         <div
             className={`flex w-full flex-col gap-1 border-b p-4 pt-0 ${status === "cancelled" ? "border-[#FF5247] bg-[#FFF4F4]" : "border-line bg-white"}`}
             onMouseDown={() => {
+                setScrollPosition(1);
                 setIsUpdateModalOpen(true);
             }}
             role="button"
@@ -129,22 +132,16 @@ export const TalentJobCard: FC<TalentJobCardProps> = ({
                     className="w-full max-w-none"
                     isCancelled={status === "cancelled"}
                 />
-
-                <SideModal
-                    isOpen={isUpdateModalOpen}
-                    onOpenChange={() => {
-                        setIsUpdateModalOpen(false);
-                    }}
-                    className="flex flex-col"
-                >
-                    <TalentJobModal
+                {/* Sidebar Sheet */}
+                <MobileSheetWrapper isOpen={isUpdateModalOpen}>
+                    <TalentJobSheetForMobile
                         talentId={client.id}
                         jobId={jobId}
                         closeModal={() => {
                             setIsUpdateModalOpen(false);
                         }}
                     />
-                </SideModal>
+                </MobileSheetWrapper>
             </div>
         </div>
     );

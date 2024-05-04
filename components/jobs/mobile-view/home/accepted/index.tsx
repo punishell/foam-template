@@ -17,10 +17,12 @@ import { PageError } from "@/components/common/page-error";
 import { PageLoading } from "@/components/common/page-loading";
 import { TalentOngoingJobs } from "./talent-ongoing-jobs";
 import { TalentCompletedJobs } from "./talent-completed-jobs";
+import { useHeaderScroll } from "@/lib/store";
 
 export const AcceptedJobs = (): ReactElement => {
     const jobsData = useGetJobs({ category: "assigned" });
     const jobs = jobsData.data?.data;
+    const { setScrollPosition } = useHeaderScroll();
 
     // sort jobs by latest first
     const sortedJobs = jobs?.sort((a, b) => {
@@ -71,6 +73,7 @@ export const AcceptedJobs = (): ReactElement => {
                             content: (
                                 <TalentOngoingJobs
                                     jobs={ongoingJobs as Job[]}
+                                    setScrollPosition={setScrollPosition}
                                 />
                             ),
                         },
@@ -80,6 +83,7 @@ export const AcceptedJobs = (): ReactElement => {
                             content: (
                                 <TalentCompletedJobs
                                     jobs={completedJobs as Job[]}
+                                    setScrollPosition={setScrollPosition}
                                 />
                             ),
                         },

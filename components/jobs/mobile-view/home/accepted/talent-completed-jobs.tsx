@@ -16,10 +16,12 @@ import { PageEmpty } from "@/components/common/page-empty";
 
 interface CompletedJobsProps {
     jobs: Job[];
+    setScrollPosition: (position: number) => void;
 }
 
 export const TalentCompletedJobs = ({
     jobs,
+    setScrollPosition,
 }: CompletedJobsProps): ReactElement => {
     return (
         <div className="flex h-full w-full flex-col overflow-y-scroll">
@@ -80,6 +82,7 @@ export const TalentCompletedJobs = ({
                                 }}
                                 reviewText={ratings?.[0]?.review ?? ""}
                                 ratingCount={ratings?.[0]?.rating ?? 0}
+                                setScrollPosition={setScrollPosition}
                             />
                         );
                     }

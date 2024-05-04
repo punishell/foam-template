@@ -16,9 +16,13 @@ import { PageEmpty } from "@/components/common/page-empty";
 
 interface OngoingJobsProps {
     jobs: Job[];
+    setScrollPosition: (position: number) => void;
 }
 
-export const TalentOngoingJobs = ({ jobs }: OngoingJobsProps): ReactElement => {
+export const TalentOngoingJobs = ({
+    jobs,
+    setScrollPosition,
+}: OngoingJobsProps): ReactElement => {
     return (
         <div className="flex h-full w-full flex-col overflow-y-scroll">
             {!jobs.length ? (
@@ -63,6 +67,7 @@ export const TalentOngoingJobs = ({ jobs }: OngoingJobsProps): ReactElement => {
                                     name: `${creator.firstName} ${creator.lastName}`,
                                     title: creator?.profile.bio.title ?? "",
                                 }}
+                                setScrollPosition={setScrollPosition}
                             />
                         );
                     }
