@@ -6,7 +6,6 @@
 
 import { type FC } from "react";
 import { useRouter } from "next/navigation";
-import { Button } from "pakt-ui";
 
 /* -------------------------------------------------------------------------- */
 /*                             Internal Dependency                            */

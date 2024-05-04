@@ -4,10 +4,10 @@
 /*                             External Dependency                            */
 /* -------------------------------------------------------------------------- */
 
-import { useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { format } from "date-fns";
-import { Calendar, Tag, SlidersHorizontal } from "lucide-react";
+import { Calendar, Tag, SlidersHorizontal, Loader } from "lucide-react";
 
 /* -------------------------------------------------------------------------- */
 /*                             Internal Dependency                            */
@@ -15,46 +15,37 @@ import { Calendar, Tag, SlidersHorizontal } from "lucide-react";
 
 import { PageError } from "@/components/common/page-error";
 import { PageEmpty } from "@/components/common/page-empty";
-import { Pagination } from "@/components/common/pagination";
 import { type JobApplicant, type Job, isJobApplicant } from "@/lib/types";
 import { type GetAccountResponse } from "@/lib/api/account";
-import { paginate } from "@/lib/utils";
 import { ApplicantCard } from "./card";
 import { Breadcrumb } from "@/components/common/breadcrumb";
 import { Button } from "@/components/common/button";
+import { FilterApplicantModal } from "./filter";
 
 interface Props {
     job: Job;
     account: GetAccountResponse | undefined;
 }
 
-const SORT_BY = [
-    {
-        label: "Highest to lowest",
-        value: "highest-to-lowest",
-    },
-    {
-        label: "Lowest to highest",
-        value: "lowest-to-highest",
-    },
-];
-
 type SortBy = "highest-to-lowest" | "lowest-to-highest";
 
 export const MobileApplicantView = ({ job, account }: Props): JSX.Element => {
+    const [displayedApplicants, setDisplayedApplicants] = useState<
+        JobApplicant[]
+    >([]);
+    const [loading, setLoading] = useState(false);
+    const loadMoreRef = useRef<HTMLDivElement | null>(null);
+    const totalApplicantsRef = useRef<JobApplicant[]>([]);
+
+    const itemsPerPage = 5;
+
     const [skillFilters, setSkillFilters] = useState<string[]>([]);
     const [sortBy, setSortBy] = useState<"score" | "bid">("score");
     const [bidSort, setBidSort] = useState<SortBy>("highest-to-lowest");
     const [scoreSort, setScoreSort] = useState<SortBy>("highest-to-lowest");
-    const [currentPage, setCurrentPage] = useState(1);
+    const [openFilter, setOpenFilter] = useState<boolean>(false);
 
     const router = useRouter();
-
-    const isClient = account?._id === job.creator._id;
-
-    if (!isClient) return <PageError className="absolute inset-0" />;
-
-    const applicants = job.collections.filter(isJobApplicant);
 
     const sortFunction = (
         a: JobApplicant,
@@ -72,46 +63,102 @@ export const MobileApplicantView = ({ job, account }: Props): JSX.Element => {
 
         return 0;
     };
-
-    const filteredApplicants = applicants
-        .filter((applicant) => {
-            if (skillFilters.length === 0) return true;
-            return applicant.creator.profile.talent.tags
-                .map((skill) => skill.toLowerCase())
-                .some((skill) => skillFilters.includes(skill.toLowerCase()));
-        })
-        .sort((a, b) => {
-            const bidSortResult = sortFunction(
-                a,
-                b,
-                (value) => value.paymentFee,
-                bidSort
+    const loadMoreApplicants = useCallback((): void => {
+        if (
+            loading ||
+            displayedApplicants.length >= totalApplicantsRef.current.length
+        ) {
+            setLoading(false);
+            return;
+        }
+        setLoading(true);
+        setTimeout(() => {
+            const nextSet = totalApplicantsRef.current.slice(
+                displayedApplicants.length,
+                displayedApplicants.length + itemsPerPage
             );
-            const scoreSortResult = sortFunction(
-                a,
-                b,
-                (value) => value.creator.score,
-                scoreSort
-            );
+            setDisplayedApplicants((current) => [...current, ...nextSet]);
+            setLoading(false);
+        }, 1500); // Simulates loading time
+    }, [displayedApplicants.length, loading]);
 
-            if (sortBy === "bid") return bidSortResult;
-            if (sortBy === "score") return scoreSortResult;
-            return 0;
-        });
+    useEffect(() => {
+        const observer = new IntersectionObserver(
+            (entries) => {
+                if (
+                    entries[0]?.isIntersecting &&
+                    !loading &&
+                    displayedApplicants.length <
+                        totalApplicantsRef.current.length
+                ) {
+                    setLoading(true);
+                    loadMoreApplicants();
+                }
+            },
+            { threshold: 1 }
+        );
 
-    const itemsPerPage = 3;
-    const totalPages = Math.ceil(filteredApplicants.length / itemsPerPage);
+        if (loadMoreRef.current) {
+            observer.observe(loadMoreRef.current);
+        }
 
-    const paginatedApplicants = paginate(
-        filteredApplicants,
-        itemsPerPage,
-        currentPage
-    );
+        return () => {
+            observer.disconnect();
+        };
+    }, [loading, loadMoreApplicants, displayedApplicants.length]);
+
+    useEffect(() => {
+        const applicants = job.collections.filter(isJobApplicant);
+
+        const filteredApplicants = applicants
+            .filter((applicant) => {
+                if (skillFilters.length === 0) return true;
+                return applicant.creator.profile.talent.tags
+                    .map((skill) => skill.toLowerCase())
+                    .some((skill) =>
+                        skillFilters.includes(skill.toLowerCase())
+                    );
+            })
+            .sort((a, b) => {
+                const bidSortResult = sortFunction(
+                    a,
+                    b,
+                    (value) => value.paymentFee,
+                    bidSort
+                );
+                const scoreSortResult = sortFunction(
+                    a,
+                    b,
+                    (value) => value.creator.score,
+                    scoreSort
+                );
+
+                if (sortBy === "bid") return bidSortResult;
+                if (sortBy === "score") return scoreSortResult;
+                return 0;
+            });
+
+        totalApplicantsRef.current = filteredApplicants;
+        setDisplayedApplicants(filteredApplicants.slice(0, itemsPerPage));
+    }, [bidSort, job.collections, scoreSort, skillFilters, sortBy]);
 
     const skills = job.tagsData.join(",");
 
+    const isClient = account?._id === job.creator._id;
+
+    if (!isClient) return <PageError className="absolute inset-0" />;
     return (
         <>
+            <FilterApplicantModal
+                openFilter={openFilter}
+                setOpenFilter={setOpenFilter}
+                job={job}
+                setSortBy={setSortBy}
+                setScoreSort={setScoreSort}
+                setBidSort={setBidSort}
+                skillFilters={skillFilters}
+                setSkillFilters={setSkillFilters}
+            />
             <Breadcrumb
                 items={[
                     {
@@ -161,7 +208,7 @@ export const MobileApplicantView = ({ job, account }: Props): JSX.Element => {
                     <Button
                         className="flex w-[94px] items-center justify-center gap-2 rounded-[10px] border border-neutral-500 px-4 py-2"
                         onClick={() => {
-                            console.log("Filter");
+                            setOpenFilter(true);
                         }}
                     >
                         <span className="text-center text-sm font-bold leading-normal tracking-wide text-neutral-500">
@@ -171,7 +218,7 @@ export const MobileApplicantView = ({ job, account }: Props): JSX.Element => {
                     </Button>
                 </div>
                 <div className="flex h-full w-full grow gap-6 overflow-hidden">
-                    {applicants.length === 0 && (
+                    {displayedApplicants.length === 0 && (
                         <PageEmpty
                             className="h-full rounded-2xl"
                             label="No applicants yet"
@@ -194,17 +241,16 @@ export const MobileApplicantView = ({ job, account }: Props): JSX.Element => {
                         </PageEmpty>
                     )}
 
-                    {paginatedApplicants.length === 0 &&
-                        applicants.length > 0 && (
-                            <PageEmpty
-                                className="h-full rounded-2xl px-8"
-                                label="No talent matches the criteria, try changing your filter"
-                            />
-                        )}
+                    {displayedApplicants.length === 0 && (
+                        <PageEmpty
+                            className="h-full rounded-2xl px-8"
+                            label="No talent matches the criteria, try changing your filter"
+                        />
+                    )}
 
-                    {paginatedApplicants.length > 0 && (
+                    {displayedApplicants.length > 0 && (
                         <div className="flex flex-col gap-4 overflow-y-auto ">
-                            {paginatedApplicants.map((applicant) => (
+                            {displayedApplicants.map((applicant) => (
                                 <ApplicantCard
                                     key={applicant.creator._id}
                                     talent={applicant.creator}
@@ -213,6 +259,15 @@ export const MobileApplicantView = ({ job, account }: Props): JSX.Element => {
                                     inviteReceiverId={job.invite?.receiver._id}
                                 />
                             ))}
+                            {loading && (
+                                <div className="mx-auto flex w-full flex-row items-center justify-center text-center">
+                                    <Loader
+                                        size={25}
+                                        className="animate-spin text-center text-white"
+                                    />
+                                </div>
+                            )}
+                            <div ref={loadMoreRef} className="h-10" />
                         </div>
                     )}
                 </div>
