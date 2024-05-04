@@ -18,7 +18,7 @@ import { type ApiError, axios } from "@/lib/axios";
 import { toast } from "@/components/common/toaster";
 import { useUserState } from "../store/account";
 
-interface GetAccountResponse {
+export interface GetAccountResponse {
     _id: string;
     type: string;
     email: string;

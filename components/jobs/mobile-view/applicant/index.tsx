@@ -40,7 +40,7 @@ const SORT_BY = [
 
 type SortBy = "highest-to-lowest" | "lowest-to-highest";
 
-export const DesktopApplicantView = ({ job, account }: Props): JSX.Element => {
+export const MobileApplicantView = ({ job, account }: Props): JSX.Element => {
     const [skillFilters, setSkillFilters] = useState<string[]>([]);
     const [sortBy, setSortBy] = useState<"score" | "bid">("score");
     const [bidSort, setBidSort] = useState<SortBy>("highest-to-lowest");
