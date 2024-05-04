@@ -7,8 +7,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { format } from "date-fns";
-import { Calendar, Tag } from "lucide-react";
-import { Button, Select, Checkbox } from "pakt-ui";
+import { Calendar, Tag, SlidersHorizontal } from "lucide-react";
 
 /* -------------------------------------------------------------------------- */
 /*                             Internal Dependency                            */
@@ -21,6 +20,8 @@ import { type JobApplicant, type Job, isJobApplicant } from "@/lib/types";
 import { type GetAccountResponse } from "@/lib/api/account";
 import { paginate } from "@/lib/utils";
 import { ApplicantCard } from "./card";
+import { Breadcrumb } from "@/components/common/breadcrumb";
+import { Button } from "@/components/common/button";
 
 interface Props {
     job: Job;
@@ -110,127 +111,98 @@ export const MobileApplicantView = ({ job, account }: Props): JSX.Element => {
     const skills = job.tagsData.join(",");
 
     return (
-        <div className="flex h-full flex-col gap-6">
-            <div className="flex justify-between gap-4 rounded-xl bg-primary-gradient p-4 py-6">
-                <div className="flex max-w-3xl grow flex-col gap-3">
-                    <h2 className="max-w-[750px] text-3xl font-bold text-white">
-                        {job.name}
-                    </h2>
-                    <p className="max-w-[750px] text-white">
-                        {job.description}
-                    </p>
-                    <div className="mt-auto flex items-center gap-4">
-                        <span className="flex items-center gap-2 rounded-full bg-[#C9F0FF] px-3 py-1 text-[#0065D0]">
-                            <Tag size={20} />
-                            <span>$ {job.paymentFee}</span>
-                        </span>
-
-                        <span className="flex items-center gap-2 rounded-full bg-[#ECFCE5] px-3 py-1 text-[#198155]">
-                            <Calendar size={20} />
-                            <span>
-                                Due{" "}
-                                {format(
-                                    new Date(job.deliveryDate),
-                                    "MMM dd, yyyy"
-                                )}
+        <>
+            <Breadcrumb
+                items={[
+                    {
+                        label: "Jobs",
+                        action: () => {
+                            router.push(`/jobs/${job._id}`);
+                        },
+                    },
+                    { label: "Job Applicants", active: true },
+                ]}
+            />
+            <div className="flex h-full flex-col">
+                <div className="flex justify-between gap-4 bg-primary-gradient p-4 py-6">
+                    <div className="flex max-w-3xl grow flex-col gap-3">
+                        <h2 className="text-lg font-bold leading-[27px] tracking-wide text-neutral-50">
+                            {job.name}
+                        </h2>
+                        <div className="mt-auto flex items-center gap-4">
+                            <span className="flex items-center gap-2 rounded-lg bg-[#C9F0FF] px-3 py-1 text-sm text-[#0065D0]">
+                                <Tag size={20} />
+                                <span>$ {job.paymentFee}</span>
                             </span>
+
+                            <span className="flex items-center gap-2 rounded-lg bg-[#ECFCE5] px-3 py-1 text-sm text-[#198155]">
+                                <Calendar size={20} />
+                                <span>
+                                    Due{" "}
+                                    {format(
+                                        new Date(job.deliveryDate),
+                                        "MMM dd, yyyy"
+                                    )}
+                                </span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <div className="inline-flex h-[76px] w-full items-center justify-between border-b border-green-300 bg-white px-[21px] py-4">
+                    <div className="inline-flex flex-col items-start justify-center gap-0.5">
+                        <div className="text-base font-bold leading-normal tracking-wide text-neutral-800">
+                            All Applicants
+                        </div>
+                        <span className="text-xs leading-[18px] tracking-wide text-neutral-500">
+                            Click on an applicant to view Profile
                         </span>
                     </div>
-                </div>
-            </div>
-
-            <div className="flex w-full  grow gap-6 overflow-hidden">
-                <div className="flex h-fit shrink-0 grow-0 basis-[300px] flex-col gap-4 rounded-2xl border border-[#7DDE86] bg-white p-4">
-                    <div>
-                        <label htmlFor="score">Afroscore</label>
-                        <Select
-                            placeholder="Highest to lowest"
-                            options={SORT_BY}
-                            onChange={(value) => {
-                                setSortBy("score");
-                                setScoreSort(value as SortBy);
-                            }}
-                        />
-                    </div>
-                    <div>
-                        <label htmlFor="bid">Bid</label>
-                        <Select
-                            placeholder="Highest to lowest"
-                            options={SORT_BY}
-                            onChange={(value) => {
-                                setSortBy("bid");
-                                setBidSort(value as SortBy);
-                            }}
-                        />
-                    </div>
-                    <div className="flex flex-col gap-1">
-                        <span>Preferred Skills</span>
-
-                        <div className="flex flex-col gap-2">
-                            {job.tagsData
-                                .map((tag) => tag.toLowerCase())
-                                .map((tag) => (
-                                    <button
-                                        key={tag}
-                                        onClick={() => {
-                                            if (skillFilters.includes(tag)) {
-                                                setSkillFilters(
-                                                    skillFilters.filter(
-                                                        (skill) => skill !== tag
-                                                    )
-                                                );
-                                            } else {
-                                                setSkillFilters([
-                                                    ...skillFilters,
-                                                    tag,
-                                                ]);
-                                            }
-                                        }}
-                                        className="flex w-full items-center justify-between gap-2 rounded-lg border bg-gray-50 px-3 py-3 duration-300 hover:border-[#7DDE86]"
-                                        type="button"
-                                    >
-                                        <span className="capitalize text-body">
-                                            {tag}
-                                        </span>
-                                        <Checkbox
-                                            checked={skillFilters.includes(tag)}
-                                        />
-                                    </button>
-                                ))}
-                        </div>
-                    </div>
-                </div>
-
-                {applicants.length === 0 && (
-                    <PageEmpty
-                        className="h-[60vh] rounded-2xl"
-                        label="No applicants yet"
+                    <Button
+                        className="flex w-[94px] items-center justify-center gap-2 rounded-[10px] border border-neutral-500 px-4 py-2"
+                        onClick={() => {
+                            console.log("Filter");
+                        }}
                     >
-                        <div className="mt-4 w-full">
-                            <Button
-                                className="w-full"
-                                fullWidth
-                                onClick={() => {
-                                    router.push(
-                                        `/talents${skills ? `?skills=${skills}` : ""}`
-                                    );
-                                }}
-                            >
-                                Find Talent
-                            </Button>
-                        </div>
-                    </PageEmpty>
-                )}
+                        <span className="text-center text-sm font-bold leading-normal tracking-wide text-neutral-500">
+                            Filter
+                        </span>
+                        <SlidersHorizontal className="text-neutral-500" />
+                    </Button>
+                </div>
+                <div className="flex h-full w-full grow gap-6 overflow-hidden">
+                    {applicants.length === 0 && (
+                        <PageEmpty
+                            className="h-full rounded-2xl"
+                            label="No applicants yet"
+                        >
+                            <div className="mt-4 w-full">
+                                <Button
+                                    className="w-full"
+                                    fullWidth
+                                    onClick={() => {
+                                        router.push(
+                                            `/talents${skills ? `?skills=${skills}` : ""}`
+                                        );
+                                    }}
+                                    variant="primary"
+                                    size="lg"
+                                >
+                                    Find Talent
+                                </Button>
+                            </div>
+                        </PageEmpty>
+                    )}
 
-                {paginatedApplicants.length === 0 && applicants.length > 0 && (
-                    <PageEmpty
-                        className="h-[60vh] rounded-2xl"
-                        label="No talent matches the criteria, try changing your filter"
-                    />
-                )}
+                    {paginatedApplicants.length === 0 &&
+                        applicants.length > 0 && (
+                            <PageEmpty
+                                className="h-full rounded-2xl px-8"
+                                label="No talent matches the criteria, try changing your filter"
+                            />
+                        )}
 
-                {paginatedApplicants.length > 0 && (
-                    <div className="flex h-full grow flex-col gap-4 overflow-y-auto">
+                    {paginatedApplicants.length > 0 && (
                         <div className="flex flex-col gap-4 overflow-y-auto ">
                             {paginatedApplicants.map((applicant) => (
                                 <ApplicantCard
@@ -242,16 +214,9 @@ export const MobileApplicantView = ({ job, account }: Props): JSX.Element => {
                                 />
                             ))}
                         </div>
-                        <div className="pb-4">
-                            <Pagination
-                                currentPage={currentPage}
-                                totalPages={totalPages}
-                                setCurrentPage={setCurrentPage}
-                            />
-                        </div>
-                    </div>
-                )}
+                    )}
+                </div>
             </div>
-        </div>
+        </>
     );
 };

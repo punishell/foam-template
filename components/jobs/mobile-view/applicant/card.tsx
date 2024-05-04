@@ -33,63 +33,57 @@ export const ApplicantCard: FC<ApplicantCardProps> = ({
     const hasBeenInvited = inviteReceiverId === talent._id;
 
     return (
-        <div className="flex w-full flex-col gap-3 rounded-2xl border border-line bg-white p-4">
-            <div className="flex w-full gap-4">
-                <AfroProfile score={score} size="md" src={profileImage?.url} />
-                <div className="flex grow flex-col gap-2">
-                    <div className="flex items-center justify-between gap-2">
-                        <div className="flex items-center gap-2">
-                            <span className="text-lg font-bold text-title">{`${firstName} ${lastName}`}</span>
-
-                            {hasBeenInvited && (
-                                <span className="inline-flex rounded-full border border-green-400 bg-green-50 px-3 text-sm text-green-900">
-                                    Invited
-                                </span>
-                            )}
-                        </div>
-
-                        <span className="inline-flex rounded-full bg-[#B2E9AA66] px-3 text-base text-title">
-                            Bid ${bid}
-                        </span>
+        <div
+            className="flex w-full flex-col gap-4 border-b border-green-300 bg-white p-4 pt-2"
+            onClick={() => {
+                router.push(`/talents/${talent._id}`);
+            }}
+            onKeyDown={() => {
+                router.push(`/talents/${talent._id}`);
+            }}
+            role="button"
+            tabIndex={0}
+        >
+            <div className="flex w-full items-center justify-between">
+                <div className="flex items-center gap-2">
+                    <AfroProfile
+                        score={score}
+                        size="2sm"
+                        src={profileImage?.url}
+                        className="relative -left-[10px]"
+                    />
+                    <div className="relative -left-[10px] flex flex-col items-start">
+                        <span className="text-lg font-bold text-title">{`${firstName} ${lastName}`}</span>
+                        <span className="text-xs leading-[18px] tracking-wide text-neutral-500">{`${firstName} ${lastName}`}</span>
                     </div>
-                    <div className="grow text-lg text-body">{message}</div>
+                </div>
+                <div className="flex flex-col items-end gap-2">
+                    <span className="inline-flex rounded-full bg-[#B2E9AA66] px-3 text-base text-title">
+                        Bid ${bid}
+                    </span>
+                    {hasBeenInvited && (
+                        <span className="inline-flex rounded-full border border-green-400 bg-green-50 px-3 text-sm text-green-900">
+                            Invited
+                        </span>
+                    )}
                 </div>
             </div>
+            <p className="grow text-base leading-normal tracking-tight text-gray-800">
+                {message}
+            </p>
 
-            <div className="flex items-center justify-between">
-                <div className="flex flex-wrap gap-2">
-                    {profile.talent.tagsIds &&
-                        profile.talent.tagsIds.length > 0 &&
-                        profile.talent.tagsIds.slice(0, 3).map((s) => (
-                            <span
-                                key={s.color + s.name}
-                                style={{ background: s.color }}
-                                className="grow whitespace-nowrap rounded-full bg-green-100 px-4 py-0.5 text-[#090A0A]"
-                            >
-                                {s.name}
-                            </span>
-                        ))}
-                </div>
-                <div className="flex items-center gap-2">
-                    <Button
-                        size="xs"
-                        variant="secondary"
-                        onClick={() => {
-                            router.push(`/messages?userId=${talent._id}`);
-                        }}
-                    >
-                        Message
-                    </Button>
-                    <Button
-                        size="xs"
-                        variant="outline"
-                        onClick={() => {
-                            router.push(`/talents/${talent._id}`);
-                        }}
-                    >
-                        View Profile
-                    </Button>
-                </div>
+            <div className="flex flex-wrap gap-2">
+                {profile.talent.tagsIds &&
+                    profile.talent.tagsIds.length > 0 &&
+                    profile.talent.tagsIds.slice(0, 3).map((s) => (
+                        <span
+                            key={s.color + s.name}
+                            style={{ background: s.color }}
+                            className="grow whitespace-nowrap rounded-full bg-green-100 px-4 py-0.5 text-[#090A0A]"
+                        >
+                            {s.name}
+                        </span>
+                    ))}
             </div>
         </div>
     );
