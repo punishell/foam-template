@@ -4,10 +4,11 @@
 /*                             External Dependency                            */
 /* -------------------------------------------------------------------------- */
 
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 import type * as z from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useRouter } from "next/navigation";
 
 /* -------------------------------------------------------------------------- */
 /*                             Internal Dependency                            */
@@ -24,9 +25,9 @@ export default function CreateJobPage(): React.JSX.Element {
     const router = useRouter();
 
     const form = useForm<FormValues>({
-        reValidateMode: "onChange",
-        mode: "all",
+        reValidateMode: "onBlur",
         resolver: zodResolver(createJobSchema),
+        // mode: "all",
     });
 
     const jobSteps = {
@@ -57,6 +58,58 @@ export default function CreateJobPage(): React.JSX.Element {
             form.watch("category") !== undefined &&
             !form.getFieldState("category").invalid,
     };
+
+    // Trigger validation on field changes
+    const watchedValues = form.watch([
+        "firstSkill",
+        "secondSkill",
+        "thirdSkill",
+    ]);
+
+    const [firstSkill, secondSkill, thirdSkill] = watchedValues;
+
+    useEffect(() => {
+        if (
+            firstSkill !== undefined &&
+            secondSkill !== undefined &&
+            thirdSkill !== undefined &&
+            (firstSkill || secondSkill) === thirdSkill
+        ) {
+            form.setError("thirdSkill", {
+                type: "manual",
+                message: "Skills must be unique",
+            });
+            form.clearErrors("firstSkill");
+            form.clearErrors("secondSkill");
+        } else if (
+            firstSkill !== undefined &&
+            secondSkill !== undefined &&
+            thirdSkill !== undefined &&
+            (firstSkill && secondSkill) === thirdSkill
+        ) {
+            form.setError("thirdSkill", {
+                type: "manual",
+                message: "Skills must be unique",
+            });
+            form.clearErrors("firstSkill");
+            form.clearErrors("secondSkill");
+        } else if (
+            firstSkill !== undefined &&
+            secondSkill !== undefined &&
+            firstSkill === secondSkill
+        ) {
+            form.setError("secondSkill", {
+                type: "manual",
+                message: "Skills must be unique",
+            });
+            form.clearErrors("firstSkill");
+            form.clearErrors("thirdSkill");
+        } else if (firstSkill !== undefined) {
+            form.clearErrors("firstSkill");
+        }
+
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [firstSkill, secondSkill, thirdSkill, form.setError, form.clearErrors]);
 
     return (
         <div className="flex h-full w-full overflow-y-auto sm:gap-6 sm:pb-10 max-sm:flex-col">

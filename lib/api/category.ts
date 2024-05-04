@@ -11,7 +11,7 @@ import { type UseQueryResult, useQuery } from "@tanstack/react-query";
 import { type ApiError, axios } from "@/lib/axios";
 import { toast } from "@/components/common/toaster";
 
-interface CategoryData {
+export interface CategoryData {
     _id: string;
     name: string;
     color: string;
