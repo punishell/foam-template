@@ -53,6 +53,8 @@ export const MobileHeader = (): ReactElement => {
     useEffect(() => {
         if (pathname !== "/overview") {
             setScrollPosition(1);
+        } else {
+            setScrollPosition(0);
         }
     }, [pathname, setScrollPosition]);
 
@@ -60,7 +62,7 @@ export const MobileHeader = (): ReactElement => {
         <>
             <div className="relative !z-[9] block h-auto max-h-max w-full overflow-hidden bg-[#ECFCE5] sm:hidden">
                 <div
-                    className={`absolute -left-1 z-[5] translate-x-1/2 transform
+                    className={`absolute -left-1 z-[5] translate-x-1/2 transform transition-all duration-300
 				${scrollPosition === 0 && profileCompleted ? "translate-y-1/2 scale-[1.6]" : "top-0 translate-y-[2%] scale-100"}`}
                 >
                     {profileImage?.url && value && (
@@ -69,7 +71,7 @@ export const MobileHeader = (): ReactElement => {
                             score={value}
                             src={profileImage?.url}
                             url="/profile"
-                            className="relative -left-[10px]"
+                            className={`${scrollPosition === 0 && profileCompleted ? "-left-[5px]" : "-left-[15px]"} relative -left-[5px] transition-all duration-300`}
                         />
                     )}
                 </div>
@@ -98,7 +100,7 @@ export const MobileHeader = (): ReactElement => {
                     </div>
                 </div>
                 <div
-                    className={`relative z-[2] flex w-full items-center overflow-hidden bg-[#BCF68CD4] px-5 ${scrollPosition === 0 && profileCompleted ? "h-[78px]" : "h-[0px]"}`}
+                    className={`relative z-[2] flex w-full items-center overflow-hidden bg-[#BCF68CD4] px-5 transition-all duration-150 ${scrollPosition === 0 && profileCompleted ? "h-[78px]" : "h-[0px]"}`}
                 >
                     <div className="absolute inset-0 -z-[1] bg-[url(/images/rain.png)] bg-repeat opacity-50" />
                     <div className="z-20 flex w-full items-center justify-between gap-2">

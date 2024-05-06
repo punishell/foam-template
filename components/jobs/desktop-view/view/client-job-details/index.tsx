@@ -27,7 +27,9 @@ interface ClientJobDetailsProps {
     job: Job;
 }
 
-export function ClientJobDetails({ job }: ClientJobDetailsProps): ReactElement {
+export function DesktopClientJobDetails({
+    job,
+}: ClientJobDetailsProps): ReactElement {
     const cancelInvite = useCancelJobInvite();
     const [isDeleteModalOpen, setIsDeleteModalOpen] = React.useState(false);
     const JOB_TYPE: "private" | "open" = job.isPrivate ? "private" : "open";

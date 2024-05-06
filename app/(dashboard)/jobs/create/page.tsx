@@ -4,6 +4,8 @@
 /*                             External Dependency                            */
 /* -------------------------------------------------------------------------- */
 
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 import type * as z from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -15,26 +17,17 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import CreateJobForm from "@/components/forms/create-job";
 import { createJobSchema } from "@/lib/validations";
 import Steps from "@/components/jobs/misc/steps";
+import { Breadcrumb } from "@/components/common/breadcrumb";
 
 type FormValues = z.infer<typeof createJobSchema>;
 
 export default function CreateJobPage(): React.JSX.Element {
-    // const { _id: userId } = useUserState();
-    // const [files, setFiles] = React.useState<File[]>([]);
-    // const [uploadProgress, setUploadProgress] = React.useState(0);
-
-    // const onDrop = React.useCallback(async (acceptedFiles: File[]) => {}, []);
-
-    // const { getRootProps, getInputProps } = useDropzone({
-    //   onDrop,
-    //   maxFiles: 5,
-    //   accept: {},
-    // });
+    const router = useRouter();
 
     const form = useForm<FormValues>({
-        reValidateMode: "onChange",
-        mode: "all",
+        reValidateMode: "onBlur",
         resolver: zodResolver(createJobSchema),
+        // mode: "all",
     });
 
     const jobSteps = {
@@ -66,25 +59,80 @@ export default function CreateJobPage(): React.JSX.Element {
             !form.getFieldState("category").invalid,
     };
 
-    return (
-        <div className="flex h-full gap-6 overflow-y-auto pb-10">
-            <CreateJobForm form={form} />
-            <div className="flex shrink-0 grow-0 basis-[300px] flex-col gap-6">
-                <Steps jobSteps={jobSteps} />
-                {/* <div className="bg-white p-6 rounded-xl min-h-[250px] border border-line flex flex-col gap-4">
-          <div className="flex items-center gap-2">
-            <span className="text-lg font-bold">Attachments</span>{' '}
-            <span className="text-body text-sm font-normal">(optional)</span>
-          </div>
+    // Trigger validation on field changes
+    const watchedValues = form.watch([
+        "firstSkill",
+        "secondSkill",
+        "thirdSkill",
+    ]);
 
-          <div
-            className="border border-dashed rounded-3xl p-4 text-center grow flex items-center justify-center hover:bg-gray-50 duration-200 cursor-pointer"
-            {...getRootProps()}
-          >
-            <input {...getInputProps()} />
-            <span className="flex text-body">Click to browse or drag and drop your files</span>
-          </div>
-        </div> */}
+    const [firstSkill, secondSkill, thirdSkill] = watchedValues;
+
+    useEffect(() => {
+        if (
+            firstSkill !== undefined &&
+            secondSkill !== undefined &&
+            thirdSkill !== undefined &&
+            (firstSkill || secondSkill) === thirdSkill
+        ) {
+            form.setError("thirdSkill", {
+                type: "manual",
+                message: "Skills must be unique",
+            });
+            form.clearErrors("firstSkill");
+            form.clearErrors("secondSkill");
+        } else if (
+            firstSkill !== undefined &&
+            secondSkill !== undefined &&
+            thirdSkill !== undefined &&
+            (firstSkill && secondSkill) === thirdSkill
+        ) {
+            form.setError("thirdSkill", {
+                type: "manual",
+                message: "Skills must be unique",
+            });
+            form.clearErrors("firstSkill");
+            form.clearErrors("secondSkill");
+        } else if (
+            firstSkill !== undefined &&
+            secondSkill !== undefined &&
+            firstSkill === secondSkill
+        ) {
+            form.setError("secondSkill", {
+                type: "manual",
+                message: "Skills must be unique",
+            });
+            form.clearErrors("firstSkill");
+            form.clearErrors("thirdSkill");
+        } else if (firstSkill !== undefined) {
+            form.clearErrors("firstSkill");
+        }
+
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [firstSkill, secondSkill, thirdSkill, form.setError, form.clearErrors]);
+
+    return (
+        <div className="flex h-full w-full overflow-y-auto sm:gap-6 sm:pb-10 max-sm:flex-col">
+            <Breadcrumb
+                items={[
+                    {
+                        label: "Jobs",
+                        action: () => {
+                            router.push("/jobs");
+                        },
+                    },
+                    {
+                        label: "Create Job",
+                        active: true,
+                        action: () => {
+                            router.push("/jobs/create");
+                        },
+                    },
+                ]}
+            />
+            <CreateJobForm form={form} />
+            <div className="flex shrink-0 grow-0 basis-[300px] flex-col gap-6 max-sm:hidden">
+                <Steps jobSteps={jobSteps} />
             </div>
         </div>
     );

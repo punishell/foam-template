@@ -32,7 +32,7 @@ export const TabContentWrapper = ({
     return (
         <div
             ref={scrollParentRef}
-            className="scrollbar-hide mb-1 w-full overflow-auto bg-white pb-[130px] sm:rounded-2xl sm:border sm:border-line sm:p-4 [&:last]:mb-0 [&>*]:mb-0 sm:[&>*]:mb-5"
+            className="scrollbar-hide mb-1 w-full overflow-auto bg-white pb-10 sm:rounded-2xl sm:border sm:border-line sm:p-4 [&:last]:mb-0 [&>*]:mb-0 sm:[&>*]:mb-5"
         >
             {children}
         </div>

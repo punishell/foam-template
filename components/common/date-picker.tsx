@@ -120,7 +120,7 @@ export const DatePicker: React.FC<DatePickerProps> = ({
                         {selected ? (
                             <span>{format(selected, "PPP")}</span>
                         ) : (
-                            <span className="">
+                            <span className="max-sm:text-sm">
                                 {placeholder ?? "Select a date"}
                             </span>
                         )}

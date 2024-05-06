@@ -27,7 +27,7 @@ interface Props {
 
 export default function RootLayout({ children }: Props): React.JSX.Element {
     return (
-        <html lang="en" suppressHydrationWarning className="h-screen">
+        <html lang="en" suppressHydrationWarning className="h-full">
             <Script
                 type="module"
                 src="https://cdn.jsdelivr.net/npm/ldrs/dist/auto/zoomies.js"
@@ -36,7 +36,7 @@ export default function RootLayout({ children }: Props): React.JSX.Element {
             <head />
 
             <body
-                className={`${circularStd.variable} min-h-screen font-sans antialiased`}
+                className={`${circularStd.variable} h-full font-sans antialiased`}
             >
                 <Toaster position="top-right" gutter={8} />
                 <Providers>{children}</Providers>

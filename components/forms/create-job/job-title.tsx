@@ -29,7 +29,7 @@ const JobTitle = ({ form }: JobTitleProps): ReactElement => {
                 maxLength={60}
                 {...form.register("title")}
                 placeholder="Enter Job Title"
-                className="w-full bg-transparent text-3xl text-white caret-white placeholder:text-white placeholder:text-opacity-60 focus:outline-none"
+                className="w-full bg-transparent text-2xl text-white caret-white placeholder:text-white placeholder:text-opacity-60 focus:outline-none sm:text-3xl max-sm:placeholder:text-2xl"
             />
             <div className="ml-auto text-right text-sm text-white">
                 {form.watch("title")?.length}/ 60

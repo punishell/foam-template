@@ -23,7 +23,9 @@ interface JobDescriptionProps {
 const JobDescription = ({ form }: JobDescriptionProps): ReactElement => {
     return (
         <div className="flex flex-col gap-2">
-            <h3 className="text-lg font-medium text-black">Job Description</h3>
+            <h3 className="text-lg font-bold text-black sm:font-medium">
+                Job Description
+            </h3>
             <div className="relative">
                 <textarea
                     id="description"
@@ -36,7 +38,7 @@ const JobDescription = ({ form }: JobDescriptionProps): ReactElement => {
                 <div className="-mt-1 ml-auto w-fit text-sm text-body">
                     {form.watch("description")?.length} / 400 characters
                 </div>
-                <span className="absolute -bottom-4 flex w-full">
+                <span className="mt-2 flex w-full">
                     {form.formState.errors.description?.message != null && (
                         <span className="text-sm text-red-500">
                             {form.formState.errors.description?.message}

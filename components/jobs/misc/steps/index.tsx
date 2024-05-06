@@ -25,7 +25,7 @@ interface StepsProps {
 
 const Steps = ({ jobSteps, isEdit }: StepsProps): ReactElement => {
     return (
-        <div className="flex h-fit flex-col gap-3 rounded-xl border border-line bg-white p-6">
+        <div className="hidden h-fit flex-col gap-3 rounded-xl border border-line bg-white p-6 sm:flex">
             <h3 className="font-bold">Steps</h3>
             <StepIndicator isComplete={jobSteps.details}>
                 Job Details

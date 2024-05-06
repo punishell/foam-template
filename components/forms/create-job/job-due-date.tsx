@@ -24,13 +24,13 @@ interface JobDueDateProps {
 
 const JobDueDate = ({ form }: JobDueDateProps): ReactElement => {
     return (
-        <div className="relative">
+        <div className="relative w-1/2">
             <Controller
                 name="due"
                 control={form.control}
                 render={({ field: { onChange, value } }) => (
                     <DatePicker
-                        className="h-[45px] w-[250px] border-[#0065D0CC] bg-[#C9F0FF] text-[#0065D0CC]"
+                        className="h-[45px] w-full border-[#0065D0CC] bg-[#C9F0FF] text-[#0065D0CC] sm:w-[250px]"
                         placeholder="Select Due Date"
                         selected={value}
                         onSelect={(date) => {
@@ -40,7 +40,7 @@ const JobDueDate = ({ form }: JobDueDateProps): ReactElement => {
                     />
                 )}
             />
-            <span className="absolute -bottom-5 flex w-full">
+            <span className="mt-2 flex w-full">
                 {form.formState.errors.due?.message != null && (
                     <span className="text-sm text-red-200">
                         {form.formState.errors.due?.message}

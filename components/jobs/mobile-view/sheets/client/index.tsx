@@ -23,6 +23,7 @@ import { JobCancellationRequest } from "./cancel/review-job-cancellation-request
 import { RequestJobCancellation } from "./cancel/request-job-cancellation";
 import { JobCancellationSuccessRequested } from "./cancel/job-cancellation-request-success";
 import { Button } from "@/components/common/button";
+import { Breadcrumb } from "@/components/common/breadcrumb";
 
 interface ClientJobModalProps {
     jobId: string;
@@ -73,25 +74,44 @@ export const ClientJobModalForMobile: FC<ClientJobModalProps> = ({
 
     if (job.status === "cancelled") {
         return (
-            <div className="flex h-full flex-col items-center justify-center bg-red-50 text-red-500">
-                <div className="flex w-[200px] items-center justify-center">
-                    <Lottie animationData={warning} loop={false} />
+            <>
+                <Breadcrumb
+                    items={[
+                        {
+                            label: "Jobs",
+                            action: () => {
+                                closeModal();
+                            },
+                        },
+                        {
+                            label: "Create Job",
+                            active: true,
+                            action: () => {
+                                router.push("/jobs/create");
+                            },
+                        },
+                    ]}
+                />
+                <div className="flex h-full flex-col items-center justify-center bg-red-50 text-red-500">
+                    <div className="flex w-[200px] items-center justify-center">
+                        <Lottie animationData={warning} loop={false} />
+                    </div>
+                    <span>This Job has been cancelled</span>
+                    <div className="mt-8 w-full max-w-[200px]">
+                        <Button
+                            fullWidth
+                            size="lg"
+                            onClick={() => {
+                                closeModal();
+                                router.push("/overview");
+                            }}
+                            variant="primary"
+                        >
+                            Go To Dashboard
+                        </Button>
+                    </div>
                 </div>
-                <span>This Job has been cancelled</span>
-                <div className="mt-8 w-full max-w-[200px]">
-                    <Button
-                        fullWidth
-                        size="lg"
-                        onClick={() => {
-                            closeModal();
-                            router.push("/overview");
-                        }}
-                        variant="primary"
-                    >
-                        Go To Dashboard
-                    </Button>
-                </div>
-            </div>
+            </>
         );
     }
 
@@ -120,6 +140,7 @@ export const ClientJobModalForMobile: FC<ClientJobModalProps> = ({
             requestJobCancellation={() => {
                 setIsRequestingJobCancellation(true);
             }}
+            closeModal={closeModal}
         />
     );
 };

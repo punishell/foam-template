@@ -78,17 +78,17 @@ const CreateJobForm = ({ form }: CreateJobFormProps): ReactElement => {
                     e.preventDefault();
                 }
             }}
-            className="flex h-fit grow flex-col rounded-2xl border bg-white"
+            className="flex h-fit grow flex-col border bg-white sm:rounded-2xl max-sm:w-full"
         >
-            <div className="flex flex-col gap-10 rounded-t-2xl bg-primary-gradient p-6 pb-8">
+            <div className="flex w-full flex-col gap-10 bg-primary-gradient px-5 py-6 sm:rounded-t-2xl sm:p-6 sm:pb-8">
                 <JobTitle form={form} />
 
-                <div className="flex max-w-lg gap-4">
+                <div className="flex w-full gap-2 sm:max-w-lg sm:gap-4">
                     <JobProposedPrice form={form} />
                     <JobDueDate form={form} />
                 </div>
             </div>
-            <div className="flex grow flex-col gap-6 p-6">
+            <div className="flex w-full grow flex-col gap-6 px-5 py-6 sm:p-6">
                 <PreferredSkills form={form} />
                 <JobDescription form={form} />
                 <JobDeliverables form={form} />
@@ -96,27 +96,27 @@ const CreateJobForm = ({ form }: CreateJobFormProps): ReactElement => {
                     <h3 className="text-lg font-medium text-black">
                         Classifications
                     </h3>
-                    <div className="flex items-center gap-4">
-                        <JobCategory form={form} />
-                        <JobVisibility form={form} />
-
-                        <div className="ml-auto mt-auto w-full max-w-[250px] rounded-xl border border-gray-300">
-                            <Button
-                                disabled={
-                                    createJob.isLoading ||
-                                    !form.formState.isValid
-                                }
-                                fullWidth
-                            >
-                                {createJob.isLoading ? (
-                                    <Spinner />
-                                ) : form.watch("visibility") === "private" ? (
-                                    "Post Job"
-                                ) : (
-                                    "Post Job"
-                                )}
-                            </Button>
+                    <div className="flex w-full flex-col items-center gap-4 sm:flex-row">
+                        <div className="flex items-center gap-4">
+                            <JobCategory form={form} />
+                            <JobVisibility form={form} />
                         </div>
+
+                        <Button
+                            disabled={
+                                createJob.isLoading || !form.formState.isValid
+                            }
+                            fullWidth
+                            className="mt-auto w-full rounded-xl border border-gray-300 sm:ml-auto sm:max-w-[250px] max-sm:mt-8"
+                        >
+                            {createJob.isLoading ? (
+                                <Spinner />
+                            ) : form.watch("visibility") === "private" ? (
+                                "Post Job"
+                            ) : (
+                                "Post Job"
+                            )}
+                        </Button>
                     </div>
                 </div>
             </div>

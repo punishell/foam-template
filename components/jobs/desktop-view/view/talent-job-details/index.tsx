@@ -25,7 +25,7 @@ interface TalentJobDetailsProps {
     userId: string;
 }
 
-export const TalentJobDetails: FC<TalentJobDetailsProps> = ({
+export const DesktopTalentJobDetails: FC<TalentJobDetailsProps> = ({
     job,
     userId,
 }) => {

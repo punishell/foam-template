@@ -6,7 +6,6 @@
 
 import { useState, type FC } from "react";
 import { ChevronDown, MoreVertical } from "lucide-react";
-import { useRouter } from "next/navigation";
 
 /* -------------------------------------------------------------------------- */
 /*                             Internal Dependency                            */
@@ -25,13 +24,14 @@ import { Breadcrumb } from "@/components/common/breadcrumb";
 interface JobUpdatesProps {
     job: Job;
     requestJobCancellation: () => void;
+    closeModal: () => void;
 }
 
 export const JobUpdates: FC<JobUpdatesProps> = ({
     job,
     requestJobCancellation,
+    closeModal,
 }) => {
-    const router = useRouter();
     const {
         name,
         owner,
@@ -55,9 +55,7 @@ export const JobUpdates: FC<JobUpdatesProps> = ({
                     {
                         label: "Jobs",
                         action: () => {
-                            router.push(
-                                "/jobs?skills=&search=&range=%2C100&jobs-type=accepted"
-                            );
+                            closeModal();
                         },
                     },
                     { label: "Job Updates", active: true },
@@ -79,11 +77,10 @@ export const JobUpdates: FC<JobUpdatesProps> = ({
                         >
                             Cancel Job
                         </button>
-                        {/* // Comment <button className="px-4 py-2 hover:bg-red-100 duration-200 text-left">Report an Issue</button> */}
                     </PopoverContent>
                 </Popover>
             </div>
-            <div className="flex h-auto flex-col pb-6">
+            <div className="flex h-auto flex-col pb-[75px]">
                 <JobUpdateHeader
                     createdAt={createdAt}
                     profile={creator}

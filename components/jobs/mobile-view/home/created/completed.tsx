@@ -45,7 +45,6 @@ export const CompletedJobs = ({ jobs }: CompletedJobsProps): JSX.Element => {
                                 isCancelled={status === "cancelled"}
                                 isCompleted={
                                     // (talentHasReviewed && clientHasReviewed) ??
-                                    status === "cancelled" ||
                                     status === "completed"
                                 }
                                 totalDeliverables={

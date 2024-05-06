@@ -8,16 +8,15 @@ import { useEffect, useRef, useState } from "react";
 import { Controller, type UseFormReturn } from "react-hook-form";
 import type * as z from "zod";
 import { Check } from "lucide-react";
-import { useOnClickOutside } from "usehooks-ts";
 
 /* -------------------------------------------------------------------------- */
 /*                             Internal Dependency                            */
 /* -------------------------------------------------------------------------- */
 
 import { type createJobSchema } from "@/lib/validations";
-import { useGetCategory } from "@/lib/api/category";
+import { type CategoryData, useGetCategory } from "@/lib/api/category";
 import { Spinner } from "@/components/common";
-import { sentenceCase } from "@/lib/utils";
+import { disallowedChars, filterSkillsByName, sentenceCase } from "@/lib/utils";
 
 type FormValues = z.infer<typeof createJobSchema>;
 
@@ -25,62 +24,172 @@ interface SkillInputProps {
     form: UseFormReturn<FormValues>;
     name: "thirdSkill" | "secondSkill" | "firstSkill";
 }
+interface CategoryList {
+    label: string;
+    value: string;
+}
 
 export const SkillInput = ({ form, name }: SkillInputProps): JSX.Element => {
-    const [isOpened, setIsOpened] = useState<boolean>(false);
+    const [isOpen, setIsOpen] = useState<boolean>(false);
     const [skillValue, setSkillValue] = useState<string>("");
-    const ref = useRef<HTMLDivElement | null>(null);
+    const [highlightedIndex, setHighlightedIndex] = useState(-1);
+
     const inputRef = useRef<HTMLInputElement | null>(null);
+    const dropdownRef = useRef<HTMLDivElement | null>(null);
+    const optionRefs = useRef<HTMLDivElement[]>([]);
 
     const { data, isFetching, isLoading } = useGetCategory(skillValue);
     const categories = data?.data ?? [];
+    const ct = filterSkillsByName(categories, disallowedChars);
 
-    const CATEGORY_LIST: Array<{ label: string; value: string }> = (
-        categories || []
-    ).map((c) => ({
+    const CATEGORY_LIST: CategoryList[] = (ct || []).map((c: CategoryData) => ({
         label: c.name,
         value: c.name,
     }));
 
     // Filter with skillValue/inputValue
-    const filteredCategoryList = CATEGORY_LIST.filter((category) => {
-        return category.label.toLowerCase().includes(skillValue.toLowerCase());
-    });
+    const filteredCategoryList: CategoryList[] = CATEGORY_LIST.filter(
+        (category) => {
+            return category.label
+                .toLowerCase()
+                .includes(skillValue.toLowerCase());
+        }
+    );
 
+    const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>): void => {
+        switch (e.key) {
+            case "ArrowDown":
+                e.preventDefault(); // Prevent the cursor from moving
+                setIsOpen(true); // Open dropdown if not already open
+                setHighlightedIndex(
+                    (prevIndex) => (prevIndex + 1) % filteredCategoryList.length
+                );
+                break;
+            case "ArrowUp":
+                e.preventDefault(); // Prevent the cursor from moving
+                setIsOpen(true); // Ensure dropdown is open
+                setHighlightedIndex(
+                    (prevIndex) =>
+                        (prevIndex - 1 + filteredCategoryList.length) %
+                        filteredCategoryList.length
+                );
+                break;
+            case "Enter":
+                e.preventDefault();
+                if (highlightedIndex !== -1 && isOpen) {
+                    // setSkillValue(filteredCategoryList[highlightedIndex].label); // Set input value to selected option's label
+                    setIsOpen(false); // Close dropdown
+                    setHighlightedIndex(-1); // Reset highlighted index
+                    form.setValue(
+                        name,
+                        // @ts-expect-error --- TS doesn't know that form is a UseFormReturn
+                        filteredCategoryList[highlightedIndex].label,
+                        { shouldValidate: true }
+                    );
+                    void form.trigger(name);
+                }
+                break;
+            case "Escape":
+                setIsOpen(false);
+                setHighlightedIndex(-1); // Reset highlighted index
+                break;
+            case "Tab":
+                setIsOpen(false);
+                setHighlightedIndex(-1);
+                break;
+            default:
+                setIsOpen(true); // Open dropdown if starting to type
+                break;
+        }
+    };
+
+    // Close dropdown when pressing backspace
     useEffect(() => {
         // Check if the input element exists
         if (inputRef.current) {
             // Event handler function
-            const handleKeyDown = (event: KeyboardEvent): void => {
+            const hkd = (event: KeyboardEvent): void => {
                 if (event.key === "Backspace" && skillValue.length === 1) {
-                    setIsOpened(true);
+                    setIsOpen(true);
                 }
             };
 
             // Add event listener to the input element
             const inputElement = inputRef.current;
-            inputElement.addEventListener("keydown", handleKeyDown);
+            inputElement.addEventListener("keydown", hkd);
 
             // Cleanup function
             return () => {
-                inputElement.removeEventListener("keydown", handleKeyDown);
+                inputElement.removeEventListener("keydown", hkd);
             };
         }
 
         return () => {};
     }, [inputRef, skillValue.length]);
 
-    const handleClickOutside = (): void => {
-        setIsOpened(false);
-    };
-
-    useOnClickOutside(ref, handleClickOutside);
-
+    // Close dropdown when no results
     useEffect(() => {
         if (filteredCategoryList.length === 0 && !isLoading && !isFetching) {
-            setIsOpened(false);
+            setIsOpen(false);
         }
     }, [filteredCategoryList.length, isFetching, isLoading]);
+
+    // Close dropdown when clicking outside
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent): void => {
+            if (
+                dropdownRef.current &&
+                !dropdownRef.current.contains(event.target as Node)
+            ) {
+                setIsOpen(false);
+            }
+        };
+
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
+    }, [dropdownRef]);
+
+    useEffect(() => {
+        optionRefs.current = optionRefs.current.slice(
+            0,
+            filteredCategoryList.length
+        );
+    }, [filteredCategoryList]);
+
+    // Scroll to highlighted option
+    useEffect(() => {
+        if (isOpen && highlightedIndex !== -1) {
+            const optionElement = optionRefs.current[highlightedIndex];
+            if (optionElement && dropdownRef.current) {
+                const dropdown = dropdownRef.current;
+                const option = optionElement;
+
+                const dropdownRect = dropdown.getBoundingClientRect();
+                const optionRect = option.getBoundingClientRect();
+
+                // Define a threshold or padding for the scroll.
+                const scrollPadding = 20; // This is the threshold/padding amount in pixels.
+
+                // Scroll up if the option is above the viewable area.
+                if (optionRect.top < dropdownRect.top + scrollPadding) {
+                    dropdown.scrollTop = option.offsetTop - scrollPadding;
+                }
+                // Scroll down if the option is below the viewable area.
+                else if (
+                    optionRect.bottom >
+                    dropdownRect.bottom - scrollPadding
+                ) {
+                    dropdown.scrollTop =
+                        option.offsetTop +
+                        option.offsetHeight -
+                        dropdown.offsetHeight +
+                        scrollPadding;
+                }
+            }
+        }
+    }, [highlightedIndex, isOpen]);
 
     return (
         <Controller
@@ -88,7 +197,7 @@ export const SkillInput = ({ form, name }: SkillInputProps): JSX.Element => {
             control={form?.control}
             render={({ field: { onChange, value } }) => {
                 return (
-                    <div className="relative">
+                    <div className="relative w-full">
                         <input
                             type="text"
                             placeholder="Enter skill"
@@ -97,29 +206,36 @@ export const SkillInput = ({ form, name }: SkillInputProps): JSX.Element => {
                                 onChange(e.target.value);
                                 setSkillValue(e.target.value);
                             }}
-                            onClick={() => {
-                                setIsOpened(true);
-                            }}
                             value={sentenceCase(value ?? "")}
+                            onKeyDown={handleKeyDown}
+                            onFocus={() => {
+                                setIsOpen(true);
+                                void form.trigger(name);
+                            }}
                             ref={inputRef}
+                            maxLength={20}
                         />
-                        {isOpened && (
+                        {isOpen && (
                             <div
-                                className="absolute z-50 max-h-[200px] min-w-[271px] translate-x-1 translate-y-2 gap-4 overflow-hidden overflow-y-auto rounded-lg border border-green-300 bg-white p-4 shadow"
-                                ref={ref}
+                                className="absolute z-50 max-h-[200px] min-w-[271px] translate-x-1 translate-y-2 gap-4 overflow-hidden overflow-y-auto rounded-lg border border-green-300 bg-white p-4 shadow max-sm:hidden"
+                                style={{
+                                    maxHeight: "200px",
+                                    overflowY: "auto",
+                                }}
+                                ref={dropdownRef}
                             >
                                 {isFetching || isLoading ? (
                                     <Spinner />
                                 ) : (
                                     <>
                                         {filteredCategoryList.map(
-                                            ({ label, value: v }) => (
-                                                <div
+                                            ({ label, value: v }, index) => (
+                                                <button
                                                     key={v}
-                                                    className="relative flex w-full cursor-pointer select-none items-center rounded p-2 text-base outline-none hover:bg-[#ECFCE5]"
+                                                    className={`${highlightedIndex === index ? "bg-[#ECFCE5]" : ""} relative flex w-full cursor-pointer select-none items-center rounded p-2 text-base outline-none hover:bg-[#ECFCE5]`}
                                                     onClick={() => {
                                                         onChange(label);
-                                                        setIsOpened(false);
+                                                        setIsOpen(false);
                                                     }}
                                                     onKeyDown={(e) => {
                                                         if (
@@ -127,11 +243,17 @@ export const SkillInput = ({ form, name }: SkillInputProps): JSX.Element => {
                                                             e.key === " "
                                                         ) {
                                                             onChange(label);
-                                                            setIsOpened(false);
+                                                            setIsOpen(false);
                                                         }
                                                     }}
-                                                    role="button"
-                                                    tabIndex={0}
+                                                    type="button"
+                                                    ref={(el) => {
+                                                        // Store a reference to each option element
+                                                        // @ts-expect-error --- TS doesn't know that optionRefs is a ref to an array of divs
+                                                        optionRefs.current[
+                                                            index
+                                                        ] = el;
+                                                    }}
                                                 >
                                                     {sentenceCase(label)}
                                                     {label === value && (
@@ -139,7 +261,7 @@ export const SkillInput = ({ form, name }: SkillInputProps): JSX.Element => {
                                                             <Check className="h-4 w-4" />
                                                         </span>
                                                     )}
-                                                </div>
+                                                </button>
                                             )
                                         )}
                                     </>

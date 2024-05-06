@@ -7,18 +7,16 @@
 import { type FC, useState } from "react";
 import Rating from "react-rating";
 import { Star } from "lucide-react";
-// import { useRouter } from "next/navigation";
 
 /* -------------------------------------------------------------------------- */
 /*                             Internal Dependency                            */
 /* -------------------------------------------------------------------------- */
 
-// import { type ReviewChangeRequest } from "@/lib/types";
-import { SideModal } from "@/components/common/side-modal";
 import { AfroProfile } from "@/components/common/afro-profile";
-import { ClientJobModal } from "@/components/jobs/desktop-view/sheets/client";
 import { DeliverableProgressBar } from "@/components/common/deliverable-progress-bar";
 import { titleCase } from "@/lib/utils";
+import { MobileSheetWrapper } from "@/components/common/mobile-sheet-wrapper";
+import { ClientJobModalForMobile } from "@/components/jobs/mobile-view/sheets/client";
 
 interface ClientJobCardProps {
     jobId: string;
@@ -128,21 +126,16 @@ export const ClientJobCard: FC<ClientJobCardProps> = ({
                     className="w-full max-w-none"
                 />
 
-                <SideModal
-                    isOpen={isUpdateModalOpen}
-                    onOpenChange={() => {
-                        setIsUpdateModalOpen(false);
-                    }}
-                    className="flex flex-col"
-                >
-                    <ClientJobModal
+                {/* Sidebar Sheet */}
+                <MobileSheetWrapper isOpen={isUpdateModalOpen}>
+                    <ClientJobModalForMobile
                         jobId={jobId}
                         talentId={talent.id}
                         closeModal={() => {
                             setIsUpdateModalOpen(false);
                         }}
                     />
-                </SideModal>
+                </MobileSheetWrapper>
             </div>
         </div>
     );

@@ -35,17 +35,6 @@ export const ApplicantCard: FC<ApplicantCardProps> = ({
     return (
         <div className="flex w-full flex-col gap-3 rounded-2xl border border-line bg-white p-4">
             <div className="flex w-full gap-4">
-                {/* {
-          <AfroScore score={score} size="md">
-            <div className="h-full w-full rounded-full relative">
-              {profileImage?.url ? (
-                <Image src={profileImage.url} alt="profile" layout="fill" className="rounded-full" />
-              ) : (
-                <DefaultAvatar />
-              )}
-            </div>
-          </AfroScore>
-        } */}
                 <AfroProfile score={score} size="md" src={profileImage?.url} />
                 <div className="flex grow flex-col gap-2">
                     <div className="flex items-center justify-between gap-2">

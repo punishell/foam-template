@@ -5,6 +5,7 @@
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { type Review } from "./types";
+import { type CategoryData } from "./api/category";
 
 export function cn(...inputs: ClassValue[]): string {
     return twMerge(clsx(inputs));
@@ -332,3 +333,63 @@ export const emptyFunction = (): void => {
     const arr = [];
     arr.push(5);
 };
+
+/**
+ * Checks the input string and rejects special characters.
+ * Allows only alphanumeric characters, spaces, and some basic punctuation.
+ *
+ * @param {string} input - The input string to validate.
+ * @return {boolean} - Returns true if the input contains only allowed characters, false otherwise.
+ */
+export const rejectSpecialCharacters = (input: string): boolean => {
+    const pattern = /^[a-zA-Z0-9 ,.-]+$/;
+    return pattern.test(input);
+};
+
+export const filterSkillsByName = (
+    items: CategoryData[],
+    disallowedChars: string[]
+): CategoryData[] => {
+    // Create a regex pattern from the disallowed characters
+    // const regex = new RegExp(`[${disallowedChars.join("")}]`, "i");
+    const regex = new RegExp(
+        `[${disallowedChars.map((char) => `\\${char}`).join("")}]`,
+        "i"
+    );
+
+    // Filter the array to exclude items with names containing any disallowed characters
+    return items.filter((item) => !regex.test(item.name));
+};
+
+export const disallowedChars = [
+    "<",
+    ">",
+    "{",
+    "}",
+    "(",
+    ")",
+    "=",
+    "-",
+    "~",
+    "!",
+    "@",
+    "#",
+    "$",
+    "%",
+    "^",
+    "&",
+    "*",
+    "_",
+    "+",
+    "|",
+    ":",
+    ";",
+    "'",
+    ",",
+    "?",
+    "/",
+    "`",
+    '"',
+    ".",
+    " ",
+];

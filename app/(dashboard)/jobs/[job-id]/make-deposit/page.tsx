@@ -21,7 +21,8 @@ import { avalanche, avalancheFuji, base, baseGoerli } from "@wagmi/core/chains";
 import { useGetJobById, usePostJobPaymentDetails } from "@/lib/api/job";
 import { type PaymentCoinsProps, useGetPaymentCoins } from "@/lib/api/wallet";
 import { cn } from "@/lib/utils";
-import { PaymentDetails } from "@/components/jobs/desktop-view/make-deposit";
+import { PaymentDetails } from "@/components/jobs/make-deposit";
+import { Breadcrumb } from "@/components/common/breadcrumb";
 
 const { chains, publicClient, webSocketPublicClient } = configureChains(
     [avalancheFuji, avalanche, base, baseGoerli],
@@ -57,11 +58,13 @@ type SUPPORTED_COINS_TYPES = "USDC" | "AVAX";
 interface Props {
     params: {
         "job-id": string;
+        "talent-id": string;
     };
 }
 
 export default function MakeDepositPage({ params }: Props): JSX.Element {
     const jobId = params["job-id"];
+    const talentId = params["talent-id"];
     const router = useRouter();
     const {
         data: job,
@@ -86,22 +89,38 @@ export default function MakeDepositPage({ params }: Props): JSX.Element {
 
     return (
         <WagmiConfig config={wagmiConfig as unknown}>
+            <Breadcrumb
+                items={[
+                    {
+                        label: "Talent",
+                        action: () => {
+                            router.push(`/talents`);
+                        },
+                    },
+                    {
+                        label: "Make Payment",
+                        active: true,
+                        action: () => {
+                            router.push(
+                                `/jobs/${jobId}/make-deposit?talent-id=${talentId}`
+                            );
+                        },
+                    },
+                ]}
+            />
             <div className="flex flex-col gap-6 overflow-y-auto">
-                <div>
-                    <div className="flex items-center gap-1">
-                        <ChevronLeft
-                            size={24}
-                            strokeWidth={2}
-                            onClick={router.back}
-                            className="cursor-pointer"
-                        />
-                        <span className="text-2xl font-medium">
-                            Make Deposit
-                        </span>
-                    </div>
+                <div className="hidden items-center gap-1 sm:flex">
+                    <ChevronLeft
+                        size={24}
+                        strokeWidth={2}
+                        onClick={router.back}
+                        className="cursor-pointer"
+                    />
+                    <span className="text-2xl font-medium">Make Deposit</span>
                 </div>
+
                 <div className="flex">
-                    <div className="flex w-full max-w-3xl flex-col gap-6 rounded-3xl border border-line bg-white p-6">
+                    <div className="flex w-full flex-col gap-6 bg-white p-6 sm:max-w-3xl sm:rounded-3xl sm:border sm:border-line">
                         <div className="flex flex-col gap-2">
                             <h2 className="text-2xl font-bold">
                                 Escrow Payment
@@ -119,7 +138,7 @@ export default function MakeDepositPage({ params }: Props): JSX.Element {
                             <h2 className="text-lg font-bold">
                                 Choose Payment Method
                             </h2>
-                            <div className="flex items-center gap-2">
+                            <div className="flex flex-wrap items-center gap-2">
                                 {(paymentCoinsData ?? [])?.map((coin) => (
                                     <button
                                         key={coin.symbol + coin.contractAddress}
@@ -151,18 +170,6 @@ export default function MakeDepositPage({ params }: Props): JSX.Element {
                                         </span>
                                     </button>
                                 ))}
-                                {/* <button
-                  className={cn(
-                    'p-4 rounded-xl bg-white border-line flex items-center gap-2 border-[1.5px] hover:bg-green-50 duration-200',
-                    {
-                      'border-secondary bg-green-50': paymentCoin === 'AVAX',
-                    },
-                  )}
-                  onClick={() => selectPaymentCoin('AVAX')}
-                >
-                  <Image src="/icons/avax-logo.svg" alt="Coinbase" width={30} height={30} />
-                  <span className="font-bold text-lg">AVAX</span>
-                </button> */}
                             </div>
                         </div>
 
