@@ -6,7 +6,7 @@
 
 import type React from "react";
 import { useState } from "react";
-import { X } from "lucide-react";
+import { ChevronLeft, X } from "lucide-react";
 import Image from "next/image";
 import { Button, Checkbox, Input, Select } from "pakt-ui";
 import { Controller, type SubmitHandler, useForm } from "react-hook-form";
@@ -31,7 +31,6 @@ export const WithdrawalModal = ({
     isOpen,
     onChange,
     wallets,
-    network = "Avax C-Chain",
 }: {
     isOpen: boolean;
     onChange: (state: boolean) => void;
@@ -111,17 +110,22 @@ export const WithdrawalModal = ({
                     type="button"
                     aria-label="Close Modal"
                 >
-                    <X
+                    <X size={24} className="hidden cursor-pointer sm:block" />
+                    <ChevronLeft
                         size={24}
-                        onClick={() => {
-                            onChange(false);
-                        }}
-                        className="cursor-pointer"
+                        className="cursor-pointer sm:hidden"
                     />
                 </button>
-                <div className="flex grow flex-col text-center">
-                    <h3 className="text-2xl font-bold">Withdrawal</h3>
-                    <p>Withdraw funds to another blockchain wallet</p>
+                <div className="flex grow flex-col sm:text-center">
+                    <h3 className="hidden text-2xl font-bold sm:block">
+                        Withdrawal
+                    </h3>
+                    <h3 className="text-lg font-bold sm:hidden">
+                        Withdraw Funds
+                    </h3>
+                    <p className="hidden sm:block">
+                        Withdraw funds to another blockchain wallet
+                    </p>
                 </div>
             </div>
             {!is2FA ? (
@@ -157,12 +161,9 @@ export const WithdrawalModal = ({
                     />
 
                     <div className="flex flex-col gap-2">
-                        <div className="flex items-center justify-between">
-                            <span>Wallet Address</span>
-                            <span className="font-medium text-title">
-                                Network: {network}
-                            </span>
-                        </div>
+                        <span className="text-base text-gray-800">
+                            Wallet Address
+                        </span>
 
                         <div className="relative mb-4">
                             <Input type="text" {...form.register("address")} />
@@ -172,9 +173,8 @@ export const WithdrawalModal = ({
                         </div>
 
                         <span className="text-left text-sm text-info">
-                            Ensure you are sending to the right wallet address
-                            and on the Avax C-Chain. Sending to a wrong address
-                            or network can result in loss of funds.
+                            Ensure you’re sending to Avax C-Chain. Sending to a
+                            wrong network would result in loss of funds
                         </span>
                     </div>
 
