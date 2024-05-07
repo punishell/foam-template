@@ -4,19 +4,15 @@
 /*                             External Dependency                            */
 /* -------------------------------------------------------------------------- */
 
-import { useEffect, useMemo, useState } from "react";
 import { type ColumnDef, type PaginationState } from "@tanstack/react-table";
 import { ArrowUpRight, ArrowDownLeft, Circle } from "lucide-react";
 import Link from "next/link";
-import dayjs from "dayjs";
 
 /* -------------------------------------------------------------------------- */
 /*                             Internal Dependency                            */
 /* -------------------------------------------------------------------------- */
 
 import { Table } from "@/components/common/table";
-import { formatUsd } from "@/lib/utils";
-import { useGetWalletTxs } from "@/lib/api/wallet";
 
 type TransactionTypeProps = "withdrawal" | "deposit";
 
@@ -161,93 +157,26 @@ const TABLE_COLUMNS: Array<ColumnDef<WalletTransactionsProps>> = [
     },
 ];
 
-const dateFormat = "MM/DD/YYYY";
-const MAX = 20;
-
-interface TransactionProps {
-    createdAt: string;
-    type: "withdrawal" | "deposit";
-    amount: string;
-    description: string;
-    currency: string;
-    usdValue: number;
-    status: "processing" | "pending" | "completed" | "failed" | "reprocessing";
-    responseData: string;
-}
-
-export const WalletTransactions = (): React.JSX.Element => {
-    const [{ pageIndex, pageSize }, setPagination] = useState<PaginationState>({
-        pageIndex: 1,
-        pageSize: 6,
-    });
-    const {
-        data: walletTx,
-        refetch: fetchWalletTx,
-        // isLoading,
-        isFetched: walletFetched,
-        isFetching: walletIsFetching,
-    } = useGetWalletTxs({
-        limit: pageSize,
-        page: pageIndex,
-        filters: { status: ["processing", "completed", "reprocessing"] },
-    });
-    const page = parseInt(walletTx?.data?.data?.page ?? "1", 10);
-    const pageSizee = parseInt(walletTx?.data?.data?.pages ?? "1", 10);
-    const loading = !walletFetched && walletIsFetching;
-
-    const data: WalletTransactionsProps[] = useMemo(
-        () =>
-            (walletTx?.data?.data.transactions ?? [])
-                .map((tx: TransactionProps) => ({
-                    date: dayjs(tx.createdAt).format(dateFormat),
-                    type: tx.type,
-                    amount: String(tx.amount),
-                    description:
-                        tx.description && tx.description?.length > MAX
-                            ? `${tx.description.slice(0, MAX)}...`
-                            : tx.description,
-                    coin: tx.currency.toUpperCase(),
-                    usdValue: formatUsd(tx.usdValue),
-                    status: tx.status,
-                    transactionHash:
-                        tx.responseData !== null &&
-                        tx.responseData !== undefined
-                            ? JSON.parse(tx.responseData).data.tx
-                                  .transactionHash
-                            : "",
-                }))
-                .sort(
-                    (a, b) =>
-                        new Date(b?.date).getTime() -
-                        new Date(a?.date).getTime()
-                ),
-        [walletTx?.data?.data]
-    );
-
-    const loadPage = async (): Promise<void> => {
-        await Promise.all([fetchWalletTx()]);
-    };
-
-    useEffect(() => {
-        void loadPage();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
-
-    useEffect(() => {
-        void fetchWalletTx();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [pageIndex, pageSize]);
+export const MobileWalletTransactions = ({
+    data,
+    page,
+    // limit,
+    pageSize,
+    loading,
+    onPageChange,
+}: {
+    data: WalletTransactionsProps[];
+    page: number;
+    // limit: number;
+    pageSize: number;
+    loading: boolean;
+    onPageChange: React.Dispatch<React.SetStateAction<PaginationState>>;
+}): React.JSX.Element => {
     return (
-        <div className="flex h-[450px] w-full max-w-full flex-col gap-4 rounded-lg border border-line bg-white px-6 py-6">
-            <h3 className="text-base font-semibold">Wallet Transactions</h3>
-            <Table
-                data={data}
-                columns={TABLE_COLUMNS}
-                pageCount={pageSizee}
-                setPagination={setPagination}
-                pagination={{ pageIndex: page, pageSize: pageSizee }}
-                loading={loading}
-            />
+        <div className="flex h-auto w-full max-w-full flex-col gap-4 rounded-lg bg-white p-4">
+            <h3 className="text-base font-bold leading-normal tracking-wide text-black">
+                Wallet Transactions
+            </h3>
         </div>
     );
 };

@@ -4,18 +4,26 @@
 /*                             External Dependency                            */
 /* -------------------------------------------------------------------------- */
 
+import { useEffect, useState } from "react";
 import * as Tabs from "@radix-ui/react-tabs";
+import moment from "moment";
 
 /* -------------------------------------------------------------------------- */
 /*                             Internal Dependency                            */
 /* -------------------------------------------------------------------------- */
 
 import { Chart } from "@/components/common/chart";
+import { fetchWalletStats } from "@/lib/api/wallet";
 
 export interface TransformedData {
     date: string;
     amt: number;
     // [key: string]: string | number;
+}
+
+interface ChartData {
+    _id: string;
+    count: number;
 }
 
 export interface ChartDataProps {
@@ -24,11 +32,78 @@ export interface ChartDataProps {
     yearly: TransformedData[];
 }
 
-export const WalletBalanceChart = ({
-    data,
-}: {
-    data: ChartDataProps;
-}): React.JSX.Element => {
+export const WalletBalanceChart = (): React.JSX.Element => {
+    const [data, setData] = useState<ChartDataProps>({
+        weekly: [],
+        monthly: [],
+        yearly: [],
+    });
+    const getChartData = async (): Promise<void> => {
+        const response = await Promise.all([
+            fetchWalletStats({ format: "weekly" }),
+            fetchWalletStats({ format: "monthly" }),
+            fetchWalletStats({ format: "yearly" }),
+        ]);
+
+        // ===== Weekly ===== //
+        const weeklyStats: TransformedData[] = response[0]
+            .sort(
+                (a: ChartData, b: ChartData) =>
+                    new Date(a._id).getTime() - new Date(b._id).getTime()
+            )
+            .map((c: ChartData) => {
+                return {
+                    date: moment(c._id).utc().format("ddd"),
+                    amt: c.count,
+                };
+            });
+        // ===== Weekly ===== //
+
+        // ===== Monthly ===== //
+
+        const monthlyStats = response[1]
+            .sort(
+                (a: ChartData, b: ChartData) =>
+                    new Date(a._id).getTime() - new Date(b._id).getTime()
+            )
+            .map((c: ChartData) => {
+                return {
+                    date: moment(c._id).utc().format("DD MMM"),
+                    amt: c.count,
+                };
+            });
+
+        // ===== Monthly ===== //
+        const yearlyStats = response[2]
+            .sort(
+                (a: ChartData, b: ChartData) =>
+                    new Date(a._id).getTime() - new Date(b._id).getTime()
+            )
+            .map((c: ChartData) => {
+                return {
+                    date: moment(c._id).utc().format("MMM YY"),
+                    amt: c.count,
+                };
+            });
+
+        const chartData = {
+            weekly: weeklyStats,
+            monthly: monthlyStats,
+            yearly: yearlyStats,
+        };
+
+        setData(chartData);
+    };
+
+    const loadPage = async (): Promise<void> => {
+        await Promise.all([getChartData()]);
+    };
+
+    useEffect(() => {
+        void loadPage();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
     const modifiedWeeklyData = [...data.weekly];
     const modifiedMonthlyData = [...data.monthly];
     const modifiedYearlyData = [...data.yearly];
@@ -60,7 +135,7 @@ export const WalletBalanceChart = ({
     return (
         <Tabs.Root
             defaultValue="week"
-            className="flex flex-col gap-2 rounded-lg border border-line bg-white p-2"
+            className="flex flex-col gap-2 rounded-lg border border-line bg-white p-2 max-sm:h-[250px]"
         >
             <div className="flex items-center justify-between gap-2">
                 <span className="text-lg font-medium text-title">Balance</span>
