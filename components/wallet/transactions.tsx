@@ -191,13 +191,13 @@ export const WalletTransactions = (): React.JSX.Element => {
         page: pageIndex,
         filters: { status: ["processing", "completed", "reprocessing"] },
     });
-    const page = parseInt(walletTx?.data?.data?.page ?? "1", 10);
-    const pageSizee = parseInt(walletTx?.data?.data?.pages ?? "1", 10);
+    const page = parseInt(walletTx?.page ?? "1", 10);
+    const pageSizee = parseInt(walletTx?.pages ?? "1", 10);
     const loading = !walletFetched && walletIsFetching;
 
     const data: WalletTransactionsProps[] = useMemo(
         () =>
-            (walletTx?.data?.data.transactions ?? [])
+            (walletTx?.transactions ?? [])
                 .map((tx: TransactionProps) => ({
                     date: dayjs(tx.createdAt).format(dateFormat),
                     type: tx.type,
@@ -221,7 +221,7 @@ export const WalletTransactions = (): React.JSX.Element => {
                         new Date(b?.date).getTime() -
                         new Date(a?.date).getTime()
                 ),
-        [walletTx?.data?.data]
+        [walletTx]
     );
 
     const loadPage = async (): Promise<void> => {

@@ -4,9 +4,8 @@
 /*                             External Dependency                            */
 /* -------------------------------------------------------------------------- */
 
-import { useEffect, useMemo, useState } from "react";
-import { type ColumnDef, type PaginationState } from "@tanstack/react-table";
-import { ArrowUpRight, ArrowDownLeft, Circle } from "lucide-react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { ArrowUpRight, ArrowDownLeft, Circle, Loader } from "lucide-react";
 import Link from "next/link";
 import dayjs from "dayjs";
 
@@ -14,9 +13,8 @@ import dayjs from "dayjs";
 /*                             Internal Dependency                            */
 /* -------------------------------------------------------------------------- */
 
-import { Table } from "@/components/common/table";
 import { formatUsd } from "@/lib/utils";
-import { useGetWalletTxs } from "@/lib/api/wallet";
+import { useGetWalletTxsInfinitely } from "@/lib/api/wallet";
 
 type TransactionTypeProps = "withdrawal" | "deposit";
 
@@ -43,14 +41,14 @@ const TransactionStatus = ({
     status,
 }: {
     status: TransactionStatusProps;
-}): React.JSX.Element => (
+}): JSX.Element => (
     <div
         className={`${
             TRANSACTION_STATUS_COLORS[status].bgColor || "bg-gray-300"
         } flex w-fit items-center gap-2 rounded-full bg-opacity-10 px-3 py-0.5 capitalize`}
     >
         <span
-            className={`text-sm ${TRANSACTION_STATUS_COLORS[status].textColor || "text-title"}`}
+            className={`text-xs ${TRANSACTION_STATUS_COLORS[status].textColor || "text-title"}`}
         >
             {status}
         </span>
@@ -61,7 +59,7 @@ const TransactionType = ({
     type,
 }: {
     type: TransactionTypeProps;
-}): React.JSX.Element => {
+}): JSX.Element => {
     let color: string;
     let Icon: React.ElementType;
 
@@ -92,6 +90,51 @@ const TransactionType = ({
     );
 };
 
+const TransactionHash = ({ hash }: { hash: string }): JSX.Element =>
+    hash !== "" ? (
+        <Link
+            href={`${process.env.NEXT_PUBLIC_SNOWTRACE_APP_URL}/tx/${hash}`}
+            target="_blank"
+            className="inline-flex h-[22px] w-[124.35px] items-center justify-center gap-[6.45px] rounded-lg border bg-violet-100 px-2 py-0.5"
+        >
+            <span className="shrink grow basis-0 text-center text-xs font-medium leading-[18px] tracking-wide text-indigo-600">
+                View On-chain
+            </span>
+            <ArrowUpRight className="relative h-[12.90px] w-[12.90px] text-indigo-600" />
+        </Link>
+    ) : (
+        <div />
+    );
+
+const TransactionItem = ({
+    transaction,
+}: {
+    transaction: WalletTransactionsProps;
+}): JSX.Element => (
+    <div className="flex w-full flex-col items-start gap-4 rounded-lg border border-gray-200 bg-neutral-50 p-4">
+        <div className="flex w-full items-center justify-between">
+            <span className="text-sm leading-[21px] tracking-wide text-zinc-500">
+                {transaction.date}
+            </span>
+            <TransactionType type={transaction.type} />
+        </div>
+        <div className="inline-flex w-full flex-col items-start justify-start gap-4 rounded-lg">
+            <div className="h-[0px] self-stretch border border-gray-200" />
+            <h4 className=" self-stretch text-base font-medium leading-normal tracking-wide text-gray-800">
+                {transaction.description}
+            </h4>
+            <h4 className=" text-lg font-bold leading-[27px] tracking-wide text-gray-800">
+                {" "}
+                ${transaction.usdValue}
+            </h4>
+        </div>
+        <div className="flex w-full items-center justify-between">
+            <TransactionStatus status={transaction.status} />
+            <TransactionHash hash={transaction.transactionHash} />
+        </div>
+    </div>
+);
+
 interface WalletTransactionsProps {
     date: string;
     amount: string;
@@ -103,67 +146,8 @@ interface WalletTransactionsProps {
     transactionHash: string;
 }
 
-const TABLE_COLUMNS: Array<ColumnDef<WalletTransactionsProps>> = [
-    {
-        header: "Date",
-        accessorFn: (data) => data.date,
-    },
-    {
-        header: "Type",
-        accessorFn: (data) => data.type,
-        cell: ({ getValue }) => (
-            <TransactionType type={getValue<TransactionTypeProps>()} />
-        ),
-    },
-    {
-        header: "Description",
-        accessorFn: (data) => data.description,
-    },
-    {
-        header: "Amount",
-        accessorFn: (data) => data.amount,
-    },
-    {
-        header: "Coin",
-        accessorFn: (data) => data.coin,
-    },
-    {
-        header: "USD Value",
-        accessorFn: (data) => data.usdValue,
-    },
-    {
-        header: "Status",
-        accessorFn: (data) => data.status,
-        cell: ({ getValue }) => (
-            <TransactionStatus status={getValue<TransactionStatusProps>()} />
-        ),
-    },
-    {
-        header: " ",
-        accessorFn: (data) => data.transactionHash,
-        cell: ({ getValue }) => {
-            const transactionHash = getValue();
-            return transactionHash !== "" ? (
-                <Link
-                    href={`${process.env.NEXT_PUBLIC_SNOWTRACE_APP_URL}/tx/${transactionHash as string}`}
-                    target="_blank"
-                    className="inline-flex h-[22px] w-[124.35px] items-center justify-center gap-[6.45px] rounded-lg border bg-violet-100 px-2 py-0.5"
-                >
-                    <span className="shrink grow basis-0 text-center text-xs font-medium leading-[18px] tracking-wide text-indigo-600">
-                        View On-chain
-                    </span>
-                    <ArrowUpRight className="relative h-[12.90px] w-[12.90px] text-indigo-600" />
-                </Link>
-            ) : (
-                <div />
-            );
-        },
-    },
-];
-
-const dateFormat = "MM/DD/YYYY";
-const MAX = 20;
-
+const dateFormat = "MMMM DD, YYYY";
+const MAX = 50;
 interface TransactionProps {
     createdAt: string;
     type: "withdrawal" | "deposit";
@@ -176,28 +160,96 @@ interface TransactionProps {
 }
 
 export const MobileWalletTransactions = (): React.JSX.Element => {
-    const [{ pageIndex, pageSize }, setPagination] = useState<PaginationState>({
-        pageIndex: 1,
-        pageSize: 6,
-    });
+    // @ts-expect-error --- Unused variable
+    const [currentPage, setCurrentPage] = useState(1);
+    // @ts-expect-error --- Unused variable
+    const [prevPage, setPrevPage] = useState(0);
+    const [currentData, setCurrentData] = useState([]);
+    const [observe, setObserve] = useState(false);
+
     const {
         data: walletTx,
         refetch: fetchWalletTx,
-        // isLoading,
-        isFetched: walletFetched,
-        isFetching: walletIsFetching,
-    } = useGetWalletTxs({
-        limit: pageSize,
-        page: pageIndex,
+        isLoading,
+        fetchNextPage,
+        hasNextPage,
+        isFetchingNextPage,
+    } = useGetWalletTxsInfinitely({
+        limit: 10,
+        page: currentPage,
         filters: { status: ["processing", "completed", "reprocessing"] },
     });
-    const page = parseInt(walletTx?.data?.data?.page ?? "1", 10);
-    const pageSizee = parseInt(walletTx?.data?.data?.pages ?? "1", 10);
-    const loading = !walletFetched && walletIsFetching;
+    const observerTarget = useRef<HTMLDivElement | null>(null);
+
+    const fetchMore = (): void => {
+        setObserve(false);
+        if (hasNextPage && !isFetchingNextPage) {
+            void fetchNextPage();
+        }
+    };
+
+    useEffect(() => {
+        const currentTarget = observerTarget.current;
+        if (!currentTarget) return;
+        const observer = new IntersectionObserver(
+            (entries) => {
+                if (entries[0]?.isIntersecting) setObserve(true);
+            },
+            { threshold: 0.5 }
+        );
+
+        observer.observe(currentTarget);
+
+        return () => {
+            observer.unobserve(currentTarget);
+        };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [observerTarget.current]);
+
+    useEffect(() => {
+        if (!isLoading && !isFetchingNextPage && prevPage !== currentPage) {
+            void fetchWalletTx();
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [currentPage]);
+
+    useEffect(() => {
+        if (observe) {
+            fetchMore();
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [observe]);
+
+    useEffect(() => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        let totalData: any = [];
+        // if (timelineData?.pages) {
+        if (walletTx && Array.isArray(walletTx.pages)) {
+            for (let i = 0; i < walletTx.pages.length; i++) {
+                const walletTxData = walletTx.pages[i]?.transactions;
+                if (Array.isArray(walletTxData)) {
+                    totalData = [...totalData, ...walletTxData];
+                }
+            }
+        }
+
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const newData = totalData.sort((a: any, b: any) => {
+            if (a && b) {
+                return (
+                    new Date(b.createdAt).getTime() -
+                    new Date(a.createdAt).getTime()
+                );
+            }
+            return 0;
+        });
+        setCurrentData(newData);
+        // }
+    }, [walletTx, walletTx?.pages]);
 
     const data: WalletTransactionsProps[] = useMemo(
         () =>
-            (walletTx?.data?.data.transactions ?? [])
+            (currentData ?? [])
                 .map((tx: TransactionProps) => ({
                     date: dayjs(tx.createdAt).format(dateFormat),
                     type: tx.type,
@@ -221,33 +273,29 @@ export const MobileWalletTransactions = (): React.JSX.Element => {
                         new Date(b?.date).getTime() -
                         new Date(a?.date).getTime()
                 ),
-        [walletTx?.data?.data]
+        [currentData]
     );
 
-    const loadPage = async (): Promise<void> => {
-        await Promise.all([fetchWalletTx()]);
-    };
-
-    useEffect(() => {
-        void loadPage();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
-
-    useEffect(() => {
-        void fetchWalletTx();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [pageIndex, pageSize]);
     return (
-        <div className="flex h-[450px] w-full max-w-full flex-col gap-4 rounded-lg border border-line bg-white px-6 py-6">
+        <div className="flex h-[600px] w-full max-w-full flex-col gap-4 rounded-lg border border-line bg-white px-6 py-6">
             <h3 className="text-base font-semibold">Wallet Transactions</h3>
-            <Table
-                data={data}
-                columns={TABLE_COLUMNS}
-                pageCount={pageSizee}
-                setPagination={setPagination}
-                pagination={{ pageIndex: page, pageSize: pageSizee }}
-                loading={loading}
-            />
+            <div className="flex h-[600px] w-full flex-col gap-4 overflow-y-scroll">
+                {data.map((transaction) => (
+                    <TransactionItem
+                        transaction={transaction}
+                        key={transaction.transactionHash}
+                    />
+                ))}
+                {isFetchingNextPage && (
+                    <div className="mx-auto flex w-full flex-row items-center justify-center text-center max-sm:my-4">
+                        <Loader
+                            size={25}
+                            className="animate-spin text-center text-black"
+                        />
+                    </div>
+                )}
+                <span ref={observerTarget} />
+            </div>
         </div>
     );
 };

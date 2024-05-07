@@ -7,6 +7,8 @@ import {
     useQuery,
     type UseQueryOptions,
     type UseQueryResult,
+    type UseInfiniteQueryResult,
+    useInfiniteQuery,
 } from "@tanstack/react-query";
 
 /* -------------------------------------------------------------------------- */
@@ -138,21 +140,22 @@ const fetchWalletTransactions = async ({
     page,
     filters,
 }: ITransaction): Promise<AxiosResponse<IWalletTx>> => {
-    return axios.get(`/transaction`, {
+    const res = await axios.get(`/transaction`, {
         params: {
             page,
             limit,
             ...filters,
         },
     });
+    return res.data.data;
 };
 
 export const useGetWalletTxs = ({
     limit,
     page,
     filters,
-}: ITransaction): UseQueryResult<ApiResponse<IWalletTx>, ApiError<null>> => {
-    const options: UseQueryOptions<ApiResponse<IWalletTx>, ApiError<null>> = {
+}: ITransaction): UseQueryResult<IWalletTx, ApiError<null>> => {
+    const options: UseQueryOptions<IWalletTx, ApiError<null>> = {
         // @ts-expect-error ---
         queryFn: async () => {
             return fetchWalletTransactions({ limit, page, filters });
@@ -167,6 +170,23 @@ export const useGetWalletTxs = ({
     return useQuery(getWalletTxQueryKey, options);
 };
 
+export const useGetWalletTxsInfinitely = ({
+    limit,
+    page,
+    filters,
+}: ITransaction): UseInfiniteQueryResult<IWalletTx, ApiError<null>> => {
+    return useInfiniteQuery(
+        [`wallet-txs_${page}_${limit}`],
+        async ({ pageParam = 1 }) =>
+            fetchWalletTransactions({ limit, page: pageParam, filters }),
+        {
+            getNextPageParam: (_, pages) => {
+                return pages.length + 1;
+            },
+            enabled: true,
+        }
+    );
+};
 // ===
 
 export interface PaymentCoinsProps {
