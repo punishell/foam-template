@@ -124,8 +124,7 @@ const TransactionItem = ({
                 {transaction.description}
             </h4>
             <h4 className=" text-lg font-bold leading-[27px] tracking-wide text-gray-800">
-                {" "}
-                ${transaction.usdValue}
+                {transaction.usdValue}
             </h4>
         </div>
         <div className="flex w-full items-center justify-between">
