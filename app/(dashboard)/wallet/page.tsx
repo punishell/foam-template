@@ -8,6 +8,7 @@ import type React from "react";
 import { useState } from "react";
 import Image from "next/image";
 import { Button } from "pakt-ui";
+import { useMediaQuery } from "usehooks-ts";
 
 /* -------------------------------------------------------------------------- */
 /*                             Internal Dependency                            */
@@ -19,7 +20,7 @@ import { useGetActiveRPC, useGetWalletDetails } from "@/lib/api/wallet";
 import { formatUsd } from "@/lib/utils";
 import Kyc from "@/components/kyc";
 import { WalletTransactions } from "@/components/wallet/transactions";
-// import { MobileWalletTransactions } from "@/components/wallet/transactions-mobile";
+import { MobileWalletTransactions } from "@/components/wallet/transactions-mobile";
 
 interface WalletProps {
     _id: string;
@@ -31,6 +32,7 @@ interface WalletProps {
 
 export default function WalletPage(): React.JSX.Element {
     const [isOpen, setIsOpen] = useState(false);
+    const mobile = useMediaQuery("(max-width: 640px)");
 
     const { data: walletData } = useGetWalletDetails();
     const wallets: WalletProps[] = walletData?.data.data.wallets ?? [];
@@ -162,7 +164,11 @@ export default function WalletPage(): React.JSX.Element {
                     <WalletBalanceChart />
                 </div>
                 <div className="h-auto">
-                    <WalletTransactions />
+                    {mobile ? (
+                        <MobileWalletTransactions />
+                    ) : (
+                        <WalletTransactions />
+                    )}
                 </div>
             </div>
         </div>
